@@ -1,3 +1,13 @@
+Dec 28, Jochen Baier <email@jochen-baier.de>
+- removed "--no-alltray" option, "(Alltray)" in title, it is now default removed
+- fixed segfault with "alltray -s", reported by 'eexpress'
+
+!!!!
+this is the last version from me,
+if you want to become the maintainer/developer of alltray let me know
+!!!
+-set version to 0.70
+
 Jul 6, 2006: Jochen Baier <email@jochen-baier.de>
 - added "Stop" to the xmms menu. requested by me ;)
 - get the gnome theme file by reading "XDG_DATA_DIRS". usefull if gnome is not installed in "/usr..."
@@ -15,7 +25,7 @@ Jun 23, 2006:
 - man page update (0.66) by Carlos C Soto
 - set version to 0.68
 
-Jun 9, 2006, 
+Jun 9, 2006,
 - clickmode.c revised, "Cancel" button added, Cancel with "c" removed
 - alltray.spec updated by Michael Krylov
 - set version to 0.67 (dev snap)

@@ -22,7 +22,7 @@
  *
  *
  * Copyright:
- * 
+ *
  *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
@@ -36,7 +36,7 @@
  *    dsimple.c ("The Open Group")
  *    xfwm4 (Olivier Fourdan <fourdan@xfce.org>)
  *    .....lot more, THANX !!!
- *    
+ *
 */
 
 #include "common.h"
@@ -92,13 +92,13 @@ gboolean assert_window (Window window)
 {
 
   XWindowAttributes wa;
-  
+
   gdk_error_trap_push();
   XGetWindowAttributes (GDK_DISPLAY(), window, &wa);
-  
+
   if (gdk_error_trap_pop())
     return FALSE;
-  
+
   return TRUE;
 }
 
@@ -132,8 +132,8 @@ void atom_init (void)
   utf8_string = XInternAtom(GDK_DISPLAY(),"UTF8_STRING", False);
   net_wm_visible_name=XInternAtom(GDK_DISPLAY(),"_NET_WM_VISIBLE_NAME", False);
   alltray_found_window=XInternAtom (GDK_DISPLAY(), "_ALLTRAY_FOUND_WINDOW", False);
-  
-    
+
+
   char temp[50];
   Screen *screen = XDefaultScreenOfDisplay(GDK_DISPLAY());
 
@@ -141,14 +141,14 @@ void atom_init (void)
   selection_atom = XInternAtom(GDK_DISPLAY(), temp, False);
 
   manager_atom = XInternAtom (GDK_DISPLAY(), "MANAGER", False);
-  system_tray_opcode_atom = XInternAtom (GDK_DISPLAY(), 
+  system_tray_opcode_atom = XInternAtom (GDK_DISPLAY(),
       "_NET_SYSTEM_TRAY_OPCODE", False);
 
 }
 
 void xprop (Window window)
 {
- 
+
   gchar *tmp=g_strdup_printf ("xprop -id %d &", (int) window);
   system (tmp);
   g_free (tmp);
@@ -160,12 +160,12 @@ gboolean gtk_sleep_function (gpointer data)
   return FALSE;
 }
 
-void gtk_sleep (gint millisec) 
+void gtk_sleep (gint millisec)
 {
 
   g_timeout_add (millisec, gtk_sleep_function, NULL);
   gtk_main();
-  
+
 }
 
 Window get_active_window (void)
@@ -178,31 +178,31 @@ Window get_active_window (void)
   int result;
   Window win=None;
   gint err;
-    
+
   type = None;
-  
+
   gdk_error_trap_push();
   result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
          net_active_window,
          0,  0x7fffffff, False,XA_WINDOW, &type, &format, &nitems,
-         &bytes_after, &data); 
-  
+         &bytes_after, &data);
+
   err=gdk_error_trap_pop();
-   
+
   if (err!=0 || result != Success)
      return None;
-        
+
   if (type != XA_WINDOW) {
       XFree (data);
       return None;
   }
-  
+
   if (data) {
     win= *((Window *) data);
     if (debug) printf ("active window id %d\n", (int) win);
     XFree (data);
   }
-  
+
   return win;
 }
 
@@ -216,28 +216,28 @@ gint get_current_desktop(void)
   int result;
   gint err;
   gint number=1;
-            
+
   type = None;
-  
+
   gdk_error_trap_push();
   result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
          net_current_desktop,
          0,  1l, False,XA_CARDINAL, &type, &format, &nitems,
-         &bytes_after, &data); 
-  
+         &bytes_after, &data);
+
   err=gdk_error_trap_pop();
-   
+
   if (err!=0 || result != Success)
     return 1;
-  
+
   if (type == XA_CARDINAL && format == 32 && nitems == 1)
    number = *((long *) data);
-  
+
   if (data)
     XFree (data);
-  
+
   return number;
-  
+
 }
 
 gboolean get_window_list (Window   xwindow,
@@ -251,20 +251,20 @@ gboolean get_window_list (Window   xwindow,
   gulong bytes_after;
   unsigned char *data;
   int err, result;
-  
+
   *windows = NULL;
   *len = 0;
-  
+
   gdk_error_trap_push();
   type = None;
   result = XGetWindowProperty (GDK_DISPLAY(), xwindow,
     atom, 0, G_MAXLONG, False, XA_WINDOW, &type,
-    &format, &nitems, &bytes_after, &data);  
+    &format, &nitems, &bytes_after, &data);
   err = gdk_error_trap_pop ();
 
   if (err != Success || result != Success)
     return FALSE;
-    
+
   if (type != XA_WINDOW) {
     XFree (data);
     return FALSE;
@@ -276,12 +276,12 @@ gboolean get_window_list (Window   xwindow,
 
   XFree (data);
 
-  return TRUE;  
+  return TRUE;
 }
 
 gint get_pid (Window w)
 {
-  
+
   Atom actual_type;
   int actual_format;
   unsigned long nitems, leftover;
@@ -289,19 +289,19 @@ gint get_pid (Window w)
   gint pid=0;
   int status;
   gint err;
-    
+
   gdk_error_trap_push();
-  
+
   status=XGetWindowProperty(GDK_DISPLAY(), w,
       net_wm_pid, 0,
       1, False, XA_CARDINAL, &actual_type,
       &actual_format, &nitems, &leftover, &pid_return);
-  
+
   err=gdk_error_trap_pop();
-    
+
   if (err!=0 || status != Success)
     return 0;
-     
+
   if (pid_return) {
     pid=*(gint *) pid_return;
     XFree(pid_return);
@@ -320,46 +320,46 @@ gboolean window_type_is_normal (Window win)
   gboolean normal=TRUE;
   gint result =0;
   gint err;
-     
+
   type = None;
-  
+
   gdk_error_trap_push();
-    
+
   result = XGetWindowProperty (GDK_DISPLAY(), win,
     net_wm_window_type, 0, 0x7fffffff, False, XA_ATOM,
     &type, &format, &nitems, &bytes_after, &data);
-  
+
   err=gdk_error_trap_pop();
- 
+
   if (err || result != Success) {
    return FALSE;
   }
 
   if (data) {
-  
+
     Atom *atoms = (unsigned long *)data;
     unsigned long l;
     for (l=0; l<nitems; ++l) {
-    
+
       if (atoms[l] != net_wm_window_type_normal) {
         normal=FALSE;
         break;
       }
-    
+
     }
-    
-    XFree(data);    
+
+    XFree(data);
   }
-  
+
   return normal;
-            
+
 }
 
 void skip_pager (Window window, gboolean add)
 {
-  
+
   XEvent xev;
-  
+
   xev.xclient.type = ClientMessage;
   xev.xclient.serial = 0;
   xev.xclient.send_event = True;
@@ -371,16 +371,16 @@ void skip_pager (Window window, gboolean add)
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
      SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
 void sticky (Window window)
 {
-  
+
   XEvent xev;
-  
+
   xev.xclient.type = ClientMessage;
   xev.xclient.serial = 0;
   xev.xclient.send_event = True;
@@ -392,7 +392,7 @@ void sticky (Window window)
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
      SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
@@ -404,13 +404,13 @@ void sticky (Window window)
   xev.xclient.display = GDK_DISPLAY();
   xev.xclient.message_type =net_wm_desktop;
   xev.xclient.format = 32;
-  
+
   xev.xclient.data.l[0] = 0xFFFFFFFF;
   xev.xclient.data.l[1] = 0;
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
             SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
@@ -420,7 +420,7 @@ void to_desktop (Window window, gint num)
 {
 
   XEvent xev;
- 
+
 
   xev.xclient.type = ClientMessage;
   xev.xclient.serial = 0;
@@ -429,13 +429,13 @@ void to_desktop (Window window, gint num)
   xev.xclient.display = GDK_DISPLAY();
   xev.xclient.message_type =net_wm_desktop;
   xev.xclient.format = 32;
-  
+
   xev.xclient.data.l[0] = num;
   xev.xclient.data.l[1] = 0;
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
             SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
@@ -443,7 +443,7 @@ void to_desktop (Window window, gint num)
 
 void rm_sticky (Window window)
 {
-  
+
   XEvent xev;
 
   xev.xclient.type = ClientMessage;
@@ -458,7 +458,7 @@ void rm_sticky (Window window)
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
             SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
@@ -470,7 +470,7 @@ void show_pixbuf (GdkPixbuf *buf)
 
   GtkWidget *window1;
   GtkWidget *image1;
-  
+
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   image1=gtk_image_new_from_pixbuf(buf);
   gtk_widget_show (image1);
@@ -483,15 +483,15 @@ void display_window_id(Display *display, Window window)
 {
   char *win_name;
   static char *window_id_format = "0x%lx";
-   
+
   if (!debug)
     return;
-  
+
   if (!assert_window (window))
     return;
-    
+
   printf(window_id_format, window);         /* print id # in hex/dec */
-  
+
   if (!window) {
     printf(" (none)");
   } else {
@@ -507,9 +507,9 @@ void display_window_id(Display *display, Window window)
   } else
     printf(" (has no name)");
   }
- 
+
   printf ("window int: %d\n", (int) window);
-  
+
   printf("\n");
 
 }
@@ -519,32 +519,32 @@ gboolean xlib_window_is_viewable (Window w)
 {
   XWindowAttributes wa;
   gint err;
-  
-  
+
+
   while (w != 0) {
     Window parent, root, *children;
     int nchildren;
-    
+
     gdk_error_trap_push();
     XGetWindowAttributes (GDK_DISPLAY(), w, &wa);
     err=gdk_error_trap_pop();
-  
+
     if (err)
       return FALSE;
-        
+
     if (wa.map_state != IsViewable) {
       return FALSE;
     }
-     
+
     if (!XQueryTree (GDK_DISPLAY(), w, &root, &parent, &children, (unsigned int *) &nchildren))
       return 0;
-    
+
     if (nchildren > 0)
       XFree (children);
-    
+
     if ((parent == root) || (w == root))
       return TRUE;
-    
+
     w = parent;
   }
   return TRUE;
@@ -552,18 +552,18 @@ gboolean xlib_window_is_viewable (Window w)
 
 void get_window_position (Window window, gint *x, gint *y)
 {
- 
+
   Window  root_return;
   unsigned int width_return, height_return, border, depth;
 
   Window our=one_under_root(GDK_DISPLAY(), window);
 
-  if (debug) printf ("get_window_position: window normal: %d, window our: %d\n", 
+  if (debug) printf ("get_window_position: window normal: %d, window our: %d\n",
     (int) window, (int)our);
-  
+
   XGetGeometry (GDK_DISPLAY(), our,
     &root_return, x, y, &height_return, &width_return, &border, &depth);
- 
+
 }
 
 GPid exec_command (gchar *command)
@@ -577,52 +577,52 @@ GPid exec_command (gchar *command)
   gboolean success_spawn;
 
   success_parse=g_shell_parse_argv (command, &num, &child_vector, NULL);
-    
+
   if (success_parse) {
     success_spawn=g_spawn_async (NULL,child_vector, NULL, G_SPAWN_SEARCH_PATH | G_SPAWN_STDOUT_TO_DEV_NULL |
         G_SPAWN_STDERR_TO_DEV_NULL, NULL, NULL, &pid, &error);
-  
+
   if (!success_spawn)
     printf ("AllTray: %s\n", error->message);
-    
+
     g_strfreev (child_vector);
   }
-   
+
   return pid;
 
 }
 
 Window one_under_root (Display *display, Window window)
 {
-  
+
   Window root_return=None;
   Window parent=None;
   Window *kids;
   Window runner=None;
-  
+
   int nkids;
-  
+
   runner=window;
 
   if (debug) printf ("one under root function\n");
 
     while (1) {
-    
+
       if (debug) printf ("current runner: %d\n", (int) runner);
-   
+
        if (! XQueryTree (display, runner, &root_return, &parent, &kids, (unsigned int *) &nkids))
          {  continue;  }
        if (kids) XFree ((char *)kids);
-         
+
        if (parent == DefaultRootWindow (display))
          break;
-       
+
        runner=parent;
-          
+
      }
-    
+
   return runner;
-}   
+}
 
 GdkColormap*
 get_cmap (GdkPixmap *pixmap)
@@ -654,34 +654,34 @@ get_cmap (GdkPixmap *pixmap)
       (gdk_colormap_get_visual (cmap)->depth !=
        gdk_drawable_get_depth (pixmap)))
     cmap = NULL;
-  
+
   return cmap;
 }
 
 gboolean get_window_pixmap (Window window, Pixmap *pix, Pixmap *mask)
 {
- 
+
   XWMHints *wm_hints;
-  
+
   gdk_error_trap_push();
-  
+
   wm_hints= XGetWMHints(GDK_DISPLAY(), window);
-  
+
   if (gdk_error_trap_pop()) {
     if (wm_hints)
       XFree (wm_hints);
       return FALSE;
   }
-    
+
   if (wm_hints != NULL) {
     if (!(wm_hints->flags & IconMaskHint))
       wm_hints->icon_mask = None;
-      
+
     if ((wm_hints->flags & IconPixmapHint) && (wm_hints->icon_pixmap)) {
       *pix=wm_hints->icon_pixmap;
       *mask=wm_hints->icon_mask;
     }
-  
+
     XFree (wm_hints);
    return TRUE;
   }
@@ -711,7 +711,7 @@ static void get_pixmap_geometry (Pixmap       pixmap,
     *h = 1;
   if (d)
     *d = 1;
-  
+
   XGetGeometry (GDK_DISPLAY(),
                 pixmap, &root_ignored, &x_ignored, &y_ignored,
                 &width, &height, &border_width_ignored, &depth);
@@ -736,9 +736,9 @@ GdkPixbuf* _wnck_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
   GdkDrawable *drawable;
   GdkPixbuf *retval;
   GdkColormap *cmap;
-  
+
   retval = NULL;
-  
+
   drawable = gdk_xid_table_lookup (xpixmap);
 
   if (drawable)
@@ -755,7 +755,7 @@ GdkPixbuf* _wnck_gdk_pixbuf_get_from_pixmap (GdkPixbuf   *dest,
     gdk_drawable_get_size (drawable, &width, NULL);
   if (height < 0)
     gdk_drawable_get_size (drawable, NULL, &height);
-  
+
   retval = gdk_pixbuf_get_from_drawable (dest,
                                          drawable,
                                          cmap,
@@ -780,10 +780,10 @@ static GdkPixbuf* apply_mask (GdkPixbuf *pixbuf,
   guchar *dest;
   int src_stride;
   int dest_stride;
-  
+
   w = MIN (gdk_pixbuf_get_width (mask), gdk_pixbuf_get_width (pixbuf));
   h = MIN (gdk_pixbuf_get_height (mask), gdk_pixbuf_get_height (pixbuf));
-  
+
   with_alpha = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
 
   dest = gdk_pixbuf_get_pixels (with_alpha);
@@ -791,7 +791,7 @@ static GdkPixbuf* apply_mask (GdkPixbuf *pixbuf,
 
   dest_stride = gdk_pixbuf_get_rowstride (with_alpha);
   src_stride = gdk_pixbuf_get_rowstride (mask);
-  
+
   i = 0;
   while (i < h)
     {
@@ -800,7 +800,7 @@ static GdkPixbuf* apply_mask (GdkPixbuf *pixbuf,
         {
           guchar *s = src + i * src_stride + j * 3;
           guchar *d = dest + i * dest_stride + j * 4;
-          
+
           /* s[0] == s[1] == s[2], they are 255 if the bit was set, 0
            * otherwise
            */
@@ -808,10 +808,10 @@ static GdkPixbuf* apply_mask (GdkPixbuf *pixbuf,
             d[3] = 0;   /* transparent */
           else
             d[3] = 255; /* opaque */
-          
+
           ++j;
         }
-      
+
       ++i;
     }
 
@@ -826,13 +826,13 @@ static GdkPixbuf* scaled_from_pixdata (guchar *pixdata,
 {
   GdkPixbuf *src;
   GdkPixbuf *dest;
-  
+
   src = gdk_pixbuf_new_from_data (pixdata,
                                   GDK_COLORSPACE_RGB,
                                   TRUE,
                                   8,
                                   w, h, w * 4,
-                                  free_pixels, 
+                                  free_pixels,
                                   NULL);
 
   if (src == NULL)
@@ -842,24 +842,24 @@ static GdkPixbuf* scaled_from_pixdata (guchar *pixdata,
     {
       GdkPixbuf *tmp;
       int size;
-      
+
       size = MAX (w, h);
-      
+
       tmp = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, size, size);
-      
+
       if (tmp != NULL) {
        gdk_pixbuf_fill (tmp, 0);
        gdk_pixbuf_copy_area (src, 0, 0, w, h, tmp, (size - w) / 2, (size - h) / 2);
-      
+
        g_object_unref (src);
        src = tmp;
       }
     }
-  
+
   if (w != new_w || h != new_h)
     {
       dest = gdk_pixbuf_scale_simple (src, new_w, new_h, GDK_INTERP_BILINEAR);
-      
+
       g_object_unref (G_OBJECT (src));
     }
   else
@@ -870,7 +870,7 @@ static GdkPixbuf* scaled_from_pixdata (guchar *pixdata,
   return dest;
 }
 
-gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp, 
+gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp,
   gint width, gint height)
 {
   GdkPixbuf *unscaled = NULL;
@@ -887,12 +887,12 @@ gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp,
     if (debug) printf ("src_pixmap is none\n");
     return FALSE;
   }
-  
-            
+
+
   gdk_error_trap_push();
 
   get_pixmap_geometry (src_pixmap, &w, &h, NULL);
-      
+
   unscaled = _wnck_gdk_pixbuf_get_from_pixmap (NULL,
                                                src_pixmap,
                                                0, 0, 0, 0,
@@ -905,20 +905,20 @@ gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp,
                                                0, 0, 0, 0,
                                                w, h);
     }
-  
+
    if (gdk_error_trap_pop ()) {
        if (unscaled)
          g_object_unref (unscaled);
-       
+
        if (mask)
          g_object_unref (mask);
-       
+
        return FALSE;
     }
 
   if (mask) {
       GdkPixbuf *masked;
-      
+
       masked = apply_mask (unscaled, mask);
       g_object_unref (G_OBJECT (unscaled));
       unscaled = masked;
@@ -926,12 +926,12 @@ gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp,
       g_object_unref (G_OBJECT (mask));
       mask = NULL;
     }
-  
+
   if (unscaled) {
       *iconp =
         gdk_pixbuf_scale_simple (unscaled, width, height, GDK_INTERP_HYPER);
-      
-      
+
+
       g_object_unref (G_OBJECT (unscaled));
       return TRUE;
     }
@@ -949,26 +949,26 @@ static gboolean find_largest_sizes (gulong *data,
 {
   *width = 0;
   *height = 0;
-  
+
   while (nitems > 0)
     {
       int w, h;
       gboolean replace;
 
       replace = FALSE;
-      
+
       if (nitems < 3)
         return FALSE; /* no space for w, h */
-      
+
       w = data[0];
       h = data[1];
-      
+
       if (nitems < ((w * h) + 2))
         return FALSE; /* not enough data */
 
       *width = MAX (w, *width);
       *height = MAX (h, *height);
-      
+
       data += (w * h) + 2;
       nitems -= (w * h) + 2;
     }
@@ -988,7 +988,7 @@ static gboolean find_best_size (gulong  *data,
   int best_h;
   gulong *best_start;
   int max_width, max_height;
-  
+
   *width = 0;
   *height = 0;
   *start = NULL;
@@ -1000,24 +1000,24 @@ static gboolean find_best_size (gulong  *data,
     ideal_width = max_width;
   if (ideal_height < 0)
     ideal_height = max_height;
-  
+
   best_w = 0;
   best_h = 0;
   best_start = NULL;
-  
+
   while (nitems > 0)
     {
       int w, h;
       gboolean replace;
 
       replace = FALSE;
-      
+
       if (nitems < 3)
         return FALSE; /* no space for w, h */
-      
+
       w = data[0];
       h = data[1];
-      
+
       if (nitems < ((w * h) + 2))
         break; /* not enough data */
 
@@ -1031,7 +1031,7 @@ static gboolean find_best_size (gulong  *data,
           const int ideal_size = (ideal_width + ideal_height) / 2;
           int best_size = (best_w + best_h) / 2;
           int this_size = (w + h) / 2;
-          
+
           /* larger than desired is always better than smaller */
           if (best_size < ideal_size &&
               this_size >= ideal_size)
@@ -1075,7 +1075,7 @@ static void argbdata_to_pixdata (gulong *argb_data, int len, guchar **pixdata)
 {
   guchar *p;
   int i;
-  
+
   *pixdata = g_new (guchar, len * 4);
   p = *pixdata;
 
@@ -1085,10 +1085,10 @@ static void argbdata_to_pixdata (gulong *argb_data, int len, guchar **pixdata)
     {
       guint argb;
       guint rgba;
-      
+
       argb = argb_data[i];
       rgba = (argb << 8) | (argb >> 24);
-      
+
       *p = rgba >> 24;
       ++p;
       *p = (rgba >> 16) & 0xff;
@@ -1097,7 +1097,7 @@ static void argbdata_to_pixdata (gulong *argb_data, int len, guchar **pixdata)
       ++p;
       *p = rgba & 0xff;
       ++p;
-      
+
       ++i;
     }
 }
@@ -1108,7 +1108,7 @@ static gboolean read_rgb_icon (Window         xwindow,
                int           *width,
                int           *height,
                guchar       **pixdata)
-         
+
 {
   Atom type;
   int format;
@@ -1118,35 +1118,35 @@ static gboolean read_rgb_icon (Window         xwindow,
   unsigned char *data;
   gulong *best;
   int w, h;
-   
+
   gdk_error_trap_push();
   type = None;
   data = NULL;
   result = XGetWindowProperty (GDK_DISPLAY(), xwindow,
     net_wm_icon, 0, G_MAXLONG, False, XA_CARDINAL, &type, &format, &nitems,
      &bytes_after, &data);
-  
+
   err=gdk_error_trap_pop();
-      
+
   if (result != Success || err || !data || type != XA_CARDINAL) {
     if (debug) printf ("ERROR in read_rgb_icon\n");
     return FALSE;
   }
- 
+
   if (!find_best_size ((gulong*)data, nitems,
                        ideal_width, ideal_height,
                        &w, &h, &best)) {
       XFree (data);
       return FALSE;
   }
-  
+
   *width = w;
   *height = h;
 
   argbdata_to_pixdata (best, w * h, pixdata);
- 
+
   XFree (data);
-  
+
   return TRUE;
 }
 
@@ -1156,44 +1156,44 @@ GdkPixbuf *get_window_icon (Window xwindow, gint width, gint height)
   guchar *pixdata;
   int w, h;
   GdkPixbuf *icon=NULL;
-  
+
   if (debug) printf ("get_window_icon with size request: %dx%d\n", width, height);
-  
+
   pixdata = NULL;
-  
+
   if (read_rgb_icon (xwindow, width, height, &w, &h, &pixdata))   {
-  
+
     if (debug) printf ("read_rgb_icon  --> ok\n");
-      
+
     icon= scaled_from_pixdata (pixdata, w, h, width, height);
-  
+
     if (icon)
       return icon;
   }
-  
+
   if (debug) printf ("rgb failed\n");
-    
+
   if (try_wm_hints (xwindow, &icon, width, height)) {
     return icon;
   }
-  
+
   if (debug) printf ("need fallback icon\n");
-    
+
   GdkPixbuf *fallback=NULL;
   GdkPixbuf *fallback_scaled=NULL;
-    
+
   fallback = gdk_pixbuf_new_from_inline (-1, fallback_icon,
                                      FALSE,
                                      NULL);
-  
+
   if (fallback) {
-    fallback_scaled=gdk_pixbuf_scale_simple (fallback, 
+    fallback_scaled=gdk_pixbuf_scale_simple (fallback,
         width, height, GDK_INTERP_HYPER);
-    
+
     g_object_unref (fallback);
   }
-      
-  
+
+
   g_assert (fallback_scaled);
 
   return fallback_scaled;
@@ -1202,29 +1202,29 @@ GdkPixbuf *get_window_icon (Window xwindow, gint width, gint height)
 
 GdkPixbuf *get_user_icon (gchar *path, gint width, gint height)
 {
-  
+
   GdkPixbuf *pix_return=NULL;
   GdkPixbuf *pix_return_tmp=NULL;
-    
+
   if (debug) printf ("get_user_icon: path: %s\n", path);
-    
+
     if (g_file_test (path, G_FILE_TEST_EXISTS)) {
-    
+
       GError *error=NULL;
-    
+
       pix_return_tmp=gdk_pixbuf_new_from_file (path, &error);
-    
+
       if (!pix_return_tmp)
         printf ("%s\n", error->message);
       else {
-         
+
         pix_return=gdk_pixbuf_scale_simple (pix_return_tmp,
            width, height, GDK_INTERP_HYPER);
         g_object_unref (pix_return_tmp);
       }
-      
+
     } else {
-      
+
       printf ("Alltray: Icon file %s do not exist !\n", path);
     }
 
@@ -1234,7 +1234,7 @@ GdkPixbuf *get_user_icon (gchar *path, gint width, gint height)
 void update_window_icon(win_struct *win)
 {
 
-  GdkPixbuf *icon_return; 
+  GdkPixbuf *icon_return;
   static gboolean dont_update=FALSE;
 
   if (dont_update)
@@ -1244,29 +1244,29 @@ void update_window_icon(win_struct *win)
     icon_return=win->user_icon;
     dont_update=TRUE;
   }  else {
-    
+
     if (win->xmms) {
       icon_return=get_xmms_icon (30, 30);
       dont_update=TRUE;
     } else {
       icon_return =get_window_icon (win->child_xlib, 30, 30);
     }
-    
+
   }
-  
+
   if (icon_return) {
-   
+
     if (win->window_icon) {
       g_object_unref (win->window_icon);
     }
     win->window_icon=icon_return;
-  
+
   }
-  
+
   GList *icons=NULL;
-  
+
   icons = g_list_append (icons, (gpointer) win->window_icon);
-  
+
   if (win->xmms)
     gdk_window_set_icon_list (win->xmms_main_window_gdk, icons);
   else {
@@ -1277,7 +1277,7 @@ void update_window_icon(win_struct *win)
       gdk_window_set_icon_list (win->parent_gdk, icons);
 
   }
-  
+
   g_list_free(icons);
 
 }
@@ -1298,20 +1298,20 @@ void send_skip_message (Window win, gboolean add)
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
   xev.xclient.data.l[4] = 0;
-  
+
   XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
      SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-  
+
   XSync (GDK_DISPLAY(), False);
 
 }
 
 void skip_taskbar (win_struct *win, gboolean add)
 {
-  
+
   Window parent_xlib;
   GdkWindow *parent_gdk;
- 
+
   do {
 
     if (win->xmms) {
@@ -1319,19 +1319,19 @@ void skip_taskbar (win_struct *win, gboolean add)
       parent_gdk=win->xmms_main_window_gdk;
       break;
     }
-  
+
     if (win->no_reparent) {
       parent_xlib=win->child_xlib;
       parent_gdk=win->child_gdk;
       break;
     }
-  
+
     parent_xlib=win->parent_xlib;
     parent_gdk=win->parent_gdk;
 
   } until;
 
-  
+
   send_skip_message (parent_xlib, add);
 
 }
@@ -1347,7 +1347,7 @@ _wnck_get_utf8_property (Window  xwindow,
   guchar *val;
   int err, result;
   char *retval;
- 
+
   gdk_error_trap_push();
   type = None;
   val = NULL;
@@ -1358,7 +1358,7 @@ _wnck_get_utf8_property (Window  xwindow,
 
   if (err != Success || result != Success)
     return NULL;
-  
+
   if (type != utf8_string || format != 8 || nitems == 0) {
     if (val)
       XFree (val);
@@ -1370,11 +1370,11 @@ _wnck_get_utf8_property (Window  xwindow,
     XFree (val);
     return NULL;
   }
-  
+
   retval = g_strndup (val, nitems);
-  
+
   XFree (val);
-  
+
   return retval;
 }
 
@@ -1384,7 +1384,7 @@ text_property_to_utf8 (const XTextProperty *prop)
   char **list;
   int count;
   char *retval;
-  
+
   list = NULL;
 
   count = gdk_text_property_to_utf8_list
@@ -1396,7 +1396,7 @@ text_property_to_utf8 (const XTextProperty *prop)
 
   retval = list[0];
   list[0] = g_strdup (""); /* something to free */
-  
+
   g_strfreev (list);
 
   return retval;
@@ -1408,7 +1408,7 @@ _wnck_get_text_property (Window  xwindow,
 {
   XTextProperty text;
   char *retval;
-  
+
   gdk_error_trap_push ();
 
   text.nitems = 0;
@@ -1420,7 +1420,7 @@ _wnck_get_text_property (Window  xwindow,
   } else {
     retval = NULL;
   }
-  
+
   gdk_error_trap_pop ();
 
   return retval;
@@ -1430,7 +1430,7 @@ char*
 wnck_get_name (Window xwindow)
 {
   char *name;
-  
+
   name = _wnck_get_utf8_property (xwindow, net_wm_visible_name);
 
   if (name == NULL) {
@@ -1450,65 +1450,54 @@ void update_window_title(win_struct *win)
 {
 
   char *title = NULL;
-  gchar *title_string=NULL;
-  
   Window child=None;
-   
+
   if (debug) printf ("update window title\n");
-  
-  if (win->xmms)
+
+  if (win->xmms) {
     child=win->xmms_main_window_xlib;
-  else
+ }  else {
     child=win->child_xlib;
-    
-  if (!assert_window(child))
+ }
+
+  if (!assert_window(child)) {
     return;
-  
+  }
+
   title= wnck_get_name (child);
- 
-  if (title) {
-    
-    if (debug) printf ("title: %s\n", title);
+  if (!title) {
+   return;
+  }
 
-    if (!win->xmms && win->no_reparent && g_str_has_suffix (title,"(AllTray)")) {
-      g_free (title);
-      return;
-    }
 
-    if (!win->xmms) {
-      title_string=g_strconcat (title, " (AllTray)", NULL);
+   if (debug) printf ("title: %s\n", title);
 
-    if (!win->no_title) {
-      
-      if (win->no_reparent)
-        gdk_window_set_title (win->child_gdk, title_string);
-      else
-        gdk_window_set_title (win->parent_gdk, title_string);
-    }
-
-      g_free (title_string);
-    }
+    if (!win->no_reparent) {
+      gdk_window_set_title (win->parent_gdk, title);
+      }
 
     if (win->title)
       g_free (win->title);
-    
-    if (win->xmms) {
-      if (!strcmp (title, "XMMS"))
-        win->title = g_strdup ("no title");
-      else
-        win->title = g_strdup (title+7*sizeof(char));
-    }
-    else
-      win->title=g_strdup (title);
-    
-    if (debug) printf ("win->title: %s\n", win->title);
-        
-    g_free(title);
-    
-    if (win->title_time)
-      show_balloon (win, win->title, win->title_time);
 
-  }
+    if (win->xmms) {
+
+      if (!strcmp (title, "XMMS"))  {
+        win->title = g_strdup ("no title");
+      }  else {
+        win->title = g_strdup (title+7*sizeof(char));
+      }
+
+    } else {
+        win->title=g_strdup (title);
+    }
+
+
+    if (debug) printf ("win->title: %s\n", win->title);
+    g_free(title);
+
+    if (win->title_time) {
+      show_balloon (win, win->title, win->title_time);
+    }
 
 }
 
@@ -1530,28 +1519,28 @@ void close_window (Window window)
   ev.data.l[2] = 0;
   ev.data.l[3] =0;
   ev.data.l[4] = 0;
-  
+
   gdk_error_trap_push ();
-  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False, 
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
   SubstructureNotifyMask | SubstructureRedirectMask, (XEvent *)&ev);
   gdk_error_trap_pop ();
-    
+
 }
 
 void free_command_menu (GArray *command_menu)
 {
-  
+
   gint i;
   command_menu_struct command;
 
   if (command_menu->len >0) {
-  
+
     for (i=0; i < command_menu->len; i++) {
       command=g_array_index (command_menu, command_menu_struct, i);
       g_free (command.entry);
       g_free (command.command);
     }
-  
+
   }
 
   g_array_free (command_menu, TRUE);
@@ -1564,7 +1553,7 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   Window child;
   gboolean child_dead=FALSE;
-    
+
   if (win->xmms)
     child=win->xmms_main_window_xlib;
   else
@@ -1592,18 +1581,18 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
       gdk_window_remove_filter(win->child_gdk, event_filter, (gpointer) win);
       break;
     }
- 
+
     gdk_window_remove_filter(win->parent_gdk, parent_window_filter, (gpointer) win);
     gdk_window_remove_filter(win->child_gdk, child_window_filter, (gpointer) win);
-    
+
 
   } until;
 
   if (!child_dead) {
-  
+
     {
       XWMHints *wm_hints;
-      
+
       gdk_error_trap_push();
       wm_hints= XGetWMHints(GDK_DISPLAY(), child);
       if (!gdk_error_trap_pop() && wm_hints!=NULL) {
@@ -1611,36 +1600,36 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
         XSetWMHints(GDK_DISPLAY(), child, wm_hints);
         XFree(wm_hints);
       }
-    }  
-  
+    }
+
     if (!win->no_reparent) {
-          
+
       get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
       XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
       XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
       XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
-      
+
       for(;;) {
         XEvent e;
         XNextEvent(GDK_DISPLAY(), &e);
         if (e.type == ReparentNotify)
          break;
       }
-    
+
     } else {
-  
+
       XWindowAttributes wa;
-  
+
       gdk_error_trap_push();
       XGetWindowAttributes (GDK_DISPLAY(), child, &wa);
       gint err=gdk_error_trap_pop();
-    
+
       if (!err && wa.map_state != IsViewable)
      {
-  
+
         XMapWindow (GDK_DISPLAY(), child);
         XSync (GDK_DISPLAY(), False);
-  
+
         for(;;) {
           XEvent e;
           XNextEvent(GDK_DISPLAY(), &e);
@@ -1648,19 +1637,19 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
             break;
           }
         }
-      
+
       }
-    
+
     }
-  
+
     if (!win->xmms)
       gdk_window_set_decorations (win->child_gdk, GDK_DECOR_ALL);
-    
+
     skip_taskbar (win, FALSE);
     skip_pager (win->child_xlib, FALSE);
     rm_sticky (win->child_xlib);
-  
-  
+
+
     if (kill_child)
       close_window (child);
 
@@ -1678,43 +1667,43 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   if (win->user_icon_path)
         g_free (win->user_icon_path);
-  
+
   if (!win->xmms)
     g_object_unref (win->window_icon);
-  
+
   if (!win->notray)
     g_object_unref (win->tray_icon);
- 
-  if (win->command_menu) 
+
+  if (win->command_menu)
      free_command_menu (win->command_menu);
-  
-  if (!win->no_reparent)  
+
+  if (!win->no_reparent)
     XDestroyWindow(win->display, win->parent_xlib);
-  
+
   if (win->command)
     g_free(win->command);
   if (win->command_only)
     g_free(win->command_only);
-  
+
   g_free (win);
 
   gtk_main_quit ();
 
 }
 
-static GdkFilterReturn parent_filter_map (GdkXEvent *xevent, 
+static GdkFilterReturn parent_filter_map (GdkXEvent *xevent,
     GdkEvent *event, gpointer user_data)
 {
   XEvent *xev = (XEvent *)xevent;
-   
+
   if (xev->xany.type == MapNotify) {
-  
+
    if (debug) printf ("map notify\n");
-       
+
    gtk_main_quit();
- 
+
   }
-  
+
   return GDK_FILTER_CONTINUE;
 }
 
@@ -1722,13 +1711,13 @@ void deiconify_window (Window window)
 {
 
   XWMHints *wm_hints;
-  
+
   gdk_error_trap_push();
-  
+
   wm_hints= XGetWMHints(GDK_DISPLAY(), window);
-  
+
   if (!gdk_error_trap_pop() && wm_hints!=NULL) {
-  
+
     wm_hints->initial_state=NormalState;
     XSetWMHints(GDK_DISPLAY(), window, wm_hints);
     XFree(wm_hints);
@@ -1736,7 +1725,7 @@ void deiconify_window (Window window)
 
 }
 
-void geo_move (GdkWindow *window, gint screen_width, gint screen_height, 
+void geo_move (GdkWindow *window, gint screen_width, gint screen_height,
   gint x, gint y, gint w, gint h, int mask)
 {
 
@@ -1755,36 +1744,36 @@ void geo_move (GdkWindow *window, gint screen_width, gint screen_height,
       else
         tmp_x = screen_width - w;
     }
-    
+
     if (mask & YNegative) {
       if (y < 0)
         tmp_y = screen_height + y;
       else
         tmp_y = screen_height - h;
     }
-  
+
    if (debug) {
      printf ("geo_move 2: tmp_x: %d, tmp_y: %d, tmp_w: %d, tmp_h: %d\n", tmp_x, tmp_y, tmp_w, tmp_h);
      printf ("geo_move 2: w: %d, h: %d\n", w, h);
    }
-  
-  
+
+
     if ( !(mask & WidthValue) && !(mask & HeightValue)) {
       if (debug) printf ("only move\n");
       gdk_window_move (window, tmp_x, tmp_y);
       break;
     }
-   
+
     if ( !(mask & XValue) && !(mask & YValue)) {
-       
+
      if (debug) printf ("only resize\n");
        gdk_window_resize (window, tmp_w, tmp_h);
        break;
     }
-         
+
     if (debug) printf ("move and resize\n");
       gdk_window_move_resize (window, tmp_x, tmp_y, tmp_w, tmp_h);
-  
+
   } until;
 
 }
@@ -1795,7 +1784,7 @@ void show_hide_window (win_struct *win, gint force_state,
 
   gboolean show=TRUE;
   static gboolean first_click=TRUE;
-  
+
   Window parent_xlib;
   GdkWindow *parent_gdk;
 
@@ -1803,7 +1792,7 @@ void show_hide_window (win_struct *win, gint force_state,
   Window  root_return;
   unsigned int x_return, y_return, width_return, height_return, border, depth;
 
-  
+
   do {
 
     if (win->xmms) {
@@ -1811,13 +1800,13 @@ void show_hide_window (win_struct *win, gint force_state,
       parent_gdk=win->xmms_main_window_gdk;
       break;
     }
-  
+
     if (win->no_reparent) {
       parent_xlib=win->child_xlib;
       parent_gdk=win->child_gdk;
       break;
     }
-  
+
     parent_xlib=win->parent_xlib;
     parent_gdk=win->parent_gdk;
 
@@ -1825,32 +1814,32 @@ void show_hide_window (win_struct *win, gint force_state,
 
 
   do {
-  
+
     if (force_state == force_show) {
       show=TRUE;
       break;
     }
-  
+
     if (force_state == force_hide) {
       show=FALSE;
       break;
     }
 
-    if (win->visibility != VisibilityUnobscured  && 
+    if (win->visibility != VisibilityUnobscured  &&
       parent_xlib != get_active_window()) {
       show=TRUE;
       break;
     }
-    
+
     show=!win->parent_is_visible;
-      
+
    } until;
 
- 
+
   if (show) {
-  
+
     if (debug) printf ("show\n");
-      
+
     /*kwin what you doing all day long ???*/
     if (win->kde) {
       to_desktop (parent_xlib, get_current_desktop ());
@@ -1859,76 +1848,76 @@ void show_hide_window (win_struct *win, gint force_state,
     if (first_click) {
 
       if (debug) printf ("first click\n");
-      
+
       if (win->xmms)
         deiconify_xmms_windows(win);
       else if (win->no_reparent && !win->normal_map && !win->click_mode)
         deiconify_window (parent_xlib);
-      
+
       gdk_window_add_filter(parent_gdk, parent_filter_map, (gpointer) win);
-      
+
       if (!(win->geo_bitmask & WidthValue)) {
         XGetGeometry (GDK_DISPLAY(), parent_xlib,
         &root_return, &x_return, &y_return,  &win->initial_w, &height_return, &border, &depth);
       }
-      
+
       if (!(win->geo_bitmask & HeightValue)) {
         XGetGeometry (GDK_DISPLAY(), parent_xlib,
         &root_return, &x_return, &y_return, &width_return, &win->initial_h, &border, &depth);
       }
-      
+
       if (win->click_mode && !win->kde)  //XXX fixme, no focus under kde
         gdk_window_focus (parent_gdk, gtk_get_current_event_time());
       else
         XMapWindow (win->display, parent_xlib);
-      
+
       if (!win->normal_map && win->geo_bitmask) {
         geo_move (parent_gdk, win->screen_width, win->screen_height, win->initial_x,
         win->initial_y, win->initial_w, win->initial_h, win->geo_bitmask);
       }
-      
+
       gtk_main ();
-      
+
       if (debug) printf ("mapped\n");
-      
+
       gdk_window_remove_filter(parent_gdk, parent_filter_map, (gpointer) win);
 
       if (win->gnome)
-        check_if_pointer_is_over_button (win); 
-      
+        check_if_pointer_is_over_button (win);
+
       /*KDE want to rest a little bit after soo much work ;)*/
       /*if not the window will not be the top most*/
       if (!win->gnome)
         gtk_sleep (100);
-      
+
       if (win->sticky)
         sticky (parent_xlib);
-      
+
       skip_pager(parent_xlib, TRUE);
-      
+
       if (win->skip_tasklist)
         skip_taskbar (win, TRUE);
-      
+
       first_click=FALSE;
-      
+
       return;
-    
+
     }
 
     gdk_window_focus (parent_gdk, gtk_get_current_event_time());
 
     if (win->gnome)
-        check_if_pointer_is_over_button (win);     
+        check_if_pointer_is_over_button (win);
 
-  
+
     if (!win->skip_tasklist)
       skip_taskbar (win, FALSE);
-      
-    
+
+
    } else {
-   
+
       if (debug) printf ("hide\n");
-         
+
       XIconifyWindow (GDK_DISPLAY(), parent_xlib, DefaultScreen(GDK_DISPLAY()));
       if (!win->skip_tasklist)
         skip_taskbar (win, !keep_in_taskbar);
