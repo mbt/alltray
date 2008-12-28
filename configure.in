@@ -1,12 +1,73 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(alltray, 0.42)
+AM_INIT_AUTOMAKE(alltray, 0.43)
+AM_CONFIG_HEADER(config.h)
 
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+# test for LD_PRELOAD functionality
+# written original by Tim Potter
+# found here: 
+# http://lists.samba.org/archive/samba-technical/1998-November/thread.html#2646
+
+AC_MSG_CHECKING([for working function preloading (LD_PRELOAD)])
+export LD_PRELOAD=""
+
+cat > ld_preload.c << EOF
+#include <stdio.h>
+int main (int argc, char *argv[])
+{
+  exit(preload_test());
+}
+EOF
+
+cat > ld_preload_lib1.c << EOF
+int preload_test(void)
+{
+  return 1;
+}
+EOF
+
+cat > ld_preload_lib2.c << EOF
+int preload_test(void)
+{
+  return 0;
+}
+EOF
+
+_HAVE_LD_PRELOAD=no
+
+if AC_TRY_COMMAND($CC -c ./ld_preload.c); then
+ if AC_TRY_COMMAND($CC -shared -o ./ld_preload_lib1.so ./ld_preload_lib1.c); then
+  if AC_TRY_COMMAND($CC -shared -o ./ld_preload_lib2.so ./ld_preload_lib2.c); then
+   if AC_TRY_COMMAND($CC $CFLAGS $CPPFLAGS -o conftest ./ld_preload.o ./ld_preload_lib1.so); then
+    LD_PRELOAD=./ld_preload_lib2.so; export LD_PRELOAD
+    if ./conftest; then
+     _HAVE_LD_PRELOAD=yes
+    fi
+   fi
+  fi
+ fi
+fi
+
+export LD_PRELOAD=""
+rm -f conftest ld_preload.o ld_preload_lib1.so
+rm -f ld_preload_lib2.so ld_preload.c ld_preload_lib1.c
+rm -f ld_preload_lib2.c
+
+AC_MSG_RESULT([$_HAVE_LD_PRELOAD])
+
+LIBDIR=""
+if test x"$_HAVE_LD_PRELOAD" = x"yes"; then
+  AC_DEFINE(HAVE_LD_PRELOAD, [], [HAVE LD_PRELOAD])
+  LIBDIR="lib"
+  AC_SUBST(LIBDIR)
+fi
 
 pkg_modules="gtk+-2.0 >= 2.4.0 gdk-2.0 gdk-pixbuf-xlib-2.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
@@ -16,4 +77,16 @@ AC_SUBST(PACKAGE_LIBS)
 AC_OUTPUT([
 Makefile
 src/Makefile
+lib/Makefile
 ])
+
+if test x"$_HAVE_LD_PRELOAD" = x"no"; then
+  AC_MSG_WARN([])
+  AC_MSG_WARN([*** Function preload check failed ! ***])
+  AC_MSG_WARN([If this is a linux box, please report])
+  AC_MSG_WARN([this to email@jochen-baier.de;])
+  AC_MSG_WARN([else please try to fix it and let me know.])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([*** Alltray will work with limited features ***])
+  AC_MSG_WARN([])
+fi

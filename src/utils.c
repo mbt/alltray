@@ -43,6 +43,7 @@
 #include "utils.h"
 #include "trayicon.h"
 #include "inlinepixbufs.h"
+#include "config.h"
 
 char *event_names[] = {
    "",
@@ -120,7 +121,9 @@ void atom_init (void)
   net_wm_window_type= XInternAtom(GDK_DISPLAY(), "_NET_WM_WINDOW_TYPE", False);
   net_wm_window_type_normal= XInternAtom(GDK_DISPLAY(), "_NET_WM_WINDOW_TYPE_NORMAL", False);
   gdk_timestamp_prop=XInternAtom(GDK_DISPLAY(),"GDK_TIMESTAMP_PROP", False);
-
+  net_client_list_stacking=XInternAtom(GDK_DISPLAY(),"_NET_CLIENT_LIST_STACKING",False);
+  net_client_list=XInternAtom(GDK_DISPLAY(),"_NET_CLIENT_LIST",False);
+    
   char temp[50];
   Screen *screen = XDefaultScreenOfDisplay(GDK_DISPLAY());
 
@@ -145,44 +148,6 @@ void gtk_sleep (gint millisec)
   g_timeout_add (millisec, gtk_sleep_function, NULL);
   gtk_main();
   
-}
-
-void update_visibility_state (win_struct *win, gboolean new_state)
-{
-   wm_state_struct *old_state;
- 
-  if (debug) printf ("update_visibility_state workspace->len: %d\n", 
-    win->workspace->len);
-
-  gint current_max_workspace=win->workspace->len-1;
-  gint i;
-        
-  if (win->desktop > current_max_workspace) {
-    for (i=current_max_workspace; i<win->desktop; i++) {
-      
-      wm_state_struct new_state;
-      new_state.visible=FALSE;
-      new_state.show_in_taskbar=FALSE;
-      g_array_append_val(win->workspace, new_state);
-    
-    }
-  }
-
-   old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
-   (*old_state).visible=new_state;
-
-   if (debug) printf ("update_visibility_state to: %d\n", (*old_state).visible);
-  
-  win->parent_is_visible=new_state;
-    
-}
-
-void update_taskbar_state (win_struct *win, gboolean new_state)
-{
-   wm_state_struct *old_state;
-
-   old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
-   (*old_state).show_in_taskbar=new_state;
 }
 
 Window get_active_window (void)
@@ -293,405 +258,44 @@ gint get_current_desktop(void)
   
 }
 
-void skip_pager (Window window)
+gboolean
+get_window_list (Window   xwindow,
+   Atom     atom,
+   Window **windows,
+   int     *len)
 {
-  
-  XEvent xev;
-  
-  xev.xclient.type = ClientMessage;
-  xev.xclient.serial = 0;
-  xev.xclient.send_event = True;
-  xev.xclient.window = window;
-  xev.xclient.message_type = net_wm_state;
-  xev.xclient.format = 32;
-  xev.xclient.data.l[0] = 1;
-  xev.xclient.data.l[1] = net_wm_state_skip_pager;
-  xev.xclient.data.l[2] = 0;
-  xev.xclient.data.l[3] = 0;
-  xev.xclient.data.l[4] = 0;
-  
-  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
-     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-}
-
-void sticky (Window window)
-{
-  
-  XEvent xev;
-  
-  xev.xclient.type = ClientMessage;
-  xev.xclient.serial = 0;
-  xev.xclient.send_event = True;
-  xev.xclient.window = window;
-  xev.xclient.message_type = net_wm_state;
-  xev.xclient.format = 32;
-  xev.xclient.data.l[0] = 1;
-  xev.xclient.data.l[1] = net_wm_state_sticky;
-  xev.xclient.data.l[2] = 0;
-  xev.xclient.data.l[3] = 0;
-  xev.xclient.data.l[4] = 0;
-  
-  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
-     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-
-  /* Request desktop 0xFFFFFFFF */
-  xev.xclient.type = ClientMessage;
-  xev.xclient.serial = 0;
-  xev.xclient.send_event = True;
-  xev.xclient.window = window;
-  xev.xclient.display = GDK_DISPLAY();
-  xev.xclient.message_type =net_wm_desktop;
-  xev.xclient.format = 32;
-  
-  xev.xclient.data.l[0] = 0xFFFFFFFF;
-  xev.xclient.data.l[1] = 0;
-  xev.xclient.data.l[2] = 0;
-  xev.xclient.data.l[3] = 0;
-  xev.xclient.data.l[4] = 0;
-  
-  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
-            SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-
-}
-
-static GdkFilterReturn parent_filter_map (GdkXEvent *xevent, 
-    GdkEvent *event, gpointer user_data)
-{
-  XEvent *xev = (XEvent *)xevent;
-   
-  if (xev->xany.type == MapNotify) {
-  
-   if (debug) printf ("map notify\n");
-       
-   gtk_main_quit();
- 
-  }
-  
-  return GDK_FILTER_CONTINUE;
-}
-
-void show_hide_window (win_struct *win, gint force_state,
-  gboolean keep_in_taskbar)
-{
-
-  gboolean show=TRUE;
-  static gboolean first_click=TRUE;
-
-  do {
-  
-    if (force_state == force_show) {
-      show=TRUE;
-      break;
-    }
-  
-    if (force_state ==force_hide) {
-      show=FALSE;
-      break;
-    }
-
-    if (win->visibility != VisibilityUnobscured  && 
-      win->parent_xlib != get_active_window()) {
-      show=TRUE;
-      break;
-    }
-    
-    show=!win->parent_is_visible;
-      
-   } while (0);
-
- 
-  if (show) {
-  
-    if (debug) printf ("show\n");
-      
-    
-    if (first_click) {
-
-      if (debug) printf ("first click\n");
-     
-      gdk_window_add_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
-     
-      XMapWindow (win->display, win->parent_xlib);
-     
-      gtk_main ();
-      gdk_window_remove_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
-      
-      /*KDE want to rest a little bit after soo much work ;)*/
-      /*if not the window will not be the top most*/
-      gtk_sleep (100);
-           
-      sticky (win->parent_xlib);
-      skip_pager(win->parent_xlib);
-        
-      first_click=FALSE;
-     
-      return;
-    
-    }
-
-    gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
-    skip_taskbar (win, FALSE);
-  
-    
-   } else {
-   
-    if (debug) printf ("hide\n");
-       
-    XIconifyWindow (GDK_DISPLAY(), win->parent_xlib, DefaultScreen(GDK_DISPLAY()));
-    skip_taskbar (win, !keep_in_taskbar);
-
-   }
-
-}
-
-gboolean withdrawn (Window window)
-{
+  Atom type;
+  int format;
+  gulong nitems;
+  gulong bytes_after;
   unsigned char *data;
-  unsigned long nitems;
-  unsigned long leftover;
-  Atom actual_type;
-  int actual_format;
-  int status;
-  gint err;
+  int err, result;
   
-  gboolean return_value=FALSE;
+  *windows = NULL;
+  *len = 0;
   
   gdk_error_trap_push();
-    
-  status = XGetWindowProperty (GDK_DISPLAY(), window,
-    wm_state, 0L, 1, False, wm_state, &actual_type, &actual_format,
-    &nitems, &leftover, &data);
-  
-  err=gdk_error_trap_pop();
-  
-  if (err!=0 || status != Success)
+  type = None;
+  result = XGetWindowProperty (GDK_DISPLAY(), xwindow,
+    atom, 0, G_MAXLONG, False, XA_WINDOW, &type,
+    &format, &nitems, &bytes_after, &data);  
+  err = gdk_error_trap_pop ();
+
+  if (err != Success || result != Success)
     return FALSE;
-  
-  if ((actual_type == wm_state) && (nitems == 1) && data) {
-  
-    gint state = *(gint *) data;
-    if (state == WithdrawnState)
-      return_value=TRUE;
+    
+  if (type != XA_WINDOW) {
     XFree (data);
-    return return_value;
-  } 
-
-  if (actual_type == None)
-    return TRUE;
-  
-  return FALSE;
-}
-
-/*for debug...*/
-void show_pixbuf (GdkPixbuf *buf)
-{
-
-  GtkWidget *window1;
-  GtkWidget *image1;
-  
-  window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  image1=gtk_image_new_from_pixbuf(buf);
-  gtk_widget_show (image1);
-  gtk_container_add (GTK_CONTAINER (window1), image1);
-  gtk_widget_show (window1);
-
-}
-
-void display_window_id(Display *display, Window window)
-{
-  char *win_name;
-  static char *window_id_format = "0x%lx";
-   
-  if (!debug)
-    return;
-  
-  if (!assert_window (window))
-    return;
-    
-  printf(window_id_format, window);         /* print id # in hex/dec */
-  
-  if (!window) {
-    printf(" (none)");
-  } else {
-  if (window == DefaultRootWindow (display)) {
-    printf(" (the root window)");
-  }
-
-  if (!XFetchName(display, window, &win_name)) { /* Get window name if any */
-    printf(" (has no name)");
-  } else if (win_name) {
-    printf(" \"%s\"", win_name);
-    XFree(win_name);
-  } else
-    printf(" (has no name)");
-  }
- 
-  printf ("window int: %d\n", (int) window);
-  
-  printf("\n");
-
-}
-
-gboolean append_command_to_menu(GArray *command_menu, gchar *string)
-{
-  
-  command_menu_struct new;
-  
-  new.entry=NULL;
-  new.command=NULL;
-    
-  gchar *tmp=NULL;
-  gchar *command=NULL;
-  
-  tmp=g_strdup (string);
-  
-  if (!tmp)
-    return FALSE;
-        
-  command = g_strrstr (tmp,":");
-  
-  if (debug) printf ("command: %s\n", command);
-    
-  if (!command) {
-    g_free (tmp);
     return FALSE;
   }
-  
-  new.command=g_strdup(++command);
-  
-  if (strlen (new.command) == 0) {
-    g_free (tmp);
-    g_free (new.command);
-    return FALSE;
-  }
-   
-  if (debug) printf ("new.command: %s\n", new.command);
-  
-  *(--command)=0;
-  
-  if (strlen (tmp) == 0) {
-    g_free (tmp);
-    g_free (new.command);
-    return FALSE;
-  }
-  
-  new.entry=tmp;
-    
-  if (debug) printf ("new.entry: %s\n", new.entry);
-    
-  g_array_append_val(command_menu, new);
-  
-  return TRUE;
-}
 
-gboolean parse_arguments(int argc, char **argv, gchar **icon,
-    gchar  **rest, gboolean *show, gboolean *hide_start,
-    gboolean *debug, gboolean *borderless,
-    gboolean *large_icons, GArray *command_menu)
-{
-  int i;
-  char rest_buf[4096]="";
-  
-  if (argc == 1) {
-    show_help();
-    return FALSE;
-  }  
-  
-  for (i = 1; i < argc; i++) {
-  
-    do {
-    
-      if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
-        show_help();
-        return FALSE;
-      }
-      
-      if (!strcmp(argv[i], "--version") || !strcmp(argv[i], "-v")) {
-        show_version();
-        return FALSE;
-      }
-        
-      if (!strcmp(argv[i], "--show") || !strcmp(argv[i], "-s")) {
-        *show=TRUE;
-        break;
-      }  
-    
-      if (!strcmp(argv[i], "--hide_window") || !strcmp(argv[i], "-hw")) {
-        *hide_start=TRUE;
-        break;
-      }
-      
-      if (!strcmp(argv[i], "--borderless") || !strcmp(argv[i], "-x")) {
-        *borderless=TRUE;
-        break;
-      }
-      
-      if (!strcmp(argv[i], "--large_icons") || !strcmp(argv[i], "-l")) {
-        *large_icons=TRUE;
-        break;
-      }  
-    
-         
-      if (!strcmp(argv[i], "--icon") || !strcmp(argv[i], "-i")) {
-        if ((i+1) ==  argc) {
-          show_help();
-          return FALSE;
-        }
-      
-        *icon=g_strdup (argv[i+1]);
-        i++;
-        break;
-      }
-      
-      if (!strcmp(argv[i], "--menu") || !strcmp(argv[i], "-m")) {
-        if ((i+1) ==  argc) {
-          show_help();
-          return FALSE;
-        }
-        
-        if (!append_command_to_menu(command_menu, argv[i+1])) {
-          printf ("\nAllTray: \"%s\" is not a valid menu entry !\n"\
-          "         Syntax: -m \"menu text:command\"\n", argv[i+1]);
-          return FALSE;
-        }
-                        
-        i++;
-        break;
-      }
+  *windows = g_new (Window, nitems);
+  memcpy (*windows, (Window*) data, sizeof (Window) * nitems);
+  *len = nitems;
 
-      if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
-        *debug=TRUE;
-        break;
-      }  
+  XFree (data);
 
-      if (g_str_has_prefix (argv[i],"-")) {
-        printf ("\nAlltray: Unknown option '%s'\n\n", argv[i]);
-        return FALSE;
-      }
-  
-      if (strlen (rest_buf) + strlen (argv[i]) >= 4096) {
-        printf ("Alltray: Command Buffer too small (; [max 4096 letters]\n");
-        return FALSE;
-      }
-              
-      if (strlen (rest_buf) > 0)
-        strcat (rest_buf, " ");
-        
-      strcat (rest_buf, argv[i]);
-      
-    }while (0);
-  
-  }
-  
-  if (strlen (rest_buf) == 0) {
-    show_help();
-    return FALSE;
-  }
-  
-  
-  *rest=g_strdup (rest_buf);
-
-  return TRUE;
+  return TRUE;  
 }
 
 gint get_pid (Window w)
@@ -770,138 +374,115 @@ gboolean window_type_is_normal (Window win)
             
 }
 
-gboolean window_match (Window window, win_struct *win)
+void skip_pager (Window window)
 {
   
-  gboolean match=FALSE;
+  XEvent xev;
   
-  XClassHint class_hints;
-  class_hints.res_name = NULL;
-  class_hints.res_class = NULL;
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = window;
+  xev.xclient.message_type = net_wm_state;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = 1;
+  xev.xclient.data.l[1] = net_wm_state_skip_pager;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
+  
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+}
 
-  gint result=0;
-  gint err=0;
-  gchar *res_class_down=NULL;
-  gchar *command_down=NULL;
+void sticky (Window window)
+{
   
-  gint pid, pgid;
+  XEvent xev;
   
-  XWindowAttributes attr;
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = window;
+  xev.xclient.message_type = net_wm_state;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = 1;
+  xev.xclient.data.l[1] = net_wm_state_sticky;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
   
-  if (debug)  {
-    printf ("filter mapped window: ");
-    display_window_id (GDK_DISPLAY(), window);
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+  /* Request desktop 0xFFFFFFFF */
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = window;
+  xev.xclient.display = GDK_DISPLAY();
+  xev.xclient.message_type =net_wm_desktop;
+  xev.xclient.format = 32;
+  
+  xev.xclient.data.l[0] = 0xFFFFFFFF;
+  xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
+  
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+            SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+}
+
+/*for debug...*/
+void show_pixbuf (GdkPixbuf *buf)
+{
+
+  GtkWidget *window1;
+  GtkWidget *image1;
+  
+  window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  image1=gtk_image_new_from_pixbuf(buf);
+  gtk_widget_show (image1);
+  gtk_container_add (GTK_CONTAINER (window1), image1);
+  gtk_widget_show (window1);
+
+}
+
+void display_window_id(Display *display, Window window)
+{
+  char *win_name;
+  static char *window_id_format = "0x%lx";
+   
+  if (!debug)
+    return;
+  
+  if (!assert_window (window))
+    return;
+    
+  printf(window_id_format, window);         /* print id # in hex/dec */
+  
+  if (!window) {
+    printf(" (none)");
+  } else {
+  if (window == DefaultRootWindow (display)) {
+    printf(" (the root window)");
   }
-    
-  /*filter code is from xfwm4*/
-  do {
-    
-    if (window == None) {
-      if (debug) printf ("window == None -> skip\n");
-      break;
-    }
 
-    gdk_error_trap_push();
-    result=XGetWindowAttributes (GDK_DISPLAY(), window, &attr);
-    
-    if (gdk_error_trap_pop() || result == 0) {
-      if (debug) printf ("Cannot get window attributes -> skip");
-      break;
-    }
-
-    if (attr.override_redirect) {
-      if (debug) printf ("override redirect -> skip\n");
-      break;
-    }
-    
-    //xmms
-    if (attr.width <=10 || attr.height <=10) {
-      if (debug) printf ("window too small -> skip\n");
-      break;
-    }
-
-    //splash windows...
-    if (!window_type_is_normal(window)) {
-      if (debug) printf ("window typ is not normal -> skip\n!");
-      break;
-    }
-
-    if (debug) printf ("window got through first filter\n");
-    
-    pid=get_pid (window);
-    
-    if (pid !=0) {
-    
-      if (debug) printf("PID found: yes\n");
-      
-      if (pid == win->child_pid) {
-        if (debug) printf ("PID match: yes\n");
-        match=TRUE;
-        break;
-      }
-
-      if (debug) printf ("PID match: no\n");
-      
-      pgid=(gint) getpgid((pid_t) pid);
-      
-      if (debug) printf ("process group id: %d\n", pgid);
-      
-      if (pgid == win->parent_pid) {
-        if (debug) printf ("process id match: yes\n");
-        match=TRUE;
-        break;
-      }
-      
-      if (debug) printf ("process id match: no\n");
-    
-    }
-     
-    if (debug) printf ("PID found: no\n");
-     
-    gdk_error_trap_push();
-    result=XGetClassHint(GDK_DISPLAY(), window, &class_hints);
-    err=gdk_error_trap_pop();
-                    
-    if (err || result==0 || class_hints.res_class == NULL) {
-      if (debug) printf ("ERROR get class hints\n"); 
-      break;
-    }
-        
-    if (debug) printf ("found strings: res_class: %s  res_name %s   \n",
-      class_hints.res_class, class_hints.res_name);
-      
-    res_class_down= g_ascii_strdown (class_hints.res_class, 
-      strlen (class_hints.res_class) *sizeof (gchar));
-        
-    command_down= g_ascii_strdown (win->command_only,
-      strlen (win->command) *sizeof (gchar));
-       
-    if (debug) printf ("res class_hints down: %s\n", res_class_down);
-    if (debug) printf ("command down: %s\n", command_down);
-
-    if (g_strstr_len(res_class_down, 
-      strlen (res_class_down) * sizeof (gchar), command_down)){
-    
-      if (debug) printf ("wm_class match: yes\n");
-      
-      match=TRUE;
-      break;
-    
-    }
-    
-  } while (0);
-  
+  if (!XFetchName(display, window, &win_name)) { /* Get window name if any */
+    printf(" (has no name)");
+  } else if (win_name) {
+    printf(" \"%s\"", win_name);
+    XFree(win_name);
+  } else
+    printf(" (has no name)");
+  }
  
-  if (class_hints.res_class)
-    XFree (class_hints.res_class);
-  if (class_hints.res_name)
-    XFree (class_hints.res_name);
-  if (res_class_down)
-   g_free (res_class_down);
-  if (command_down)
-   g_free (command_down);
+  printf ("window int: %d\n", (int) window);
   
-  return match;
+  printf("\n");
+
 }
 
 /*from gdk-pixbuf-xlib-drawabel.c*/
@@ -1649,6 +1230,67 @@ void update_window_icon(win_struct *win)
 
 }
 
+void update_taskbar_state (win_struct *win, gboolean new_state)
+{
+   wm_state_struct *old_state;
+
+   old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
+   (*old_state).show_in_taskbar=new_state;
+}
+
+gboolean search_gnome_panel (void)
+{
+
+  Window *mapping = NULL;
+  int mapping_length = 0;
+  gint index;
+  gboolean found=FALSE;
+  XClassHint class_hints;
+  gint result=0;
+  gint err=0;
+  
+  get_window_list (GDK_ROOT_WINDOW(), net_client_list,
+    &mapping, &mapping_length);
+  
+  for (index=0; index < mapping_length; index++) {
+    
+    gdk_error_trap_push();
+    result=XGetClassHint(GDK_DISPLAY(), mapping[index], &class_hints);
+    err=gdk_error_trap_pop();
+                    
+    if (err || result==0 || class_hints.res_class == NULL) {
+      if (debug) printf ("ERROR get class hints\n"); 
+      continue;
+    }
+        
+    if (debug) printf ("gnome_panel search: res_class: %s  res_name %s   \n",
+      class_hints.res_class, class_hints.res_name);
+    
+    if (!strcmp (class_hints.res_name, "gnome-panel")) {
+      if (debug) printf ("gnome panel found !\n");
+      found=TRUE;
+      
+      if (class_hints.res_class)
+        XFree (class_hints.res_class);
+      if (class_hints.res_name)
+        XFree (class_hints.res_name);
+      
+      break;
+    }
+    
+    if (class_hints.res_class)
+      XFree (class_hints.res_class);
+    if (class_hints.res_name)
+      XFree (class_hints.res_name);
+
+  }
+  
+  g_free (mapping);
+
+  return found;
+
+}
+
 void skip_taskbar (win_struct *win, gboolean add)
 {
   
@@ -1675,15 +1317,13 @@ void skip_taskbar (win_struct *win, gboolean add)
   /*bug in gnome taskbar will not update the task list*/
   /*so we need to cheat a little*/
 
-  if (!add) {
-  
+  if (win->gnome_panel_found && !add) {
     get_window_position (win->parent_xlib, &x, &y);
      for (i=0; i<100; i++)
     gdk_window_move (win->parent_gdk, x, y);
   } 
   
   update_taskbar_state (win, !add);
-    
 
 }
 
@@ -1717,59 +1357,6 @@ void update_window_title(win_struct *win)
 
 }
 
-gchar *strip_command (win_struct *win)
-{
-
-  gchar *command_copy=NULL;
-  gchar *space=NULL;
-  gchar *last_slash=NULL;
-  gchar *return_value=NULL;
-        
-  command_copy=g_strdup (win->command);
-
-  space=g_strstr_len (command_copy, 
-      strlen (command_copy) *sizeof (gchar), " ");
-  
-  if (space)
-    *space=0;
-  
-  if (debug) printf ("command without args: %s\n", command_copy);
- 
-  return_value=command_copy;
-    
-  last_slash = g_strrstr (command_copy, "/");
-  
-  if (last_slash) {
-    
-    
-    if (g_file_test (command_copy, G_FILE_TEST_EXISTS)) {
-     return_value = g_strdup (++last_slash);
-     if (debug) printf ("\"%s\" exists\n", command_copy);
-     g_free (command_copy);  
-    } else {
-      
-      printf ("AllTray: Command: \"%s\" do not exist !\n", command_copy);
-    
-      if (win->user_icon_path)
-        g_free (win->user_icon_path);
-      if (command_copy)
-        g_free(command_copy);
-      if (win->command)
-        g_free (win->command);
-      if (win->command_menu)
-        g_array_free (win->command_menu, TRUE);
-      g_array_free (win->workspace, FALSE);
-      g_free(win);
-      exit (1);
-    }
-  
-  }
-
-  if (debug) printf ("command stripped: %s\n", return_value);
-  
-  return return_value;
-}
-
 void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 {
 
@@ -1780,38 +1367,56 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   gdk_window_remove_filter(win->root_gdk, root_filter_workspace, (gpointer) win);
 
   if (kill_child) {
-   
-     get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
-   
-     XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
-
-     XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
-     XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
-  
-      for(;;) {
-        XEvent e;
-        XNextEvent(GDK_DISPLAY(), &e);
-        if (e.type == ReparentNotify)
-          break;
-      }
+    
+    
+    #ifdef HAVE_LD_PRELOAD
+    
+    XWMHints *wm_hints;
+    
+    gdk_error_trap_push();
+              
+    wm_hints= XGetWMHints(GDK_DISPLAY(), win->child_xlib);
        
-             
-      ev.type = ClientMessage;
-      ev.window = win->child_xlib;
-      ev.message_type =net_close_window;
-      ev.format = 32;
-      ev.data.l[0] = 0;
-      ev.data.l[1] = 0;
-      ev.data.l[2] = 0;
-      ev.data.l[3] =0;
-      ev.data.l[4] = 0;
-      
-      gdk_error_trap_push ();
-      XSendEvent (win->display, win->root_xlib, False, 
-          SubstructureNotifyMask | SubstructureRedirectMask, (XEvent *)&ev);
-      
-      XSync (win->display, False);
-      gdk_error_trap_pop ();
+    if (!gdk_error_trap_pop() && wm_hints!=NULL) {
+  
+      wm_hints->initial_state=NormalState;
+      XSetWMHints(GDK_DISPLAY(), win->child_xlib, wm_hints);
+      XFree(wm_hints);
+    }
+    
+    #endif
+
+    get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
+    
+    XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
+    
+    XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
+    XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
+    
+    for(;;) {
+      XEvent e;
+      XNextEvent(GDK_DISPLAY(), &e);
+      if (e.type == ReparentNotify)
+       break;
+    }
+    
+    
+    ev.type = ClientMessage;
+    ev.window = win->child_xlib;
+    ev.message_type =net_close_window;
+    ev.format = 32;
+    ev.data.l[0] = 0;
+    ev.data.l[1] = 0;
+    ev.data.l[2] = 0;
+    ev.data.l[3] =0;
+    ev.data.l[4] = 0;
+    
+    gdk_error_trap_push ();
+    XSendEvent (win->display, win->root_xlib, False, 
+    SubstructureNotifyMask | SubstructureRedirectMask, (XEvent *)&ev);
+    
+    XSync (win->display, False);
+    gdk_error_trap_pop ();
     
   }
 
@@ -1835,28 +1440,92 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
 }
 
-void show_help(void)
+static GdkFilterReturn parent_filter_map (GdkXEvent *xevent, 
+    GdkEvent *event, gpointer user_data)
 {
-  printf ("\nAllTray Version %s\n\n" \
+  XEvent *xev = (XEvent *)xevent;
+   
+  if (xev->xany.type == MapNotify) {
   
-             "Dock any program into the system tray.\n\n"  \
-
-             "usage: alltray [options] [\"] <program_name> [program parameter] [\"]\n\n" \
-             "where options include:\n"\
-             "  --help; -h:  print this message\n"\
-             "  --version; -v: print version\n"\
-             "  --debug; -d: show debug messages\n"\
-             "  --show; -s:  do not hide window after start\n"\
-             "  --hide_window; -hw: hide window during startup (experimental)\n"\
-             "  --icon; -i  <path to png>: use this icon\n"\
-             "  --large_icons; -l: allow large icons (> 24x24)\n"\
-             "  --borderless; -x: remove border, title, frame... from parent\n"\
-             "  --menu; -m: \"menu text:command\": add entry to popdown menu\n"
-  , VERSION);
-
+   if (debug) printf ("map notify\n");
+       
+   gtk_main_quit();
+ 
+  }
+  
+  return GDK_FILTER_CONTINUE;
 }
 
-void show_version (void)
+void show_hide_window (win_struct *win, gint force_state,
+  gboolean keep_in_taskbar)
 {
-  printf ("\nAlltray version %s\n\n", VERSION);
+
+  gboolean show=TRUE;
+  static gboolean first_click=TRUE;
+
+  do {
+  
+    if (force_state == force_show) {
+      show=TRUE;
+      break;
+    }
+  
+    if (force_state ==force_hide) {
+      show=FALSE;
+      break;
+    }
+
+    if (win->visibility != VisibilityUnobscured  && 
+      win->parent_xlib != get_active_window()) {
+      show=TRUE;
+      break;
+    }
+    
+    show=!win->parent_is_visible;
+      
+   } while (0);
+
+ 
+  if (show) {
+  
+    if (debug) printf ("show\n");
+      
+    
+    if (first_click) {
+
+      if (debug) printf ("first click\n");
+     
+      gdk_window_add_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
+     
+      XMapWindow (win->display, win->parent_xlib);
+     
+      gtk_main ();
+      gdk_window_remove_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
+      
+      /*KDE want to rest a little bit after soo much work ;)*/
+      /*if not the window will not be the top most*/
+      gtk_sleep (100);
+           
+      sticky (win->parent_xlib);
+      skip_pager(win->parent_xlib);
+        
+      first_click=FALSE;
+     
+      return;
+    
+    }
+
+    gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
+    skip_taskbar (win, FALSE);
+  
+    
+   } else {
+   
+    if (debug) printf ("hide\n");
+       
+    XIconifyWindow (GDK_DISPLAY(), win->parent_xlib, DefaultScreen(GDK_DISPLAY()));
+    skip_taskbar (win, !keep_in_taskbar);
+
+   }
+
 }

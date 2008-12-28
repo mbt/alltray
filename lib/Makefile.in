@@ -89,33 +89,24 @@ RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
-INCLUDES =    @PACKAGE_CFLAGS@
+lib_LTLIBRARIES = liballtraynomap.la
 
+liballtraynomap_la_SOURCES = nomap.c
 
-bin_PROGRAMS = alltray
-
-AM_CFLAGS =    -Wall   -DLIBDIR=\""$(libdir)"\"
-
-
-alltray_SOURCES =  	main.c    common.h   parent.c   parent.h   child.c   child.h   utils.c   utils.h   trayicon.c   trayicon.h   inlinepixbufs.h
-
-
-alltray_LDFLAGS = -L/usr/X11R6/lib
-alltray_LDADD = @PACKAGE_LIBS@  -lXmu
+liballtraynomap_la_LDFLAGS = -version-info 0:0:0 -ldl
+liballtraynomap_la_CFLAGS = $(X_CFLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  alltray$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-alltray_OBJECTS =  main.$(OBJEXT) parent.$(OBJEXT) child.$(OBJEXT) \
-utils.$(OBJEXT) trayicon.$(OBJEXT)
-alltray_DEPENDENCIES = 
+liballtraynomap_la_LIBADD = 
+liballtraynomap_la_OBJECTS =  nomap.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -128,43 +119,43 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(alltray_SOURCES)
-OBJECTS = $(alltray_OBJECTS)
+SOURCES = $(liballtraynomap_la_SOURCES)
+OBJECTS = $(liballtraynomap_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps lib/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-binPROGRAMS:
+mostlyclean-libLTLIBRARIES:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-binPROGRAMS:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-binPROGRAMS:
+maintainer-clean-libLTLIBRARIES:
 
-install-binPROGRAMS: $(bin_PROGRAMS)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-binPROGRAMS:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .c.o:
@@ -211,9 +202,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-alltray$(EXEEXT): $(alltray_OBJECTS) $(alltray_DEPENDENCIES)
-	@rm -f alltray$(EXEEXT)
-	$(LINK) $(alltray_LDFLAGS) $(alltray_OBJECTS) $(alltray_LDADD) $(LIBS)
+liballtraynomap.la: $(liballtraynomap_la_OBJECTS) $(liballtraynomap_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(liballtraynomap_la_LDFLAGS) $(liballtraynomap_la_OBJECTS) $(liballtraynomap_la_LIBADD) $(LIBS)
 
 tags: TAGS
 
@@ -246,7 +236,7 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = src
+subdir = lib
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
@@ -259,11 +249,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-child.o: child.c ../config.h common.h utils.h trayicon.h
-main.o: main.c ../config.h common.h parent.h child.h utils.h trayicon.h
-parent.o: parent.c ../config.h common.h parent.h utils.h trayicon.h
-trayicon.o: trayicon.c common.h utils.h trayicon.h
-utils.o: utils.c common.h utils.h trayicon.h inlinepixbufs.h ../config.h
+nomap.lo nomap.o : nomap.c ../config.h
 
 info-am:
 info: info-am
@@ -273,7 +259,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
 install-data-am:
@@ -282,14 +268,14 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir)
 
 
 mostlyclean-generic:
@@ -301,24 +287,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
 		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -327,17 +314,18 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
-mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

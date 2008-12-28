@@ -1,5 +1,5 @@
-#ifndef __GTRAY_H__
-#define __GTRAY_H__
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -12,6 +12,7 @@
 #include <string.h>
 #include <X11/cursorfont.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 pid_t getpgid(pid_t pid);
 
@@ -53,7 +54,8 @@ Atom net_wm_window_type_normal;
 Atom selection_atom;
 Atom manager_atom;
 Atom system_tray_opcode_atom;
-
+Atom net_client_list_stacking;
+Atom net_client_list;
 Atom gdk_timestamp_prop;
 
 typedef struct _win_struct {
@@ -69,7 +71,6 @@ typedef struct _win_struct {
   gboolean parent_is_visible;
   
   gboolean hide_start;
-  GdkWindow *fake_desktop;
   gboolean large_icons;
     
   gboolean borderless;
@@ -95,7 +96,11 @@ typedef struct _win_struct {
  
   gint parent_pid; 
   gint child_pid;
-
+  
+  
+  Window libspy_window;
+  GdkWindow *libspy_window_gdk;
+  
   GdkPixbuf *window_icon;
   GdkPixbuf *tray_icon;
   
@@ -117,6 +122,8 @@ typedef struct _win_struct {
   gchar *title;
     
   gint desktop;
+  
+  gboolean gnome_panel_found;
     
 } win_struct;
 

@@ -7,11 +7,16 @@ INCLUDES = \
 bin_PROGRAMS = alltray
 
 AM_CFLAGS =\
-  -Wall
+  -Wall \
+  -DLIBDIR=\""$(libdir)"\"
 
 alltray_SOURCES = \
 	main.c  \
   common.h \
+  parent.c \
+  parent.h \
+  child.c \
+  child.h \
   utils.c \
   utils.h \
   trayicon.c \
