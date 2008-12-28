@@ -207,6 +207,7 @@ static GdkFilterReturn root_filter_map (GdkXEvent *xevent,
     if (window != None) {
       if (window_match (window, win)) {
         win->child_xlib=window;
+        win->normal_map=TRUE;
         gtk_main_quit ();
       }
     }   
@@ -302,7 +303,10 @@ void set_env_stuff (gpointer user_data)
   
   win_struct *win= (win_struct*) user_data;
 
-  path_to_lib=g_strdup_printf (BR_LIBDIR(PRELOAD_LIB));
+  if (debug)
+    path_to_lib=g_strdup ("/usr/lib/liballtraynomap.so.0.0.0");
+  else
+   path_to_lib=g_strdup_printf (BR_LIBDIR(PRELOAD_LIB));
 
   if (debug) printf ("lib is here: %s\n", path_to_lib);
   

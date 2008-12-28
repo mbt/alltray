@@ -20,6 +20,7 @@ pid_t getpgid(pid_t pid);
 #define _NET_WM_STATE_ADD           1    /* add/set property */
 #define _NET_WM_STATE_TOGGLE        2    /* toggle property  */  
 
+#define until while (0)
 
 #define WithdrawnState 0
 #define NormalState 1
@@ -172,6 +173,25 @@ typedef struct _win_struct {
   gboolean balloon_message_allowed;
   
   gboolean click_mode;
+
+  gchar *window_manager;
+  gboolean gnome;
+
+  gboolean no_reparent;
+
+  Window target_our_xlib;
+  GdkWindow *target_our_gdk;
+
+  gint target_our_w;
+  gint target_our_h;
+  gint target_right_border;
+  gint target_above_border;
+
+  gint button_width;
+  gint button_height;
+
+  gboolean normal_map;
+
 
 } win_struct;
 

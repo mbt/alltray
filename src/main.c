@@ -48,9 +48,8 @@
 #include "child.h"
 #include "utils.h"
 #include "trayicon.h"
-#include "xmms.h"
 #include "clickmode.h"
-
+#include "grab.h"
 
 gboolean debug=FALSE;
 
@@ -137,13 +136,38 @@ void win_struct_init(win_struct *win)
   win->title_time=0;
   
   win->click_mode=FALSE;
- 
+
+  win->window_manager=NULL;
+  win->gnome=FALSE;
+
+  win->no_reparent=FALSE;
+
+  win->target_our_xlib=None;
+  win->target_our_gdk=NULL;
+
+  win->target_our_w=0;
+  win->target_our_h=0;
+
+  win->target_right_border=0; 
+  win->target_above_border=0;
+
+  win->normal_map=FALSE;
+
 }
 
 void command_line_init (win_struct *win, int argc, char **argv)
 {
   
   gchar *geometry=NULL;
+
+  win->window_manager=get_window_manager();
+
+  if (debug) printf ("window manager: %s\n", win->window_manager);
+
+  if (!strcmp(win->window_manager, "Metacity")) {
+    win->gnome=TRUE;
+    win->no_reparent=TRUE;
+  }
   
   if (argc==1) {
     win->click_mode=TRUE;
@@ -178,6 +202,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
   
   if (!strcmp (win->command_only, "xmms")) {
     win->xmms=TRUE;
+    win->no_reparent=TRUE;
     if (debug) printf ("child is xmms\n");
   }
   
@@ -243,7 +268,15 @@ main (int argc, char *argv[])
     append_command_to_menu(win->command_menu, "Next:xmmsnext");
   }
 
-  if (!win->xmms) {
+
+  win->child_gdk=gdk_window_foreign_new(win->child_xlib);
+
+  if ((win->click_mode && win->gnome) || win->normal_map)
+    show_hide_window (win, force_hide, FALSE);
+
+  if (!win->no_reparent) {
+
+     if (debug) printf ("need to reparent\n");
  
     win->child_gdk=gdk_window_foreign_new(win->child_xlib);
     
@@ -334,21 +367,22 @@ main (int argc, char *argv[])
   tray_init (win);
   update_window_title(win);
   
-  if (!win->xmms) {
+  do {
+
+    if (win->no_reparent) {
+     grab_filter_init(win);
+     break;
+    }
     
     gdk_window_set_events(win->child_gdk, GDK_STRUCTURE_MASK);
     gdk_window_add_filter(win->child_gdk, child_window_filter, (gpointer) win); 
-  
+    
     gdk_window_set_events(win->parent_gdk, GDK_STRUCTURE_MASK | 
       GDK_VISIBILITY_NOTIFY_MASK);
     gdk_window_add_filter(win->parent_gdk, parent_window_filter, (gpointer) win); 
   
-    
-  } else {
-    
-    xmms_filter_init (win);
-    
-  }
+
+   } until;
 
   gdk_window_set_events(win->root_gdk,GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_workspace, (gpointer) win); 

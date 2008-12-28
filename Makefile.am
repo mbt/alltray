@@ -8,7 +8,8 @@ EXTRA_DIST = \
 	autogen.sh \
 	alltray.1 \
   alltray.desktop \
-  alltray.png
+  alltray.png \
+  autopackage/default.apspec.in
   
 appsdir = $(datadir)/applications
 apps_DATA = alltray.desktop

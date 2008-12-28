@@ -564,10 +564,10 @@ void show_help(void)
              "   --show; -s:  do not hide window after start\n"\
              "   --icon; -i  <path to png>: use this icon\n"\
              "   --large_icons; -l: allow large icons (> 24x24)\n"\
-             "   --borderless; -x: remove border, title, frame... from parent\n"\
+             "   --borderless; -x: remove border, title, frame... from parent (not working with gnome)\n"\
              "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
              "   --title; -t <sec>: show title change for <sec> seconds\n"\
-             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo\n\n"\
+             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo (not working with gnome)\n\n"\
              "usage: alltray\n\n"\
              " Click-Mode: Click on the window you would like to dock.\n"\
              " (Abort with <c>)\n\n"

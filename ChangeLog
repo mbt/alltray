@@ -1,3 +1,11 @@
+Jun, 12, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- different approach to intercept window closing under Gnome:
+  *application will be untouched (no reparent)
+  *Drag and drop is working
+  *Transparency console background what ever is working
+  *Ding is working again
+- set version to 0.54 (dev snap)
+
 Mai, 12, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - Click Mode: click on the window you would like to dock
   (suggested by Russ Brown)

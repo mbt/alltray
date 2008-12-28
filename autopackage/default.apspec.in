@@ -1,0 +1,45 @@
+# -*-shell-script-*-
+
+[Meta]
+RootName: @alltray.sourceforge.net/alltray:$SOFTWAREVERSION
+DisplayName: AllTray Docking Utility
+ShortName: alltray
+Maintainer: Jochen Baier <email@jochen-baier.de>
+Packager: Jochen Baier <email@jochen-baier.de>
+Summary: Alltray allows to dock any program.
+URL: http://alltray.sourceforge.net
+License: GNU General Public License, Version 2
+SoftwareVersion: @VERSION@
+AutopackageTarget: 1.0
+
+[Description]
+With AllTray you can dock any application with no native tray icon
+(like Evolution, Thunderbird, Terminals) into the system tray.
+A high-light feature is that a click on the "close" button
+will minimize back to system tray. It works well with Gnome,
+KDE, XFCE 4, Fluxbox and WindowMaker.
+
+[BuildPrepare]
+prepareBuild
+
+[BuildUnprepare]
+unprepareBuild
+
+[Imports]
+echo '*' | import
+
+[Prepare]
+# Dependency checking
+require @gtk.org/gtk 2.2
+
+[Install]
+# Put your installation script here
+installExe bin/alltray
+copyFile lib/liballtraynomap.so.0.0.0 "$PREFIX/lib/liballtraynomap.so.0.0.0"
+installMan 1 man/man1/alltray.1
+installIcon share/pixmaps/alltray.png
+installDesktop "Application/Utility" share/applications/alltray.desktop
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog

@@ -44,6 +44,7 @@
 #include "trayicon.h"
 #include "xmms.h"
 #include "balloon_message.h"
+#include "grab.h"
 #include "inlinepixbufs.h"
 #include "config.h"
 
@@ -1255,8 +1256,14 @@ void update_window_icon(win_struct *win)
   
   if (win->xmms)
     gdk_window_set_icon_list (win->xmms_main_window_gdk, icons);
-  else
-    gdk_window_set_icon_list (win->parent_gdk, icons);
+  else {
+
+    if (win->no_reparent)
+      gdk_window_set_icon_list (win->child_gdk, icons);
+   else
+      gdk_window_set_icon_list (win->parent_gdk, icons);
+
+  }
   
   g_list_free(icons);
 
@@ -1331,14 +1338,26 @@ void skip_taskbar (win_struct *win, gboolean add)
   
   Window parent_xlib;
   GdkWindow *parent_gdk;
-    
-  if (win->xmms) {
-    parent_xlib=win->xmms_main_window_xlib;
-    parent_gdk=win->xmms_main_window_gdk;
-  } else {
+ 
+  do {
+
+    if (win->xmms) {
+      parent_xlib=win->xmms_main_window_xlib;
+      parent_gdk=win->xmms_main_window_gdk;
+      break;
+    }
+  
+    if (win->gnome) {
+      parent_xlib=win->child_xlib;
+      parent_gdk=win->child_gdk;
+      break;
+    }
+  
     parent_xlib=win->parent_xlib;
     parent_gdk=win->parent_gdk;
-  }
+
+  } while (0);
+
   
   xev.xclient.type = ClientMessage;
   xev.xclient.serial = 0;
@@ -1503,10 +1522,23 @@ void update_window_title(win_struct *win)
   if (title) {
     
     if (debug) printf ("title: %s\n", title);
+
+
+    if (win->gnome && g_str_has_suffix (title,"(AllTray)")) {
+      g_free (title);
+      return;
+    }
+  
   
     if (!win->xmms) {
       title_string=g_strconcat (title, " (AllTray)", NULL);
-      gdk_window_set_title (win->parent_gdk, title_string);
+
+
+      if (win->gnome)
+        gdk_window_set_title (win->child_gdk, title_string);
+      else
+        gdk_window_set_title (win->parent_gdk, title_string);
+    
       g_free (title_string);
     }
 
@@ -1524,7 +1556,7 @@ void update_window_title(win_struct *win)
     
     if (debug) printf ("win->title: %s\n", win->title);
         
-    XFree(title);
+    g_free(title);
     
     if (win->title_time)
       show_balloon (win, win->title, win->title_time);
@@ -1533,107 +1565,145 @@ void update_window_title(win_struct *win)
 
 }
 
-void destroy_all_and_exit (win_struct *win, gboolean kill_child)
+void close_window (Window window)
 {
 
   XClientMessageEvent ev;
+
+
+  if (debug) printf ("close window\n");
+
+  ev.type = ClientMessage;
+
+  ev.window = window;
+  ev.message_type =net_close_window;
+  ev.format = 32;
+  ev.data.l[0] = 0;
+  ev.data.l[1] = 0;
+  ev.data.l[2] = 0;
+  ev.data.l[3] =0;
+  ev.data.l[4] = 0;
   
+  gdk_error_trap_push ();
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False, 
+  SubstructureNotifyMask | SubstructureRedirectMask, (XEvent *)&ev);
+  gdk_error_trap_pop ();
+    
+}
+
+void destroy_all_and_exit (win_struct *win, gboolean kill_child)
+{
+
   if (debug) printf ("destroy_all_and_exit\n");
+
+  Window child;
+  gboolean child_dead=FALSE;
+    
+  if (win->xmms)
+    child=win->xmms_main_window_xlib;
+  else
+    child=win->child_xlib;
+
+  child_dead=!assert_window (child);
+
+  if (child_dead && debug)
+    printf ("child allready dead\n");
+
+
+  do {
+
   
-  if (win->xmms) {
-     gdk_window_remove_filter(win->xmms_main_window_gdk,
-          xmms_main_window_filter, (gpointer) win);
-  } else {
+    if (win->gnome) {
+      gdk_window_remove_filter (win->child_gdk, motion_filter_gnome, (gpointer) win);
+      gdk_window_remove_filter(win->child_gdk, target_filter, (gpointer) win);
+      break;
+    }
+
+     if (win->xmms) {
+      gdk_window_remove_filter (win->xmms_main_window_gdk, motion_filter_xmms, (gpointer) win);
+      gdk_window_remove_filter(win->xmms_main_window_gdk, target_filter, (gpointer) win);
+      break;
+    }
+   
     gdk_window_remove_filter(win->parent_gdk, parent_window_filter, (gpointer) win);
     gdk_window_remove_filter(win->child_gdk, child_window_filter, (gpointer) win);
-  }
-  
+    
+
+  } until;
+
   gdk_window_remove_filter(win->root_gdk, root_filter_workspace, (gpointer) win);
 
-  #ifdef HAVE_LD_PRELOAD
-  {
-    XWMHints *wm_hints;
-    Window child;
-      
-    if (win->xmms)
-      child=win->xmms_main_window_xlib;
-    else
-      child=win->child_xlib;
-
-    gdk_error_trap_push();
-    wm_hints= XGetWMHints(GDK_DISPLAY(), child);
-    if (!gdk_error_trap_pop() && wm_hints!=NULL) {
-      wm_hints->initial_state=NormalState;
-      XSetWMHints(GDK_DISPLAY(), child, wm_hints);
-      XFree(wm_hints);
-    }
-  }  
-  #endif
-
-  if (!win->xmms) {
-        
-    get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
-    XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
-    XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
-    XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
-    
-    for(;;) {
-      XEvent e;
-      XNextEvent(GDK_DISPLAY(), &e);
-      if (e.type == ReparentNotify)
-       break;
-    }
+  if (!child_dead) {
   
-  } else {
-    
-    if (!xlib_window_is_viewable (win->xmms_main_window_xlib)) {
-      XMapWindow (GDK_DISPLAY(), win->xmms_main_window_xlib);
-      XSync (GDK_DISPLAY(), False);
-
+    #ifdef HAVE_LD_PRELOAD
+    {
+      XWMHints *wm_hints;
+      
+      gdk_error_trap_push();
+      wm_hints= XGetWMHints(GDK_DISPLAY(), child);
+      if (!gdk_error_trap_pop() && wm_hints!=NULL) {
+        wm_hints->initial_state=NormalState;
+        XSetWMHints(GDK_DISPLAY(), child, wm_hints);
+        XFree(wm_hints);
+      }
+    }  
+    #endif
+  
+    if (!win->xmms && !win->gnome) {
+          
+      get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
+      XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
+      XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
+      XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
+      
       for(;;) {
         XEvent e;
         XNextEvent(GDK_DISPLAY(), &e);
-        if (e.type == MapNotify) {
-          break;
+        if (e.type == ReparentNotify)
+         break;
+      }
+    
+    } else {
+  
+      XWindowAttributes wa;
+  
+      gdk_error_trap_push();
+      XGetWindowAttributes (GDK_DISPLAY(), child, &wa);
+      gint err=gdk_error_trap_pop();
+    
+      if (!err && wa.map_state != IsViewable)
+     {
+  
+        XMapWindow (GDK_DISPLAY(), child);
+        XSync (GDK_DISPLAY(), False);
+  
+        for(;;) {
+          XEvent e;
+          XNextEvent(GDK_DISPLAY(), &e);
+          if (e.type == MapNotify) {
+            break;
+          }
         }
+      
       }
     
     }
   
-  }
-
-  if (kill_child) {
-    
-    if (debug) printf ("kill child\n");
-
-    ev.type = ClientMessage;
   
-    if (win->xmms)
-      ev.window = win->xmms_main_window_xlib;
-    else
-      ev.window = win->child_xlib;
+    if (kill_child)
+      close_window (child);
 
-    ev.message_type =net_close_window;
-    ev.format = 32;
-    ev.data.l[0] = 0;
-    ev.data.l[1] = 0;
-    ev.data.l[2] = 0;
-    ev.data.l[3] =0;
-    ev.data.l[4] = 0;
-    
-    gdk_error_trap_push ();
-    XSendEvent (win->display, win->root_xlib, False, 
-    SubstructureNotifyMask | SubstructureRedirectMask, (XEvent *)&ev);
-    
-    XSync (win->display, False);
-    gdk_error_trap_pop ();
-    
   }
-
 
   tray_done(win);
 
+  if (win->gnome && !kill_child && !child_dead && !win->xmms)
+    gdk_window_set_title (win->child_gdk, win->title);
+
   g_free (win->title);
+
+  if (win->window_manager)
+    g_free (win->window_manager);
 
   if (win->user_icon_path)
         g_free (win->user_icon_path);
@@ -1645,7 +1715,7 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   g_array_free (win->workspace, FALSE);
   g_array_free (win->command_menu, TRUE);
 
-  if (!win->xmms)  
+  if (!win->xmms && !win->gnome)  
     XDestroyWindow(win->display, win->parent_xlib);
   
   g_free (win);
@@ -1670,6 +1740,24 @@ static GdkFilterReturn parent_filter_map (GdkXEvent *xevent,
   return GDK_FILTER_CONTINUE;
 }
 
+void deiconify_window (Window window)
+{
+
+  XWMHints *wm_hints;
+  
+  gdk_error_trap_push();
+  
+  wm_hints= XGetWMHints(GDK_DISPLAY(), window);
+  
+  if (!gdk_error_trap_pop() && wm_hints!=NULL) {
+  
+    wm_hints->initial_state=NormalState;
+    XSetWMHints(GDK_DISPLAY(), window, wm_hints);
+    XFree(wm_hints);
+  }
+    
+}
+
 void show_hide_window (win_struct *win, gint force_state,
   gboolean keep_in_taskbar)
 {
@@ -1680,13 +1768,25 @@ void show_hide_window (win_struct *win, gint force_state,
   Window parent_xlib;
   GdkWindow *parent_gdk;
   
-  if (win->xmms) {
-    parent_xlib=win->xmms_main_window_xlib;
-    parent_gdk=win->xmms_main_window_gdk;
-  } else {
+  do {
+
+    if (win->xmms) {
+      parent_xlib=win->xmms_main_window_xlib;
+      parent_gdk=win->xmms_main_window_gdk;
+      break;
+    }
+  
+    if (win->gnome) {
+      parent_xlib=win->child_xlib;
+      parent_gdk=win->child_gdk;
+      break;
+    }
+  
     parent_xlib=win->parent_xlib;
     parent_gdk=win->parent_gdk;
-  }
+
+  } until;
+
 
   do {
   
@@ -1708,7 +1808,7 @@ void show_hide_window (win_struct *win, gint force_state,
     
     show=!win->parent_is_visible;
       
-   } while (0);
+   } until;
 
  
   if (show) {
@@ -1721,10 +1821,16 @@ void show_hide_window (win_struct *win, gint force_state,
 
       if (win->xmms)
         deiconify_xmms_windows(win);
-     
+
+      if (win->gnome && !win->normal_map)
+        deiconify_window (parent_xlib);
+
       gdk_window_add_filter(parent_gdk, parent_filter_map, (gpointer) win);
-     
-      XMapWindow (win->display, parent_xlib);
+
+      if (win->normal_map)
+        gdk_window_focus (parent_gdk, gtk_get_current_event_time());
+      else
+        XMapWindow (win->display, parent_xlib);
      
       gtk_main ();
       
@@ -1734,7 +1840,8 @@ void show_hide_window (win_struct *win, gint force_state,
       
       /*KDE want to rest a little bit after soo much work ;)*/
       /*if not the window will not be the top most*/
-      gtk_sleep (100);
+      if (!win->gnome)
+        gtk_sleep (100);
            
       sticky (parent_xlib);
       skip_pager(parent_xlib);
@@ -1758,4 +1865,9 @@ void show_hide_window (win_struct *win, gint force_state,
 
    }
 
+}
+
+gchar  *get_window_manager(void) {
+
+  return g_strdup(gdk_x11_screen_get_window_manager_name (gdk_screen_get_default()));
 }

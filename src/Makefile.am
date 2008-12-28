@@ -27,6 +27,10 @@ alltray_SOURCES = \
   clickmode.h \
   prefix.c \
   prefix.h \
+  grab.c \
+  grab.h \
+  gnome_theme.c \
+  gnome_theme.h \
   inlinepixbufs.h
 
 
