@@ -60,25 +60,28 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   alltray -h:
   
   usage: alltray [options] ["] <program_name> [program parameter] ["]
-  
-   where options include:
-    --help; -h:  print this message
-    --version; -v: print version
-    --debug; -d: show debug messages
-    --show; -s:  do not hide window after start
-    --icon; -i  <path to png>: use this icon
-    --large_icons; -l: allow large icons (> 24x24)
-    --sticky; -st: visible on all workspaces
-    --borderless; -x: remove border, title, frame (if not supported native)
-    --menu; -m: "menu text:command": add entry to popdown menu
-    --title; -t <sec>: show title change for <sec> seconds
-    --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)
-    --configure; -conf: show KDE configuration dialog
 
-   usage: alltray
-  
-   Click-Mode: Click on the window you would like to dock.
-   (Cancel with <c>)
+ where options include:
+   --help; -h:  print this message
+   --version; -v: print version
+   --debug; -d: show debug messages
+   --show; -s:  do not hide window after start
+   --icon; -i  <path to png>: use this icon
+   --large_icons; -l: allow large icons (> 24x24)
+   --sticky; -st: visible on all workspaces
+   --skip-taskbar; -stask: not visible in taskbar
+   --no-alltray; -na: no "(Alltray)" in window title
+   --borderless; -x: remove border, title, frame (if not supported native)
+   --menu; -m: "menu text:command": add entry to popdown menu
+   --title; -t <sec>: show tooltip with title for <sec> seconds after song change
+   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)
+   --configure; -conf: show KDE configuration dialog
+
+usage: alltray
+
+ Click-Mode: Click on the window you would like to dock.
+ (Abort with <c>)
+
 
 **Requirements:
    

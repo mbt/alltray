@@ -48,30 +48,7 @@
 
 void update_visibility_state (win_struct *win, gboolean new_state)
 {
-   wm_state_struct *old_state;
- 
-  if (debug) printf ("update_visibility_state workspace->len: %d\n", 
-    win->workspace->len);
 
-  gint current_max_workspace=win->workspace->len-1;
-  gint i;
-        
-  if (win->desktop > current_max_workspace) {
-    for (i=current_max_workspace; i<win->desktop; i++) {
-      
-      wm_state_struct new_state;
-      new_state.visible=FALSE;
-      new_state.show_in_taskbar=FALSE;
-      g_array_append_val(win->workspace, new_state);
-    
-    }
-  }
-
-  old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
-    (*old_state).visible=new_state;
-
-  if (debug) printf ("update_visibility_state to: %d\n", (*old_state).visible);
-  
   win->parent_is_visible=new_state;
     
 }
@@ -120,69 +97,6 @@ void wait_for_manager(win_struct *win)
    }
  
   else { if (debug) printf ("HAVE MANAGER WINDOW\n");};
-}
-
-GdkFilterReturn root_filter_workspace (GdkXEvent *xevent, 
-    GdkEvent *event, gpointer user_data)
-{
-  XEvent *xev = (XEvent *)xevent;
-  gint num;
-  gint current_desk=0;
-  
-  win_struct *win = (win_struct*) user_data;
-
-  //if (debug) printf ("root_filter_workspace event: %s\n", event_names[xev->xany.type]);
-
-  if (xev->xany.type == PropertyNotify &&
-     xev->xproperty.atom == net_current_desktop) {
-       
-     current_desk=get_current_desktop ();
-     if (debug) printf ("workspace switched %d\n", current_desk);
-
-      win->desktop=current_desk;
-      num=win->desktop +1;
-      
-      gint length=win->workspace->len;
-      gint i;
-      
-      if (num > length) {
-        for (i=win->workspace->len; i<num; i++) {
-          
-          wm_state_struct new_state;
-          new_state.visible=FALSE;
-          new_state.show_in_taskbar=FALSE;
-          g_array_append_val(win->workspace, new_state);
-        
-        }
-      } 
-  
-      wm_state_struct current_struct;
-                  
-      current_struct=g_array_index(win->workspace, wm_state_struct, num -1);
-      
-      if (debug) {
-      
-        if (current_struct.visible)
-          printf ("new workspace: window will be visible\n");
-        else
-          printf ("new workspace: window will be hidden\n");
-  
-        if (current_struct.show_in_taskbar)
-          printf ("new workspace: show in taskbar\n");
-        else
-          printf ("new workspace: not in taskbar\n");
-      
-      }
-      
-      if (!win->sticky) {
-        show_hide_window (win, current_struct.visible,
-          current_struct.show_in_taskbar);
-      }
- 
-
-  }
-
- return GDK_FILTER_CONTINUE;
 }
 
 GdkFilterReturn parent_window_filter (GdkXEvent *xevent, 
@@ -309,7 +223,8 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless, gboolean *sticky,
-    gboolean *configure, gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry)
+    gboolean *skip_tasklist, gboolean *no_title, gboolean *configure, gboolean *large_icons, 
+    GArray *command_menu, gint *title_time, gchar **geometry)
 {
   int i;
   gchar *rest_buf=NULL;
@@ -351,7 +266,17 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         break;
       }
     
-       if (!strcmp(argv[i], "--configure") || !strcmp(argv[i], "-conf")) {
+      if (!strcmp(argv[i], "--skip-taskbar") || !strcmp(argv[i], "-stask")) {
+        *skip_tasklist=TRUE;
+        break;
+      }
+    
+      if (!strcmp(argv[i], "--no-alltray") || !strcmp(argv[i], "-na")) {
+        *no_title=TRUE;
+        break;
+      }
+
+      if (!strcmp(argv[i], "--configure") || !strcmp(argv[i], "-conf")) {
         *configure=TRUE;
         break;
       } 
@@ -549,9 +474,11 @@ void show_help(void)
              "   --icon; -i  <path to png>: use this icon\n"\
              "   --large_icons; -l: allow large icons (> 24x24)\n"\
              "   --sticky; -st: visible on all workspaces\n"\
+             "   --skip-taskbar; -stask: not visible in taskbar\n"\
+             "   --no-alltray; -na: no \"(Alltray)\" in window title\n"\
              "   --borderless; -x: remove border, title, frame (if not supported native)\n"\
              "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
-             "   --title; -t <sec>: show title change for <sec> seconds\n"\
+             "   --title; -t <sec>: show tooltip with title for <sec> seconds after song change\n"\
              "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)\n"\
             "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\

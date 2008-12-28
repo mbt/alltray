@@ -25,7 +25,6 @@ void get_window_position (Window window, gint *x, gint *y);
 void skip_taskbar (win_struct *win, gboolean add);
 //void skip_pager (Window window);
 gint get_current_desktop(void);
-gint get_number_of_desktops(void);
 gboolean get_window_list (Window   xwindow, Atom atom,
    Window **windows, int *len);
 gint get_pid (Window w);

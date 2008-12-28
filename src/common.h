@@ -130,7 +130,6 @@ typedef struct _win_struct {
 
   int visibility;
 
-  GArray *workspace;
   GArray *command_menu;
       
   gboolean show;
@@ -159,17 +158,12 @@ typedef struct _win_struct {
   
   GtkWidget *plug;
   Window plug_xlib;
-
-  GtkWidget *fixed;
+ 
   GtkWidget *image_icon;
   
   balloon_struct *balloon;
-  
-  gboolean gtk_tray;
     
   gchar *title;
-    
-  gint desktop;
   
   gboolean gnome_panel_found;
   
@@ -206,6 +200,9 @@ typedef struct _win_struct {
   gboolean normal_map;
 
   gboolean sticky;
+  gboolean skip_tasklist;
+  
+  gboolean no_title;
   
   gboolean kde_close_button_pos;
   button kde_close_button;

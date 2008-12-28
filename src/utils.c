@@ -205,42 +205,6 @@ Window get_active_window (void)
   return win;
 }
 
-gint get_number_of_desktops(void)
-{
-  Atom type;
-  int format;
-  unsigned long nitems;
-  unsigned long bytes_after;
-  unsigned char *data;
-  int result;
-  gint err;
-  gint number=1;
-            
-  type = None;
-  
-  if (debug) printf ("get number of desktops\n");
-  
-  gdk_error_trap_push();
-  result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
-         net_number_of_desktops,
-         0,  1l, False,XA_CARDINAL, &type, &format, &nitems,
-         &bytes_after, &data); 
-  
-  err=gdk_error_trap_pop();
-   
-  if (err!=0 || result != Success)
-    return 1;
-  
-  if (type == XA_CARDINAL && format == 32 && nitems == 1)
-   number = *((long *) data);
-  
-  if (data)
-    XFree (data);
-  
-  return number;
-  
-}
-
 gint get_current_desktop(void)
 {
   Atom type;
@@ -442,6 +406,31 @@ void sticky (Window window)
   xev.xclient.format = 32;
   
   xev.xclient.data.l[0] = 0xFFFFFFFF;
+  xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
+  
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+            SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+}
+
+void to_desktop (Window window, gint num)
+{
+
+  XEvent xev;
+ 
+
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = window;
+  xev.xclient.display = GDK_DISPLAY();
+  xev.xclient.message_type =net_wm_desktop;
+  xev.xclient.format = 32;
+  
+  xev.xclient.data.l[0] = num;
   xev.xclient.data.l[1] = 0;
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
@@ -1293,14 +1282,6 @@ void update_window_icon(win_struct *win)
 
 }
 
-void update_taskbar_state (win_struct *win, gboolean new_state)
-{
-   wm_state_struct *old_state;
-
-   old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
-   (*old_state).show_in_taskbar=new_state;
-}
-
 gboolean search_gnome_panel (void)
 {
 
@@ -1401,15 +1382,14 @@ void skip_taskbar (win_struct *win, gboolean add)
   XSync (GDK_DISPLAY(), False);
   
   /*bug in gnome taskbar will not update the task list*/
-  /*so we need to cheat a little*/
+  /*so we need to cheat a little (fixed in 12.1)*/
 
   if (win->gnome_panel_found && !add) {
     get_window_position (parent_xlib, &x, &y);
      for (i=0; i<100; i++)
     gdk_window_move (parent_gdk, x, y);
   } 
-  
-  update_taskbar_state (win, !add);
+
 
 }
 
@@ -1555,12 +1535,14 @@ void update_window_title(win_struct *win)
     if (!win->xmms) {
       title_string=g_strconcat (title, " (AllTray)", NULL);
 
-
+    if (!win->no_title) {
+      
       if (win->no_reparent)
         gdk_window_set_title (win->child_gdk, title_string);
       else
         gdk_window_set_title (win->parent_gdk, title_string);
-    
+    }
+
       g_free (title_string);
     }
 
@@ -1669,9 +1651,6 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     
 
   } until;
-  
-
-  gdk_window_remove_filter(win->root_gdk, root_filter_workspace, (gpointer) win);
 
   if (!child_dead) {
   
@@ -1754,7 +1733,6 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     g_object_unref (win->window_icon);
   
   g_object_unref (win->tray_icon);
-  g_array_free (win->workspace, TRUE);
  
   if (win->command_menu) 
      free_command_menu (win->command_menu);
@@ -1864,6 +1842,11 @@ void show_hide_window (win_struct *win, gint force_state,
   
     if (debug) printf ("show\n");
       
+    /*kwin what you doing all day long ???*/
+    if (win->kde) {
+      to_desktop (parent_xlib, get_current_desktop ());
+    }
+
     if (first_click) {
 
       if (debug) printf ("first click\n");
@@ -1917,8 +1900,13 @@ void show_hide_window (win_struct *win, gint force_state,
       if (!win->gnome)
         gtk_sleep (100);
            
-      sticky (parent_xlib);
+      if (win->sticky)
+        sticky (parent_xlib);
+      
       skip_pager(parent_xlib, TRUE);
+      
+      if (win->skip_tasklist)
+        skip_taskbar (win, TRUE);
  
       first_click=FALSE;
      
@@ -1927,7 +1915,9 @@ void show_hide_window (win_struct *win, gint force_state,
     }
 
     gdk_window_focus (parent_gdk, gtk_get_current_event_time());
-    skip_taskbar (win, FALSE);
+  
+    if (!win->skip_tasklist)
+      skip_taskbar (win, FALSE);
       
     
    } else {
@@ -1935,7 +1925,8 @@ void show_hide_window (win_struct *win, gint force_state,
       if (debug) printf ("hide\n");
          
       XIconifyWindow (GDK_DISPLAY(), parent_xlib, DefaultScreen(GDK_DISPLAY()));
-      skip_taskbar (win, !keep_in_taskbar);
+      if (!win->skip_tasklist)
+        skip_taskbar (win, !keep_in_taskbar);
 
    }
 

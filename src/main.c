@@ -78,26 +78,8 @@ void win_struct_init(win_struct *win)
   win->libspy_window_gdk=NULL;
 
   win->visibility=VisibilityUnobscured;
-  
-  win->workspace=g_array_new (FALSE, FALSE, sizeof (wm_state_struct));
+ 
   win->command_menu=g_array_new (FALSE, FALSE, sizeof (command_menu_struct));
-   
-  gint desktops=get_number_of_desktops();
-  gint i;
-  
-  if (debug) printf ("number of desktops: %d\n", desktops);
-      
-  for (i=0; i<desktops; i++) {
-    wm_state_struct new_state;
-    new_state.visible=FALSE;
-    new_state.show_in_taskbar=FALSE;
-    g_array_append_val(win->workspace, new_state);
-  }
-   
-  win->desktop=0;
-  win->desktop=get_current_desktop();
-  
-  if (debug) printf ("init: current desktop: %d\n", win->desktop);
 
   win->show=FALSE;
   win->command=NULL;
@@ -113,7 +95,6 @@ void win_struct_init(win_struct *win)
   win->manager_window=None;
   
   win->plug=NULL;
-  win->fixed=NULL;
   win->image_icon=NULL;
   win->title=NULL;
   
@@ -157,7 +138,9 @@ void win_struct_init(win_struct *win)
   win->normal_map=FALSE;
   
   win->sticky=FALSE;
-  
+  win->skip_tasklist=FALSE;
+  win->no_title=FALSE;
+    
   win->kde_close_button_pos =NO_SUCCESS;
 
 }
@@ -205,8 +188,8 @@ void command_line_init (win_struct *win, int argc, char **argv)
   }
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
-    &win->command, &win->show, &debug, &win->borderless, &win->sticky, &configure,
-    &win->large_icons, win->command_menu, &win->title_time, &geometry)) {
+    &win->command, &win->show, &debug, &win->borderless, &win->sticky, &win->skip_tasklist,
+    &win->no_title, &configure, &win->large_icons, win->command_menu, &win->title_time, &geometry)) {
     
     if (win->user_icon_path)
       g_free(win->user_icon_path);
@@ -216,14 +199,17 @@ void command_line_init (win_struct *win, int argc, char **argv)
     if (geometry)
       g_free (geometry);
     
-    if (win->workspace)
-      g_array_free (win->workspace, TRUE);
     
     if (win->command_menu)
       free_command_menu (win->command_menu);
     
     g_free(win);
     exit(1);
+  }
+
+  if (configure && win->gnome) {
+    printf ("Alltray: \"--configure\" option only usefull for the KDE desktop.\n");
+    exit (0);
   }
 
   if (win->kde) {
@@ -240,10 +226,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
     
     if (geometry)
       g_free (geometry);
-    
-    if (win->workspace)
-      g_array_free (win->workspace, TRUE);
-    
+
     if (win->command_menu)
       free_command_menu (win->command_menu);
 
@@ -262,6 +245,10 @@ void command_line_init (win_struct *win, int argc, char **argv)
   if (gnome_terminal_start && !strstr (win->command, "disable-factory")) {
 
     if (debug) printf ("gnome_terminal_start: <%s>\n", gnome_terminal_start);
+    
+    old_command=win->command;
+    tmp_end=gnome_terminal_start+14;
+    if (debug) printf ("tmp_end: <%s>\n", tmp_end);
     
     old_command=win->command;
     tmp_end=gnome_terminal_start+14;
@@ -306,6 +293,8 @@ void command_line_init (win_struct *win, int argc, char **argv)
     printf ("win->title_time: %d\n", win->title_time);
     if (geometry) printf ("geometry: %s\n", geometry);
     if (win->sticky) printf ("sticky=TRUE\n");
+    if (win->skip_tasklist) printf ("skip tasklist=TRUE\n");
+    if (win->no_title) printf ("keep original title\n");
     
   }
 
@@ -482,6 +471,9 @@ main (int argc, char *argv[])
 
   tray_init (win);
   update_window_title(win);
+
+  if (win->skip_tasklist)
+   skip_taskbar (win, TRUE);
   
   do {
 
@@ -500,8 +492,6 @@ main (int argc, char *argv[])
 
    } until;
 
-  gdk_window_set_events(win->root_gdk,GDK_SUBSTRUCTURE_MASK);
-  gdk_window_add_filter(win->root_gdk, root_filter_workspace, (gpointer) win); 
   
   if (win->show && !win->click_mode && !win->normal_map)
     show_hide_window (win, force_show, FALSE);

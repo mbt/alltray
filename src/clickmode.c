@@ -116,7 +116,7 @@ gboolean grab (gpointer user_data)
 
   XGrabKey(GDK_DISPLAY(),
     XKeysymToKeycode(GDK_DISPLAY(), XStringToKeysym("c")),
-    AnyModifier, GDK_ROOT_WINDOW(), True, GrabModeAsync,
+    0, GDK_ROOT_WINDOW(), True, GrabModeAsync,
     GrabModeAsync);
 
   status = XGrabPointer(GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,

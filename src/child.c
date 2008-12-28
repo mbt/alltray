@@ -407,9 +407,6 @@ void exec_and_wait_for_window(win_struct *win)
       g_free (win->command);
     
     g_free (win->command_only);
-
-    if (win->workspace)
-      g_array_free (win->workspace, TRUE);
         
     if (win->command_menu)
       free_command_menu (win->command_menu);

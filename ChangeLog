@@ -1,3 +1,19 @@
+Dec 10, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- fixed problems with docking under KDE (X Window System error and
+  gdk_pixbuf_xlib_get_from_drawable error)
+- KDE tray transparency code rewrote, but it will not work properly
+  see http://bugs.kde.org/show_bug.cgi?id=96465
+- fixed configure.in bug. (make uninstall was broken)
+- fixed focus bug: always the alltray window got the focus after workspace change
+  (reported by: lost his email)
+- removed workspace code
+- fixed bug if amarok was running at the same time (alltray grabbed the same key)
+  (reported by Nathan Maxwell)
+- changed right click menu entries positions
+- added "--skip-taskbar": do not show window in taskbar. (requested by Victor B. Gonzalez)
+- added "--no-alltray": do not show "(Alltray)" in window title. (requested by Victor B. Gonzalez)
+- set version to 0.65
+
 Sep 24, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - fixed probs with binreloc (configure with non default path settings)
 - updated binreloc

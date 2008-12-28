@@ -441,6 +441,9 @@ GdkFilterReturn target_filter (GdkXEvent *xevent,
 
         if (win->xmms || !win->parent_is_visible || win->borderless || win->kde)
           break;
+        
+        if (!GDK_IS_DRAWABLE (win->target_our_gdk))
+          break;
 
         gdk_drawable_get_size (win->target_our_gdk, 
                &win->target_our_w, &win->target_our_h);

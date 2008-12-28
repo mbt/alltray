@@ -6,7 +6,7 @@
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gint *show, gboolean *debug, gboolean *borderless, gboolean *sticky,
-    gboolean *configure, gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry);
+    gboolean *skip_tasklist, gboolean *no_title, gboolean *configure, gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry);
 gchar *strip_command (win_struct *win);
 void show_help(void);
 void show_version(void);
