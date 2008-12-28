@@ -174,9 +174,10 @@ GdkFilterReturn root_filter_workspace (GdkXEvent *xevent,
       
       }
       
-      
-      show_hide_window (win, current_struct.visible,
-        current_struct.show_in_taskbar);
+      if (!win->sticky) {
+        show_hide_window (win, current_struct.visible,
+          current_struct.show_in_taskbar);
+      }
  
 
   }
@@ -307,8 +308,8 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 }
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
-    gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless,
-    gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry)
+    gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless, gboolean *sticky,
+    gboolean *configure, gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry)
 {
   int i;
   char rest_buf[4096]="";
@@ -342,6 +343,16 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         *borderless=TRUE;
         break;
       }
+
+      if (!strcmp(argv[i], "--sticky") || !strcmp(argv[i], "-st")) {
+        *sticky=TRUE;
+        break;
+      }
+    
+       if (!strcmp(argv[i], "--configure") || !strcmp(argv[i], "-conf")) {
+        *configure=TRUE;
+        break;
+      } 
       
       if (!strcmp(argv[i], "--large_icons") || !strcmp(argv[i], "-l")) {
         *large_icons=TRUE;
@@ -430,11 +441,11 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
       
     strcat (rest_buf, argv[i]);
       
-    }while (0);
-  
+    } until;
+    
   }
   
-  if (strlen (rest_buf) == 0) {
+  if (strlen (rest_buf) == 0 && !*configure) {
     show_help();
     return FALSE;
   }
@@ -564,10 +575,12 @@ void show_help(void)
              "   --show; -s:  do not hide window after start\n"\
              "   --icon; -i  <path to png>: use this icon\n"\
              "   --large_icons; -l: allow large icons (> 24x24)\n"\
-             "   --borderless; -x: remove border, title, frame... from parent (not working with gnome)\n"\
+             "   --sticky; -st: visible on all workspaces\n"\
+             "   --borderless; -x: remove border, title, frame (if not supported native)\n"\
              "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
              "   --title; -t <sec>: show title change for <sec> seconds\n"\
-             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo (not working with gnome)\n\n"\
+             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)\n"\
+            "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\
              " Click-Mode: Click on the window you would like to dock.\n"\
              " (Abort with <c>)\n\n"

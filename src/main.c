@@ -50,6 +50,7 @@
 #include "trayicon.h"
 #include "clickmode.h"
 #include "grab.h"
+#include "kde.h"
 
 gboolean debug=FALSE;
 
@@ -139,7 +140,8 @@ void win_struct_init(win_struct *win)
 
   win->window_manager=NULL;
   win->gnome=FALSE;
-
+  win->kde=FALSE;
+  
   win->no_reparent=FALSE;
 
   win->target_our_xlib=None;
@@ -152,6 +154,10 @@ void win_struct_init(win_struct *win)
   win->target_above_border=0;
 
   win->normal_map=FALSE;
+  
+  win->sticky=FALSE;
+  
+  win->kde_close_button_pos =NO_SUCCESS;
 
 }
 
@@ -159,6 +165,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
 {
   
   gchar *geometry=NULL;
+  gboolean configure=FALSE;
 
   win->window_manager=get_window_manager();
 
@@ -168,6 +175,12 @@ void command_line_init (win_struct *win, int argc, char **argv)
     win->gnome=TRUE;
     win->no_reparent=TRUE;
   }
+
+  if (!strcmp(win->window_manager, "KWin")) {
+     win->kde=TRUE;
+     win->no_reparent=TRUE;
+     win->kde_close_button_pos = kde_get_close_button_positon ();
+  }
   
   if (argc==1) {
     win->click_mode=TRUE;
@@ -175,7 +188,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
   }
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
-    &win->command, &win->show, &debug, &win->borderless,
+    &win->command, &win->show, &debug, &win->borderless, &win->sticky, &configure,
     &win->large_icons, win->command_menu, &win->title_time, &geometry)) {
     
     if (win->user_icon_path)
@@ -194,6 +207,35 @@ void command_line_init (win_struct *win, int argc, char **argv)
     g_free(win);
     exit(1);
   }
+
+  if (win->kde) {
+
+    if (win->kde_close_button_pos == NO_SUCCESS || configure) {
+    
+     if (!kde_show_configure_dialog (win)) {
+    printf ("Configuration canceled. \"alltray -conf\" to reshow.\n");
+      
+    if (win->user_icon_path)
+      g_free(win->user_icon_path);
+    if (win->command)
+      g_free (win->command);
+    
+    if (geometry)
+      g_free (geometry);
+    
+    if (win->workspace)
+      g_array_free (win->workspace, FALSE);
+    
+    if (win->command_menu)
+      g_array_free (win->command_menu, TRUE);
+ 
+     exit (1);
+    }
+  
+   }
+  
+  }
+
   
   if (win->user_icon_path)
     win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
@@ -224,6 +266,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
     if (win->borderless) printf ("borderless=TRUE\n");
     printf ("win->title_time: %d\n", win->title_time);
     if (geometry) printf ("geometry: %s\n", geometry);
+    if (win->sticky) printf ("sticky=TRUE\n");
     
   }
 
@@ -268,11 +311,44 @@ main (int argc, char *argv[])
     append_command_to_menu(win->command_menu, "Next:xmmsnext");
   }
 
-
   win->child_gdk=gdk_window_foreign_new(win->child_xlib);
 
-  if ((win->click_mode && win->gnome) || win->normal_map)
+  if (win->borderless && win->no_reparent) {
+      gdk_window_set_decorations(win->child_gdk, 0);
+      gtk_sleep (100);
+  }
+
+  if (win->no_reparent && win->normal_map
+      && (win->initial_x || win->initial_y || win->initial_w || win->initial_h)) {
+      
+    do {
+
+       if (win->initial_w == 0 && win->initial_h ==0 ) {
+         if (debug) printf ("only move\n");
+         gdk_window_move (win->child_gdk, win->initial_x, win->initial_y);
+         break;
+       }
+
+       if (win->initial_x == 0 && win->initial_y == 0) {
+         if (debug) printf ("only resize\n");
+         gdk_window_resize (win->child_gdk, win->initial_w, win->initial_h);
+         break;
+       }
+     
+       if (debug) printf ("move and resize\n");
+     
+       gdk_window_move_resize (win->child_gdk, win->initial_x, win->initial_y, 
+          win->initial_w, win->initial_h);
+
+    } until;
+    
+  }
+ 
+  if (!win->show && ((win->click_mode && win->no_reparent) || win->normal_map))
     show_hide_window (win, force_hide, FALSE);
+
+  if (win->show && win->no_reparent)
+    win->parent_is_visible=TRUE;
 
   if (!win->no_reparent) {
 
@@ -387,7 +463,7 @@ main (int argc, char *argv[])
   gdk_window_set_events(win->root_gdk,GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_workspace, (gpointer) win); 
   
-  if (win->show)
+  if (win->show && !win->click_mode && !win->normal_map)
     show_hide_window (win, force_show, FALSE);
 
   if (win->command)

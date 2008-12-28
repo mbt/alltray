@@ -1347,7 +1347,7 @@ void skip_taskbar (win_struct *win, gboolean add)
       break;
     }
   
-    if (win->gnome) {
+    if (win->no_reparent) {
       parent_xlib=win->child_xlib;
       parent_gdk=win->child_gdk;
       break;
@@ -1523,18 +1523,16 @@ void update_window_title(win_struct *win)
     
     if (debug) printf ("title: %s\n", title);
 
-
-    if (win->gnome && g_str_has_suffix (title,"(AllTray)")) {
+    if (!win->xmms && win->no_reparent && g_str_has_suffix (title,"(AllTray)")) {
       g_free (title);
       return;
     }
-  
-  
+
     if (!win->xmms) {
       title_string=g_strconcat (title, " (AllTray)", NULL);
 
 
-      if (win->gnome)
+      if (win->no_reparent)
         gdk_window_set_title (win->child_gdk, title_string);
       else
         gdk_window_set_title (win->parent_gdk, title_string);
@@ -1609,27 +1607,26 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   if (child_dead && debug)
     printf ("child allready dead\n");
 
-
   do {
 
-  
-    if (win->gnome) {
-      gdk_window_remove_filter (win->child_gdk, motion_filter_gnome, (gpointer) win);
-      gdk_window_remove_filter(win->child_gdk, target_filter, (gpointer) win);
-      break;
-    }
-
-     if (win->xmms) {
+    if (win->xmms) {
       gdk_window_remove_filter (win->xmms_main_window_gdk, motion_filter_xmms, (gpointer) win);
       gdk_window_remove_filter(win->xmms_main_window_gdk, target_filter, (gpointer) win);
       break;
     }
-   
+
+    if (win->no_reparent) {
+      gdk_window_remove_filter (win->child_gdk, motion_filter_gnome, (gpointer) win);
+      gdk_window_remove_filter(win->child_gdk, target_filter, (gpointer) win);
+      break;
+    }
+ 
     gdk_window_remove_filter(win->parent_gdk, parent_window_filter, (gpointer) win);
     gdk_window_remove_filter(win->child_gdk, child_window_filter, (gpointer) win);
     
 
   } until;
+  
 
   gdk_window_remove_filter(win->root_gdk, root_filter_workspace, (gpointer) win);
 
@@ -1649,7 +1646,7 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     }  
     #endif
   
-    if (!win->xmms && !win->gnome) {
+    if (!win->no_reparent) {
           
       get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
       XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
@@ -1697,7 +1694,7 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   tray_done(win);
 
-  if (win->gnome && !kill_child && !child_dead && !win->xmms)
+  if (win->no_reparent && !kill_child && !child_dead && !win->xmms)
     gdk_window_set_title (win->child_gdk, win->title);
 
   g_free (win->title);
@@ -1715,7 +1712,7 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   g_array_free (win->workspace, FALSE);
   g_array_free (win->command_menu, TRUE);
 
-  if (!win->xmms && !win->gnome)  
+  if (!win->no_reparent)  
     XDestroyWindow(win->display, win->parent_xlib);
   
   g_free (win);
@@ -1776,7 +1773,7 @@ void show_hide_window (win_struct *win, gint force_state,
       break;
     }
   
-    if (win->gnome) {
+    if (win->no_reparent) {
       parent_xlib=win->child_xlib;
       parent_gdk=win->child_gdk;
       break;
@@ -1821,17 +1818,43 @@ void show_hide_window (win_struct *win, gint force_state,
 
       if (win->xmms)
         deiconify_xmms_windows(win);
-
-      if (win->gnome && !win->normal_map)
+      else if (win->no_reparent && !win->normal_map && !win->click_mode)
         deiconify_window (parent_xlib);
 
       gdk_window_add_filter(parent_gdk, parent_filter_map, (gpointer) win);
 
-      if (win->normal_map)
-        gdk_window_focus (parent_gdk, gtk_get_current_event_time());
-      else
-        XMapWindow (win->display, parent_xlib);
-     
+   //   if (win->normal_map)
+    //    gdk_window_focus (parent_gdk, gtk_get_current_event_time());
+    //  else
+      
+     XMapWindow (win->display, parent_xlib);
+
+      if (!win->normal_map && (win->initial_x || win->initial_y || win->initial_w || win->initial_h)) {
+
+        do {
+  
+           if (win->initial_w == 0 && win->initial_h ==0 ) {
+           
+            if (debug) printf ("only move\n");
+            gdk_window_move (win->child_gdk, win->initial_x, win->initial_y);
+            break;
+          }
+   
+           if (win->initial_x == 0 && win->initial_y == 0) {
+             if (debug) printf ("only resize\n");
+             gdk_window_resize (win->child_gdk, win->initial_w, win->initial_h);
+             break;
+           }
+         
+           if (debug) printf ("move and resize\n");
+         
+           gdk_window_move_resize (win->child_gdk, win->initial_x, win->initial_y, 
+              win->initial_w, win->initial_h);
+  
+        } until;
+    
+      }
+
       gtk_main ();
       
       if (debug) printf ("mapped\n");
@@ -1858,10 +1881,10 @@ void show_hide_window (win_struct *win, gint force_state,
     
    } else {
    
-    if (debug) printf ("hide\n");
-       
-    XIconifyWindow (GDK_DISPLAY(), parent_xlib, DefaultScreen(GDK_DISPLAY()));
-    skip_taskbar (win, !keep_in_taskbar);
+      if (debug) printf ("hide\n");
+         
+      XIconifyWindow (GDK_DISPLAY(), parent_xlib, DefaultScreen(GDK_DISPLAY()));
+      skip_taskbar (win, !keep_in_taskbar);
 
    }
 

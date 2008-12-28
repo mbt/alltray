@@ -1,3 +1,15 @@
+Jul, 04, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- different approach to intercept window closing under KDE (drag n drop etc will work)
+- added "--sticky" option (suggested by Mad)
+- got "--geometry" and "--borderless" option working under gnome again
+- removed "Xmu" dependency
+- added "--configure" option (needed if window-theme for KDE has changed)
+- fixed: close on button release instead of button press (Gnome)
+- renamed liballtraynomap to liballtray
+- added XMapSubwindows to liballtray
+- small fixes
+- set version to 0.55 (dev snap)
+
 Jun, 12, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - different approach to intercept window closing under Gnome:
   *application will be untouched (no reparent)

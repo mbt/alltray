@@ -188,7 +188,7 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   gtk_widget_show (label);
   
   gtk_container_add (GTK_CONTAINER (balloon->window), label);
-  gtk_label_set_markup (GTK_LABEL (label), message);
+  gtk_label_set_text (GTK_LABEL (label), message);
 
   gtk_window_get_size (GTK_WINDOW (balloon->window), &balloon->w, &balloon->h);
   

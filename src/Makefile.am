@@ -31,8 +31,12 @@ alltray_SOURCES = \
   grab.h \
   gnome_theme.c \
   gnome_theme.h \
+  kde.c \
+  kde.h \
+  clientwin.c \
+  clientwin.h \
   inlinepixbufs.h
 
 
 alltray_LDFLAGS =-L/usr/X11R6/lib
-alltray_LDADD = @PACKAGE_LIBS@  -lXmu
+alltray_LDADD = @PACKAGE_LIBS@

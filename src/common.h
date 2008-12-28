@@ -33,6 +33,10 @@ pid_t getpgid(pid_t pid);
 #define window_is_visible 1
 #define window_is_hidden 0
 
+#define RIGHT 1
+#define LEFT 0
+#define NO_SUCCESS -1
+
 Atom wm_name_atom;
 Atom wm_icon_atom;
 Atom net_wm_icon;
@@ -88,6 +92,14 @@ typedef struct _balloon_struct {
   
 } balloon_struct;
 
+typedef struct _button {
+ Window window_xlib;
+ GdkWindow *window_gdk;
+ gint start_x;
+ gint start_y;
+ gint width;
+ gint height;
+} button;
 
 typedef struct _win_struct {
 
@@ -176,6 +188,7 @@ typedef struct _win_struct {
 
   gchar *window_manager;
   gboolean gnome;
+  gboolean kde;
 
   gboolean no_reparent;
 
@@ -192,6 +205,10 @@ typedef struct _win_struct {
 
   gboolean normal_map;
 
+  gboolean sticky;
+  
+  gboolean kde_close_button_pos;
+  button kde_close_button;
 
 } win_struct;
 

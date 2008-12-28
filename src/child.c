@@ -44,9 +44,10 @@
 #include "utils.h"
 #include "trayicon.h"
 #include "prefix.h"
+#include "clientwin.h"
 
 #ifdef HAVE_LD_PRELOAD
-#define PRELOAD_LIB "/liballtraynomap.so.0.0.0"
+#define PRELOAD_LIB "/liballtray.so.0.0.0"
 #endif
 
 
@@ -200,7 +201,7 @@ static GdkFilterReturn root_filter_map (GdkXEvent *xevent,
    if (debug) printf ("map notify\n");
        
     xmap=(XMapEvent*) xev;
-    window=XmuClientWindow(GDK_DISPLAY(), xmap->window);
+    window=ClientWindow(xmap->window);
    
     //display_window_id (GDK_DISPLAY(), window);
        
@@ -304,7 +305,7 @@ void set_env_stuff (gpointer user_data)
   win_struct *win= (win_struct*) user_data;
 
   if (debug)
-    path_to_lib=g_strdup ("/usr/lib/liballtraynomap.so.0.0.0");
+    path_to_lib=g_strdup ("/usr/lib/liballtray.so.0.0.0");
   else
    path_to_lib=g_strdup_printf (BR_LIBDIR(PRELOAD_LIB));
 

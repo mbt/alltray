@@ -35,7 +35,7 @@ require @gtk.org/gtk 2.2
 [Install]
 # Put your installation script here
 installExe bin/alltray
-copyFile lib/liballtraynomap.so.0.0.0 "$PREFIX/lib/liballtraynomap.so.0.0.0"
+copyFile lib/liballtray.so.0.0.0 "$PREFIX/lib/liballtray.so.0.0.0"
 installMan 1 man/man1/alltray.1
 installIcon share/pixmaps/alltray.png
 installDesktop "Application/Utility" share/applications/alltray.desktop

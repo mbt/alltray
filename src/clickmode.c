@@ -44,6 +44,7 @@
 #include "config.h"
 #include "common.h"
 #include "utils.h"
+#include "clientwin.h"
 
 Window dialog_xlib;
 
@@ -134,7 +135,7 @@ gboolean grab (gpointer user_data)
     
       case ButtonPress:
          target_win= event.xbutton.subwindow;
-         target_win_xmu=XmuClientWindow (GDK_DISPLAY(), target_win);
+         target_win_xmu=ClientWindow (target_win);
       
          //if (debug) printf ("target win: %d\n", target_win);
          //if (debug) printf ("target win xmu : %d\n", target_win_xmu);

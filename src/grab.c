@@ -47,8 +47,8 @@
 #include "utils.h"
 #include "trayicon.h"
 #include "inlinepixbufs.h"
-
 #include "gnome_theme.h"
+#include "kde.h"
 
 
 #define closebuttonx 264
@@ -76,7 +76,7 @@ gboolean grap_pointer_ (gpointer user_data)
     grap_window= win->target_our_xlib;
 
   status = XGrabPointer(GDK_DISPLAY(), grap_window, False,
-    ButtonPressMask | PointerMotionMask, GrabModeSync,
+    ButtonReleaseMask | PointerMotionMask, GrabModeSync,
     GrabModeAsync, GDK_ROOT_WINDOW(), cursor, CurrentTime);
   
   if (status != GrabSuccess) {
@@ -89,12 +89,12 @@ gboolean grap_pointer_ (gpointer user_data)
   
     XAllowEvents(GDK_DISPLAY(), SyncPointer, CurrentTime);
     XWindowEvent(GDK_DISPLAY(), grap_window,
-        ButtonPressMask| PointerMotionMask, &event);
+        ButtonReleaseMask| PointerMotionMask, &event);
     
     switch (event.type) {
       
-      case ButtonPress:
-        if (debug) printf ("button press\n");
+      case ButtonRelease:
+        if (debug) printf ("button release\n");
         button_pressed=TRUE;
       break;
       
@@ -218,39 +218,140 @@ GdkFilterReturn motion_filter_xmms (GdkXEvent *xevent,
   return GDK_FILTER_CONTINUE;
 }
 
+gboolean kde_close_window_grap (gpointer user_data)
+{
+  
+  int status;
+  XEvent event;
+  
+  gboolean inside=TRUE;
+  gboolean button_pressed=FALSE;
+  
+  
+  win_struct *win= (win_struct*) user_data;
+
+  status = XGrabPointer(GDK_DISPLAY(), win->kde_close_button.window_xlib, False,
+    ButtonReleaseMask | PointerMotionMask, GrabModeSync,
+    GrabModeAsync, GDK_ROOT_WINDOW(), None, CurrentTime);
+  
+  if (status != GrabSuccess) {
+    printf ("Can't grab the mouse.");
+    return FALSE;
+  }
+
+  while (inside && !button_pressed) {
+  
+    XAllowEvents(GDK_DISPLAY(), SyncPointer, CurrentTime);
+    XWindowEvent(GDK_DISPLAY(), win->kde_close_button.window_xlib,
+        ButtonReleaseMask| PointerMotionMask, &event);
+    
+    
+    switch (event.type) {
+      
+      case ButtonRelease:
+          if (debug) printf ("button release\n");
+          button_pressed=TRUE;
+      break;
+      
+      case MotionNotify:
+         if (debug) printf ("motion notify: %d %d\n", event.xmotion.x, event.xmotion.y);
+  
+        if (event.xmotion.x < 0 ||
+            event.xmotion.x >= win->kde_close_button.width ||
+            event.xmotion.y < 0 ||
+           event.xmotion.y >= win->kde_close_button.height ) {
+           inside=FALSE;
+          if (debug) printf ("outside...\n");
+        }
+        
+      break;
+   }
+  
+  }
+
+  XUngrabPointer(GDK_DISPLAY(), CurrentTime);
+  
+  if (button_pressed)
+    show_hide_window (win, force_hide, FALSE);
+
+
+  return FALSE;
+
+}
+
+GdkFilterReturn kde_close_window_filter (GdkXEvent *xevent, 
+  GdkEvent *event, gpointer user_data)
+{
+  XEvent *xev = (XEvent *)xevent;
+     
+  win_struct *win= (win_struct*) user_data;
+  
+  switch (xev->xany.type) {
+  
+    case EnterNotify:
+      if (debug) printf ("EnterNotify\n");
+      
+      g_timeout_add (1, kde_close_window_grap, (gpointer) win);
+    
+    break;
+
+  }
+
+  return GDK_FILTER_CONTINUE;
+
+}
+
 void grab_init (win_struct *win)
 {
 
   XWindowAttributes win_attributes;
-  
-  if (win->xmms) {
-  
-    gdk_window_set_events(win->xmms_main_window_gdk, GDK_POINTER_MOTION_MASK);
-    gdk_window_add_filter(win->xmms_main_window_gdk, motion_filter_xmms, (gpointer) win);
-  
-  } else {
 
-    win->target_our_xlib=one_under_root (GDK_DISPLAY(), win->child_xlib);
-    win->target_our_gdk=gdk_window_foreign_new (win->target_our_xlib);
+
+  do {
+  
+    if (win->xmms) {
     
-    gdk_drawable_get_size (win->target_our_gdk, &win->target_our_w, &win->target_our_h);
+      gdk_window_set_events(win->xmms_main_window_gdk, GDK_POINTER_MOTION_MASK);
+      gdk_window_add_filter(win->xmms_main_window_gdk, motion_filter_xmms, (gpointer) win);
+      break;
     
-    if (debug)
+    }
+    
+    if (win->gnome) {
+    
+      win->target_our_xlib=one_under_root (GDK_DISPLAY(), win->child_xlib);
+      win->target_our_gdk=gdk_window_foreign_new (win->target_our_xlib);
+      
+      gdk_drawable_get_size (win->target_our_gdk, &win->target_our_w, &win->target_our_h);
+      
+      if (debug)
       printf ("target_our_w: %d, target_our_h: %d\n", win->target_our_w, win->target_our_h);
-
-    gdk_error_trap_push();
-    if (!XGetWindowAttributes(GDK_DISPLAY(), win->child_xlib, &win_attributes))
+      
+      gdk_error_trap_push();
+      if (!XGetWindowAttributes(GDK_DISPLAY(), win->child_xlib, &win_attributes))
       printf("Can't get window attributes.");
-    gdk_error_trap_pop();
-
-    if (debug) printf("  Relative upper-left Y:  %d\n",win_attributes.y);
+      gdk_error_trap_pop();
+      
+      if (debug) printf("  Relative upper-left Y:  %d\n",win_attributes.y);
+      
+      win->button_width=win->button_height=win_attributes.y;
+      
+      gdk_window_set_events(win->target_our_gdk, GDK_POINTER_MOTION_MASK);
+      gdk_window_add_filter(win->target_our_gdk, motion_filter_gnome, (gpointer) win);
+      
+      break;
     
-    win->button_width=win->button_height=win_attributes.y;
-   
-    gdk_window_set_events(win->target_our_gdk, GDK_POINTER_MOTION_MASK);
-    gdk_window_add_filter(win->target_our_gdk, motion_filter_gnome, (gpointer) win);
+    }
+    
+    if (win->kde) {
+
+      win->kde_close_button= kde_get_close_button (win->child_xlib, win->kde_close_button_pos);
+      gdk_window_set_events(win->kde_close_button.window_gdk, GDK_ENTER_NOTIFY_MASK );
+      gdk_window_add_filter(win->kde_close_button.window_gdk, kde_close_window_filter, (gpointer) win);
+      break;
+    }
   
-  }
+  } until;
 
 }
 
@@ -272,7 +373,7 @@ GdkFilterReturn target_filter (GdkXEvent *xevent,
      
       update_visibility_state (win, window_is_visible);
 
-      if (first_map) {
+      if (first_map && !win->borderless) {
         grab_init(win);
         first_map=FALSE;
       }
@@ -335,12 +436,9 @@ GdkFilterReturn target_filter (GdkXEvent *xevent,
 
         if (debug) printf ("configure notify\n");
 
-        if (win->xmms)
+        if (win->xmms || !win->parent_is_visible || win->borderless || win->kde)
           break;
 
-        if (!win->parent_is_visible)
-          break;
-    
         gdk_drawable_get_size (win->target_our_gdk, 
                &win->target_our_w, &win->target_our_h);
 

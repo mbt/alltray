@@ -285,19 +285,6 @@ XMapWindow (Display* display, Window w)
   static int xmms_equalizer=0;
   
   static Window xmms_main_window;
-  
-  if (do_nothing && fptr != 0)
-    return (*fptr)(display, w);
-  
-  if (xmms_support && xmms_main != None) {
-    if (window_is_visible (display, xmms_main_window)) {
-      do_nothing=1;
-      return (*fptr)(display, w);
-    }
-  }
-  
-  DPRINTF ((stderr, "liballtraynomap: XMapWindow %d\n", w));
-  
 
   if (fptr == 0) {
     
@@ -352,6 +339,19 @@ XMapWindow (Display* display, Window w)
     }
   
   }
+ 
+  if (do_nothing)
+    return (*fptr)(display, w);
+  
+  if (xmms_support && xmms_main != None) {
+    if (window_is_visible (display, xmms_main_window)) {
+      do_nothing=1;
+      return (*fptr)(display, w);
+    }
+  }
+  
+  DPRINTF ((stderr, "liballtraynomap: XMapWindow %d\n", w));
+ 
   
   if (iconic (display,w)) {
    
@@ -453,21 +453,102 @@ XMapWindow (Display* display, Window w)
 
 }
 
+extern int XMapSubwindows(Display *display, Window w)
+{
+  
+  static int (*fptr)() = 0;
+  int value;
+
+  if (fptr == 0) {
+    
+    
+    DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+    
+    void *dlh_xerr = NULL;
+    int (*fptr_xerr)() = 0;
+    
+    dlh_xerr = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    
+    if (dlh_xerr == NULL) 
+      dlh_xerr = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+  
+    if (dlh_xerr != NULL) {
+      dlclose (dlh_xerr);
+      
+      fptr_xerr = (int (*)())dlsym (dlh_xerr, "XSetErrorHandler");
+      
+      if (fptr_xerr != NULL) {
+        DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+        (*fptr_xerr) (error_handler);
+      }
+      
+    }
+
+  
+    #ifdef RTLD_NEXT
+      fptr = (int (*)())dlsym (RTLD_NEXT, "XMapSubwindows");
+    #else
+     
+      DPRINTF ((stderr, "liballtraynomap: no RTLD_NEXT\n"));
+      
+     
+      void *dlh = NULL;
+  
+      dlh = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+      if (dlh == NULL) 
+        dlh = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+      if (dlh == NULL)
+        fprintf (stderr, "liballtraynomap: %s\n", dlerror ());
+      
+      if (dlh != NULL) {
+        fptr = (int (*)())dlsym (dlh, "XMapSubwindows");
+        dlclose (dlh);
+      }
+      
+      DPRINTF ((stderr, "liballtraynomap: XMapSubwindows is at %p\n", fptr));
+    #endif
+    
+    if (fptr == NULL) {
+      fprintf (stderr, "liballtraynomap: dlsym: %s\n", dlerror());
+      return 0;
+    }
+  
+  }
+
+  
+  if (do_nothing)
+    return (*fptr)(display, w);
+  
+  DPRINTF ((stderr, "liballtraynomap: XMapSubwindows %d\n", w));
+      
+  if (iconic (display,w)) {
+  
+    value=(*fptr)(display, w);
+      
+    XWithdrawWindow (display, w,0);
+    sent_found_window_to_parent (display, w);
+  
+    do_nothing=1;
+  
+  } else {
+    
+    value=(*fptr)(display, w);
+  
+  }
+
+  return value;
+
+}
+
 extern int 
 XMapRaised (Display* display, Window w)
 {
   
   static int (*fptr)() = 0;
   int value;
-  
-  if (do_nothing && fptr != 0)
-    return (*fptr)(display, w);
-  
-  DPRINTF ((stderr, "liballtraynomap: XMapRaised %d\n", w));
 
   if (fptr == 0) {
-    
-    
+
     DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
     
     void *dlh_xerr = NULL;
@@ -520,6 +601,12 @@ XMapRaised (Display* display, Window w)
     }
   
   }
+  
+  if (do_nothing)
+    return (*fptr)(display, w);
+  
+  DPRINTF ((stderr, "liballtraynomap: XMapRaised %d\n", w));
+ 
       
   if (iconic (display,w)) {
   

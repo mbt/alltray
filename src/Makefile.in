@@ -55,7 +55,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_alltray_OBJECTS = main.$(OBJEXT) parent.$(OBJEXT) child.$(OBJEXT) \
 	utils.$(OBJEXT) trayicon.$(OBJEXT) balloon_message.$(OBJEXT) \
 	xmms.$(OBJEXT) clickmode.$(OBJEXT) prefix.$(OBJEXT) \
-	grab.$(OBJEXT) gnome_theme.$(OBJEXT)
+	grab.$(OBJEXT) gnome_theme.$(OBJEXT) kde.$(OBJEXT) \
+	clientwin.$(OBJEXT)
 alltray_OBJECTS = $(am_alltray_OBJECTS)
 alltray_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -203,10 +204,14 @@ alltray_SOURCES = \
   grab.h \
   gnome_theme.c \
   gnome_theme.h \
+  kde.c \
+  kde.h \
+  clientwin.c \
+  clientwin.h \
   inlinepixbufs.h
 
 alltray_LDFLAGS = -L/usr/X11R6/lib
-alltray_LDADD = @PACKAGE_LIBS@  -lXmu
+alltray_LDADD = @PACKAGE_LIBS@
 all: all-am
 
 .SUFFIXES:
@@ -281,8 +286,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/balloon_message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/child.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clickmode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientwin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gnome_theme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grab.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kde.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefix.Po@am__quote@
