@@ -1,3 +1,9 @@
+Jul 06, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- clear window props before undock
+- fixed probs with configure dialog
+- small bug fixes
+ -set version to 0.60 (stable)
+
 Jul, 04, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - different approach to intercept window closing under KDE (drag n drop etc will work)
 - added "--sticky" option (suggested by Mad)

@@ -470,6 +470,7 @@ gboolean kde_show_configure_dialog (win_struct *win)
   GList *buttons;
 
   window=create_configure_window();
+  gtk_window_set_keep_above (GTK_WINDOW (window), TRUE); //kwin bug
   gtk_widget_realize (window);
   gtk_widget_show (window);
 

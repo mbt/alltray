@@ -24,12 +24,8 @@ AllTray \- Dock any program into the system tray.
 .ad l
 .hy 0
 .HP 8
-\fBalltray\fR program [\fB\-h\fR] [\fB\-\-help\fR] [\fB\-v\fR] [\fB\-\-version\fR]\
-[\fB\-d\fR] [\fB\-\-debug\fR] [\fB\-s\fR] [\fB\-\-show\fR]\
-[\fB\-i\fR\ \fIpngicon\fR] [\fB\-\-icon\fR\ \fIpngicon\fR]\
-[\fB\-l\fR] [\fB\-\-large_icons\fR] [\fB\-x\fR] [\fB\-\-borderless\fR]\
-[\fB\-m\fR\ \fI"menu\ text:command"\fR] [\fB\-\-menu\fR\ \fI"menu\ text:command"\fR]\
-[\fB\-t\fR\ \fIsec\fR] [\fB\-\-title\fR\ \fIsec\fR]
+\fBalltray\fR [program] \fB[options]\fR
+
 .ad
 .hy
 
@@ -39,8 +35,10 @@ AllTray \- Dock any program into the system tray.
 With \fBAllTray\fR you can dock any application with no native tray icon\
 (like Evolution, Thunderbird, Terminals) into the system tray\&. A high\-light feature \
 is that a click on the "close" button will minimize back to system tray\&.\
-It works well with Gnome, KDE, XFCE 4, Fluxbox and WindowMaker\&.
+It works well with Gnome, KDE, XFCE 4*, Fluxbox* and WindowMaker*\&.
 Xmms is supported in particular\&.
+
+*no drag n drop support.
 
 .SH "OPTIONS"
 
@@ -66,6 +64,9 @@ Use a PNG image as an icon\&.
 \fB\-l\fR \fB\-\-large_icons\fR
 allow large icons (> 24x24)\&.
 .TP
+\fB\-st\fR \fB\-\-sticky\fR
+visible on all workspaces\&.
+.TP
 \fB\-x\fR \fB\-\-borderless\fR
 Remove windows decorations border, title, frame\&.\&.\&. from parent\&.
 .TP
@@ -74,6 +75,10 @@ Add entry "menu text:command" to popdown menu\&.
 .TP
 \fB\-t\fR \fB\-\-title\fR
 Show title change for <sec> seconds. Probably most usefull for xmms\&.
+.TP
+\fB\-g\fR \fB\-\-geometry\fR
+initial position. see man X.
+
 
 .SH HOMEPAGE
 http://alltray.sourceforge.net

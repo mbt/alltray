@@ -4,7 +4,9 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   (like Evolution, Thunderbird, Terminals) into the system tray.
   A high-light feature is that a click on the "close" button
   will minimize back to system tray. It works well with Gnome,
-  KDE, XFCE 4, Fluxbox and WindowMaker.
+  KDE, XFCE 4*, Fluxbox* and WindowMaker*.
+  
+  *no drag 'n drop support
 
 
 **Install:
@@ -34,6 +36,8 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
     
   and click on the target window.
   
+
+
   A click on the "close" button ("X") in the window title will not exit the
   application. The application will be minimized.
   
@@ -42,10 +46,13 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   
   The "Undock" menu item will undock the window. Yeahh really ;)
   
-  If you use the "borderless" option, you can move the window with
+  If you use the "--borderless" option, you can move the window with
   "Alt-left_mouse_button".
+
   
-  Note: Under KDE the "large_icon" option has no effect.
+  Note: * Under KDE the "large_icon" option has no effect.
+           * "--configure" option will only work under KDE. You need to configure 
+              AllTray after each theme change.
 
 
 **All options:
@@ -55,18 +62,20 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   usage: alltray [options] ["] <program_name> [program parameter] ["]
   
    where options include:
-     --help; -h:  print this message
-     --version; -v: print version
-     --debug; -d: show debug messages
-     --show; -s:  do not hide window after start
-     --icon; -i  <path to png>: use this icon
-     --large_icons; -l: allow large icons (> 24x24)
-     --borderless; -x: remove border, title, frame... from parent
-     --menu; -m: "menu text:command": add entry to popdown menu
-     --title; -t <sec>: show title change for <sec> seconds
-     --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo
-  
-  usage: alltray
+    --help; -h:  print this message
+    --version; -v: print version
+    --debug; -d: show debug messages
+    --show; -s:  do not hide window after start
+    --icon; -i  <path to png>: use this icon
+    --large_icons; -l: allow large icons (> 24x24)
+    --sticky; -st: visible on all workspaces
+    --borderless; -x: remove border, title, frame (if not supported native)
+    --menu; -m: "menu text:command": add entry to popdown menu
+    --title; -t <sec>: show title change for <sec> seconds
+    --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)
+    --configure; -conf: show KDE configuration dialog
+
+   usage: alltray
   
    Click-Mode: Click on the window you would like to dock.
    (Cancel with <c>)
@@ -96,3 +105,5 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
    Bug, feature request, not working application ? let me know.
    
    email@jochen-baier.de
+   
+   http://alltray.sourceforge.net/

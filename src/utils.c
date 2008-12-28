@@ -390,7 +390,7 @@ gboolean window_type_is_normal (Window win)
             
 }
 
-void skip_pager (Window window)
+void skip_pager (Window window, gboolean add)
 {
   
   XEvent xev;
@@ -401,7 +401,7 @@ void skip_pager (Window window)
   xev.xclient.window = window;
   xev.xclient.message_type = net_wm_state;
   xev.xclient.format = 32;
-  xev.xclient.data.l[0] = 1;
+  xev.xclient.data.l[0] = add ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
   xev.xclient.data.l[1] = net_wm_state_skip_pager;
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
@@ -441,6 +441,29 @@ void sticky (Window window)
   xev.xclient.format = 32;
   
   xev.xclient.data.l[0] = 0xFFFFFFFF;
+  xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
+  
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+            SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+}
+
+void rm_sticky (Window window)
+{
+  
+  XEvent xev;
+
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = window;
+  xev.xclient.display = GDK_DISPLAY();
+  xev.xclient.message_type =net_wm_desktop;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = get_current_desktop();
   xev.xclient.data.l[1] = 0;
   xev.xclient.data.l[2] = 0;
   xev.xclient.data.l[3] = 0;
@@ -1686,6 +1709,11 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     
     }
   
+    gdk_window_set_decorations (win->child_gdk, GDK_DECOR_ALL);
+    skip_taskbar (win, FALSE);
+    skip_pager (win->child_xlib, FALSE);
+    rm_sticky (win->child_xlib);
+  
   
     if (kill_child)
       close_window (child);
@@ -1822,13 +1850,12 @@ void show_hide_window (win_struct *win, gint force_state,
         deiconify_window (parent_xlib);
 
       gdk_window_add_filter(parent_gdk, parent_filter_map, (gpointer) win);
-
-   //   if (win->normal_map)
-    //    gdk_window_focus (parent_gdk, gtk_get_current_event_time());
-    //  else
       
+     if (win->click_mode && !win->kde)  //XXX fixme, no focus under kde
+      gdk_window_focus (parent_gdk, gtk_get_current_event_time());
+     else
      XMapWindow (win->display, parent_xlib);
-
+     
       if (!win->normal_map && (win->initial_x || win->initial_y || win->initial_w || win->initial_h)) {
 
         do {
@@ -1867,7 +1894,7 @@ void show_hide_window (win_struct *win, gint force_state,
         gtk_sleep (100);
            
       sticky (parent_xlib);
-      skip_pager(parent_xlib);
+      skip_pager(parent_xlib, TRUE);
  
       first_click=FALSE;
      
@@ -1877,7 +1904,7 @@ void show_hide_window (win_struct *win, gint force_state,
 
     gdk_window_focus (parent_gdk, gtk_get_current_event_time());
     skip_taskbar (win, FALSE);
-  
+      
     
    } else {
    

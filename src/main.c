@@ -181,10 +181,18 @@ void command_line_init (win_struct *win, int argc, char **argv)
      win->no_reparent=TRUE;
      win->kde_close_button_pos = kde_get_close_button_positon ();
   }
-  
+ 
   if (argc==1) {
     win->click_mode=TRUE;
-    return;
+  
+    if (win->kde && win->kde_close_button_pos == NO_SUCCESS) {
+       if (!kde_show_configure_dialog (win)) {
+         printf ("Configuration canceled. \"alltray -conf\" to reshow.\n");
+         exit (1);
+       }
+    } 
+
+      return;
   }
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
