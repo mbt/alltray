@@ -1,5 +1,18 @@
-Jan, 8, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+Jan, 27, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- use process group ID to identify windows (usefull for programs
+  with own child processes like thunderbird,
+  alltray /home/user/thunderbird/thunderbird works now)
+  thanks to Kai for the bug report
+- remove path and arguments from command before compare with
+  wm_class
+- check if the size of the child window have changed before docking
+  (usefull for "ding, Dictionary Lookup" program)
+  thanks to Poly for the bug report
+- added "--debug" command line option
+- check for unknown/wrong options
+- set version to 0.35
 
+Jan, 8, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - identify/detect windows similar like a taskbar do it
   this allow to dock all programs with a simple: alltray program_name
 - removed "--hints" option
@@ -11,10 +24,11 @@ Jan, 8, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - gtk_plug stuff for docking
 - set initial_state to NormalState to prevent
   the parent window to be treated like a dockapp
-  (thanks to Mathias Gumz (akir) for pointing this out)
+  (thanks to Mathias Gumz (akira) for pointing this out)
 - check if the child window is visible before sending the focus
-  (thanks to Mathias Gumz (akir) for pointing this out)
+  (thanks to Mathias Gumz (akira) for pointing this out)
 - configure.in: check for gtk >= 2.4
+- set version to 0.3
 
 Dec, 15, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - fixed bug in XFCE4, alltray now work with XFCE4 cvs newer then dec 15, 04

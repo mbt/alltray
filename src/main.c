@@ -353,7 +353,7 @@ void win_struct_init(win_struct *win)
   win->display=GDK_DISPLAY();
   win->root_xlib=GDK_ROOT_WINDOW();
   win->root_gdk=gdk_screen_get_root_window (gdk_screen_get_default());
-  
+      
   win->parent_is_visible=FALSE;
    
   win->screen_width=gdk_screen_get_width (gdk_screen_get_default());
@@ -387,7 +387,11 @@ void win_struct_init(win_struct *win)
   win->show=FALSE;
   win->command=NULL;
   win->child_xlib=None;
-  win->pid=(GPid) 0;
+  
+  win->parent_pid=getpid();
+  win->child_pid=0;
+  if (debug) printf ("win->parent_pid: %d\n", win->parent_pid);
+   
   win->manager_window=None;
   
   win->plug=NULL;
@@ -408,7 +412,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
   gchar *user_icon_path=NULL;
   
   if (!parse_arguments(argc, argv, &user_icon_path,
-    &win->command, &win->show, &win->hide_start)) {
+    &win->command, &win->show, &win->hide_start, &debug)) {
       
     exit(1);
   }
@@ -419,7 +423,9 @@ void command_line_init (win_struct *win, int argc, char **argv)
     if (win->show) printf ("show=TRUE\n");
     if (win->user_icon) printf ("have user icon\n");
     if (win->hide_start) printf ("hide_start=TRUE\n");
-  } 
+  }
+
+  win->command_only=strip_command(win->command);
   
   if (user_icon_path) {
   
@@ -473,7 +479,7 @@ void exec_and_wait_for_window(win_struct *win)
   gdk_window_add_filter(win->root_gdk, root_filter_map, (gpointer) win); 
   
   if (debug) printf ("execute program\n");
-  if (!(win->pid=exec_command (win->command))) {
+  if (!(win->child_pid=exec_command (win->command))) {
   
     if (debug) printf ("execute failed\n");
     exit (1);
@@ -485,11 +491,10 @@ void exec_and_wait_for_window(win_struct *win)
   
   if (debug) {
     printf ("found child window: %d\n", (int) win->child_xlib);
-    printf ("found child pid: %d\n", (int) win->pid);
+    printf ("child have pid: %d\n", (int) win->child_pid);
   }
   
   gdk_window_remove_filter(win->root_gdk, root_filter_map, (gpointer) win);
-  g_free(win->command);
   
 }
 
@@ -558,14 +563,36 @@ void create_fake_desktop (win_struct *win)
   
 }
 
+void get_child_size (GdkWindow *child_gdk, 
+    gint *w_return, gint *h_return)
+{
+  
+  gint w=0, h=0, last_w=-1, last_h=-1;
+
+  do {
+  
+    if (debug) printf ("child size loop\n");
+    
+    last_w=w;
+    last_h=h;
+    
+    gdk_window_get_geometry (child_gdk, 
+        NULL, NULL, &w, &h, NULL);
+    
+    if (last_w == w && last_h == h)
+      break;
+    
+    gtk_sleep (200);
+  
+  }while (1);
+
+  *w_return=w;
+  *h_return=h;
+}
+
 int
 main (int argc, char *argv[])
 {
-
-  gint child_window_w;
-  gint child_window_h;
-  gint child_window_x;
-  gint child_window_y;
 
   XClassHint *classHint;
   XWMHints *wmhints;
@@ -574,7 +601,7 @@ main (int argc, char *argv[])
   glong supplied_return;
   Atom protocols[3];
   gint err=0;
-     
+  gint w,h;
   
   gtk_init (&argc, &argv);
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
@@ -594,13 +621,12 @@ main (int argc, char *argv[])
 
   win->child_gdk=gdk_window_foreign_new(win->child_xlib);
   
-  gdk_window_get_geometry (win->child_gdk, 
-      &child_window_x, &child_window_y, &child_window_w, &child_window_h, NULL);
-   
   withdraw_window(win);
+  
+  get_child_size (win->child_gdk, &w,&h);
     
   win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
-        child_window_w, child_window_h, 0, 0, 0);
+        w, h, 0, 0, 0);
   
   gdk_error_trap_push ();
   leader_change = XGetWMHints(GDK_DISPLAY(), win->child_xlib);
@@ -677,7 +703,10 @@ main (int argc, char *argv[])
   
   if (win->show)
     show_hide_window (win, force_show, FALSE);
-  
+
+  g_free(win->command);
+  g_free(win->command_only);
+    
   gtk_main ();
 
   return 0;

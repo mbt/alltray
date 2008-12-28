@@ -153,8 +153,7 @@ void update_visibility_state (win_struct *win, gboolean new_state)
  
   if (debug) printf ("update_visibility_state workspace->len: %d\n", 
     win->workspace->len);
-  
-  
+
   gint current_max_workspace=win->workspace->len-1;
   gint i;
         
@@ -167,12 +166,11 @@ void update_visibility_state (win_struct *win, gboolean new_state)
       g_array_append_val(win->workspace, new_state);
     
     }
-  } 
+  }
 
    old_state=&g_array_index (win->workspace, wm_state_struct, win->desktop);
    (*old_state).visible=new_state;
-  
-   
+
    if (debug) printf ("update_visibility_state to: %d\n", (*old_state).visible);
   
   win->parent_is_visible=new_state;
@@ -526,10 +524,11 @@ void display_window_id(Display *display, Window window)
 }
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
-    gchar  **rest, gboolean *show, gboolean *hide_start)
+    gchar  **rest, gboolean *show, gboolean *hide_start,
+    gboolean *debug)
 {
   int i;
-  char rest_buf[1024]="";
+  char rest_buf[4096]="";
   
   if (argc == 1) {
     show_help();
@@ -562,28 +561,43 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
     
          
       if (!strcmp(argv[i], "--icon") || !strcmp(argv[i], "-i")) {
-       if ((i+1) ==  argc) {
-        show_help();
-        return FALSE;
-       }
+        if ((i+1) ==  argc) {
+          show_help();
+          return FALSE;
+        }
       
-       *icon=g_strdup (argv[i+1]);
-       i++;
-       break;
-      }  
+        *icon=g_strdup (argv[i+1]);
+        i++;
+        break;
+      }
     
-     if (strlen (rest_buf) > 0)
+      if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
+        *debug=TRUE;
+        break;
+      }  
+
+      if (g_str_has_prefix (argv[i],"-")) {
+        printf ("\nAlltray: Unknown option '%s'\n\n", argv[i]);
+        return FALSE;
+      }
+  
+      if (strlen (rest_buf) + strlen (argv[i]) >= 4096) {
+        printf ("Alltray: Command Buffer too small (; [max 4096 letters]\n");
+        return FALSE;
+      }
+              
+      if (strlen (rest_buf) > 0)
         strcat (rest_buf, " ");
-      
+        
       strcat (rest_buf, argv[i]);
       
     }while (0);
   
   }
   
-  if (strlen (rest_buf) ==0) {
+  if (strlen (rest_buf) == 0) {
     show_help();
-  return FALSE;
+    return FALSE;
   }
   
   
@@ -592,13 +606,14 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
   return TRUE;
 }
 
-gboolean pid_match(Window w, GPid pid)
+gint get_pid (Window w)
 {
   
   Atom actual_type;
   int actual_format;
   unsigned long nitems, leftover;
   unsigned char *pid_return;
+  gint pid=0;
   int status;
   gint err;
     
@@ -611,22 +626,15 @@ gboolean pid_match(Window w, GPid pid)
   
   err=gdk_error_trap_pop();
     
-   if (err!=0 || status != Success)
-     return FALSE;
-       
-    if (pid_return) {
-  
-      if (debug) printf ("wm pid: %d\n", *(GPid *) pid_return);
-      
-      if (pid == *(GPid *) pid_return) {
-        XFree(pid_return);
-        return TRUE;
-      }
-    
-      return FALSE;
-    }
-  
-  return FALSE;
+  if (err!=0 || status != Success)
+    return 0;
+     
+  if (pid_return) {
+    pid=*(gint *) pid_return;
+    XFree(pid_return);
+  }
+
+  return pid;
 }
 
 gboolean
@@ -733,7 +741,9 @@ gboolean window_match (Window window, win_struct *win)
   gint err=0;
   gchar *res_class_down=NULL;
   gchar *command_down=NULL;
-      
+  
+  gint pid, pgid;
+        
   if (!get_window_list (GDK_ROOT_WINDOW(),
     net_client_list, &stack, &stack_length))
     return FALSE;
@@ -764,30 +774,49 @@ gboolean window_match (Window window, win_struct *win)
     gdk_error_trap_push();
     result=XGetWindowAttributes (GDK_DISPLAY(), window, &attr);
     err=gdk_error_trap_pop();
-    
-    if (debug)
-      printf ("size -> x: %d, y: %d\n", attr.width, attr.height);
-    
+     
     //xmms...
     if (err || result==0 || attr.width<=1 || attr.width<=1)  {
       break;
     }
-        
-    if (pid_match(window, win->pid)) {
-     if (debug) printf ("pid match !\n");
-     match=TRUE;
-     break;
-    }
-        
-    if (debug) printf ("NO PID MATCH\n");
+
+    pid=get_pid (window);
     
+    if (pid !=0) {
+    
+      if (debug) printf("PID found: yes\n");
+      
+      if (pid == win->child_pid) {
+        if (debug) printf ("PID match: yes\n");
+        match=TRUE;
+        break;
+      }
+
+      if (debug) printf ("PID match: no\n");
+      
+      pgid=(gint) getpgid((pid_t) pid);
+      
+      if (debug) printf ("process group id: %d\n", pgid);
+      
+      if (pgid == win->parent_pid) {
+        if (debug) printf ("process id match: yes\n");
+        match=TRUE;
+        break;
+      }
+      
+      if (debug) printf ("process id match: no\n");
+    
+    }
+     
+    if (debug) printf ("PID found: no\n");
+     
     gdk_error_trap_push();
     result=XGetClassHint(GDK_DISPLAY(), window, &class_hints);
     err=gdk_error_trap_pop();
                     
     if (err || result==0 || class_hints.res_class == NULL) {
-     if (debug) printf ("ERROR get class hints\n"); 
-     break;
+      if (debug) printf ("ERROR get class hints\n"); 
+      break;
     }
         
     if (debug) printf ("found strings: res_class: %s  res_name %s   \n",
@@ -796,7 +825,7 @@ gboolean window_match (Window window, win_struct *win)
     res_class_down= g_ascii_strdown (class_hints.res_class, 
       strlen (class_hints.res_class) *sizeof (gchar));
         
-    command_down= g_ascii_strdown (win->command,
+    command_down= g_ascii_strdown (win->command_only,
       strlen (win->command) *sizeof (gchar));
        
     if (debug) printf ("res class_hints down: %s\n", res_class_down);
@@ -805,6 +834,8 @@ gboolean window_match (Window window, win_struct *win)
     if (g_strstr_len(res_class_down, 
       strlen (res_class_down) * sizeof (gchar), command_down)){
     
+      if (debug) printf ("wm_class match: yes\n");
+      
       match=TRUE;
       display_window_id (GDK_DISPLAY(), stack[i]);
       break;
@@ -1608,7 +1639,36 @@ void update_window_title(win_struct *win)
 
 }
 
-void  destroy_all_and_exit (win_struct *win, gboolean kill_child)
+gchar *strip_command (gchar *command)
+{
+
+  gchar *command_copy=NULL;
+  gchar *tmp=NULL;
+  gchar *space=NULL;
+
+  command_copy=g_strdup (command);
+    
+  tmp = g_strrstr (command_copy, "/");
+  
+  if (tmp)
+    tmp++;
+  else
+   tmp=command_copy;
+   
+  if (debug) printf ("command without path: %s\n", tmp);
+  
+  space=g_strstr_len (tmp, strlen (tmp) *sizeof (gchar), " ");
+  
+  if (space)
+   *space=0;
+   
+  if (debug) printf ("command without args: %s\n", tmp);
+    
+
+  return tmp;
+}
+
+void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 {
 
   XClientMessageEvent ev;
@@ -1677,6 +1737,7 @@ void show_help(void)
              "where options include:\n"\
              "  --help; -h:  print this message\n"\
              "  --version; -v: print version\n"\
+             "  --debug; -d: show debug messages\n"\
              "  --show; -s:  do not hide window after start\n"\
              "  --hide_window; -hw: hide window during startup (experimental)\n"\
              "  --icon; -i  <path to png>: use this icon\n", VERSION);
@@ -1685,5 +1746,5 @@ void show_help(void)
 
 void show_version (void)
 {
-  printf ("\nAlltray version %s\n", VERSION);
+  printf ("\nAlltray version %s\n\n", VERSION);
 }

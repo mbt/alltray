@@ -53,6 +53,8 @@
 #include <X11/cursorfont.h>
 #include <unistd.h>
 
+pid_t getpgid(pid_t pid);
+
 #define _NET_WM_STATE_REMOVE        0    /* remove/unset property */
 #define _NET_WM_STATE_ADD           1    /* add/set property */
 #define _NET_WM_STATE_TOGGLE        2    /* toggle property  */  
@@ -122,12 +124,14 @@ typedef struct _win_struct {
   
   gboolean show;
   gchar *command;
-
+  gchar *command_only;
+  
   Window child_xlib;
   
   GdkWindow *child_gdk;
  
-  GPid pid;
+  gint parent_pid; 
+  gint child_pid;
 
   GdkPixbuf *icon;
   GdkPixbuf *user_icon;

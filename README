@@ -1,4 +1,4 @@
-AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
+AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
 
 
   With AllTray you can dock any application into the
@@ -45,6 +45,7 @@ AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
   
     --help; -h:  print this message
     --version; -v: print version
+    --debug; -d: show debug messages
     --show; -s:  do not hide window after start
     --hide_window; -hw: hide window during startup (experimental)
     --icon; -i  <path to png>: use this icon

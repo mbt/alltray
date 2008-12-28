@@ -53,7 +53,8 @@ void atom_init (void);
 void gtk_sleep (gint sec);
 gboolean withdrawn (Window window);
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
-    gchar  **rest, gint *show, gboolean *hide_start);
+    gchar  **rest, gint *show, gboolean *hide_start, gboolean *debug);
+gchar *strip_command (gchar *command);
 gboolean window_match (Window window, win_struct *win);
 void update_window_icon(win_struct *win);
 void update_window_title(win_struct *win);
