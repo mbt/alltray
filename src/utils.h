@@ -29,14 +29,14 @@
  * Based on:
  *
  *    steal-xwin.c (acano@systec.com)
+ *    xswallow (Caolan McNamara ?)
  *    kdocker (Girish Ramakrishnan)
  *    libwnck (Havoc Pennington <hp@redhat.com>)
+ *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
  *    dsimple.c ("The Open Group")
  *    .....lot more, THANX !!!
  *    
 */
-
-
 
 #include "gtray.h"
 
@@ -50,9 +50,10 @@ extern char *event_names[];
 void show_pixbuf (GdkPixbuf *buf);
 void display_window_id(Display *display, Window window);
 void atom_init (void);
-gint get_current_desktop(void);
-gboolean parse_arguments(int argc, char **argv, gchar **string, 
-    gchar  **rest, gint *show, gboolean *ignore_splash_window);
+void gtk_sleep (gint sec);
+gboolean withdrawn (Window window);
+gboolean parse_arguments(int argc, char **argv, gchar **string, gchar **icon,
+    gchar  **rest, gint *show, gboolean *ignore_splash_window, gboolean *hide_start);
 gboolean parse_string (gchar *string,  win_struct *win);
 gboolean window_match (Window window, win_struct *win);
 void update_window_icon(win_struct *win);
@@ -64,9 +65,13 @@ GdkPixbuf *get_window_icon (Window xwindow);
 gboolean xlib_window_is_viewable (Window w);
 gboolean not_reparent (Window window);
 gboolean assert_window (Window window);
+Window get_active_window (void);
 gboolean window_has_deco (GdkWindow *win);
 void  destroy_all_and_exit (win_struct *win, gboolean kill_child);
 Window one_under_root (Display *display, Window window);
 void show_short_help (void);
 void show_tested_programs (void);
+void get_window_position (Window window, gint *x, gint *y);
+void show_hide_window (win_struct *win, gboolean force, gboolean force_show);
+void skip_taskbar (Window window, gboolean add);
 #endif

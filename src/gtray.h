@@ -29,8 +29,10 @@
  * Based on:
  *
  *    steal-xwin.c (acano@systec.com)
+ *    xswallow (Caolan McNamara ?)
  *    kdocker (Girish Ramakrishnan)
  *    libwnck (Havoc Pennington <hp@redhat.com>)
+ *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
  *    dsimple.c ("The Open Group")
  *    .....lot more, THANX !!!
  *    
@@ -50,13 +52,33 @@
 #include <X11/Xmu/WinUtil.h>
 #include <string.h>
 #include <X11/cursorfont.h>
+#include <unistd.h>
 
-Atom net_client_list_stacking;
+#define _NET_WM_STATE_REMOVE        0    /* remove/unset property */
+#define _NET_WM_STATE_ADD           1    /* add/set property */
+#define _NET_WM_STATE_TOGGLE        2    /* toggle property  */  
+
+
+#define WithdrawnState 0
+#define NormalState 1
+#define IconicState 3
+
+
+//Atom net_client_list_stacking;
 Atom wm_name_atom;
 Atom wm_icon_atom;
 Atom net_wm_icon;
 Atom net_close_window;
+Atom wm_delete_window;
+Atom wm_take_focus;
 Atom net_current_desktop;
+Atom net_wm_state_skip_pager;
+Atom net_wm_state_skip_taskbar;
+Atom net_wm_state;
+Atom wm_state;
+Atom net_wm_state_sticky;
+Atom net_wm_desktop;
+Atom net_active_window;
 
 Atom selection_atom;
 Atom manager_atom;
@@ -64,16 +86,35 @@ Atom system_tray_opcode_atom;
 
 typedef struct _win_struct {
 
-  GtkWidget *parent_window;
+  Display *display;
+
+  gint screen_height;
+  gint screen_width;
+
+  GdkWindow *parent_gdk;
+  Window parent_xlib;
+
+  gboolean hide_start;
+  GdkWindow *fake_desktop;
+
+  GdkWindow *root_gdk;
+  Window root_xlib;
+
+
   gint parent_window_x;
   gint parent_window_y;
 
-  GtkWidget *sock;
+  int visibility;
 
-  Window xlib;
-  Window xlib_our;
-  GdkWindow *gdk;
-  GdkWindow *gdk_our;
+  GArray *workspace;
+  
+  gboolean show;
+  gchar *command;
+
+  Window child_xlib;
+  
+  GdkWindow *child_gdk;
+ 
   
   gchar *wm_res_class;
   gchar *wm_res_name;
@@ -82,21 +123,27 @@ typedef struct _win_struct {
   GPid pid;
 
   GdkPixbuf *icon;
-
+  GdkPixbuf *user_icon;
+    
   Window manager_window;
   GdkWindow *manager_window_gdk;
+  
   GtkWidget *tray_window;
+  GtkWidget *fixed;
+  GtkWidget *image_icon;
   GtkTooltips *tooltip;
   
   gchar *title;
     
-  gint last_desktop;
-      
+  gint desktop;
+        
   gboolean ignore_splash_window;
     
 } win_struct;
 
+GdkFilterReturn parent_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);
 GdkFilterReturn child_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);
+GdkFilterReturn root_filter_workspace (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);
 
 extern gboolean debug;
 

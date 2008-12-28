@@ -1,3 +1,13 @@
+Dec, 2, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- switched from gtk_socket stuff to normal xlib reparent: better focus handling,
+  alltray maybe now work with more desktops, window manager (maybe !)
+- fallback icon if window have no icon
+- user can specify an icon on command line
+- hide window during startup (experimental, Gnome only)
+- save window state (visible-hidden) on each workspace
+- raise/show window if obscured by other windows
+- set version to 0.2
+
 Nov 19, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - Initial release
 - set version to 0.1
