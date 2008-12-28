@@ -9,6 +9,7 @@ EXTRA_DIST = \
 	alltray.1 \
   alltray.desktop \
   alltray.png \
+  alltray.spec \
   autopackage/default.apspec.in
   
 appsdir = $(datadir)/applications

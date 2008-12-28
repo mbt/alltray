@@ -23,7 +23,7 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
  * Based on code from:
@@ -38,7 +38,6 @@
  *    .....lot more, THANX !!!
  *    
 */
-
 
 
 #include "config.h"
@@ -71,6 +70,7 @@ void win_struct_init(win_struct *win)
   win->initial_y=0;
   win->initial_w=0;
   win->initial_h=0;
+  win->geo_bitmask=0;
   win->parent_gdk=NULL;
   win->parent_xlib=None;
   
@@ -104,8 +104,6 @@ void win_struct_init(win_struct *win)
   win->user_icon=NULL;
   win->user_icon_path=NULL;
 
-  win->gnome_panel_found=FALSE;
-  
   win->balloon=NULL;
   win->balloon_message_allowed=FALSE;
 
@@ -172,9 +170,10 @@ void command_line_init (win_struct *win, int argc, char **argv)
   }
 
   g_free (win->window_manager);
+  
+  if (argc==1 || (debug=(argc == 2 && !strcmp (argv[1], "-d")))) {
 
- 
-  if (argc==1) {
+    if (debug) printf ("click_mode\n");
     win->click_mode=TRUE;
   
     if (win->kde && win->kde_close_button_pos == NO_SUCCESS) {
@@ -277,8 +276,8 @@ void command_line_init (win_struct *win, int argc, char **argv)
   
   if (geometry) {
     
-    XParseGeometry(geometry, &win->initial_x, &win->initial_y,
-              &win->initial_w, &win->initial_h);
+    win->geo_bitmask=XParseGeometry(geometry, &win->initial_x, &win->initial_y,
+              (unsigned int *) &win->initial_w, (unsigned int *) &win->initial_h);
     
     if (debug) printf ("inital values: x:%d y: %d, w:%d, h:%d\n",
                         win->initial_x, win->initial_y, win->initial_w, win->initial_h);
@@ -314,6 +313,7 @@ main (int argc, char *argv[])
   gint w,h;
   
   gtk_init (&argc, &argv);
+  gconf_init(argc, argv, NULL);
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
   gbr_init (NULL);
   atom_init ();
@@ -325,8 +325,6 @@ main (int argc, char *argv[])
 
   if (!win->click_mode)
     wait_for_manager(win);
-  
-  win->gnome_panel_found=search_gnome_panel();
   
   if (!win->click_mode)
     exec_and_wait_for_window(win);
@@ -347,31 +345,15 @@ main (int argc, char *argv[])
       gtk_sleep (100);
   }
 
-  if (win->no_reparent && win->normal_map
-      && (win->initial_x || win->initial_y || win->initial_w || win->initial_h)) {
-      
-    do {
 
-       if (win->initial_w == 0 && win->initial_h ==0 ) {
-         if (debug) printf ("only move\n");
-         gdk_window_move (win->child_gdk, win->initial_x, win->initial_y);
-         break;
-       }
+  if (win->no_reparent && win->normal_map && win->geo_bitmask) {
 
-       if (win->initial_x == 0 && win->initial_y == 0) {
-         if (debug) printf ("only resize\n");
-         gdk_window_resize (win->child_gdk, win->initial_w, win->initial_h);
-         break;
-       }
-     
-       if (debug) printf ("move and resize\n");
-     
-       gdk_window_move_resize (win->child_gdk, win->initial_x, win->initial_y, 
-          win->initial_w, win->initial_h);
-
-    } until;
+    if (debug) printf ("normap map geo_move\n");
     
+    geo_move (win->child_gdk, win->screen_width, win->screen_height,
+        win->initial_x, win->initial_y, win->initial_h, win->initial_w, win->geo_bitmask);
   }
+  
  
   if (!win->show && ((win->click_mode && win->no_reparent) || win->normal_map))
     show_hide_window (win, force_hide, FALSE);

@@ -1,4 +1,13 @@
-Dec 10, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+Apr 26, 2006, Jochen Baier <email@jochen-baier.de>
+- fixed problems with Gnome 2.14 and Metacity themes, gconf is now required
+- support to align Windows on the left or right screen side with "-geometry -0-0"
+  requested by Hendrik
+- fixed some compilier warnings
+- removed LD_PRELOAD test in configure to avoid problems, but it is required anyway
+- added alltray.spec file from Michael Krylov
+- set version to 0.66
+
+Dec 10, 2005, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - fixed problems with docking under KDE (X Window System error and
   gdk_pixbuf_xlib_get_from_drawable error)
 - KDE tray transparency code rewrote, but it will not work properly
@@ -14,13 +23,13 @@ Dec 10, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - added "--no-alltray": do not show "(Alltray)" in window title. (requested by Victor B. Gonzalez)
 - set version to 0.65
 
-Sep 24, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+Sep 24, 2005, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - fixed probs with binreloc (configure with non default path settings)
 - updated binreloc
 - fixed configure.in stuff
 - set version to 0.62
 
-Sep 07, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+Sep 07,2005 Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - removed  "#include <X11/Xmu/WinUtil.h>" from common.h
 - replaced g_open, g_mkdir... with open and mkdir...
 - Do not set window decoration for xmms before undock

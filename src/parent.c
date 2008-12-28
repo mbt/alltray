@@ -23,7 +23,7 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
  * Based on code from:
@@ -306,7 +306,7 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
       
         *geometry=g_strdup (argv[i+1]);
         
-        if (XParseGeometry(*geometry, &x, &y, &w, &h) == 0) {
+        if (XParseGeometry(*geometry, &x, &y, (unsigned int *) &w, (unsigned int *) &h) == 0) {
           show_help();
           return FALSE;
         }
@@ -479,7 +479,7 @@ void show_help(void)
              "   --borderless; -x: remove border, title, frame (if not supported native)\n"\
              "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
              "   --title; -t <sec>: show tooltip with title for <sec> seconds after song change\n"\
-             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position (if not supported native)\n"\
+             "   --geometry; -g [<width>x<height>][{+-}<x>{+-}<y>]: initial position (if not supported native)\n"\
             "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\
              " Click-Mode: Click on the window you would like to dock.\n"\

@@ -38,5 +38,7 @@ gboolean search_gnome_panel (void);
 void xprop (Window window);
 gchar  *get_window_manager(void);
 void free_command_menu (GArray *command_menu);
+void geo_move (GdkWindow *window, gint screen_width, gint screen_height, 
+  gint x, gint y, gint w, gint h, int mask);
 
 #endif

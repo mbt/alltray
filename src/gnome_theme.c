@@ -1,75 +1,56 @@
+/*
+ * GPL Notice:
+ *
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Library General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
+ * Name:
+ *
+ *    alltray
+ *
+ *
+ * Copyright:
+ * 
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
+ *
+ *
+ * Based on code from:
+ *
+ *    steal-xwin.c (acano@systec.com)
+ *    xswallow (Caolan McNamara ?)
+ *    kdocker (Girish Ramakrishnan)
+ *    libwnck (Havoc Pennington <hp@redhat.com>)
+ *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
+ *    dsimple.c ("The Open Group")
+ *    xfwm4 (Olivier Fourdan <fourdan@xfce.org>)
+ *    .....lot more, THANX !!!
+ *    
+*/
+
 #include "common.h"
 
-#define GCONF_FILE ".gconf/apps/metacity/general/%gconf.xml"
-#define GCONF_FILE_FALLBACK "/etc/gconf/gconf.xml.defaults/schemas/apps/metacity/"\
-                                                    "general/%gconf.xml"
-
+#define GCONF_METACITY_THEME_PATH "/apps/metacity/general/theme"
 #define THEME_FILENAME "metacity-theme-1.xml"
 #define THEME_SUBDIR "metacity-1"
 #define THEME_DIR1 "/usr/share/"
 #define THEME_DIR2 "/usr/local/share/"
  
-static int depth_gconf = 0;
 static int depth= 0;
-static gboolean found_theme=FALSE;
 static gboolean found_element=FALSE;
-static gboolean read_stringvalue=FALSE;
 gchar *theme_name=NULL;
 
-
-static void start_element_handler_gconf (GMarkupParseContext * ctx,
-  const gchar * element_name,
-  const gchar ** attr_names,
-  const gchar ** attr_vals, gpointer user_data, GError ** err) {
-
-  if (debug) printf ("start handler: element_name ist: %s\n", element_name);
-
-  if (strncmp (element_name, "entry", 5) == 0 && depth_gconf == 1){
-
-    found_theme=FALSE;
-
-    int i = 0;
-    while (attr_names[i] != NULL) {
-
-      if (strcmp (attr_names[i], "name") == 0) {
-      
-        if (strcmp (attr_vals[i], "theme") == 0) {
-          if (debug) fprintf (stdout, "theme entry found !\n");
-          found_theme=TRUE;
-          break;
-        }
-      
-      }
-      i++;
-    }
-
-  }
-
-
-  if (found_theme && strncmp (element_name, "stringvalue", 11) == 0 && depth_gconf == 2) {
-    read_stringvalue=TRUE;
-  }
-
-  depth_gconf++;
-}
-
-static void end_element_handler_gconf (GMarkupParseContext * ctx,
-    const gchar * element_name, gpointer data, GError ** err) {
-
-  read_stringvalue=FALSE;
-  depth_gconf--;
-}
-
-static void
-text_handler_gconf (GMarkupParseContext * ctx,
-               const gchar * text, gsize len, gpointer data, GError ** err) {
-
-  if (read_stringvalue && depth_gconf == 3) {
-    if (debug) fprintf (stdout, "%s\n", text);
-    theme_name=g_strdup(text);
-  }
-
-}
 
 static void start_element_handler (GMarkupParseContext * ctx,
   const gchar * element_name,
@@ -135,14 +116,6 @@ static void end_element_handler (GMarkupParseContext * ctx,
 static void error_handler (GMarkupParseContext * ctx, GError * err, gpointer data) {
          fprintf (stderr, " %s\n", err->message);
 }
- 
-static GMarkupParser gconf_parser = {
-         start_element_handler_gconf,
-         end_element_handler_gconf,
-         text_handler_gconf,
-         NULL,
-         error_handler
-};
 
 static GMarkupParser parser = {
          start_element_handler,
@@ -152,135 +125,23 @@ static GMarkupParser parser = {
          error_handler
 };
 
-gchar *get_theme_fallback (void)
-{
-
-  gchar *content=NULL;
-  gchar *entry_theme_start=NULL;
-  gchar *entry_theme_end=NULL;
-  gchar *local_schema_start=NULL;
-  gchar *local_schema_end=NULL;
-  gchar *stringvalue_start=NULL;
-  gchar *stringvalue_end=NULL;
-
-  gchar *theme=NULL;
-
-  if (debug) printf ("theme_fallback\n");
-
-  if (!g_file_get_contents (GCONF_FILE_FALLBACK, &content, NULL, NULL))
-    return NULL;
-  
-  entry_theme_start=strstr (content, "entry name=\"theme\"");
-  if (entry_theme_start == NULL) {
-    g_free (content);
-    return NULL;
-  }
-  
-  entry_theme_end=strstr (entry_theme_start, "</entry>");
-  if (entry_theme_end == NULL) {
-    g_free (content);
-    return NULL;
-  }
-  
-  *(entry_theme_end+8)=0; 
-  if (debug) printf ("entry_theme_start: <%s>\n", entry_theme_start);
-
-  local_schema_start=strstr (entry_theme_start, "local_schema locale=\"C\"");
-  if (local_schema_start == NULL) {
-    g_free (content);
-    return NULL;
- }
-
-  local_schema_end=strstr (local_schema_start, " </local_schema>");
-  if (local_schema_start == NULL) {
-    g_free (content);
-    return NULL;
- }
-
-  *(local_schema_end + 15)=0;
-  if (debug) printf ("local schema start: <%s>\n", local_schema_start);
-
-
-  stringvalue_start=strstr (local_schema_start, "<stringvalue>");
-  if (stringvalue_start == NULL) {
-    g_free (content);
-    return NULL;
-  }
-
-  stringvalue_start=stringvalue_start+13;
-  stringvalue_end=strstr (stringvalue_start, "</stringvalue>");
-  if (stringvalue_end == NULL) {
-    g_free (content);
-    return NULL;
-  }
-
-  *stringvalue_end=0;
-
-  if (debug) printf ("string_value_start: <%s>\n", stringvalue_start);
-
-  if (strlen (stringvalue_start) > 1) {
-    theme=g_strdup (stringvalue_start);
-  }
-
-  g_free (content);
-
- return theme;
-  
-}
-
 gchar *get_metacity_theme (win_struct *win) {
 
-  gchar *gconf_content=NULL;
-  gsize gconf_length;
-  GError *err=NULL;
-  GMarkupParseContext *gconf_ctx;
-  gchar *metacity_gconf_file;
-  gchar *return_value=NULL;
 
-  metacity_gconf_file = g_build_filename (g_get_home_dir (), GCONF_FILE,NULL);
+  GConfClient *client;
+  gchar *theme=NULL;
+    
+  client = gconf_client_get_default();
+  theme= gconf_client_get_string(client, GCONF_METACITY_THEME_PATH, NULL);
 
-  err = NULL;
-  if (!g_file_get_contents (metacity_gconf_file, &gconf_content, &gconf_length, &err)) {
-    if (debug) printf( "Failed to read gconf file %s: %s\n",  metacity_gconf_file, err->message);
-    g_error_free (err);
-    g_free (metacity_gconf_file);
-    return NULL;
-  }
+  if (debug) printf ("theme is: %s\n", theme);
 
-  g_free (metacity_gconf_file);
+  g_object_unref(client);
 
-  if (debug) printf ("gconf_content: %s\n", gconf_content);
+  return theme;
 
-  err = NULL;
-  gconf_ctx = g_markup_parse_context_new (&gconf_parser, 0, NULL, NULL);
-
-  if (!g_markup_parse_context_parse (gconf_ctx, gconf_content, gconf_length, NULL)) {
-    g_free (gconf_content);
-    g_markup_parse_context_free (gconf_ctx);
-    return FALSE;
-  }
-  
-  if (!g_markup_parse_context_end_parse (gconf_ctx, NULL)) {
-    g_free (gconf_content);
-    g_markup_parse_context_free (gconf_ctx);
-    return FALSE;
-  }
-
-  g_markup_parse_context_free (gconf_ctx);
-  g_free (gconf_content);
-
-
-  //ugly ;)
-  if (theme_name != NULL) {
-    return_value=g_strdup (theme_name);
-    g_free (theme_name);
-  } else {
-    return_value=NULL;
-  }
-
-  return return_value;
 }
- 
+
 gboolean parse_theme (win_struct *win) {
 
   gchar *content=NULL;
@@ -292,15 +153,10 @@ gboolean parse_theme (win_struct *win) {
 
   metacity_theme=get_metacity_theme (win);
   if (metacity_theme == NULL) {
-  
-    printf ("\n\nAlltray: No Metacity Theme found!.\n"\
-              "         If you never ever changed the Window Theme this is normal.\n"
-              "         If you changed the Theme recently wait 1 min.\n"\
-              "         I will use the default Theme now.\n\n");
-     metacity_theme=get_theme_fallback ();
+     printf ("\n\nAlltray: ups...\n");
   }
-
   g_assert (metacity_theme);
+  
   if (debug) printf ("theme name: %s\n", metacity_theme);
 
   theme_dir = g_build_filename (g_get_home_dir (), ".themes", metacity_theme, 

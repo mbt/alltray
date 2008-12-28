@@ -23,7 +23,7 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
  * Based on code from:
@@ -151,7 +151,6 @@ void xprop (Window window)
   system (tmp);
   g_free (tmp);
 }
- 
 
 gboolean gtk_sleep_function (gpointer data)
 {
@@ -239,8 +238,7 @@ gint get_current_desktop(void)
   
 }
 
-gboolean
-get_window_list (Window   xwindow,
+gboolean get_window_list (Window   xwindow,
    Atom     atom,
    Window **windows,
    int     *len)
@@ -536,7 +534,7 @@ gboolean xlib_window_is_viewable (Window w)
       return FALSE;
     }
      
-    if (!XQueryTree (GDK_DISPLAY(), w, &root, &parent, &children, &nchildren))
+    if (!XQueryTree (GDK_DISPLAY(), w, &root, &parent, &children, (unsigned int *) &nchildren))
       return 0;
     
     if (nchildren > 0)
@@ -610,7 +608,7 @@ Window one_under_root (Display *display, Window window)
     
       if (debug) printf ("current runner: %d\n", (int) runner);
    
-       if (! XQueryTree (display, runner, &root_return, &parent, &kids, &nkids))
+       if (! XQueryTree (display, runner, &root_return, &parent, &kids, (unsigned int *) &nkids))
          {  continue;  }
        if (kids) XFree ((char *)kids);
          
@@ -1282,64 +1280,32 @@ void update_window_icon(win_struct *win)
 
 }
 
-gboolean search_gnome_panel (void)
+void send_skip_message (Window win, gboolean add)
 {
 
-  Window *mapping = NULL;
-  int mapping_length = 0;
-  gint index;
-  gboolean found=FALSE;
-  XClassHint class_hints;
-  gint result=0;
-  gint err=0;
-  
-  get_window_list (GDK_ROOT_WINDOW(), net_client_list,
-    &mapping, &mapping_length);
-  
-  for (index=0; index < mapping_length; index++) {
-    
-    gdk_error_trap_push();
-    result=XGetClassHint(GDK_DISPLAY(), mapping[index], &class_hints);
-    err=gdk_error_trap_pop();
-                    
-    if (err || result==0 || class_hints.res_class == NULL) {
-      if (debug) printf ("ERROR get class hints\n"); 
-      continue;
-    }
-        
-    if (debug) printf ("gnome_panel search: res_class: %s  res_name %s   \n",
-      class_hints.res_class, class_hints.res_name);
-    
-    if (!strcmp (class_hints.res_name, "gnome-panel")) {
-      if (debug) printf ("gnome panel found !\n");
-      found=TRUE;
-      
-      if (class_hints.res_class)
-        XFree (class_hints.res_class);
-      if (class_hints.res_name)
-        XFree (class_hints.res_name);
-      
-      break;
-    }
-    
-    if (class_hints.res_class)
-      XFree (class_hints.res_class);
-    if (class_hints.res_name)
-      XFree (class_hints.res_name);
+  XEvent xev;
 
-  }
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = win;
+  xev.xclient.message_type = net_wm_state;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = add ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
+  xev.xclient.data.l[1] = net_wm_state_skip_taskbar;
+  xev.xclient.data.l[2] = 0;
+  xev.xclient.data.l[3] = 0;
+  xev.xclient.data.l[4] = 0;
   
-  g_free (mapping);
-
-  return found;
+  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
+     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+  
+  XSync (GDK_DISPLAY(), False);
 
 }
 
 void skip_taskbar (win_struct *win, gboolean add)
 {
-  
-  XEvent xev;
-  gint i,x,y;
   
   Window parent_xlib;
   GdkWindow *parent_gdk;
@@ -1361,35 +1327,10 @@ void skip_taskbar (win_struct *win, gboolean add)
     parent_xlib=win->parent_xlib;
     parent_gdk=win->parent_gdk;
 
-  } while (0);
+  } until;
 
   
-  xev.xclient.type = ClientMessage;
-  xev.xclient.serial = 0;
-  xev.xclient.send_event = True;
-  xev.xclient.window = parent_xlib;
-  xev.xclient.message_type = net_wm_state;
-  xev.xclient.format = 32;
-  xev.xclient.data.l[0] = add ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
-  xev.xclient.data.l[1] = net_wm_state_skip_taskbar;
-  xev.xclient.data.l[2] = 0;
-  xev.xclient.data.l[3] = 0;
-  xev.xclient.data.l[4] = 0;
-  
-  XSendEvent (GDK_DISPLAY(), GDK_ROOT_WINDOW(), False,
-     SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-  
-  XSync (GDK_DISPLAY(), False);
-  
-  /*bug in gnome taskbar will not update the task list*/
-  /*so we need to cheat a little (fixed in 12.1)*/
-
-  if (win->gnome_panel_found && !add) {
-    get_window_position (parent_xlib, &x, &y);
-     for (i=0; i<100; i++)
-    gdk_window_move (parent_gdk, x, y);
-  } 
-
+  send_skip_message (parent_xlib, add);
 
 }
 
@@ -1782,7 +1723,60 @@ void deiconify_window (Window window)
     XSetWMHints(GDK_DISPLAY(), window, wm_hints);
     XFree(wm_hints);
   }
+
+}
+
+void geo_move (GdkWindow *window, gint screen_width, gint screen_height, 
+  gint x, gint y, gint w, gint h, int mask)
+{
+
+  gint tmp_x=x, tmp_y=y, tmp_w=w, tmp_h=h;
+
+   if (debug) {
+     printf ("geo_move 1: tmp_x: %d, tmp_y: %d\n", tmp_x, tmp_y);
+     printf ("geo_move 1: w: %d, h: %d\n", w, h);
+   }
+
+  do {
+
+    if (mask & XNegative) {
+      if (x < 0)
+        tmp_x = screen_width + x;
+      else
+        tmp_x = screen_width - w;
+    }
     
+    if (mask & YNegative) {
+      if (y < 0)
+        tmp_y = screen_height + y;
+      else
+        tmp_y = screen_height - h;
+    }
+  
+   if (debug) {
+     printf ("geo_move 2: tmp_x: %d, tmp_y: %d, tmp_w: %d, tmp_h: %d\n", tmp_x, tmp_y, tmp_w, tmp_h);
+     printf ("geo_move 2: w: %d, h: %d\n", w, h);
+   }
+  
+  
+    if ( !(mask & WidthValue) && !(mask & HeightValue)) {
+      if (debug) printf ("only move\n");
+      gdk_window_move (window, tmp_x, tmp_y);
+      break;
+    }
+   
+    if ( !(mask & XValue) && !(mask & YValue)) {
+       
+     if (debug) printf ("only resize\n");
+       gdk_window_resize (window, tmp_w, tmp_h);
+       break;
+    }
+         
+    if (debug) printf ("move and resize\n");
+      gdk_window_move_resize (window, tmp_x, tmp_y, tmp_w, tmp_h);
+  
+  } until;
+
 }
 
 void show_hide_window (win_struct *win, gint force_state,
@@ -1794,6 +1788,11 @@ void show_hide_window (win_struct *win, gint force_state,
   
   Window parent_xlib;
   GdkWindow *parent_gdk;
+
+
+  Window  root_return;
+  unsigned int x_return, y_return, width_return, height_return, border, depth;
+
   
   do {
 
@@ -1822,7 +1821,7 @@ void show_hide_window (win_struct *win, gint force_state,
       break;
     }
   
-    if (force_state ==force_hide) {
+    if (force_state == force_hide) {
       show=FALSE;
       break;
     }
@@ -1850,45 +1849,34 @@ void show_hide_window (win_struct *win, gint force_state,
     if (first_click) {
 
       if (debug) printf ("first click\n");
-
+      
       if (win->xmms)
         deiconify_xmms_windows(win);
       else if (win->no_reparent && !win->normal_map && !win->click_mode)
         deiconify_window (parent_xlib);
-
+      
       gdk_window_add_filter(parent_gdk, parent_filter_map, (gpointer) win);
       
-     if (win->click_mode && !win->kde)  //XXX fixme, no focus under kde
-      gdk_window_focus (parent_gdk, gtk_get_current_event_time());
-     else
-     XMapWindow (win->display, parent_xlib);
-     
-      if (!win->normal_map && (win->initial_x || win->initial_y || win->initial_w || win->initial_h)) {
-
-        do {
-  
-           if (win->initial_w == 0 && win->initial_h ==0 ) {
-           
-            if (debug) printf ("only move\n");
-            gdk_window_move (win->child_gdk, win->initial_x, win->initial_y);
-            break;
-          }
-   
-           if (win->initial_x == 0 && win->initial_y == 0) {
-             if (debug) printf ("only resize\n");
-             gdk_window_resize (win->child_gdk, win->initial_w, win->initial_h);
-             break;
-           }
-         
-           if (debug) printf ("move and resize\n");
-         
-           gdk_window_move_resize (win->child_gdk, win->initial_x, win->initial_y, 
-              win->initial_w, win->initial_h);
-  
-        } until;
-    
+      if (!(win->geo_bitmask & WidthValue)) {
+        XGetGeometry (GDK_DISPLAY(), parent_xlib,
+        &root_return, &x_return, &y_return,  &win->initial_w, &height_return, &border, &depth);
       }
-
+      
+      if (!(win->geo_bitmask & HeightValue)) {
+        XGetGeometry (GDK_DISPLAY(), parent_xlib,
+        &root_return, &x_return, &y_return, &width_return, &win->initial_h, &border, &depth);
+      }
+      
+      if (win->click_mode && !win->kde)  //XXX fixme, no focus under kde
+        gdk_window_focus (parent_gdk, gtk_get_current_event_time());
+      else
+        XMapWindow (win->display, parent_xlib);
+      
+      if (!win->normal_map && win->geo_bitmask) {
+        geo_move (parent_gdk, win->screen_width, win->screen_height, win->initial_x,
+        win->initial_y, win->initial_w, win->initial_h, win->geo_bitmask);
+      }
+      
       gtk_main ();
       
       if (debug) printf ("mapped\n");
@@ -1899,7 +1887,7 @@ void show_hide_window (win_struct *win, gint force_state,
       /*if not the window will not be the top most*/
       if (!win->gnome)
         gtk_sleep (100);
-           
+      
       if (win->sticky)
         sticky (parent_xlib);
       
@@ -1907,9 +1895,9 @@ void show_hide_window (win_struct *win, gint force_state,
       
       if (win->skip_tasklist)
         skip_taskbar (win, TRUE);
- 
+      
       first_click=FALSE;
-     
+      
       return;
     
     }

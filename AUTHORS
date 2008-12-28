@@ -4,3 +4,4 @@ xmms icon: ? (see xmms homepage)
 fallback icon: gnome
 alltray icon: modified from: glaux mplayer icon, Eugene Alex,
               <Frame3@narod.ru>
+alltray.spec: Michael Krylov <m.krylov@moduldp.com.ua>

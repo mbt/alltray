@@ -23,7 +23,7 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
  * Based on code from:
@@ -69,7 +69,7 @@ Window get_kwin_window (Window target)
   our= one_under_root (GDK_DISPLAY(), target);
  
   gdk_error_trap_push();
-  if (!XQueryTree (GDK_DISPLAY (), our, &root_return, &parent, &our_kids, &our_nkids))
+  if (!XQueryTree (GDK_DISPLAY (), our, &root_return, &parent, &our_kids, (unsigned int *) &our_nkids))
      {exit (1); }
   gdk_error_trap_pop();
 
@@ -138,7 +138,7 @@ GList *get_button_list (Window kwin_window)
   GList *l;
 
   gdk_error_trap_push();
-   if (!XQueryTree (GDK_DISPLAY (), kwin_window, &root_return, &parent, &kwin_kids, &kwin_nkids))
+   if (!XQueryTree (GDK_DISPLAY (), kwin_window, &root_return, &parent, &kwin_kids, (unsigned int *) &kwin_nkids))
      { exit (1); }
   gdk_error_trap_pop();
 

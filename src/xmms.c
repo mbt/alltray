@@ -23,7 +23,7 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005, 2006 (email@Jochen-Baier.de)
  *
  *
  * Based on code from:

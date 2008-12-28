@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdk.h>
+#include <gconf/gconf-client.h>
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
 #include <stdlib.h>
 #include <X11/Xatom.h>
@@ -127,6 +128,7 @@ typedef struct _win_struct {
   gint initial_y;
   gint initial_w;
   gint initial_h;
+  int geo_bitmask;
 
   int visibility;
 
@@ -164,9 +166,7 @@ typedef struct _win_struct {
   balloon_struct *balloon;
     
   gchar *title;
-  
-  gboolean gnome_panel_found;
-  
+
   gboolean xmms;
   Window xmms_main_window_xlib;
   GdkWindow *xmms_main_window_gdk;
