@@ -184,12 +184,17 @@ void menu_init (win_struct *win)
 
 void update_tray_icon(win_struct *win)
 {
+ 
+
   
   GdkPixbuf *tmp=NULL;
   XWindowAttributes wa;
   gboolean resize=FALSE;
   
   gint req_h, req_w;
+
+  if (win->notray)
+    return;    
    
   gdk_error_trap_push();
   XGetWindowAttributes (GDK_DISPLAY(), win->plug_xlib, &wa);

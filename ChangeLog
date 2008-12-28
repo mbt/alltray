@@ -1,4 +1,12 @@
-Jun 9, 2006, Jochen Baier <email@jochen-baier.de>
+Jun 23, 2006: Jochen Baier <email@jochen-baier.de>
+- support for keyboard-shortcut. Toggle apps with a key stroke.
+- added "--notray" option: display no tray icon. usefull with a keyboard-shortcut.
+- added "--nominimize" option: click on window close button: do not minimize back to tray, close
+- "--disable-gconf" configure option. usefull for KDE only Desktops. requested by Niertour(?)
+- man page update (0.66) by Carlos C Soto
+- set version to 0.68
+
+Jun 9, 2006, 
 - clickmode.c revised, "Cancel" button added, Cancel with "c" removed
 - alltray.spec updated by Michael Krylov
 - set version to 0.67 (dev snap)

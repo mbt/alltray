@@ -51,6 +51,9 @@
 #include "grab.h"
 #include "kde.h"
 #include "binreloc.h"
+#include "shortcut.h"
+#include "eventfilter.h"
+#include "gnome_theme.h"
 
 gboolean debug=FALSE;
 
@@ -141,6 +144,14 @@ void win_struct_init(win_struct *win)
     
   win->kde_close_button_pos =NO_SUCCESS;
 
+  win->shortcut_key=0;
+  win->shortcut_modifier=0;
+
+  win->notray = 0;
+
+  win->nomini = 0;
+      
+
 }
 
 void command_line_init (win_struct *win, int argc, char **argv)
@@ -159,6 +170,13 @@ void command_line_init (win_struct *win, int argc, char **argv)
   if (debug) printf ("window manager: %s\n", win->window_manager);
 
   if (!strcmp(win->window_manager, "Metacity")) {
+
+    #ifndef GCONF_NOT_DISABLED
+          printf ("\n\nAlltray: To use Alltray under Gnome, Gconf support should not be disabled.\n"
+                  "         But it is.\n\n");
+          exit (0);
+    #endif 
+
     win->gnome=TRUE;
     win->no_reparent=TRUE;
   }
@@ -188,7 +206,8 @@ void command_line_init (win_struct *win, int argc, char **argv)
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
     &win->command, &win->show, &debug, &win->borderless, &win->sticky, &win->skip_tasklist,
-    &win->no_title, &configure, &win->large_icons, win->command_menu, &win->title_time, &geometry)) {
+    &win->no_title, &configure, &win->large_icons, win->command_menu, &win->title_time, &geometry,
+    &win->shortcut_key, &win->shortcut_modifier, &win->notray, &win->nomini)) {
     
     if (win->user_icon_path)
       g_free(win->user_icon_path);
@@ -206,10 +225,18 @@ void command_line_init (win_struct *win, int argc, char **argv)
     exit(1);
   }
 
-  if (configure && win->gnome) {
-    printf ("Alltray: \"--configure\" option only usefull for the KDE desktop.\n");
+  if (configure && !win->kde) {
+    printf ("\n\nAlltray: \"--configure\" option only usefull for the KDE desktop.\n\n");
     exit (0);
   }
+
+  if (win->nomini) {
+
+    win->gnome=FALSE;
+    win->kde=FALSE;
+    win->no_reparent=TRUE;
+  }
+  
 
   if (win->kde) {
 
@@ -313,7 +340,11 @@ main (int argc, char *argv[])
   gint w,h;
   
   gtk_init (&argc, &argv);
-  gconf_init(argc, argv, NULL);
+
+  #ifdef GCONF_NOT_DISABLED
+    gconf_init(argc, argv, NULL);
+  #endif
+
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
   gbr_init (NULL);
   atom_init ();
@@ -323,7 +354,10 @@ main (int argc, char *argv[])
   win_struct_init (win);
   command_line_init (win, argc, argv);
 
-  if (!win->click_mode)
+
+  if (debug) printf ("win->notray: %d\n", win->notray);
+
+  if (!win->click_mode && !win->notray)
     wait_for_manager(win);
   
   if (!win->click_mode)
@@ -451,18 +485,34 @@ main (int argc, char *argv[])
   
   update_window_icon(win);
 
-  tray_init (win);
+  if (!win->notray)
+    tray_init (win);
+
   update_window_title(win);
 
   if (win->skip_tasklist)
    skip_taskbar (win, TRUE);
   
-  do {
 
-    if (win->no_reparent) {
-     grab_filter_init(win);
-     break;
+   if (win->no_reparent) {
+      
+    if (win->gnome) {
+
+      if (!parse_theme (win)) {
+        printf ("*** parsing theme failed ! oh oh ***\n");
+        exit (1);
+      }
+    }      
+
+    if (win->xmms) {
+       gdk_window_set_events(win->xmms_main_window_gdk, GDK_VISIBILITY_NOTIFY_MASK | GDK_STRUCTURE_MASK);
+       gdk_window_add_filter(win->xmms_main_window_gdk, event_filter, (gpointer) win);
+    } else {
+      gdk_window_set_events(win->child_gdk, GDK_VISIBILITY_NOTIFY_MASK | GDK_STRUCTURE_MASK);
+      gdk_window_add_filter(win->child_gdk, event_filter, (gpointer) win);
     }
+
+    } else {  
     
     gdk_window_set_events(win->child_gdk, GDK_STRUCTURE_MASK);
     gdk_window_add_filter(win->child_gdk, child_window_filter, (gpointer) win); 
@@ -471,12 +521,14 @@ main (int argc, char *argv[])
       GDK_VISIBILITY_NOTIFY_MASK);
     gdk_window_add_filter(win->parent_gdk, parent_window_filter, (gpointer) win); 
   
-
-   } until;
-
+  }
   
   if (win->show && !win->click_mode && !win->normal_map)
     show_hide_window (win, force_show, FALSE);
+
+  if (win->shortcut_key != 0 && win->shortcut_modifier != 0)
+    shortcut_init (win);  
+
     
   gtk_main ();
 

@@ -39,6 +39,7 @@
  *    
 */
 
+#include "config.h" 
 #include "common.h"
 
 #define GCONF_METACITY_THEME_PATH "/apps/metacity/general/theme"
@@ -127,6 +128,7 @@ static GMarkupParser parser = {
 
 gchar *get_metacity_theme (win_struct *win) {
 
+#ifdef GCONF_NOT_DISABLED
 
   GConfClient *client;
   gchar *theme=NULL;
@@ -139,6 +141,11 @@ gchar *get_metacity_theme (win_struct *win) {
   g_object_unref(client);
 
   return theme;
+
+#else
+ return NULL;
+#endif
+ 
 
 }
 

@@ -6,6 +6,9 @@
 /* Use binary relocation? */
 #undef ENABLE_BINRELOC
 
+/* Define if gconf is not disabled */
+#undef GCONF_NOT_DISABLED
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 

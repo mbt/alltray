@@ -17,14 +17,14 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ALLTRAY" 1 "april 18, 2005" "" ""
+.TH ALLTRAY 1 "april 26, 2006" "Version 0.66" "AllTray Manual Page"
 .SH NAME
 AllTray \- Dock any program into the system tray.
 .SH "SYNOPSIS"
 .ad l
 .hy 0
 .HP 8
-\fBalltray\fR [program] \fB[options]\fR
+\fBalltray\fR [program] [options]
 
 .ad
 .hy
@@ -32,13 +32,14 @@ AllTray \- Dock any program into the system tray.
 .SH "DESCRIPTION"
 
 .PP
-With \fBAllTray\fR you can dock any application with no native tray icon\
+With \fBAllTray\fR you can dock any application with no native tray icon \
 (like Evolution, Thunderbird, Terminals) into the system tray\&. A high\-light feature \
-is that a click on the "close" button will minimize back to system tray\&.\
-It works well with Gnome, KDE, XFCE 4*, Fluxbox* and WindowMaker*\&.
+is that a click on the "close" button will minimize back to system tray\&. \
+It works well with Gnome, KDE, XFCE 4*, Fluxbox* and WindowMaker*\&. \
 Xmms is supported in particular\&.
 
-*no drag n drop support.
+.PP
+Click-Mode: Only run alltray and click on the window you would like to dock.  (Abort with <c>)
 
 .SH "OPTIONS"
 
@@ -67,8 +68,11 @@ allow large icons (> 24x24)\&.
 \fB\-st\fR \fB\-\-sticky\fR
 visible on all workspaces\&.
 .TP
-\fB\-x\fR \fB\-\-borderless\fR
-Remove windows decorations border, title, frame\&.\&.\&. from parent\&.
+\fB\-stask\fR \fB\-\-skip-taskbar\fR
+not visible in taskbar\&.
+.TP
+\fB\-na\fR \fB\-\-no-alltray\fR
+no "(Alltray)" in window title\&.
 .TP
 \fB\-m\fR \fB\-\-menu\fR
 Add entry "menu text:command" to popdown menu\&.
@@ -78,6 +82,9 @@ Show title change for <sec> seconds. Probably most usefull for xmms\&.
 .TP
 \fB\-g\fR \fB\-\-geometry\fR
 initial position. see man X.
+.TP
+\fB\-conf\fR \fB\-\-configure\fR
+show KDE configuration dialog\&.
 
 
 .SH HOMEPAGE

@@ -135,8 +135,9 @@ gboolean grap_pointer_ (gpointer user_data)
   
   if (button_pressed)
     show_hide_window (win, force_hide, FALSE);
-  else
-    grabed=FALSE;
+
+
+ grabed=FALSE;
 
   return FALSE;
 }
@@ -310,6 +311,10 @@ void grab_init (win_struct *win)
   XWindowAttributes win_attributes;
 
 
+  if (win->nomini)
+    return;
+  
+
   do {
   
     if (win->xmms) {
@@ -356,125 +361,11 @@ void grab_init (win_struct *win)
   
   } until;
 
+
 }
 
-GdkFilterReturn target_filter (GdkXEvent *xevent, 
-  GdkEvent *event, gpointer user_data)
+
+void grab_done (void)
 {
-
-  XEvent *xev = (XEvent *)xevent;
-
-  static gboolean first_map =TRUE;
-
-  win_struct *win= (win_struct*) user_data;
-  
-  switch (xev->xany.type) {
-   
-    case MapNotify:
-    
-      if (debug) printf ("gnome map notify\n");
-     
-      update_visibility_state (win, window_is_visible);
-
-      if (first_map && !win->borderless) {
-        grab_init(win);
-        first_map=FALSE;
-      }
-
-      grabed=FALSE;
-
-    break;
-    
-    case UnmapNotify:
-    
-      if (debug) printf ("gnome unmap notify\n");
-      update_visibility_state (win, window_is_hidden);
-    
-    break;
-      
-    case DestroyNotify:
-      
-      if (debug) printf ("gnome destroy notify\n");
-
-      if (win->xmms && assert_window (win->xmms_main_window_xlib))
-        break;
-      else if (assert_window (win->child_xlib))
-        break;
-       
-        XUngrabPointer(GDK_DISPLAY(), CurrentTime);
-        destroy_all_and_exit (win, FALSE);
-            
-    break;
-      
-    case PropertyNotify:
-    { 
-        XPropertyEvent *xproperty = (XPropertyEvent *) xev;
-      
-        if (debug) printf ("property notify\n");
-
-        if (xproperty->atom == wm_name_atom) {
-          update_window_title(win);
-          break;
-        }
-
-       if (xproperty->atom == net_wm_icon  || 
-          xproperty->atom == wm_icon_atom ) {
-        update_tray_icon(win);
-      } 
-
-    }
-    break;
- 
-    case VisibilityNotify:
-    {
-        
-        XVisibilityEvent *xvisibilty = (XVisibilityEvent*) xev;
-        win->visibility=xvisibilty->state;
-        if (debug) printf ("visibility notify state: %d\n", win->visibility);
-
-    }
-    break;
-
-    case ConfigureNotify:
-
-        if (debug) printf ("configure notify\n");
-
-        if (win->xmms || !win->parent_is_visible || win->borderless || win->kde)
-          break;
-        
-        if (!GDK_IS_DRAWABLE (win->target_our_gdk))
-          break;
-
-        gdk_drawable_get_size (win->target_our_gdk, 
-               &win->target_our_w, &win->target_our_h);
-
-    break;
-
-  }
-  
-  return GDK_FILTER_CONTINUE;
-}
-
-void grab_filter_init (win_struct *win)
-{
-
-  if (win->gnome) {
-
-    if (!parse_theme (win)) {
-      printf ("*** parsing theme failed ! oh oh ***\n");
-      exit (1);
-    }
-   
-  }
-
-  if (win->xmms) {
-    gdk_window_set_events(win->xmms_main_window_gdk, GDK_VISIBILITY_NOTIFY_MASK | GDK_STRUCTURE_MASK);
-    gdk_window_add_filter(win->xmms_main_window_gdk, target_filter, (gpointer) win);
-  } else {
-
-   gdk_window_set_events(win->child_gdk, GDK_VISIBILITY_NOTIFY_MASK | GDK_STRUCTURE_MASK);
-   gdk_window_add_filter(win->child_gdk, target_filter, (gpointer) win);
-  }
-
-
+   XUngrabPointer(GDK_DISPLAY(), CurrentTime);
 }

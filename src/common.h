@@ -5,7 +5,11 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdk.h>
-#include <gconf/gconf-client.h>
+
+#ifdef GCONF_NOT_DISABLED
+  #include <gconf/gconf-client.h>
+#endif
+
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
 #include <stdlib.h>
 #include <X11/Xatom.h>
@@ -206,6 +210,13 @@ typedef struct _win_struct {
   
   gboolean kde_close_button_pos;
   button kde_close_button;
+
+  unsigned int shortcut_key;
+  unsigned int shortcut_modifier;
+
+  gboolean notray;
+  gboolean nomini;
+  
 
 } win_struct;
 

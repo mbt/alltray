@@ -45,6 +45,8 @@
 #include "xmms.h"
 #include "balloon_message.h"
 #include "grab.h"
+#include "shortcut.h"
+#include "eventfilter.h"
 #include "inlinepixbufs.h"
 #include "config.h"
 
@@ -1577,13 +1579,13 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
     if (win->xmms) {
       gdk_window_remove_filter (win->xmms_main_window_gdk, motion_filter_xmms, (gpointer) win);
-      gdk_window_remove_filter(win->xmms_main_window_gdk, target_filter, (gpointer) win);
+      gdk_window_remove_filter(win->xmms_main_window_gdk, event_filter, (gpointer) win);
       break;
     }
 
     if (win->no_reparent) {
       gdk_window_remove_filter (win->child_gdk, motion_filter_gnome, (gpointer) win);
-      gdk_window_remove_filter(win->child_gdk, target_filter, (gpointer) win);
+      gdk_window_remove_filter(win->child_gdk, event_filter, (gpointer) win);
       break;
     }
  
@@ -1660,7 +1662,10 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   }
 
-  tray_done(win);
+  if (!win->notray)
+    tray_done(win);
+
+  shortcut_done (win);
 
   if (win->no_reparent && !kill_child && !child_dead && !win->xmms)
     gdk_window_set_title (win->child_gdk, win->title);
@@ -1673,7 +1678,8 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   if (!win->xmms)
     g_object_unref (win->window_icon);
   
-  g_object_unref (win->tray_icon);
+  if (!win->notray)
+    g_object_unref (win->tray_icon);
  
   if (win->command_menu) 
      free_command_menu (win->command_menu);
@@ -1882,6 +1888,9 @@ void show_hide_window (win_struct *win, gint force_state,
       if (debug) printf ("mapped\n");
       
       gdk_window_remove_filter(parent_gdk, parent_filter_map, (gpointer) win);
+
+      if (win->gnome)
+        check_if_pointer_is_over_button (win); 
       
       /*KDE want to rest a little bit after soo much work ;)*/
       /*if not the window will not be the top most*/
@@ -1903,6 +1912,10 @@ void show_hide_window (win_struct *win, gint force_state,
     }
 
     gdk_window_focus (parent_gdk, gtk_get_current_event_time());
+
+    if (win->gnome)
+        check_if_pointer_is_over_button (win);     
+
   
     if (!win->skip_tasklist)
       skip_taskbar (win, FALSE);

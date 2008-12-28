@@ -6,7 +6,7 @@ AllTray: Copyright 2004, 2005, 2006 Jochen Baier, email@jochen-baier.de
   will minimize back to system tray. It works well with Gnome,
   KDE, XFCE 4*, Fluxbox* and WindowMaker*.
   
-  *no drag 'n drop support
+  *no drag 'n drop support. Enable with "-nm" option.
 
 
 **Install:
@@ -51,8 +51,10 @@ AllTray: Copyright 2004, 2005, 2006 Jochen Baier, email@jochen-baier.de
 
   
   Note: * Under KDE the "large_icon" option has no effect.
-           * "--configure" option will only work under KDE. You need to configure 
+        * "--configure" option will only work under KDE. You need to configure 
               AllTray after each theme change.
+        * If you do not use KDE or Gnome and you want Drag n Drop: use the "--nm" option.
+        * If you do not have Gconf/Gnome installed. Use the "--disable-gconf" configure option.
 
 
 **All options:
@@ -61,7 +63,7 @@ AllTray: Copyright 2004, 2005, 2006 Jochen Baier, email@jochen-baier.de
   
   usage: alltray [options] ["] <program_name> [program parameter] ["]
 
- where options include:
+   where options include:
    --help; -h:  print this message
    --version; -v: print version
    --debug; -d: show debug messages
@@ -75,9 +77,16 @@ AllTray: Copyright 2004, 2005, 2006 Jochen Baier, email@jochen-baier.de
    --menu; -m: "menu text:command": add entry to popdown menu
    --title; -t <sec>: show tooltip with title for <sec> seconds after song change
    --geometry; -g [<width>x<height>][{+-}<x>{+-}<y>]: initial position (if not supported native)
+   --key; -k [Modifier:]Key: Keyboard shortcut:
+     Modifier="Shift", "Control", "Alt", "AltGr"
+     Key (Examples) = "a", "F1", "End" ...
+     or "Keycode" (Number) returned by the program "xev"
+   --notray; -nt: display no tray icon (usefull only with the "--key" option or what ever
+   --nominimize; -nm: click on window close button: do not minimize back to system tray, close
    --configure; -conf: show KDE configuration dialog
+ 
 
-usage: alltray
+ usage: alltray
 
  Click-Mode: Click on the window you would like to dock.
  (Abort with <c>)
@@ -89,7 +98,7 @@ usage: alltray
       
     - X Window stuff
     - GTK+ >= 2.2
-      Gconf stuff
+    - Gconf stuff. if not disabled with "--disable-gconf"
        
    Run:
    

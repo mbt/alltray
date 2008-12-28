@@ -36,6 +36,10 @@ alltray_SOURCES = \
   kde.h \
   clientwin.c \
   clientwin.h \
+  shortcut.c \
+  shortcut.h \
+  eventfilter.c \
+  eventfilter.h \
   inlinepixbufs.h
 
 

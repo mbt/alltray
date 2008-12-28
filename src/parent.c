@@ -45,6 +45,7 @@
 #include "parent.h"
 #include "utils.h"
 #include "trayicon.h"
+#include "shortcut.h"
 
 void update_visibility_state (win_struct *win, gboolean new_state)
 {
@@ -224,11 +225,14 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless, gboolean *sticky,
     gboolean *skip_tasklist, gboolean *no_title, gboolean *configure, gboolean *large_icons, 
-    GArray *command_menu, gint *title_time, gchar **geometry)
+    GArray *command_menu, gint *title_time, gchar **geometry,
+    unsigned int *shortcut_key, unsigned int *shortcut_modifier, gboolean *notray, gboolean *nomini)
 {
   int i;
   gchar *rest_buf=NULL;
   gchar *tmp=NULL;
+  gchar *shortcut=NULL;
+
 
   int x, y, w, h;
   
@@ -260,6 +264,16 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         *borderless=TRUE;
         break;
       }
+
+      if (!strcmp(argv[i], "--notray") || !strcmp(argv[i], "-nt")) {
+        *notray=TRUE;
+        break;
+      }    
+
+      if (!strcmp(argv[i], "--nominimize") || !strcmp(argv[i], "-nm")) {
+        *nomini=TRUE;
+        break;
+      }    
 
       if (!strcmp(argv[i], "--sticky") || !strcmp(argv[i], "-st")) {
         *sticky=TRUE;
@@ -297,6 +311,23 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         i++;
         break;
       }
+
+      if (!strcmp(argv[i], "--key") || !strcmp(argv[i], "-k")) {
+          if ((i+1) ==  argc) {
+            show_help();
+            return FALSE;
+          }
+        
+          shortcut=g_strdup (argv[i+1]);
+        
+          if (!parse_shortcut (shortcut, shortcut_key, shortcut_modifier))
+            return FALSE;
+          
+          g_free (shortcut);
+                               
+          i++;
+          break;
+     }            
       
      if (!strcmp(argv[i], "--geometry") || !strcmp(argv[i], "-g")) {
         if ((i+1) ==  argc) {
@@ -480,6 +511,12 @@ void show_help(void)
              "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
              "   --title; -t <sec>: show tooltip with title for <sec> seconds after song change\n"\
              "   --geometry; -g [<width>x<height>][{+-}<x>{+-}<y>]: initial position (if not supported native)\n"\
+             "   --key; -k [Modifier:]Key: Keyboard shortcut:\n"\
+             "     Modifier=\"Shift\", \"Control\", \"Alt\", \"AltGr\"\n"\
+             "     Key (Examples) = \"a\", \"F1\", \"End\" ...\n"\
+             "     or \"Keycode\" (Number) returned by the program \"xev\". \n"\ 
+             "   --notray; -nt: display no tray icon (usefull only with the \"--key\" option or what ever\n"\
+             "   --nominimize; -nm: click on window close button: do not minimize back to system tray, close\n"\
             "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\
              " Click-Mode: Click on the window you would like to dock.\n\n"\
