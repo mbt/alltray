@@ -1,0 +1,58 @@
+AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
+
+
+  With AllTray you can dock any application into the system tray/notification area.
+  A high-light feature is that a click on the "close" button will minimize to system tray.
+ It is written in C using GTK and Xlib. It works well with Gnome and OK with KDE.
+
+
+**Install:
+
+  (./autogen.sh)
+  ./configure 
+  make
+
+  and as root:
+
+  make install
+
+
+**First Run:
+
+  start AllTray with: 
+
+  alltray --windowinfo
+
+
+**Example programs:
+
+  anjuta: Step 1, alltray anjuta -sw
+  gcalctool: Step 1, alltray gcalctool
+  gnome-terminal: Step 2 or Step 3,
+      alltray --hints "Gnome-terminal;gnome-terminal;Terminal" gnome-terminal
+  kcalc: Step 1, alltray kcalc
+  kdict: Step 2, alltray --hints "Kdict;kdict;null" kdict
+  kmail: Step 2,  alltray --hints "Kmail;kmail;null" kmail
+  konqueror: Step 1, alltray konqueror
+  konsole: Step 1, alltray konsole
+  nautilus: Step 1, alltray nautilus
+  thunderbird: Step 2, alltray --hints "Thunderbird-bin;Gecko;null" thunderbird
+  xchat: Step 1, alltray xchat
+  xmms: Step 3, alltray --hints "xmms;XMMS_Player;XMMS" xmms
+
+
+**Help:
+
+  alltray -h:
+  
+  usage: alltray [options] <program_name> [program parameter]
+  
+  where options include:
+    --help; -h:  print this message
+    --show; -s:  do not hide window after start
+    --hints; -hi: "WM_CLASS CLASS; WM_CLASS NAME; WM_NAME"
+    --windowinfo; -wi: get hints string by clicking on window
+    --splashwindow; -sw: ignore splash window
+
+
+**License: GPL
