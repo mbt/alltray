@@ -1,3 +1,9 @@
+Mar, 18, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- fixed segfault. could arise if program to dock is not in standard path
+  (e.g. /usr/local/bin/thunderbird/thunderbird)
+  bug reported by Kristoffer Järleby
+- set version to 0.42
+
 Mar, 1, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - added "--menu" option. add own menu entries to popdown menu to
   execute commands. example: --menu "Sync:/bin/sync".

@@ -44,7 +44,7 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
 
   alltray -h:
   
-  usage: alltray [options] <program_name> [program parameter]
+  usage: alltray [options] ["] <program_name> [program parameter] ["]
   
   where options include:
   

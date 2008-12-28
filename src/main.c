@@ -459,7 +459,14 @@ void command_line_init (win_struct *win, int argc, char **argv)
     &win->command, &win->show, &win->hide_start,
     &debug, &win->borderless,
     &win->large_icons, win->command_menu)) {
-      
+    
+    if (win->user_icon_path)
+      g_free(win->user_icon_path);
+    if (win->command)
+      g_free (win->command);
+    if (win->command_menu)
+      g_array_free (win->command_menu, TRUE);
+    g_free(win);
     exit(1);
   }
   
@@ -471,7 +478,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
     if (win->borderless) printf ("borderless=TRUE\n");
   }
 
-  win->command_only=strip_command(win->command);
+  win->command_only=strip_command(win);
 
   if (win->user_icon_path)
     win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
@@ -509,6 +516,14 @@ void exec_and_wait_for_window(win_struct *win)
   if (!(win->child_pid=exec_command (win->command))) {
   
     if (debug) printf ("execute failed\n");
+     
+    if (win->user_icon_path)
+      g_free(win->user_icon_path);
+    if (win->command)
+      g_free (win->command);
+    if (win->command_menu)
+      g_array_free (win->command_menu, TRUE);
+    g_free(win);
     exit (1);
   }
 

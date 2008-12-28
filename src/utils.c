@@ -1717,7 +1717,7 @@ void update_window_title(win_struct *win)
 
 }
 
-gchar *strip_command (gchar *command)
+gchar *strip_command (win_struct *win)
 {
 
   gchar *command_copy=NULL;
@@ -1725,7 +1725,7 @@ gchar *strip_command (gchar *command)
   gchar *last_slash=NULL;
   gchar *return_value=NULL;
         
-  command_copy=g_strdup (command);
+  command_copy=g_strdup (win->command);
 
   space=g_strstr_len (command_copy, 
       strlen (command_copy) *sizeof (gchar), " ");
@@ -1743,16 +1743,27 @@ gchar *strip_command (gchar *command)
     
     
     if (g_file_test (command_copy, G_FILE_TEST_EXISTS)) {
-     return_value = ++last_slash;
+     return_value = g_strdup (++last_slash);
      if (debug) printf ("\"%s\" exists\n", command_copy);
+     g_free (command_copy);  
     } else {
       
       printf ("AllTray: Command: \"%s\" do not exist !\n", command_copy);
+    
+      if (win->user_icon_path)
+        g_free (win->user_icon_path);
+      if (command_copy)
+        g_free(command_copy);
+      if (win->command)
+        g_free (win->command);
+      if (win->command_menu)
+        g_array_free (win->command_menu, TRUE);
+      g_array_free (win->workspace, FALSE);
+      g_free(win);
       exit (1);
     }
   
   }
-
 
   if (debug) printf ("command stripped: %s\n", return_value);
   
@@ -1808,6 +1819,10 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   tray_done(win);
 
   g_free (win->title);
+
+  if (win->user_icon_path)
+        g_free (win->user_icon_path);
+  
   g_object_unref (win->window_icon);
   g_object_unref (win->tray_icon);
   g_array_free (win->workspace, FALSE);
@@ -1826,7 +1841,7 @@ void show_help(void)
   
              "Dock any program into the system tray.\n\n"  \
 
-             "usage: alltray [options] <program_name> [program parameter]\n\n" \
+             "usage: alltray [options] [\"] <program_name> [program parameter] [\"]\n\n" \
              "where options include:\n"\
              "  --help; -h:  print this message\n"\
              "  --version; -v: print version\n"\
