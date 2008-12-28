@@ -1,3 +1,13 @@
+Sep 07, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- removed  "#include <X11/Xmu/WinUtil.h>" from common.h
+- replaced g_open, g_mkdir... with open and mkdir...
+- Do not set window decoration for xmms before undock
+- Fixed: "Failed to read gconf file"/Theme parsing bug
+- Working LD_PRELOAD is now required
+- removed "Unknown Option" for command line parsing
+- Special gnome-terminal support (hide it during startup)
+- set version to 0.61 (bug fix)
+
 Jul 06, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - clear window props before undock
 - fixed probs with configure dialog

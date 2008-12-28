@@ -1,6 +1,9 @@
 #include "common.h"
 
 #define GCONF_FILE ".gconf/apps/metacity/general/%gconf.xml"
+#define GCONF_FILE_FALLBACK "/etc/gconf/gconf.xml.defaults/schemas/apps/metacity/"\
+                                                    "general/%gconf.xml"
+
 #define THEME_FILENAME "metacity-theme-1.xml"
 #define THEME_SUBDIR "metacity-1"
 #define THEME_DIR1 "/usr/share/"
@@ -148,24 +151,100 @@ static GMarkupParser parser = {
          NULL,
          error_handler
 };
- 
-gboolean parse_theme (win_struct *win) {
 
-  gchar *content=NULL, *gconf_content=NULL;
-  gint length, gconf_length;
+gchar *get_theme_fallback (void)
+{
+
+  gchar *content=NULL;
+  gchar *entry_theme_start=NULL;
+  gchar *entry_theme_end=NULL;
+  gchar *local_schema_start=NULL;
+  gchar *local_schema_end=NULL;
+  gchar *stringvalue_start=NULL;
+  gchar *stringvalue_end=NULL;
+
+  gchar *theme=NULL;
+
+  if (debug) printf ("theme_fallback\n");
+
+  if (!g_file_get_contents (GCONF_FILE_FALLBACK, &content, NULL, NULL))
+    return NULL;
+  
+  entry_theme_start=strstr (content, "entry name=\"theme\"");
+  if (entry_theme_start == NULL) {
+    g_free (content);
+    return NULL;
+  }
+  
+  entry_theme_end=strstr (entry_theme_start, "</entry>");
+  if (entry_theme_end == NULL) {
+    g_free (content);
+    return NULL;
+  }
+  
+  *(entry_theme_end+8)=0; 
+  if (debug) printf ("entry_theme_start: <%s>\n", entry_theme_start);
+
+  local_schema_start=strstr (entry_theme_start, "local_schema locale=\"C\"");
+  if (local_schema_start == NULL) {
+    g_free (content);
+    return NULL;
+ }
+
+  local_schema_end=strstr (local_schema_start, " </local_schema>");
+  if (local_schema_start == NULL) {
+    g_free (content);
+    return NULL;
+ }
+
+  *(local_schema_end + 15)=0;
+  if (debug) printf ("local schema start: <%s>\n", local_schema_start);
+
+
+  stringvalue_start=strstr (local_schema_start, "<stringvalue>");
+  if (stringvalue_start == NULL) {
+    g_free (content);
+    return NULL;
+  }
+
+  stringvalue_start=stringvalue_start+13;
+  stringvalue_end=strstr (stringvalue_start, "</stringvalue>");
+  if (stringvalue_end == NULL) {
+    g_free (content);
+    return NULL;
+  }
+
+  *stringvalue_end=0;
+
+  if (debug) printf ("string_value_start: <%s>\n", stringvalue_start);
+
+  if (strlen (stringvalue_start) > 1) {
+    theme=g_strdup (stringvalue_start);
+  }
+
+  g_free (content);
+
+ return theme;
+  
+}
+
+gchar *get_metacity_theme (win_struct *win) {
+
+  gchar *gconf_content=NULL;
+  gsize gconf_length;
   GError *err=NULL;
-  GMarkupParseContext *ctx, *gconf_ctx;
-  gchar *theme_dir, *theme_file;
+  GMarkupParseContext *gconf_ctx;
   gchar *metacity_gconf_file;
+  gchar *return_value=NULL;
 
   metacity_gconf_file = g_build_filename (g_get_home_dir (), GCONF_FILE,NULL);
 
   err = NULL;
   if (!g_file_get_contents (metacity_gconf_file, &gconf_content, &gconf_length, &err)) {
-    printf( "Failed to read gconf file %s: %s\n",  metacity_gconf_file, err->message);
+    if (debug) printf( "Failed to read gconf file %s: %s\n",  metacity_gconf_file, err->message);
     g_error_free (err);
     g_free (metacity_gconf_file);
-    return FALSE;
+    return NULL;
   }
 
   g_free (metacity_gconf_file);
@@ -191,43 +270,75 @@ gboolean parse_theme (win_struct *win) {
   g_free (gconf_content);
 
 
-  g_assert (theme_name);
-  if (debug) printf ("theme name: %s\n", theme_name);
+  //ugly ;)
+  if (theme_name != NULL) {
+    return_value=g_strdup (theme_name);
+    g_free (theme_name);
+  } else {
+    return_value=NULL;
+  }
 
+  return return_value;
+}
+ 
+gboolean parse_theme (win_struct *win) {
 
-  theme_dir = g_build_filename (g_get_home_dir (), ".themes", theme_name, 
+  gchar *content=NULL;
+  gsize length=0;
+  GError *err=NULL;
+  GMarkupParseContext *ctx;
+  gchar *theme_dir, *theme_file;
+  gchar *metacity_theme=NULL;
+
+  metacity_theme=get_metacity_theme (win);
+  if (metacity_theme == NULL) {
+  
+    printf ("\n\nAlltray: No Metacity Theme found!.\n"\
+              "         If you never ever changed the Window Theme this is normal.\n"
+              "         If you changed the Theme recently wait 1 min.\n"\
+              "         I will use the default Theme now.\n\n");
+     metacity_theme=get_theme_fallback ();
+  }
+
+  g_assert (metacity_theme);
+  if (debug) printf ("theme name: %s\n", metacity_theme);
+
+  theme_dir = g_build_filename (g_get_home_dir (), ".themes", metacity_theme, 
       THEME_SUBDIR, NULL);
-
   theme_file = g_build_filename (theme_dir, THEME_FILENAME, NULL);
   
   err = NULL;
-  if (!g_file_get_contents (theme_file,  &content, &length, &err)) {
+  if (!g_file_get_contents (theme_file, &content, &length, &err)) {
     if (debug) printf( "Failed to read theme from file %s: %s\n",  theme_file, err->message);
     g_error_free (err);
     g_free (theme_dir);
     g_free (theme_file);
-    theme_file = NULL;
-  }
+ }
 
-  if (content == NULL) { 
-    theme_dir = g_build_filename (THEME_DIR1, "themes", theme_name,
-        THEME_SUBDIR, NULL);
+  if (content == NULL) {
+  
+    theme_dir = g_build_filename (THEME_DIR1, "themes", metacity_theme,
+      THEME_SUBDIR, NULL);
+    
+    if (debug) printf ("try location: %s\n", theme_dir);
     
     theme_file = g_build_filename (theme_dir, THEME_FILENAME, NULL);
     
     err = NULL;
     if (!g_file_get_contents (theme_file, &content, &length, &err)) {
-      printf ("Failed to read theme from file %s: %s\n",  theme_file, err->message);
-      g_error_free (err);
-      g_free (theme_file);
-      g_free (theme_dir);
-      return FALSE;
+    if (debug) printf ("Failed to read theme from file %s: %s\n",  theme_file, err->message);
+    g_error_free (err);
+    g_free (theme_file);
+    g_free (theme_dir);
+    return FALSE;
     }
+  
   }
+
   
   g_assert (content);
 
-  g_free (theme_name);
+  g_free (metacity_theme);
   g_free (theme_file);
   g_free (theme_dir);
 
@@ -251,4 +362,4 @@ gboolean parse_theme (win_struct *win) {
   g_free (content);
 
   return TRUE;
- }
+}

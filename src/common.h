@@ -8,7 +8,6 @@
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
 #include <stdlib.h>
 #include <X11/Xatom.h>
-#include <X11/Xmu/WinUtil.h>
 #include <string.h>
 #include <X11/cursorfont.h>
 #include <unistd.h>
@@ -65,6 +64,7 @@ Atom net_client_list;
 Atom gdk_timestamp_prop;
 Atom utf8_string;
 Atom net_wm_visible_name;
+Atom alltray_found_window;
 
 typedef struct _balloon_struct {
   

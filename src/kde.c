@@ -47,8 +47,7 @@
 
 #include <X11/cursorfont.h>
 #include <fcntl.h>
-#include <glib/gstdio.h>
-
+#include <sys/stat.h>
 
 GtkWidget *hint_label;
 GtkWidget *cancel_label;
@@ -311,7 +310,7 @@ gint get_button_number (Window target, GList *buttons)
 gboolean write_string_to_file (char *str, char* file)
 {
 
-  mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+  mode_t mode = S_IRUSR | S_IWUSR;
   ssize_t size;
   int fd;
 
@@ -319,7 +318,7 @@ gboolean write_string_to_file (char *str, char* file)
 
   size = strlen(str);
 
-  fd = g_open(file, O_WRONLY | O_TRUNC | O_CREAT, mode);
+  fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, mode);
 
   if(fd == -1) {
       perror("error with open()");
@@ -404,10 +403,10 @@ void save_close_button_position (gboolean pos)
   user_dir=alltray_user_dir();
   if (debug) printf ("user_dir: %s\n", user_dir);
 
-  file = g_fopen(user_dir, "r");
+  file = fopen(user_dir, "r");
 
   if(!file)
-    g_mkdir(user_dir, S_IRUSR | S_IWUSR | S_IXUSR);
+    mkdir(user_dir, S_IRUSR | S_IWUSR | S_IXUSR);
   else
     fclose(file);
   

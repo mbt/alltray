@@ -166,6 +166,11 @@ void command_line_init (win_struct *win, int argc, char **argv)
   
   gchar *geometry=NULL;
   gboolean configure=FALSE;
+  gchar *gnome_terminal_start=NULL;
+  gchar *old_command=NULL;
+  gchar *tmp_start=NULL;
+  gchar *tmp_start_gnome_terminal=NULL;
+  gchar *tmp_end=NULL;
 
   win->window_manager=get_window_manager();
 
@@ -181,6 +186,9 @@ void command_line_init (win_struct *win, int argc, char **argv)
      win->no_reparent=TRUE;
      win->kde_close_button_pos = kde_get_close_button_positon ();
   }
+
+  g_free (win->window_manager);
+
  
   if (argc==1) {
     win->click_mode=TRUE;
@@ -208,10 +216,11 @@ void command_line_init (win_struct *win, int argc, char **argv)
       g_free (geometry);
     
     if (win->workspace)
-      g_array_free (win->workspace, FALSE);
+      g_array_free (win->workspace, TRUE);
     
     if (win->command_menu)
-      g_array_free (win->command_menu, TRUE);
+      free_command_menu (win->command_menu);
+    
     g_free(win);
     exit(1);
   }
@@ -232,11 +241,11 @@ void command_line_init (win_struct *win, int argc, char **argv)
       g_free (geometry);
     
     if (win->workspace)
-      g_array_free (win->workspace, FALSE);
+      g_array_free (win->workspace, TRUE);
     
     if (win->command_menu)
-      g_array_free (win->command_menu, TRUE);
- 
+      free_command_menu (win->command_menu);
+
      exit (1);
     }
   
@@ -247,6 +256,27 @@ void command_line_init (win_struct *win, int argc, char **argv)
   
   if (win->user_icon_path)
     win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
+
+  gnome_terminal_start=strstr (win->command, "gnome-terminal");
+  if (gnome_terminal_start && !strstr (win->command, "disable-factory")) {
+
+    if (debug) printf ("gnome_terminal_start: <%s>\n", gnome_terminal_start);
+    
+    old_command=win->command;
+    tmp_end=gnome_terminal_start+14;
+    if (debug) printf ("tmp_end: <%s>\n", tmp_end);
+    
+    tmp_start=g_strdup (win->command);
+    tmp_start_gnome_terminal=strstr (tmp_start, "gnome-terminal");
+    *(tmp_start_gnome_terminal + 14)=0;
+    if (debug) printf ("tmp_start: <%s>\n", tmp_start);
+    
+    win->command=g_strconcat (tmp_start, " --disable-factory", tmp_end, NULL);
+    
+    g_free (old_command);
+    g_free (tmp_start);
+   
+  }
 
   win->command_only=strip_command(win);
   
@@ -473,11 +503,6 @@ main (int argc, char *argv[])
   
   if (win->show && !win->click_mode && !win->normal_map)
     show_hide_window (win, force_show, FALSE);
-
-  if (win->command)
-    g_free(win->command);
-  if (win->command_only)
-    g_free(win->command_only);
     
   gtk_main ();
 

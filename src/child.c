@@ -46,10 +46,7 @@
 #include "prefix.h"
 #include "clientwin.h"
 
-#ifdef HAVE_LD_PRELOAD
 #define PRELOAD_LIB "/liballtray.so.0.0.0"
-#endif
-
 
 gboolean window_match (Window window, win_struct *win)
 {
@@ -218,22 +215,17 @@ static GdkFilterReturn root_filter_map (GdkXEvent *xevent,
   return GDK_FILTER_CONTINUE;
 }
 
-#ifdef HAVE_LD_PRELOAD
 static GdkFilterReturn
 liballtraynomap_filter(GdkXEvent *xevent, GdkEvent *event, gpointer user_data)
 {
   
   XEvent *xev = (XEvent *)xevent;
   win_struct *win= (win_struct *) user_data;
-  static Atom alltray_found_window;
   int result;
   XClassHint class_hints;
     
   if (debug) printf ("liballtraynomap_filter event: %s\n", event_names[xev->xany.type]);
-  
-  if (!alltray_found_window)
-    alltray_found_window=XInternAtom (GDK_DISPLAY(), "ALLTRAY_FOUND_WINDOW", False);
-   
+    
   if (xev->xany.type == ClientMessage &&
       xev->xclient.message_type == alltray_found_window) {
         
@@ -289,13 +281,10 @@ liballtraynomap_filter(GdkXEvent *xevent, GdkEvent *event, gpointer user_data)
 
   return GDK_FILTER_CONTINUE;
 }
-#endif
 
 void set_env_stuff (gpointer user_data)
 {
 
-#ifdef HAVE_LD_PRELOAD
-  
   gchar *path_to_lib=NULL;
   gchar *preload_string=NULL;
   gchar *old_preload=NULL;
@@ -344,8 +333,6 @@ void set_env_stuff (gpointer user_data)
 
   g_free (path_to_lib);
 
-#endif
-
 }
 
 GPid exec_child (win_struct *win)
@@ -379,18 +366,16 @@ GPid exec_child (win_struct *win)
 void exec_and_wait_for_window(win_struct *win)
 {
   
-  #ifdef HAVE_LD_PRELOAD
-    win->libspy_window= XCreateSimpleWindow(GDK_DISPLAY(), GDK_ROOT_WINDOW(), 0, 0, 
-        1, 1, 0, 0, 0);
+  win->libspy_window= XCreateSimpleWindow(GDK_DISPLAY(), GDK_ROOT_WINDOW(), 0, 0, 
+      1, 1, 0, 0, 0);
 
-    if (debug) printf ("win->libsyp_window id: %d\n", (int) win->libspy_window);
-                
-    win->libspy_window_gdk=gdk_window_foreign_new (win->libspy_window);
-  
-    gdk_window_add_filter(win->libspy_window_gdk, liballtraynomap_filter,
-      (gpointer) win); 
-  #endif
-    
+  if (debug) printf ("win->libsyp_window id: %d\n", (int) win->libspy_window);
+              
+  win->libspy_window_gdk=gdk_window_foreign_new (win->libspy_window);
+
+  gdk_window_add_filter(win->libspy_window_gdk, liballtraynomap_filter,
+    (gpointer) win); 
+   
     
   gdk_window_set_events(win->root_gdk, GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_map, (gpointer) win);
@@ -406,31 +391,29 @@ void exec_and_wait_for_window(win_struct *win)
     if (win->user_icon_path)
       g_free(win->user_icon_path);
     
-    if (win->command_only)
-      g_free(win->command_only);
-    
     if (win->command)
       g_free (win->command);
-        
+    
+    g_free (win->command_only);
+
     if (win->workspace)
-      g_array_free (win->workspace, FALSE);
+      g_array_free (win->workspace, TRUE);
         
     if (win->command_menu)
-      g_array_free (win->command_menu, TRUE);
+      free_command_menu (win->command_menu);
     
     if (win->user_icon)
       g_object_unref (win->user_icon);
-    
-    #ifdef HAVE_LD_PRELOAD
-      gdk_window_remove_filter(win->libspy_window_gdk, 
-        liballtraynomap_filter, (gpointer) NULL);
-      XDestroyWindow (GDK_DISPLAY(), win->libspy_window);
-    #endif
+
+    gdk_window_remove_filter(win->libspy_window_gdk, 
+      liballtraynomap_filter, (gpointer) NULL);
+    XDestroyWindow (GDK_DISPLAY(), win->libspy_window);
+
     
     g_free(win);
     
 
-    exit (1);
+    exit (0);
     
   }
 
@@ -438,14 +421,12 @@ void exec_and_wait_for_window(win_struct *win)
   gtk_main();
   
   gdk_window_remove_filter(win->root_gdk, root_filter_map, (gpointer) win);
-  
-  #ifdef HAVE_LD_PRELOAD
+
   if (!win->xmms) {
     gdk_window_remove_filter(win->libspy_window_gdk, 
       liballtraynomap_filter, (gpointer) NULL);
     XDestroyWindow (GDK_DISPLAY(), win->libspy_window);
   }
-  #endif
 
   if (debug) {
     

@@ -312,7 +312,9 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gboolean *configure, gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry)
 {
   int i;
-  char rest_buf[4096]="";
+  gchar *rest_buf=NULL;
+  gchar *tmp=NULL;
+
   int x, y, w, h;
   
   if (argc == 1) {
@@ -426,32 +428,29 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
       break;
     }  
 
-    if (g_str_has_prefix (argv[i],"-")) {
+  /*if (g_str_has_prefix (argv[i],"-")) {
       printf ("\nAlltray: Unknown option '%s'\n\n", argv[i]);
       return FALSE;
+    }*/
+    
+    if (rest_buf == NULL) {
+      rest_buf=g_strdup (argv[i]);
+    } else {
+      tmp=rest_buf;
+      rest_buf=g_strconcat (rest_buf, " ", argv[i], NULL);
+      g_free (tmp);
     }
-
-    if (strlen (rest_buf) + strlen (argv[i]) >= 4096) {
-      printf ("Alltray: Command Buffer too small (; [max 4096 letters]\n");
-      return FALSE;
-    }
-            
-    if (strlen (rest_buf) > 0)
-      strcat (rest_buf, " ");
-      
-    strcat (rest_buf, argv[i]);
-      
+        
     } until;
     
   }
   
-  if (strlen (rest_buf) == 0 && !*configure) {
+  if (rest_buf && strlen (rest_buf) == 0 && !*configure) {
     show_help();
     return FALSE;
   }
-  
-  
-  *rest=g_strdup (rest_buf);
+
+  *rest=rest_buf;
 
   return TRUE;
 }
@@ -513,52 +512,26 @@ gchar *strip_command (win_struct *win)
 
   gchar *command_copy=NULL;
   gchar *space=NULL;
-  gchar *last_slash=NULL;
-  gchar *return_value=NULL;
-        
+  gchar *basename=NULL;
+
   command_copy=g_strdup (win->command);
 
   space=g_strstr_len (command_copy, 
-      strlen (command_copy) *sizeof (gchar), " ");
+      strlen (command_copy) , " ");
   
   if (space)
     *space=0;
   
   if (debug) printf ("command without args: %s\n", command_copy);
- 
-  return_value=command_copy;
-    
-  last_slash = g_strrstr (command_copy, "/");
-  
-  if (last_slash) {
-    
-    
-    if (g_file_test (command_copy, G_FILE_TEST_EXISTS)) {
-     return_value = g_strdup (++last_slash);
-     if (debug) printf ("\"%s\" exists\n", command_copy);
-     g_free (command_copy);  
-    } else {
-      
-      printf ("AllTray: Command: \"%s\" do not exist !\n", command_copy);
-    
-      if (win->user_icon_path)
-        g_free (win->user_icon_path);
-      if (command_copy)
-        g_free(command_copy);
-      if (win->command)
-        g_free (win->command);
-      if (win->command_menu)
-        g_array_free (win->command_menu, TRUE);
-      g_array_free (win->workspace, FALSE);
-      g_free(win);
-      exit (1);
-    }
-  
-  }
 
-  if (debug) printf ("command stripped: %s\n", return_value);
+  basename=g_path_get_basename (command_copy);
   
-  return return_value;
+  if (debug) printf ("basename: %s\n", basename);
+  
+  g_free (command_copy);
+  
+  return basename;
+
 }
 
 void show_help(void)

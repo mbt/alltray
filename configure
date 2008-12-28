@@ -1803,7 +1803,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=alltray
- VERSION=0.60
+ VERSION=0.61
 
 
 cat >>confdefs.h <<_ACEOF
@@ -20916,6 +20916,25 @@ fi
 
 
 
+if test x"$_HAVE_LD_PRELOAD" = x"no"; then
+  { echo "$as_me:$LINENO: WARNING: " >&5
+echo "$as_me: WARNING: " >&2;}
+  { echo "$as_me:$LINENO: WARNING:      Function preload check failed!" >&5
+echo "$as_me: WARNING:      Function preload check failed!" >&2;}
+  { echo "$as_me:$LINENO: WARNING:      If this is a linux box, please report" >&5
+echo "$as_me: WARNING:      If this is a linux box, please report" >&2;}
+  { echo "$as_me:$LINENO: WARNING:      this to email@jochen-baier.de;" >&5
+echo "$as_me: WARNING:      this to email@jochen-baier.de;" >&2;}
+  { echo "$as_me:$LINENO: WARNING:      else please try to fix it and let me know." >&5
+echo "$as_me: WARNING:      else please try to fix it and let me know." >&2;}
+  { echo "$as_me:$LINENO: WARNING: " >&5
+echo "$as_me: WARNING: " >&2;}
+  { { echo "$as_me:$LINENO: error:        Will abort now." >&5
+echo "$as_me: error:        Will abort now." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
 
   echo "$as_me:$LINENO: checking for /proc/self/maps" >&5
 echo $ECHO_N "checking for /proc/self/maps... $ECHO_C" >&6
@@ -22537,25 +22556,6 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
-
-if test x"$_HAVE_LD_PRELOAD" = x"no"; then
-  { echo "$as_me:$LINENO: WARNING: " >&5
-echo "$as_me: WARNING: " >&2;}
-  { echo "$as_me:$LINENO: WARNING:      Function preload check failed!" >&5
-echo "$as_me: WARNING:      Function preload check failed!" >&2;}
-  { echo "$as_me:$LINENO: WARNING:      If this is a linux box, please report" >&5
-echo "$as_me: WARNING:      If this is a linux box, please report" >&2;}
-  { echo "$as_me:$LINENO: WARNING:      this to email@jochen-baier.de;" >&5
-echo "$as_me: WARNING:      this to email@jochen-baier.de;" >&2;}
-  { echo "$as_me:$LINENO: WARNING:      else please try to fix it and let me know." >&5
-echo "$as_me: WARNING:      else please try to fix it and let me know." >&2;}
-  { echo "$as_me:$LINENO: WARNING: " >&5
-echo "$as_me: WARNING: " >&2;}
-  { echo "$as_me:$LINENO: WARNING:      Alltray will work with limited features. (or not at all)" >&5
-echo "$as_me: WARNING:      Alltray will work with limited features. (or not at all)" >&2;}
-  { echo "$as_me:$LINENO: WARNING: " >&5
-echo "$as_me: WARNING: " >&2;}
-fi
 
 if test "x$br_cv_binreloc" = "xno"; then
   { echo "$as_me:$LINENO: WARNING: " >&5

@@ -20,6 +20,8 @@ void destroy_balloon (win_struct *win)
   if (win->balloon->handler_id)
     g_signal_handler_disconnect ((gpointer) win->plug, win->balloon->handler_id);
   
+  g_object_unref (win->balloon->gc);
+  
   gtk_widget_destroy (win->balloon->window);
   g_free (win->balloon);
   win->balloon=NULL;
@@ -309,6 +311,8 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
     g_free (points);
   
   }
+
+  g_object_unref (shape_gc);
 
   gtk_widget_shape_combine_mask(balloon->window, xpm, 0, 0 );
 

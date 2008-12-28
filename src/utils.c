@@ -129,6 +129,7 @@ void atom_init (void)
   net_client_list=XInternAtom(GDK_DISPLAY(),"_NET_CLIENT_LIST",False);
   utf8_string = XInternAtom(GDK_DISPLAY(),"UTF8_STRING", False);
   net_wm_visible_name=XInternAtom(GDK_DISPLAY(),"_NET_WM_VISIBLE_NAME", False);
+  alltray_found_window=XInternAtom (GDK_DISPLAY(), "_ALLTRAY_FOUND_WINDOW", False);
   
     
   char temp[50];
@@ -1612,6 +1613,25 @@ void close_window (Window window)
     
 }
 
+void free_command_menu (GArray *command_menu)
+{
+  
+  gint i;
+  command_menu_struct command;
+
+  if (command_menu->len >0) {
+  
+    for (i=0; i < command_menu->len; i++) {
+      command=g_array_index (command_menu, command_menu_struct, i);
+      g_free (command.entry);
+      g_free (command.command);
+    }
+  
+  }
+
+  g_array_free (command_menu, TRUE);
+}
+
 void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 {
 
@@ -1655,7 +1675,6 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   if (!child_dead) {
   
-    #ifdef HAVE_LD_PRELOAD
     {
       XWMHints *wm_hints;
       
@@ -1667,7 +1686,6 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
         XFree(wm_hints);
       }
     }  
-    #endif
   
     if (!win->no_reparent) {
           
@@ -1709,7 +1727,9 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     
     }
   
-    gdk_window_set_decorations (win->child_gdk, GDK_DECOR_ALL);
+    if (!win->xmms)
+      gdk_window_set_decorations (win->child_gdk, GDK_DECOR_ALL);
+    
     skip_taskbar (win, FALSE);
     skip_pager (win->child_xlib, FALSE);
     rm_sticky (win->child_xlib);
@@ -1727,9 +1747,6 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   g_free (win->title);
 
-  if (win->window_manager)
-    g_free (win->window_manager);
-
   if (win->user_icon_path)
         g_free (win->user_icon_path);
   
@@ -1737,11 +1754,18 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
     g_object_unref (win->window_icon);
   
   g_object_unref (win->tray_icon);
-  g_array_free (win->workspace, FALSE);
-  g_array_free (win->command_menu, TRUE);
-
+  g_array_free (win->workspace, TRUE);
+ 
+  if (win->command_menu) 
+     free_command_menu (win->command_menu);
+  
   if (!win->no_reparent)  
     XDestroyWindow(win->display, win->parent_xlib);
+  
+  if (win->command)
+    g_free(win->command);
+  if (win->command_only)
+    g_free(win->command_only);
   
   g_free (win);
 

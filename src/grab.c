@@ -56,7 +56,6 @@
 #define closebuttonsize 9
 
 static gboolean grabed=FALSE;
-Cursor cursor;
 
 gboolean grap_pointer_ (gpointer user_data)
 {
@@ -67,8 +66,11 @@ gboolean grap_pointer_ (gpointer user_data)
   gboolean inside=TRUE;
   gboolean button_pressed=FALSE;
   Window grap_window;
+  Cursor cursor;
   
   win_struct *win= (win_struct*) user_data;
+
+  cursor = XCreateFontCursor(GDK_DISPLAY(), XC_left_ptr);
 
   if (win->xmms)
       grap_window=win->xmms_main_window_xlib;
@@ -82,6 +84,7 @@ gboolean grap_pointer_ (gpointer user_data)
   if (status != GrabSuccess) {
     printf ("Can't grab the mouse.");
     grabed=FALSE;
+    XFreeCursor (GDK_DISPLAY(), cursor);
     return FALSE;
   }
 
@@ -460,8 +463,6 @@ void grab_filter_init (win_struct *win)
     }
    
   }
-
-  cursor = XCreateFontCursor(GDK_DISPLAY(), XC_left_ptr);
 
   if (win->xmms) {
     gdk_window_set_events(win->xmms_main_window_gdk, GDK_VISIBILITY_NOTIFY_MASK | GDK_STRUCTURE_MASK);

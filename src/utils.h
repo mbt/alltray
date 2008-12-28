@@ -38,5 +38,6 @@ void show_hide_window (win_struct *win, gint force_state,
 gboolean search_gnome_panel (void);
 void xprop (Window window);
 gchar  *get_window_manager(void);
+void free_command_menu (GArray *command_menu);
 
 #endif

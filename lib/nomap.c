@@ -139,7 +139,7 @@ void sent_found_window_to_parent (Display *display, Window found_window)
 {
   
   XEvent xev;
-  Atom type=XInternAtom (display, "ALLTRAY_FOUND_WINDOW", False);
+  Atom type=XInternAtom (display, "_ALLTRAY_FOUND_WINDOW", False);
   char *spy_id_string=NULL;
   int spy_id=0;
     
