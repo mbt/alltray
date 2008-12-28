@@ -1,3 +1,19 @@
+Feb, 23, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- alltray works now with Fluxbox and WindowMaker
+  (wmaker with "docker" dockapp)
+- added "--borderless" option, requested by Jesus Garcia Crespo,
+  usefull for borderless Eterm, xmms...
+- prevent child moving inside parent
+- resize tray icon if system tray/panel change size
+- added "--large_icons" option to allow icons greater than 24x24
+- suppress "appicon" in WindowMaker
+- set input hint on parent to False for correct focus handling
+- identify/detect/filter windows like a window manager
+- internal tray icon improvements
+- detect workspace switch correct
+- bug fixes
+- set version to 0.40
+
 Jan, 27, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - use process group ID to identify windows (usefull for programs
   with own child processes like thunderbird,

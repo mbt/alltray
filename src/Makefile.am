@@ -11,7 +11,7 @@ AM_CFLAGS =\
 
 alltray_SOURCES = \
 	main.c  \
-  gtray.h \
+  common.h \
   utils.c \
   utils.h \
   trayicon.c \

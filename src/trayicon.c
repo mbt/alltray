@@ -23,10 +23,10 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
  *
  *
- * Based on:
+ * Based on code from:
  *
  *    steal-xwin.c (acano@systec.com)
  *    xswallow (Caolan McNamara ?)
@@ -34,12 +34,13 @@
  *    libwnck (Havoc Pennington <hp@redhat.com>)
  *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
  *    dsimple.c ("The Open Group")
+ *    xfwm4 (Olivier Fourdan <fourdan@xfce.org>)
  *    .....lot more, THANX !!!
  *    
 */
 
 
-#include "gtray.h"
+#include "common.h"
 #include "utils.h"
 #include "trayicon.h"
 
@@ -111,11 +112,49 @@ void menu_init (win_struct *win)
   gtk_widget_show_all(menu);
 }
 
-void tray_update_icon(win_struct *win, GdkPixbuf *icon)
+void update_tray_icon(win_struct *win)
 {
+  
+  GdkPixbuf *tmp=NULL;
+  XWindowAttributes wa;
+  gboolean resize=FALSE;
+   
+  gdk_error_trap_push();
+  XGetWindowAttributes (GDK_DISPLAY(), win->plug_xlib, &wa);
+  
+  if (gdk_error_trap_pop())
+    return;
+   
+  if (debug) printf ("update_tray_icon: real plug size: %dx%d\n", wa.width, wa.height);
+    
+  if (wa.width <=1 || wa.height <= 1)
+    return;
 
+  if ((wa.height > 24 && win->large_icons) || wa.height < 24 ) {
+    resize=TRUE;
+    if (debug) printf ("resize = TRUE\n");
+  }
+  
+  if (resize) {
+    
+    if (win->user_icon_path)
+      tmp=get_user_icon (win->user_icon_path, wa.height, wa.height);
+  
+    if (!tmp)
+      tmp=get_window_icon (win->child_xlib, wa.height, wa.height);
+
+    if (win->tray_icon)
+      g_object_unref(win->tray_icon);
+    win->tray_icon=tmp;
+    
+  }
+
+  if (!resize)
+    gtk_fixed_move (GTK_FIXED(win->fixed), win->image_icon, 
+    (wa.width - 24) /2, (wa.height -24) /2);
+    
   if (GTK_IS_WIDGET (win->image_icon))
-    gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), icon);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->tray_icon);
 
 }
 
@@ -250,11 +289,16 @@ gboolean icon_window_configure_event (GtkWidget *widget,
 
   if (!GTK_IS_WIDGET (win->fixed))
     return FALSE;
-    
-  gtk_fixed_move (GTK_FIXED(win->fixed), win->image_icon,
-     event->width  >=24 ? (event->width/2) -12 : 0,
-     event->height >=24 ? (event->height/2) -12 : 0);
-      
+  
+  if (debug) printf ("icon_window_configure_event: %dx%d\n",
+    event->width, event->height);
+  
+  if (event->width <= 1 || event->height <= 1)
+    return FALSE;
+  
+
+  update_tray_icon(win);
+
   return FALSE;
     
 }
@@ -305,10 +349,12 @@ void plug_embedded (GtkWidget *widget,
    win_struct *win= (win_struct*) user_data;
   
   if (debug) printf ("plug embedded\n");
+
+  //XMapWindow (GDK_DISPLAY(), win->plug_xlib);
   
   if (!win->gtk_tray)
     gtk_sleep (2000); //XXX better idea ?
-        
+
   gtk_main_quit ();
   
 }
@@ -320,9 +366,11 @@ void create_tray_and_dock (win_struct *win)
   GdkPixbuf *background_pixbuf;
   XWindowAttributes wa;
   GdkGeometry hints;
-  gint width;
-  gint height;
-
+  gint width, icon_width;
+  gint height, icon_height;
+  gint x_return=0, y_return=0;
+  gint subtract=0;
+  
   if (win->manager_window==None)
     win->manager_window=get_manager_window();
   
@@ -336,8 +384,7 @@ void create_tray_and_dock (win_struct *win)
     "and add it again.\n");
     return;
   }
-  
-    
+
   //display_window_id (GDK_DISPLAY(), win->manager_window);
     
   win->gtk_tray = tray_is_made_with_gtk(win->manager_window);
@@ -362,12 +409,14 @@ void create_tray_and_dock (win_struct *win)
 
   hints.min_width = 24;
   hints.min_height = 24;
-  
+
   gdk_window_set_geometry_hints (win->plug->window,
     &hints, GDK_HINT_MIN_SIZE);
-  
+
   win->plug_xlib=gtk_plug_get_id (GTK_PLUG(win->plug));
   
+  if (debug) printf ("win->plug_xlib: %d\n", (gint) win->plug_xlib);
+
   if (!win->gtk_tray)
     XSetWindowBackgroundPixmap(GDK_DISPLAY(), win->plug_xlib, ParentRelative);
   
@@ -378,9 +427,9 @@ void create_tray_and_dock (win_struct *win)
                     (gpointer) win);
 
   dock_window (win->manager_window, win->plug_xlib);
-  
+      
   gtk_main ();
-  
+   
   gdk_error_trap_push();
    
   XGetWindowAttributes (GDK_DISPLAY(), win->plug_xlib, &wa);
@@ -397,17 +446,38 @@ void create_tray_and_dock (win_struct *win)
       
   }
   
-  if (debug) printf ("tray: height: %d, width: %d\n", height, width);
+  if (debug) printf ("first real tray size: height: %d, width: %d\n", height, width);
     
+  if (width <=1 || height <=1) {
+    width=24;
+    height=24;
+  }
+  
+  if (debug) printf ("fixed tray size: height: %d, width: %d\n", height, width);
+ 
   win->fixed= gtk_fixed_new ();
   gtk_fixed_set_has_window(GTK_FIXED (win->fixed),TRUE);
   gtk_container_add(GTK_CONTAINER(win->plug), win->fixed);
-  
-    
+
   if (!win->gtk_tray) {
+    
+    /*KDE bug: KDE likes to move tray window out of screen if panel*/
+    /*is small (< 26 pixel)*/
+    if (debug) printf ("wa.x: %d wa.y:%d\n", wa.x, wa.y);
+            
+    get_window_position (win->plug_xlib, &x_return, &y_return);
+    
+    if (debug) printf ("x_return: %d y_return: %d\n", x_return, y_return);
+    
+    if (y_return + height >= win->screen_height -1 ) {
+      if (debug) printf ("window out of screen !\n");
+      subtract= (y_return + height +2) - (win->screen_height);
+      if (debug) printf ("subtract: %d\n", subtract);
+      
+    }
 
     background_pixbuf=gdk_pixbuf_xlib_get_from_drawable
-      (NULL, win->plug_xlib, 0, NULL, 0, 0, 0, 0, width, height);
+      (NULL, win->plug_xlib, 0, NULL, 0, 0, 0, 0, width, height-subtract);
    
     
     image_back=gtk_image_new ();
@@ -418,11 +488,34 @@ void create_tray_and_dock (win_struct *win)
         
   }  
   
-  win->image_icon=gtk_image_new ();  
-  gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->icon);
-  gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (win->image_icon),
-    width  >=24 ? (width /2) -12 : 0,
-    height >=24 ? (height/2) -12 : 0);
+  win->image_icon=gtk_image_new ();
+  
+  if (win->tray_icon)
+    g_object_unref(win->tray_icon);
+  win->tray_icon=NULL;
+ 
+  if (win->large_icons)
+   {icon_width=width; icon_height=height; }
+  else
+   {icon_width=24; icon_height=24;}
+
+  if (win->user_icon_path)
+    win->tray_icon=get_user_icon (win->user_icon_path, icon_width, icon_height);
+  
+  if (!win->tray_icon) {
+    win->tray_icon=get_window_icon (win->child_xlib, icon_width, icon_height);
+  }
+
+  gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->tray_icon);
+  
+  if ((height > 24 && win->large_icons) || height < 24 )
+    gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (win->image_icon),
+      0, 0);
+  else
+     gtk_fixed_put (GTK_FIXED(win->fixed), win->image_icon, 
+       (width - 24) /2, (height-24) /2);  
+  
+   
   
   if (!win->gtk_tray)
     gtk_widget_show (image_back);
@@ -433,13 +526,17 @@ void create_tray_and_dock (win_struct *win)
   g_signal_connect ((gpointer) win->plug, "button_press_event",
                     G_CALLBACK (on_icon_window_press_event),
                     (gpointer) win);
-  
+ 
+
   g_signal_connect ((gpointer) win->plug, "configure_event",
                     G_CALLBACK (icon_window_configure_event),
-                    (gpointer) win);         
-                    
-                    
+                    (gpointer) win);
+
+  
   tray_update_tooltip (win);
+
+  
+  //update_tray_icon (win);
   
 }
 

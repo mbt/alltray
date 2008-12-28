@@ -23,10 +23,10 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
  *
  *
- * Based on:
+ * Based on code from:
  *
  *    steal-xwin.c (acano@systec.com)
  *    xswallow (Caolan McNamara ?)
@@ -34,12 +34,13 @@
  *    libwnck (Havoc Pennington <hp@redhat.com>)
  *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
  *    dsimple.c ("The Open Group")
+ *    xfwm4 (Olivier Fourdan <fourdan@xfce.org>)
  *    .....lot more, THANX !!!
  *    
 */
 
 
-#include "gtray.h"
+#include "common.h"
 #include "utils.h"
 #include "trayicon.h"
 
@@ -110,22 +111,19 @@ GdkFilterReturn root_filter_workspace (GdkXEvent *xevent,
 {
   XEvent *xev = (XEvent *)xevent;
   gint num;
-
+  gint current_desk=0;
+  
   win_struct *win = (win_struct*) user_data;
 
   //if (debug) printf ("root_filter_workspace event: %s\n", event_names[xev->xany.type]);
 
-  if (xev->xany.type == ClientMessage &&
-      xev->xclient.message_type == net_current_desktop) {
-      
-      if (debug) printf ("workspace switched %d\n", (int) xev->xclient.data.l[0]);
-        
-       /*if an other program get the focus on the same desktop,*/
-       /*we get this message too*/
-      if (win->desktop == (gint) xev->xclient.data.l[0]) 
-        return GDK_FILTER_CONTINUE;  
+  if (xev->xany.type == PropertyNotify &&
+     xev->xproperty.atom == net_current_desktop) {
+       
+     current_desk=get_current_desktop ();
+     if (debug) printf ("workspace switched %d\n", current_desk);
 
-      win->desktop=(gint) xev->xclient.data.l[0];
+      win->desktop=current_desk;
       num=win->desktop +1;
       
       gint length=win->workspace->len;
@@ -176,7 +174,10 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
   XEvent *xev = (XEvent *)xevent;
   XConfigureEvent *xconfigure;
   XVisibilityEvent *xvisibilty;
+  XConfigureRequestEvent *xconfigurerequest;
   
+  gint return_type=GDK_FILTER_CONTINUE;
+    
   win_struct *win= (win_struct*) user_data;
 
   switch (xev->xany.type) {
@@ -267,9 +268,26 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
         if (debug) printf ("visibility notify state: %d\n", win->visibility);
       break;
 
+        
+      /*bad child wanted to move inside parent -> deny*/
+      case ConfigureRequest:
+        
+      xconfigurerequest = (XConfigureRequestEvent*) xev;
+              
+      if (debug) printf ("child configure request\n");
+
+      if (xconfigurerequest->x !=0  || xconfigurerequest->y != 0) {
+        
+        if (debug) printf ("deny configure request\n");
+        return_type=GDK_FILTER_REMOVE;
+      }
+      
+      break;
+      
+      
   }
   
-   return GDK_FILTER_CONTINUE;
+   return return_type;
 }
 
 GdkFilterReturn child_window_filter (GdkXEvent *xevent, 
@@ -304,11 +322,33 @@ GdkFilterReturn child_window_filter (GdkXEvent *xevent,
       if (xproperty->atom == net_wm_icon  || 
           xproperty->atom == wm_icon_atom ) {
         update_window_icon(win);
+        update_tray_icon(win);
       } 
     
     }
     break;
-  
+    
+    case ConfigureNotify:
+    {
+      XConfigureEvent *xconfigure = (XConfigureEvent*) xev;
+      
+      if (debug) printf ("child configure event: x: %d, y: %d\n",
+        xconfigure->x, xconfigure->y);
+      
+      if (xconfigure->x >=1 || xconfigure->y >=1) {
+        
+        /*deny move inside parent in the future*/
+        XSelectInput (GDK_DISPLAY(),win->parent_xlib,
+          SubstructureRedirectMask | StructureNotifyMask |
+          VisibilityChangeMask);
+        
+        gdk_window_move (win->child_gdk, 0, 0);
+      }
+      
+
+    }
+    break;
+            
   
   }
   
@@ -379,15 +419,17 @@ void win_struct_init(win_struct *win)
   }
    
   win->desktop=0;
-  set_current_desktop (&win->desktop);
+  win->desktop=get_current_desktop();
   
-  if (debug) printf ("current desktop: %d\n", win->desktop);
+  if (debug) printf ("init: current desktop: %d\n", win->desktop);
 
   win->hide_start=FALSE;
   win->show=FALSE;
   win->command=NULL;
   win->child_xlib=None;
-  
+  win->borderless=FALSE;
+  win->large_icons=FALSE;
+      
   win->parent_pid=getpid();
   win->child_pid=0;
   if (debug) printf ("win->parent_pid: %d\n", win->parent_pid);
@@ -399,8 +441,11 @@ void win_struct_init(win_struct *win)
   win->image_icon=NULL;
   win->title=NULL;
   
-  win->icon=NULL;
+  win->window_icon=NULL;
+  win->tray_icon=NULL;
+  
   win->user_icon=NULL;
+  win->user_icon_path=NULL;
   
   win->fake_desktop=NULL;
 
@@ -408,47 +453,27 @@ void win_struct_init(win_struct *win)
 
 void command_line_init (win_struct *win, int argc, char **argv)
 {
-  
-  gchar *user_icon_path=NULL;
-  
-  if (!parse_arguments(argc, argv, &user_icon_path,
-    &win->command, &win->show, &win->hide_start, &debug)) {
+
+  if (!parse_arguments(argc, argv, &win->user_icon_path,
+    &win->command, &win->show, &win->hide_start,
+    &debug, &win->borderless, &win->large_icons)) {
       
     exit(1);
   }
   
   if (debug) {
     printf ("command: %s\n", win->command);
-    
     if (win->show) printf ("show=TRUE\n");
     if (win->user_icon) printf ("have user icon\n");
     if (win->hide_start) printf ("hide_start=TRUE\n");
+    if (win->borderless) printf ("borderless=TRUE\n");
   }
 
   win->command_only=strip_command(win->command);
-  
-  if (user_icon_path) {
-  
-    if (debug) printf ("icon_user_path: %s\n", user_icon_path);
-    
-    if (g_file_test (user_icon_path, G_FILE_TEST_EXISTS)) {
-    
-       GError *error=NULL;
- 
-       win->user_icon=gdk_pixbuf_new_from_file_at_size (user_icon_path, 24, 24, &error);
-           
-       if (!win->user_icon)
-        printf ("%s\n", error->message);
-            
-    
-    } else {
-      
-      printf ("Alltray: Icon file %s do not exist !\n", user_icon_path);
-    }
-  
-    g_free (user_icon_path);
-  
-  }
+
+  if (win->user_icon_path)
+    win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
+
 
 }
 
@@ -478,7 +503,7 @@ void exec_and_wait_for_window(win_struct *win)
   gdk_window_set_events(win->root_gdk, GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_map, (gpointer) win); 
   
-  if (debug) printf ("execute program\n");
+  if (debug) printf ("execute program: %s\n", win->command);
   if (!(win->child_pid=exec_command (win->command))) {
   
     if (debug) printf ("execute failed\n");
@@ -582,7 +607,7 @@ void get_child_size (GdkWindow *child_gdk,
     if (last_w == w && last_h == h)
       break;
     
-    gtk_sleep (200);
+    gtk_sleep (300);
   
   }while (1);
 
@@ -621,13 +646,6 @@ main (int argc, char *argv[])
 
   win->child_gdk=gdk_window_foreign_new(win->child_xlib);
   
-  withdraw_window(win);
-  
-  get_child_size (win->child_gdk, &w,&h);
-    
-  win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
-        w, h, 0, 0, 0);
-  
   gdk_error_trap_push ();
   leader_change = XGetWMHints(GDK_DISPLAY(), win->child_xlib);
   err=gdk_error_trap_pop ();
@@ -641,8 +659,14 @@ main (int argc, char *argv[])
     XSetWMHints(GDK_DISPLAY(),win->child_xlib, leader_change);
     XFree(leader_change);
   }  
+  
+  withdraw_window(win);
+  
+  get_child_size (win->child_gdk, &w,&h);
     
-          
+  win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
+        w, h, 0, 0, 0);
+
   classHint=XAllocClassHint();
   classHint->res_name="alltray";
   classHint->res_class="Alltray";
@@ -650,7 +674,7 @@ main (int argc, char *argv[])
   XFree (classHint);
 
   wmhints=XAllocWMHints();
-  wmhints->input=1;
+  wmhints->input=False;
   wmhints->initial_state=NormalState;
   wmhints->flags = InputHint | StateHint;
   XSetWMHints(win->display, win->parent_xlib, wmhints);
@@ -664,7 +688,7 @@ main (int argc, char *argv[])
   if (err==0) {
     XSetWMNormalHints(win->display, win->parent_xlib, &sizehints);
   }
-       
+
   protocols[0]=wm_delete_window;
   protocols[1]=wm_take_focus;
   protocols[2]=net_wm_ping;
@@ -672,7 +696,10 @@ main (int argc, char *argv[])
   XSetWMProtocols (win->display, win->parent_xlib, protocols, 3); 
 
   win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
-        
+  
+  if (win->borderless)
+    gdk_window_set_decorations (win->parent_gdk, 0);
+     
   XReparentWindow (GDK_DISPLAY(), win->child_xlib, win->parent_xlib, 0, 0);
   XSync (GDK_DISPLAY(), FALSE);
 
@@ -680,7 +707,7 @@ main (int argc, char *argv[])
   XSync (GDK_DISPLAY(), FALSE);
 
   update_window_icon(win);
-  
+ 
   if (win->hide_start) {
     gdk_window_set_keep_above (win->fake_desktop, FALSE);
     gdk_window_set_keep_below (win->fake_desktop, TRUE); 
@@ -693,7 +720,7 @@ main (int argc, char *argv[])
 
   gdk_window_set_events(win->child_gdk, GDK_STRUCTURE_MASK);
   gdk_window_add_filter(win->child_gdk, child_window_filter, (gpointer) win); 
-  
+
   gdk_window_set_events(win->parent_gdk, GDK_STRUCTURE_MASK | 
     GDK_VISIBILITY_NOTIFY_MASK);
   gdk_window_add_filter(win->parent_gdk, parent_window_filter, (gpointer) win); 
@@ -704,8 +731,10 @@ main (int argc, char *argv[])
   if (win->show)
     show_hide_window (win, force_show, FALSE);
 
-  g_free(win->command);
-  g_free(win->command_only);
+  if (win->command)
+    g_free(win->command);
+  if (win->command_only)
+    g_free(win->command_only);
     
   gtk_main ();
 

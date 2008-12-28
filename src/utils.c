@@ -23,10 +23,10 @@
  *
  * Copyright:
  * 
- *    Jochen Baier, 2004 (email@Jochen-Baier.de)
+ *    Jochen Baier, 2004, 2005 (email@Jochen-Baier.de)
  *
  *
- * Based on:
+ * Based on code from:
  *
  *    steal-xwin.c (acano@systec.com)
  *    xswallow (Caolan McNamara ?)
@@ -34,11 +34,12 @@
  *    libwnck (Havoc Pennington <hp@redhat.com>)
  *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
  *    dsimple.c ("The Open Group")
+ *    xfwm4 (Olivier Fourdan <fourdan@xfce.org>)
  *    .....lot more, THANX !!!
  *    
 */
 
-#include "gtray.h"
+#include "common.h"
 #include "utils.h"
 #include "trayicon.h"
 #include "inlinepixbufs.h"
@@ -116,7 +117,6 @@ void atom_init (void)
   net_wm_state_sticky= XInternAtom (GDK_DISPLAY(), "_NET_WM_STATE_STICKY", False);
   net_wm_desktop= XInternAtom (GDK_DISPLAY(), "_NET_WM_DESKTOP", False);
   net_active_window= XInternAtom(GDK_DISPLAY(), "_NET_ACTIVE_WINDOW", False);
-  net_client_list= XInternAtom(GDK_DISPLAY(), "_NET_CLIENT_LIST", False);
   net_wm_window_type= XInternAtom(GDK_DISPLAY(), "_NET_WM_WINDOW_TYPE", False);
   net_wm_window_type_normal= XInternAtom(GDK_DISPLAY(), "_NET_WM_WINDOW_TYPE_NORMAL", False);
   gdk_timestamp_prop=XInternAtom(GDK_DISPLAY(),"GDK_TIMESTAMP_PROP", False);
@@ -236,6 +236,8 @@ gint get_number_of_desktops(void)
             
   type = None;
   
+  if (debug) printf ("get number of desktops\n");
+  
   gdk_error_trap_push();
   result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
          net_number_of_desktops,
@@ -257,7 +259,7 @@ gint get_number_of_desktops(void)
   
 }
 
-void set_current_desktop (gint *var)
+gint get_current_desktop(void)
 {
   Atom type;
   int format;
@@ -266,7 +268,8 @@ void set_current_desktop (gint *var)
   unsigned char *data;
   int result;
   gint err;
-        
+  gint number=1;
+            
   type = None;
   
   gdk_error_trap_push();
@@ -278,14 +281,15 @@ void set_current_desktop (gint *var)
   err=gdk_error_trap_pop();
    
   if (err!=0 || result != Success)
-    return;
+    return 1;
   
   if (type == XA_CARDINAL && format == 32 && nitems == 1)
-    *var = *((long *) data);
-
+   number = *((long *) data);
   
   if (data)
     XFree (data);
+  
+  return number;
   
 }
 
@@ -373,26 +377,6 @@ void show_hide_window (win_struct *win, gint force_state,
   gboolean show=TRUE;
   static gboolean first_click=TRUE;
 
-  if (first_click) {
-
-    if (debug) printf ("first click\n");
-   
-    gdk_window_add_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
-   
-    XMapWindow (win->display, win->parent_xlib);
-   
-    gtk_main ();
-    gdk_window_remove_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
-         
-    sticky (win->parent_xlib);
-    skip_pager(win->parent_xlib);
-      
-    first_click=FALSE;
-   
-   return;
-    
-  }
-
   do {
   
     if (force_state == force_show) {
@@ -419,7 +403,32 @@ void show_hide_window (win_struct *win, gint force_state,
   if (show) {
   
     if (debug) printf ("show\n");
-  
+      
+    
+    if (first_click) {
+
+      if (debug) printf ("first click\n");
+     
+      gdk_window_add_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
+     
+      XMapWindow (win->display, win->parent_xlib);
+     
+      gtk_main ();
+      gdk_window_remove_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
+      
+      /*KDE want to rest a little bit after soo much work ;)*/
+      /*if not the window will not be the top most*/
+      gtk_sleep (100);
+           
+      sticky (win->parent_xlib);
+      skip_pager(win->parent_xlib);
+        
+      first_click=FALSE;
+     
+      return;
+    
+    }
+
     gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
     skip_taskbar (win, FALSE);
   
@@ -525,7 +534,7 @@ void display_window_id(Display *display, Window window)
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *hide_start,
-    gboolean *debug)
+    gboolean *debug, gboolean *borderless, gboolean *large_icons)
 {
   int i;
   char rest_buf[4096]="";
@@ -556,6 +565,16 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
     
       if (!strcmp(argv[i], "--hide_window") || !strcmp(argv[i], "-hw")) {
         *hide_start=TRUE;
+        break;
+      }
+      
+      if (!strcmp(argv[i], "--borderless") || !strcmp(argv[i], "-x")) {
+        *borderless=TRUE;
+        break;
+      }
+      
+      if (!strcmp(argv[i], "--large_icons") || !strcmp(argv[i], "-l")) {
+        *large_icons=TRUE;
         break;
       }  
     
@@ -637,48 +656,6 @@ gint get_pid (Window w)
   return pid;
 }
 
-gboolean
-get_window_list (Window   xwindow,
-                       Atom     atom,
-                       Window **windows,
-                       int     *len)
-{
-  Atom type;
-  int format;
-  gulong nitems;
-  gulong bytes_after;
-  unsigned char *data;
-  int err, result;
-  
-  *windows = NULL;
-  *len = 0;
-  
-  gdk_error_trap_push();
-  
-  type = None;
-  result = XGetWindowProperty (GDK_DISPLAY(),
-    xwindow, atom, 0, G_MAXLONG, False, XA_WINDOW, &type, &format, &nitems,
-    &bytes_after, &data);  
-   
-  err=gdk_error_trap_pop();
-  
-  if (err || result!=Success)
-    return FALSE;
-  
-  if (type != XA_WINDOW) {
-    XFree (data);
-    return FALSE;
-  }
-  
-  *windows = g_new (Window, nitems);
-  memcpy (*windows, (Window *) data, sizeof (Window) * nitems);
-  *len = nitems;
-  
-  XFree (data);
-  
-  return TRUE;  
-}
-
 gboolean window_type_is_normal (Window win)
 {
 
@@ -728,58 +705,60 @@ gboolean window_match (Window window, win_struct *win)
 {
   
   gboolean match=FALSE;
-  Window *stack = NULL;
-  int stack_length = 0;
   
   XClassHint class_hints;
   class_hints.res_name = NULL;
   class_hints.res_class = NULL;
 
-  XWindowAttributes attr;
-  gboolean inlist=FALSE;
   gint result=0;
   gint err=0;
   gchar *res_class_down=NULL;
   gchar *command_down=NULL;
   
   gint pid, pgid;
-        
-  if (!get_window_list (GDK_ROOT_WINDOW(),
-    net_client_list, &stack, &stack_length))
-    return FALSE;
-
-  int i = stack_length-1;
-
-  while (i >= 0) {
-    display_window_id  (GDK_DISPLAY(), stack[i]); 
   
-    if (stack[i] == window) {
-      inlist=TRUE;
-      break;   
+  XWindowAttributes attr;
+  
+  if (debug)  {
+    printf ("filter mapped window: ");
+    display_window_id (GDK_DISPLAY(), window);
+  }
+    
+  /*filter code is from xfwm4*/
+  do {
+    
+    if (window == None) {
+      if (debug) printf ("window == None -> skip\n");
+      break;
     }
 
-    i--;
- 
-  }
-  
-  do {
-  
-    if (!inlist)
-      break;
-    
-    //splash windows...
-    if (!window_type_is_normal(window))
-      break;
-    
     gdk_error_trap_push();
     result=XGetWindowAttributes (GDK_DISPLAY(), window, &attr);
-    err=gdk_error_trap_pop();
-     
-    //xmms...
-    if (err || result==0 || attr.width<=1 || attr.width<=1)  {
+    
+    if (gdk_error_trap_pop() || result == 0) {
+      if (debug) printf ("Cannot get window attributes -> skip");
       break;
     }
 
+    if (attr.override_redirect) {
+      if (debug) printf ("override redirect -> skip\n");
+      break;
+    }
+    
+    //xmms
+    if (attr.width <=10 || attr.height <=10) {
+      if (debug) printf ("window too small -> skip\n");
+      break;
+    }
+
+    //splash windows...
+    if (!window_type_is_normal(window)) {
+      if (debug) printf ("window typ is not normal -> skip\n!");
+      break;
+    }
+
+    if (debug) printf ("window got through first filter\n");
+    
     pid=get_pid (window);
     
     if (pid !=0) {
@@ -837,15 +816,13 @@ gboolean window_match (Window window, win_struct *win)
       if (debug) printf ("wm_class match: yes\n");
       
       match=TRUE;
-      display_window_id (GDK_DISPLAY(), stack[i]);
       break;
     
     }
     
   } while (0);
   
-  if (stack)
-    g_free ((gpointer) stack);
+ 
   if (class_hints.res_class)
     XFree (class_hints.res_class);
   if (class_hints.res_name)
@@ -1214,7 +1191,8 @@ static GdkPixbuf* scaled_from_pixdata (guchar *pixdata,
   return dest;
 }
 
-gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp)
+gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp, 
+  gint width, gint height)
 {
   GdkPixbuf *unscaled = NULL;
   GdkPixbuf *mask = NULL;
@@ -1272,8 +1250,7 @@ gboolean try_wm_hints (Window xwindow, GdkPixbuf **iconp)
   
   if (unscaled) {
       *iconp =
-        gdk_pixbuf_scale_simple (unscaled,
-                                 24,24, GDK_INTERP_HYPER);
+        gdk_pixbuf_scale_simple (unscaled, width, height, GDK_INTERP_HYPER);
       
       
       g_object_unref (G_OBJECT (unscaled));
@@ -1494,22 +1471,22 @@ static gboolean read_rgb_icon (Window         xwindow,
   return TRUE;
 }
 
-GdkPixbuf *get_window_icon (Window xwindow)
+GdkPixbuf *get_window_icon (Window xwindow, gint width, gint height)
 {
 
   guchar *pixdata;
   int w, h;
   GdkPixbuf *icon=NULL;
   
-  if (debug) printf ("get icon\n");
+  if (debug) printf ("get_window_icon with size request: %dx%d\n", width, height);
   
   pixdata = NULL;
   
-  if (read_rgb_icon (xwindow, 24, 24, &w, &h, &pixdata))   {
+  if (read_rgb_icon (xwindow, width, height, &w, &h, &pixdata))   {
   
     if (debug) printf ("read_rgb_icon  --> ok\n");
       
-    icon= scaled_from_pixdata (pixdata, w, h, 24, 24);
+    icon= scaled_from_pixdata (pixdata, w, h, width, height);
   
     if (icon)
       return icon;
@@ -1517,22 +1494,57 @@ GdkPixbuf *get_window_icon (Window xwindow)
   
   if (debug) printf ("rgb failed\n");
     
-  if (try_wm_hints (xwindow, &icon)) {
+  if (try_wm_hints (xwindow, &icon, width, height)) {
     return icon;
   }
   
   if (debug) printf ("need fallback icon\n");
     
-  GdkPixbuf *base;
-  
-  base = gdk_pixbuf_new_from_inline (-1, fallback_icon,
+  GdkPixbuf *fallback=NULL;
+  GdkPixbuf *fallback_scaled=NULL;
+    
+  fallback = gdk_pixbuf_new_from_inline (-1, fallback_icon,
                                      FALSE,
                                      NULL);
   
-  g_assert (base);
+  if (fallback) {
+    fallback_scaled=gdk_pixbuf_scale_simple (fallback, 
+        width, height, GDK_INTERP_HYPER);
+    
+    g_object_unref (fallback);
+  }
+      
+  
+  g_assert (fallback_scaled);
 
-  return base;
+  return fallback_scaled;
 
+}
+
+GdkPixbuf *get_user_icon (gchar *path, gint width, gint height)
+{
+  
+  GdkPixbuf *pix_return=NULL;
+    
+  if (debug) printf ("get_user_icon: path: %s\n", path);
+    
+    if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+    
+       GError *error=NULL;
+ 
+       pix_return=gdk_pixbuf_new_from_file_at_size (path,
+         width, height, &error);
+           
+       if (!pix_return)
+        printf ("%s\n", error->message);
+            
+    
+    } else {
+      
+      printf ("Alltray: Icon file %s do not exist !\n", path);
+    }
+
+  return pix_return;
 }
 
 void update_window_icon(win_struct *win)
@@ -1548,26 +1560,23 @@ void update_window_icon(win_struct *win)
     icon_return=win->user_icon;
     dont_update=TRUE;
   }  else {
-    icon_return =get_window_icon (win->child_xlib);
+    icon_return =get_window_icon (win->child_xlib, 30, 30);
   }
   
   if (icon_return) {
-  
-    GList *icons=NULL;
-  
-    icons = g_list_append (icons, (gpointer) icon_return);
-    gdk_window_set_icon_list (win->parent_gdk, icons);
-    g_list_free(icons);
-      
-    tray_update_icon(win, icon_return);
-    
-  
-    if (win->icon) {
-      g_object_unref (win->icon);
+   
+    if (win->window_icon) {
+      g_object_unref (win->window_icon);
     }
-    
-    win->icon=icon_return;
+    win->window_icon=icon_return;
+  
   }
+  
+  GList *icons=NULL;
+  
+  icons = g_list_append (icons, (gpointer) win->window_icon);
+  gdk_window_set_icon_list (win->parent_gdk, icons);
+  g_list_free(icons);
 
 }
 
@@ -1643,29 +1652,42 @@ gchar *strip_command (gchar *command)
 {
 
   gchar *command_copy=NULL;
-  gchar *tmp=NULL;
   gchar *space=NULL;
-
+  gchar *last_slash=NULL;
+  gchar *return_value=NULL;
+        
   command_copy=g_strdup (command);
-    
-  tmp = g_strrstr (command_copy, "/");
-  
-  if (tmp)
-    tmp++;
-  else
-   tmp=command_copy;
-   
-  if (debug) printf ("command without path: %s\n", tmp);
-  
-  space=g_strstr_len (tmp, strlen (tmp) *sizeof (gchar), " ");
+
+  space=g_strstr_len (command_copy, 
+      strlen (command_copy) *sizeof (gchar), " ");
   
   if (space)
-   *space=0;
-   
-  if (debug) printf ("command without args: %s\n", tmp);
+    *space=0;
+  
+  if (debug) printf ("command without args: %s\n", command_copy);
+ 
+  return_value=command_copy;
     
+  last_slash = g_strrstr (command_copy, "/");
+  
+  if (last_slash) {
+    
+    
+    if (g_file_test (command_copy, G_FILE_TEST_EXISTS)) {
+     return_value = ++last_slash;
+     if (debug) printf ("\"%s\" exists\n", command_copy);
+    } else {
+      
+      printf ("AllTray: Command: \"%s\" do not exist !\n", command_copy);
+      exit (1);
+    }
+  
+  }
 
-  return tmp;
+
+  if (debug) printf ("command stripped: %s\n", return_value);
+  
+  return return_value;
 }
 
 void destroy_all_and_exit (win_struct *win, gboolean kill_child)
@@ -1717,7 +1739,8 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   tray_done(win);
 
   g_free (win->title);
-  g_object_unref (win->icon);
+  g_object_unref (win->window_icon);
+  g_object_unref (win->tray_icon);
   g_array_free (win->workspace, FALSE);
   
   XDestroyWindow(win->display, win->parent_xlib);
@@ -1740,7 +1763,9 @@ void show_help(void)
              "  --debug; -d: show debug messages\n"\
              "  --show; -s:  do not hide window after start\n"\
              "  --hide_window; -hw: hide window during startup (experimental)\n"\
-             "  --icon; -i  <path to png>: use this icon\n", VERSION);
+             "  --icon; -i  <path to png>: use this icon\n"\
+             "  --large_icons; -l: allow large icons (> 24x24)\n"\
+             "  --borderless; -x: remove border, title, frame... from parent\n", VERSION);
 
 }
 

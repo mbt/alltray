@@ -1,43 +1,3 @@
-/*
- * GPL Notice:
- *
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Library General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *
- *
- * Name:
- *
- *    alltray
- *
- *
- * Copyright:
- * 
- *    Jochen Baier, 2004 (email@Jochen-Baier.de)
- *
- *
- * Based on:
- *
- *    steal-xwin.c (acano@systec.com)
- *    xswallow (Caolan McNamara ?)
- *    kdocker (Girish Ramakrishnan)
- *    libwnck (Havoc Pennington <hp@redhat.com>)
- *    eggtrayicon (Anders Carlsson <andersca@gnu.org>)
- *    dsimple.c ("The Open Group")
- *    .....lot more, THANX !!!
- *    
-*/
-
 #ifndef __GTRAY_H__
 #define __GTRAY_H__
 
@@ -88,7 +48,6 @@ Atom wm_state;
 Atom net_wm_state_sticky;
 Atom net_wm_desktop;
 Atom net_active_window;
-Atom net_client_list;
 Atom net_wm_window_type;
 Atom net_wm_window_type_normal;
 Atom selection_atom;
@@ -111,7 +70,10 @@ typedef struct _win_struct {
   
   gboolean hide_start;
   GdkWindow *fake_desktop;
-
+  gboolean large_icons;
+    
+  gboolean borderless;
+  
   GdkWindow *root_gdk;
   Window root_xlib;
 
@@ -133,9 +95,12 @@ typedef struct _win_struct {
   gint parent_pid; 
   gint child_pid;
 
-  GdkPixbuf *icon;
+  GdkPixbuf *window_icon;
+  GdkPixbuf *tray_icon;
+  
   GdkPixbuf *user_icon;
-    
+  gchar *user_icon_path;
+      
   Window manager_window;
   GdkWindow *manager_window_gdk;
   
