@@ -199,7 +199,12 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   
   tail_x=balloon->tail_x=(balloon->w/5)*4;
   
-  if (debug) printf ("tail_x: %d\n", tail_x);
+  if (debug) printf ("first tail_x: %d\n", tail_x);
+  
+  if (tail_x + tailwidth/2 >= (balloon->w-border-radius)) {
+    balloon->tail_x=tail_x=balloon->w - border -radius - tailwidth/2 - 5;
+    if (debug) printf ("second tail_x: %d\n", tail_x);
+  }
   
   balloon->x=(balloon->dock_x + balloon->dock_w/2- tail_x);
   

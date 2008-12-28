@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Include pthread support for binary relocation? */
+#undef BR_PTHREAD
+
+/* binary relocation working ? */
+#undef ENABLE_BINRELOC
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 

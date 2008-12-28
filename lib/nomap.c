@@ -77,7 +77,16 @@ error_handler (Display *dpy, XErrorEvent *xerr) {
 #endif
   
   return 0; 
-} 
+}
+
+void xprop (Window window)
+{
+#ifdef DEBUG
+  char tmp[128];
+  sprintf (tmp, "xprop -id %d &", window);
+  system (tmp);
+#endif
+}
 
 #ifdef __FreeBSD__
 static void _init(void) __attribute__ ((section (".init")));
@@ -277,7 +286,6 @@ XMapWindow (Display* display, Window w)
   
   static Window xmms_main_window;
   
-  
   if (do_nothing && fptr != 0)
     return (*fptr)(display, w);
   
@@ -349,17 +357,34 @@ XMapWindow (Display* display, Window w)
    
     if (xmms_support) {
   
-      char *win_name;
-    
-      XFetchName(display, w, &win_name);
+      char *win_name=NULL;
+      char *title=NULL;
+      int result=0;
+      XClassHint class_hints;
+                  
+      result=XGetClassHint(display, w, &class_hints);
    
-      DPRINTF ((stderr, "win_name: %s\n", win_name));
+      win_name=class_hints.res_name;
     
+         
+      DPRINTF ((stderr, "res_name: %s\n", win_name));
+      DPRINTF ((stderr, "res_class: %s\n", class_hints.res_class));
      
       do {
       
-        if (!strcmp (win_name, "XMMS")) {
-          
+        if (!strcmp (win_name, "XMMS_Player")) {
+        
+        
+          XFetchName (display, w, &title);
+          DPRINTF ((stderr, "title: %s\n", title));
+
+          if (strcmp (title, "XMMS")) {
+            XFree (title);
+            break;
+          }
+        
+          XFree (title);
+
           value=(*fptr)(display, w);
           
           if (xmms_main==1)
@@ -374,7 +399,7 @@ XMapWindow (Display* display, Window w)
           break;
         }
         
-        if (!strcmp (win_name, "XMMS Playlist")) {
+        if (!strcmp (win_name, "XMMS_Playlist")) {
           
           value=(*fptr)(display, w);
           
@@ -389,7 +414,7 @@ XMapWindow (Display* display, Window w)
           break;
         }
         
-        if (!strcmp (win_name, "XMMS Equalizer")) {
+        if (!strcmp (win_name, "XMMS_Equalizer")) {
           
           value=(*fptr)(display, w);
           
@@ -407,7 +432,8 @@ XMapWindow (Display* display, Window w)
       
       } while (0);
       
-      XFree (win_name);
+     XFree (class_hints.res_name); //win_name
+     XFree (class_hints.res_class);
     
     } else {
       

@@ -1,3 +1,14 @@
+Mai, 12, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- Click Mode: click on the window you would like to dock
+  (suggested by Russ Brown)
+- add "Undock" option to menu
+- autopackage support (BinReloc)
+- fixed probs with invalid utf8 window titles (german umlauts etc)
+- fixed little probs with xmms and balloon stuff
+- alltray.desktop support
+- change dependency to gtk >=2.2
+- set version to 0.53 (dev snap)
+
 Apr, 22, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - add "--geometry" option: display window on user ask position
 - removed "alltray" string in balloon message (pointed out by Tony)

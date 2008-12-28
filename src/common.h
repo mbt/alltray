@@ -35,6 +35,7 @@ pid_t getpgid(pid_t pid);
 Atom wm_name_atom;
 Atom wm_icon_atom;
 Atom net_wm_icon;
+Atom net_wm_name;
 Atom net_close_window;
 Atom wm_delete_window;
 Atom wm_take_focus;
@@ -57,6 +58,8 @@ Atom system_tray_opcode_atom;
 Atom net_client_list_stacking;
 Atom net_client_list;
 Atom gdk_timestamp_prop;
+Atom utf8_string;
+Atom net_wm_visible_name;
 
 typedef struct _balloon_struct {
   
@@ -167,6 +170,8 @@ typedef struct _win_struct {
   
   gint title_time;
   gboolean balloon_message_allowed;
+  
+  gboolean click_mode;
 
 } win_struct;
 

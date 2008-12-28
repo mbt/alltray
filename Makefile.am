@@ -6,5 +6,12 @@ SUBDIRS = src $(LIBDIR)
 
 EXTRA_DIST = \
 	autogen.sh \
-	alltray.1
-	
+	alltray.1 \
+  alltray.desktop \
+  alltray.png
+  
+appsdir = $(datadir)/applications
+apps_DATA = alltray.desktop
+
+icondir = $(datadir)/pixmaps
+icon_DATA = alltray.png

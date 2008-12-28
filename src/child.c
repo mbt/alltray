@@ -39,14 +39,14 @@
  *    
 */
 
-
 #include "config.h"
 #include "common.h"
 #include "utils.h"
 #include "trayicon.h"
+#include "prefix.h"
 
 #ifdef HAVE_LD_PRELOAD
-#define PRELOAD_LIBRARY LIBDIR"/liballtraynomap.so.0"
+#define PRELOAD_LIB "/liballtraynomap.so.0.0.0"
 #endif
 
 
@@ -293,12 +293,18 @@ void set_env_stuff (gpointer user_data)
 {
 
 #ifdef HAVE_LD_PRELOAD
-
+  
+  gchar *path_to_lib=NULL;
   gchar *preload_string=NULL;
   gchar *old_preload=NULL;
   gchar *spy_id_string=NULL;
+
   
   win_struct *win= (win_struct*) user_data;
+
+  path_to_lib=g_strdup_printf (BR_LIBDIR(PRELOAD_LIB));
+
+  if (debug) printf ("lib is here: %s\n", path_to_lib);
   
   old_preload = getenv("LD_PRELOAD");
 
@@ -309,13 +315,13 @@ void set_env_stuff (gpointer user_data)
     if (debug) printf ("have old preload\n");
     
     preload_string = g_strconcat ("LD_PRELOAD=",
-      old_preload, " ", PRELOAD_LIBRARY , NULL);
+       old_preload, " ", path_to_lib , NULL);
     
     setenv ("OLD_PRELOAD", old_preload, 1);
     
   } else {
     preload_string = g_strconcat ("LD_PRELOAD=",
-      PRELOAD_LIBRARY, NULL);
+        path_to_lib, NULL);
   }
 
   if (debug) printf ("preload string: %s\n", preload_string);
@@ -330,6 +336,8 @@ void set_env_stuff (gpointer user_data)
   if (win->xmms) {
     setenv ("ALLTRAY_XMMS", "YES",1);
   }
+
+  g_free (path_to_lib);
 
 #endif
 

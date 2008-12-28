@@ -36,5 +36,6 @@ void destroy_all_and_exit (win_struct *win,
 void show_hide_window (win_struct *win, gint force_state,
   gboolean keep_in_taskbar);
 gboolean search_gnome_panel (void);
+void xprop (Window window);
 
 #endif

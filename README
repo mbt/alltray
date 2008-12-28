@@ -28,11 +28,19 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   with the left mouse button on the icon will show the program.
   A click with the right mouse button will show a popdown menu.
   
-  A click on the "close" button in the window title will not exit the
+  For the "Click-Mode" start alltray with:
+  
+    alltray
+    
+  and click on the target window.
+  
+  A click on the "close" button ("X") in the window title will not exit the
   application. The application will be minimized.
   
   To quit the application use the popdown menu or the "FILE->QUIT" menu
   from the application.
+  
+  The "Undock" menu item will undock the window. Yeahh really ;)
   
   If you use the "borderless" option, you can move the window with
   "Alt-left_mouse_button".
@@ -46,27 +54,29 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
   
   usage: alltray [options] ["] <program_name> [program parameter] ["]
   
-  where options include:
+   where options include:
+     --help; -h:  print this message
+     --version; -v: print version
+     --debug; -d: show debug messages
+     --show; -s:  do not hide window after start
+     --icon; -i  <path to png>: use this icon
+     --large_icons; -l: allow large icons (> 24x24)
+     --borderless; -x: remove border, title, frame... from parent
+     --menu; -m: "menu text:command": add entry to popdown menu
+     --title; -t <sec>: show title change for <sec> seconds
+     --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo
   
-    --help; -h:  print this message
-    --version; -v: print version
-    --debug; -d: show debug messages
-    --show; -s:  do not hide window after start
-    --icon; -i  <path to png>: use this icon
-    --large_icons; -l: allow large icons (> 24x24)
-    --borderless; -x: move border, title, frame... from parent
-    --menu; -m: "menu text:command": add entry to popdown menu
-      (and execute "command"...)
-    --title; -t <sec>: show title change for <sec> seconds
-                     probably most usefull for xmms
-
+  usage: alltray
+  
+   Click-Mode: Click on the window you would like to dock.
+   (Cancel with <c>)
 
 **Requirements:
    
    Compile:
       
     - X Window stuff
-    - GTK+ >= 2.4
+    - GTK+ >= 2.2
        
    Run:
    

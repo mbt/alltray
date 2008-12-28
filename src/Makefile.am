@@ -2,16 +2,14 @@
 
 INCLUDES = \
   @PACKAGE_CFLAGS@
-  
-  
+
 bin_PROGRAMS = alltray
 
 AM_CFLAGS =\
-  -Wall \
-  -DLIBDIR=\""$(libdir)"\"
+  -Wall
 
 alltray_SOURCES = \
-	main.c  \
+  main.c \
   common.h \
   parent.c \
   parent.h \
@@ -25,6 +23,10 @@ alltray_SOURCES = \
   balloon_message.h \
   xmms.c \
   xmms.h \
+  clickmode.c \
+  clickmode.h \
+  prefix.c \
+  prefix.h \
   inlinepixbufs.h
 
 

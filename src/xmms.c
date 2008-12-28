@@ -230,6 +230,18 @@ GdkFilterReturn xmms_main_window_filter (GdkXEvent *xevent,
       
       }
     break;
+    
+    case VisibilityNotify:
+      {
+        
+        XVisibilityEvent *xvisibilty = (XVisibilityEvent*) xev;
+      
+        win->visibility=xvisibilty->state;
+              
+        if (debug) printf ("visibility notify state: %d\n", win->visibility);
+      }
+    break;
+    
 
   }
   
@@ -296,7 +308,8 @@ void xmms_filter_init (win_struct *win)
 {
  
   gdk_window_set_events(win->xmms_main_window_gdk, 
-    GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
+    GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK |
+    GDK_VISIBILITY_NOTIFY_MASK);
   
   gdk_window_add_filter(win->xmms_main_window_gdk,
     xmms_main_window_filter, (gpointer) win);

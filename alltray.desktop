@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=AllTray
+GenericName=AllTray
+Comment=Dock everything
+Exec=alltray
+Icon=alltray.png
+Terminal=false
+Type=Application
+Categories=Application;Utility;
+StartupNotify=false

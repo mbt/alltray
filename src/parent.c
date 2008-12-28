@@ -557,19 +557,21 @@ void show_help(void)
              "Dock any program into the system tray.\n\n"  \
 
              "usage: alltray [options] [\"] <program_name> [program parameter] [\"]\n\n" \
-             "where options include:\n"\
-             "  --help; -h:  print this message\n"\
-             "  --version; -v: print version\n"\
-             "  --debug; -d: show debug messages\n"\
-             "  --show; -s:  do not hide window after start\n"\
-             "  --icon; -i  <path to png>: use this icon\n"\
-             "  --large_icons; -l: allow large icons (> 24x24)\n"\
-             "  --borderless; -x: remove border, title, frame... from parent\n"\
-             "  --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
-             "  --title; -t <sec>: show title change for <sec> seconds\n"\
-             "                     probably most usefull for xmms\n"\
-             "  --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo\n"\
-             "    (Note: xmms loads automatically the old position)\n"\
+             " where options include:\n"\
+             "   --help; -h:  print this message\n"\
+             "   --version; -v: print version\n"\
+             "   --debug; -d: show debug messages\n"\
+             "   --show; -s:  do not hide window after start\n"\
+             "   --icon; -i  <path to png>: use this icon\n"\
+             "   --large_icons; -l: allow large icons (> 24x24)\n"\
+             "   --borderless; -x: remove border, title, frame... from parent\n"\
+             "   --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
+             "   --title; -t <sec>: show title change for <sec> seconds\n"\
+             "   --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo\n\n"\
+             "usage: alltray\n\n"\
+             " Click-Mode: Click on the window you would like to dock.\n"\
+             " (Abort with <c>)\n\n"
+
   , VERSION);
 
 }

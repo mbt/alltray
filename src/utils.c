@@ -105,6 +105,7 @@ void atom_init (void)
   wm_name_atom = XInternAtom(GDK_DISPLAY(), "WM_NAME", False);
   wm_icon_atom = XInternAtom(GDK_DISPLAY(), "WM_ICON", False);
   net_wm_icon = XInternAtom(GDK_DISPLAY(), "_NET_WM_ICON", False);
+  net_wm_name= XInternAtom(GDK_DISPLAY(), "_NET_WM_NAME", False);
   net_close_window=XInternAtom(GDK_DISPLAY(), "_NET_CLOSE_WINDOW", False);
   net_number_of_desktops=XInternAtom(GDK_DISPLAY(),
     "_NET_NUMBER_OF_DESKTOPS",False);
@@ -125,6 +126,9 @@ void atom_init (void)
   gdk_timestamp_prop=XInternAtom(GDK_DISPLAY(),"GDK_TIMESTAMP_PROP", False);
   net_client_list_stacking=XInternAtom(GDK_DISPLAY(),"_NET_CLIENT_LIST_STACKING",False);
   net_client_list=XInternAtom(GDK_DISPLAY(),"_NET_CLIENT_LIST",False);
+  utf8_string = XInternAtom(GDK_DISPLAY(),"UTF8_STRING", False);
+  net_wm_visible_name=XInternAtom(GDK_DISPLAY(),"_NET_WM_VISIBLE_NAME", False);
+  
     
   char temp[50];
   Screen *screen = XDefaultScreenOfDisplay(GDK_DISPLAY());
@@ -137,6 +141,15 @@ void atom_init (void)
       "_NET_SYSTEM_TRAY_OPCODE", False);
 
 }
+
+void xprop (Window window)
+{
+ 
+  gchar *tmp=g_strdup_printf ("xprop -id %d &", (int) window);
+  system (tmp);
+  g_free (tmp);
+}
+ 
 
 gboolean gtk_sleep_function (gpointer data)
 {
@@ -1177,20 +1190,25 @@ GdkPixbuf *get_user_icon (gchar *path, gint width, gint height)
 {
   
   GdkPixbuf *pix_return=NULL;
+  GdkPixbuf *pix_return_tmp=NULL;
     
   if (debug) printf ("get_user_icon: path: %s\n", path);
     
     if (g_file_test (path, G_FILE_TEST_EXISTS)) {
     
-       GError *error=NULL;
- 
-       pix_return=gdk_pixbuf_new_from_file_at_size (path,
-         width, height, &error);
-           
-       if (!pix_return)
-        printf ("%s\n", error->message);
-            
+      GError *error=NULL;
     
+      pix_return_tmp=gdk_pixbuf_new_from_file (path, &error);
+    
+      if (!pix_return_tmp)
+        printf ("%s\n", error->message);
+      else {
+         
+        pix_return=gdk_pixbuf_scale_simple (pix_return_tmp,
+           width, height, GDK_INTERP_HYPER);
+        g_object_unref (pix_return_tmp);
+      }
+      
     } else {
       
       printf ("Alltray: Icon file %s do not exist !\n", path);
@@ -1352,6 +1370,116 @@ void skip_taskbar (win_struct *win, gboolean add)
 
 }
 
+char*
+_wnck_get_utf8_property (Window  xwindow,
+                         Atom    atom)
+{
+  Atom type;
+  int format;
+  gulong nitems;
+  gulong bytes_after;
+  guchar *val;
+  int err, result;
+  char *retval;
+ 
+  gdk_error_trap_push();
+  type = None;
+  val = NULL;
+  result = XGetWindowProperty (GDK_DISPLAY(),
+     xwindow, atom, 0, G_MAXLONG, False, utf8_string,
+     &type, &format, &nitems, &bytes_after, (guchar **)&val);
+  err = gdk_error_trap_pop ();
+
+  if (err != Success || result != Success)
+    return NULL;
+  
+  if (type != utf8_string || format != 8 || nitems == 0) {
+    if (val)
+      XFree (val);
+    return NULL;
+  }
+
+  if (!g_utf8_validate (val, nitems, NULL)) {
+    printf ("Property contained invalid UTF-8\n");
+    XFree (val);
+    return NULL;
+  }
+  
+  retval = g_strndup (val, nitems);
+  
+  XFree (val);
+  
+  return retval;
+}
+
+static char*
+text_property_to_utf8 (const XTextProperty *prop)
+{
+  char **list;
+  int count;
+  char *retval;
+  
+  list = NULL;
+
+  count = gdk_text_property_to_utf8_list
+    (gdk_x11_xatom_to_atom (prop->encoding), prop->format,
+     prop->value, prop->nitems, &list);
+
+  if (count == 0)
+    return NULL;
+
+  retval = list[0];
+  list[0] = g_strdup (""); /* something to free */
+  
+  g_strfreev (list);
+
+  return retval;
+}
+
+char*
+_wnck_get_text_property (Window  xwindow,
+                         Atom    atom)
+{
+  XTextProperty text;
+  char *retval;
+  
+  gdk_error_trap_push ();
+
+  text.nitems = 0;
+
+  if (XGetTextProperty (GDK_DISPLAY(), xwindow, &text, atom)){
+    retval = text_property_to_utf8 (&text);
+    if (text.nitems > 0)
+      XFree (text.value);
+  } else {
+    retval = NULL;
+  }
+  
+  gdk_error_trap_pop ();
+
+  return retval;
+}
+
+char*
+wnck_get_name (Window xwindow)
+{
+  char *name;
+  
+  name = _wnck_get_utf8_property (xwindow, net_wm_visible_name);
+
+  if (name == NULL) {
+    if (debug) printf ("net_wm_visible_name failed\n");
+    name = _wnck_get_utf8_property (xwindow, net_wm_name);
+  }
+
+  if (name == NULL) {
+    if (debug) printf ("net_wm_name failed\n");
+    name = _wnck_get_text_property (xwindow, XA_WM_NAME);
+  }
+
+  return name;
+}
+
 void update_window_title(win_struct *win)
 {
 
@@ -1369,8 +1497,10 @@ void update_window_title(win_struct *win)
     
   if (!assert_window(child))
     return;
+  
+  title= wnck_get_name (child);
  
-  if (XFetchName(GDK_DISPLAY(), child, &title) && title) {
+  if (title) {
     
     if (debug) printf ("title: %s\n", title);
   
@@ -1420,64 +1550,62 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   
   gdk_window_remove_filter(win->root_gdk, root_filter_workspace, (gpointer) win);
 
+  #ifdef HAVE_LD_PRELOAD
+  {
+    XWMHints *wm_hints;
+    Window child;
+      
+    if (win->xmms)
+      child=win->xmms_main_window_xlib;
+    else
+      child=win->child_xlib;
+
+    gdk_error_trap_push();
+    wm_hints= XGetWMHints(GDK_DISPLAY(), child);
+    if (!gdk_error_trap_pop() && wm_hints!=NULL) {
+      wm_hints->initial_state=NormalState;
+      XSetWMHints(GDK_DISPLAY(), child, wm_hints);
+      XFree(wm_hints);
+    }
+  }  
+  #endif
+
+  if (!win->xmms) {
+        
+    get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
+    XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
+    XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
+    XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
+    
+    for(;;) {
+      XEvent e;
+      XNextEvent(GDK_DISPLAY(), &e);
+      if (e.type == ReparentNotify)
+       break;
+    }
+  
+  } else {
+    
+    if (!xlib_window_is_viewable (win->xmms_main_window_xlib)) {
+      XMapWindow (GDK_DISPLAY(), win->xmms_main_window_xlib);
+      XSync (GDK_DISPLAY(), False);
+
+      for(;;) {
+        XEvent e;
+        XNextEvent(GDK_DISPLAY(), &e);
+        if (e.type == MapNotify) {
+          break;
+        }
+      }
+    
+    }
+  
+  }
+
   if (kill_child) {
     
     if (debug) printf ("kill child\n");
 
-    #ifdef HAVE_LD_PRELOAD
-     
-    {
-      XWMHints *wm_hints;
-      Window child;
-        
-      if (win->xmms)
-        child=win->xmms_main_window_xlib;
-      else
-        child=win->child_xlib;
-      
-      
-      gdk_error_trap_push();
-      wm_hints= XGetWMHints(GDK_DISPLAY(), child);
-      if (!gdk_error_trap_pop() && wm_hints!=NULL) {
-        wm_hints->initial_state=NormalState;
-        XSetWMHints(GDK_DISPLAY(), child, wm_hints);
-        XFree(wm_hints);
-      }
-    }  
-    #endif
-
-    if (!win->xmms) {
-      
-      get_window_position (win->parent_xlib, &win->parent_window_x, &win->parent_window_y);
-      XSelectInput(GDK_DISPLAY(), win->child_xlib, StructureNotifyMask);
-      XReparentWindow (GDK_DISPLAY(), win->child_xlib, GDK_ROOT_WINDOW(), 0,0);
-      XMoveWindow (win->display, win->child_xlib, win->parent_window_x, win->parent_window_y);
-      
-      for(;;) {
-        XEvent e;
-        XNextEvent(GDK_DISPLAY(), &e);
-        if (e.type == ReparentNotify)
-         break;
-      }
-    
-    } else {
-      
-      if (!xlib_window_is_viewable (win->xmms_main_window_xlib)) {
-        XMapWindow (GDK_DISPLAY(), win->xmms_main_window_xlib);
-        XSync (GDK_DISPLAY(), False);
-
-        for(;;) {
-          XEvent e;
-          XNextEvent(GDK_DISPLAY(), &e);
-          if (e.type == MapNotify) {
-            break;
-          }
-        }
-      
-      }
-    
-    }
-    
     ev.type = ClientMessage;
   
     if (win->xmms)

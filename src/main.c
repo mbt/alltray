@@ -39,6 +39,8 @@
  *    
 */
 
+
+
 #include "config.h"
 
 #include "common.h"
@@ -47,6 +49,8 @@
 #include "utils.h"
 #include "trayicon.h"
 #include "xmms.h"
+#include "clickmode.h"
+
 
 gboolean debug=FALSE;
 
@@ -96,6 +100,7 @@ void win_struct_init(win_struct *win)
 
   win->show=FALSE;
   win->command=NULL;
+  win->command_only=NULL;
   win->child_xlib=None;
   win->borderless=FALSE;
   win->large_icons=FALSE;
@@ -130,6 +135,8 @@ void win_struct_init(win_struct *win)
   win->xmms_equalizer_window_xlib=None;
   
   win->title_time=0;
+  
+  win->click_mode=FALSE;
  
 }
 
@@ -137,6 +144,11 @@ void command_line_init (win_struct *win, int argc, char **argv)
 {
   
   gchar *geometry=NULL;
+  
+  if (argc==1) {
+    win->click_mode=TRUE;
+    return;
+  }
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
     &win->command, &win->show, &debug, &win->borderless,
@@ -214,11 +226,15 @@ main (int argc, char *argv[])
   win_struct_init (win);
   command_line_init (win, argc, argv);
 
-  wait_for_manager(win);
+  if (!win->click_mode)
+    wait_for_manager(win);
   
   win->gnome_panel_found=search_gnome_panel();
   
-  exec_and_wait_for_window(win);
+  if (!win->click_mode)
+    exec_and_wait_for_window(win);
+  else
+    click_mode(win);
   
   if (win->xmms) {
     win->xmms_main_window_gdk=gdk_window_foreign_new(win->xmms_main_window_xlib);

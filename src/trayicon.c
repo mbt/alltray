@@ -50,7 +50,8 @@
 
 GtkWidget *menu = NULL;
 GtkWidget *show_item;
-GtkWidget *exit_item; 
+GtkWidget *exit_item;
+GtkWidget *undock_item;
 
 void tray_done (win_struct *win)
 {
@@ -74,6 +75,17 @@ void exit_call(GtkWidget * button, gpointer user_data)
   if (debug) printf ("exit_call\n");
  
   destroy_all_and_exit (win, TRUE);
+
+}
+
+void undock_call(GtkWidget * button, gpointer user_data)
+{
+
+  win_struct *win= (win_struct*) user_data;
+  
+  if (debug) printf ("undock_call\n");
+ 
+  destroy_all_and_exit (win, FALSE);
 
 }
 
@@ -140,7 +152,6 @@ void menu_init (win_struct *win)
     gtk_widget_set_sensitive(separator2, FALSE);
   
   }
-  
  
   show_item = gtk_menu_item_new_with_label("Show/Hide");
   g_signal_connect(G_OBJECT(show_item), "activate",
@@ -156,6 +167,17 @@ void menu_init (win_struct *win)
   g_signal_connect(G_OBJECT(exit_item), "activate",
       G_CALLBACK(exit_call), (gpointer) win);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), exit_item);
+
+  GtkWidget *separator4 = gtk_menu_item_new();
+  gtk_widget_show(separator4);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator4);
+  gtk_widget_set_sensitive(separator4, FALSE);
+
+  undock_item = gtk_menu_item_new_with_label("Undock");
+  g_signal_connect(G_OBJECT(undock_item), "activate",
+      G_CALLBACK(undock_call), (gpointer) win);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), undock_item);
+
 
   gtk_widget_show_all(menu);
 }
