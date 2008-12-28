@@ -1,3 +1,21 @@
+Jan, 8, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+
+- identify/detect windows similar like a taskbar do it
+  this allow to dock all programs with a simple: alltray program_name
+- removed "--hints" option
+- removed "--windowinfo" option
+- removed "--splashwindow" (will be autodetected)
+- added "--version" option
+- no fake transparency background if the system tray
+  is made with GTK
+- gtk_plug stuff for docking
+- set initial_state to NormalState to prevent
+  the parent window to be treated like a dockapp
+  (thanks to Mathias Gumz (akir) for pointing this out)
+- check if the child window is visible before sending the focus
+  (thanks to Mathias Gumz (akir) for pointing this out)
+- configure.in: check for gtk >= 2.4
+
 Dec, 15, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - fixed bug in XFCE4, alltray now work with XFCE4 cvs newer then dec 15, 04
 - fixed: block other applications to become toplevel window (workspace switch bug)

@@ -46,7 +46,6 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdk.h>
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
-#include <gtk/gtkplug.h>
 #include <stdlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xmu/WinUtil.h>
@@ -67,8 +66,9 @@
 #define force_hide 0
 #define force_disabled -1
 
+#define window_is_visible 1
+#define window_is_hidden 0
 
-//Atom net_client_list_stacking;
 Atom wm_name_atom;
 Atom wm_icon_atom;
 Atom net_wm_icon;
@@ -76,6 +76,8 @@ Atom net_close_window;
 Atom wm_delete_window;
 Atom wm_take_focus;
 Atom net_wm_ping;
+Atom net_wm_pid;
+Atom net_number_of_desktops;
 Atom net_current_desktop;
 Atom net_wm_state_skip_pager;
 Atom net_wm_state_skip_taskbar;
@@ -84,10 +86,14 @@ Atom wm_state;
 Atom net_wm_state_sticky;
 Atom net_wm_desktop;
 Atom net_active_window;
-
+Atom net_client_list;
+Atom net_wm_window_type;
+Atom net_wm_window_type_normal;
 Atom selection_atom;
 Atom manager_atom;
 Atom system_tray_opcode_atom;
+
+Atom gdk_timestamp_prop;
 
 typedef struct _win_struct {
 
@@ -98,13 +104,14 @@ typedef struct _win_struct {
 
   GdkWindow *parent_gdk;
   Window parent_xlib;
-
+  
+  gboolean parent_is_visible;
+  
   gboolean hide_start;
   GdkWindow *fake_desktop;
 
   GdkWindow *root_gdk;
   Window root_xlib;
-
 
   gint parent_window_x;
   gint parent_window_y;
@@ -120,11 +127,6 @@ typedef struct _win_struct {
   
   GdkWindow *child_gdk;
  
-  
-  gchar *wm_res_class;
-  gchar *wm_res_name;
-  gchar *wm_name;
-
   GPid pid;
 
   GdkPixbuf *icon;
@@ -133,18 +135,27 @@ typedef struct _win_struct {
   Window manager_window;
   GdkWindow *manager_window_gdk;
   
-  GtkWidget *tray_window;
+  GtkWidget *plug;
+  Window plug_xlib;
+
   GtkWidget *fixed;
   GtkWidget *image_icon;
   GtkTooltips *tooltip;
   
+  gboolean gtk_tray;
+    
   gchar *title;
     
   gint desktop;
-        
-  gboolean ignore_splash_window;
     
 } win_struct;
+
+typedef struct _wm_state_struct {
+  
+  gboolean visible;
+  gboolean show_in_taskbar;
+} wm_state_struct;
+
 
 GdkFilterReturn parent_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);
 GdkFilterReturn child_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);

@@ -52,15 +52,14 @@ void display_window_id(Display *display, Window window);
 void atom_init (void);
 void gtk_sleep (gint sec);
 gboolean withdrawn (Window window);
-gboolean parse_arguments(int argc, char **argv, gchar **string, gchar **icon,
-    gchar  **rest, gint *show, gboolean *ignore_splash_window, gboolean *hide_start);
-gboolean parse_string (gchar *string,  win_struct *win);
+gboolean parse_arguments(int argc, char **argv, gchar **icon,
+    gchar  **rest, gint *show, gboolean *hide_start);
 gboolean window_match (Window window, win_struct *win);
 void update_window_icon(win_struct *win);
 void update_window_title(win_struct *win);
-void get_string(void);
 GPid exec_command (gchar *command);
 void show_help(void);
+void show_version(void);
 GdkPixbuf *get_window_icon (Window xwindow);
 gboolean xlib_window_is_viewable (Window w);
 gboolean not_reparent (Window window);
@@ -69,9 +68,13 @@ Window get_active_window (void);
 gboolean window_has_deco (GdkWindow *win);
 void  destroy_all_and_exit (win_struct *win, gboolean kill_child);
 Window one_under_root (Display *display, Window window);
-void show_short_help (void);
-void show_tested_programs (void);
 void get_window_position (Window window, gint *x, gint *y);
-void show_hide_window (win_struct *win, gint force_state);
-void skip_taskbar (Window window, gboolean add);
+void show_hide_window (win_struct *win, gint force_state,
+  gboolean keep_in_taskbar);
+void skip_taskbar (win_struct *win, gboolean add);
+void set_current_desktop (gint *var);
+gint get_number_of_desktops(void);
+void update_visibility_state (win_struct *win, gboolean new_state);
+void update_taskbar_state (win_struct *win, gboolean new_state);
+
 #endif

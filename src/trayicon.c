@@ -44,9 +44,6 @@
 #include "trayicon.h"
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
-#define SYSTEM_TRAY_BEGIN_MESSAGE 1
-#define SYSTEM_TRAY_CANCEL_MESSAGE 2
-
 
 GtkWidget *menu = NULL;
 GtkWidget *show_item;
@@ -61,8 +58,9 @@ void tray_done (win_struct *win)
   if (menu)
     gtk_widget_destroy (menu);
   
-  if (win->tray_window)
-    gtk_widget_destroy (win->tray_window);
+  if (win->plug)
+    gtk_widget_destroy (win->plug);
+  
 }
 
 void exit_call(GtkWidget * button, gpointer user_data)
@@ -79,7 +77,7 @@ void show_hide_call (GtkWidget * button, gpointer user_data)
 
   win_struct *win= (win_struct*) user_data;
 
-  show_hide_window (win, force_disabled);
+  show_hide_window (win, force_disabled, FALSE);
 }
 
 void menu_init (win_struct *win)
@@ -202,12 +200,12 @@ manager_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data)
          gdk_window_remove_filter (win->manager_window_gdk, manager_filter, NULL);
         
      
-        if (win->tray_window) {
+        if (win->plug) {
         
-          if (GTK_IS_WIDGET(win->tray_window))
-            gtk_widget_destroy (win->tray_window);
+          if (GTK_IS_WIDGET(win->plug))
+            gtk_widget_destroy (win->plug);
           
-          win->tray_window=NULL;
+          win->plug=NULL;
         }
       }
   
@@ -223,11 +221,13 @@ gboolean on_icon_window_press_event(GtkWidget *widget, GdkEventButton * event,
 {
   
   win_struct *win= (win_struct*) user_data;
+  
+  if (debug) printf ("icon window press event\n");
 
   /*right click */
   if (event->button == 1) {
   
-    show_hide_window (win, force_disabled);
+    show_hide_window (win, force_disabled, FALSE);
     return TRUE;
 
   }
@@ -242,43 +242,84 @@ gboolean on_icon_window_press_event(GtkWidget *widget, GdkEventButton * event,
   return TRUE;
 }
 
-static GdkFilterReturn
-tray_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data)
+gboolean icon_window_configure_event (GtkWidget *widget,
+  GdkEventConfigure * event, gpointer user_data)
 {
-  
-  XEvent *xev = (XEvent *)xevent;
-  XConfigureEvent *xconfigure;
-  gint height;
-  
-  if ( !(xev->xany.type == ConfigureNotify) )
-   return GDK_FILTER_CONTINUE;
-  
+ 
   win_struct *win = (win_struct*) user_data;
 
-  xconfigure =(XConfigureEvent*) xev;
-  
-  if (debug) printf ("xconfigure.height: %d\n", xconfigure->height);
+  if (!GTK_IS_WIDGET (win->fixed))
+    return FALSE;
+    
+  gtk_fixed_move (GTK_FIXED(win->fixed), win->image_icon,
+     event->width  >=24 ? (event->width/2) -12 : 0,
+     event->height >=24 ? (event->height/2) -12 : 0);
+      
+  return FALSE;
+    
+}
 
-  height=  xconfigure->height;
-     
-  gtk_fixed_move (GTK_FIXED(win->fixed), win->image_icon, 0, 
-     height >=24 ? (height/2) -12 : 0);
-   
+/*check for gdk_timestamp_prop. if this is set the system*/
+/*tray seems to be made with GTK. -> no fake transparency*/
+/*tray icon background needed. (Gnome, XFCE)*/
+
+gboolean tray_is_made_with_gtk (Window win)
+{
+  Atom *list;
+  gint nitems;
+  gint i;
   
-  return GDK_FILTER_CONTINUE;
+  gboolean status=FALSE;
+  gint err;
+            
+  gdk_error_trap_push();
+    
+  list=XListProperties(GDK_DISPLAY(), win, &nitems);
+  
+  err=gdk_error_trap_pop();
+  
+  if (err==0 && list!=NULL) {
+ 
+    for (i=0; i< nitems; i++) {
+      
+      if (list[i] == gdk_timestamp_prop) {
+        status=TRUE;
+        if (debug) printf ("gdk_timestamp_prop found\n");
+      }
+            
+      
+    }
+        
+  }
+  
+  if (list)
+    XFree (list);
+
+  return status;
+  
+}
+
+void plug_embedded (GtkWidget *widget,
+  gpointer user_data)
+{
+   win_struct *win= (win_struct*) user_data;
+  
+  if (debug) printf ("plug embedded\n");
+  
+  if (!win->gtk_tray)
+    gtk_sleep (2000); //XXX better idea ?
+        
+  gtk_main_quit ();
+  
 }
 
 void create_tray_and_dock (win_struct *win)
 {
 
-  GtkWidget *image_back;
+  GtkWidget *image_back=NULL;
   GdkPixbuf *background_pixbuf;
-
-  Window tray_win_xlib;
   XWindowAttributes wa;
-
   GdkGeometry hints;
-
   gint width;
   gint height;
 
@@ -287,36 +328,62 @@ void create_tray_and_dock (win_struct *win)
   
   if (win->manager_window==None)
     return;
+  
+  /*too lazy to fix that now*/
+  if (!assert_window (win->manager_window)) {
     
+    printf ("Alltray: Can not dock!.\nPlease remove system tray applet\n"\
+    "and add it again.\n");
+    return;
+  }
+  
+    
+  //display_window_id (GDK_DISPLAY(), win->manager_window);
+    
+  win->gtk_tray = tray_is_made_with_gtk(win->manager_window);
+  
+  win->manager_window_gdk=NULL;
   win->manager_window_gdk=gdk_window_foreign_new(win->manager_window);
+  
+     
   gdk_window_set_events (win->manager_window_gdk, GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter (win->manager_window_gdk, manager_filter, (gpointer) win);
-     
-  if (GTK_IS_WIDGET(win->tray_window)) {
-    gtk_widget_destroy (win->tray_window);
-    win->tray_window=NULL;
+  
+  if (win->plug && GTK_IS_WIDGET (win->plug)) {
+    if (debug) printf ("plug is still alive\n");
+    gtk_widget_destroy(win->plug);
   }
-
-  win->tray_window =gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_decorated (GTK_WINDOW(win->tray_window), FALSE);
-  gtk_widget_realize (win->tray_window);
+  
+  win->plug=NULL;
+    
+  win->plug= gtk_plug_new (0);
+  gtk_container_set_border_width (GTK_CONTAINER (win->plug), 0);
+  gtk_widget_realize (win->plug);
 
   hints.min_width = 24;
   hints.min_height = 24;
-              
-  gdk_window_set_geometry_hints (win->tray_window->window,
-        &hints, GDK_HINT_MIN_SIZE);
-
-  tray_win_xlib = GDK_WINDOW_XID (win->tray_window->window);
-  XSetWindowBackgroundPixmap(GDK_DISPLAY(), tray_win_xlib, ParentRelative);
+  
+  gdk_window_set_geometry_hints (win->plug->window,
+    &hints, GDK_HINT_MIN_SIZE);
+  
+  win->plug_xlib=gtk_plug_get_id (GTK_PLUG(win->plug));
+  
+  if (!win->gtk_tray)
+    XSetWindowBackgroundPixmap(GDK_DISPLAY(), win->plug_xlib, ParentRelative);
+  
   if (debug) printf ("send dock request\n");
+    
+  g_signal_connect ((gpointer) win->plug, "embedded",
+                    G_CALLBACK (plug_embedded),
+                    (gpointer) win);
 
-  dock_window (win->manager_window, tray_win_xlib);
-  gtk_sleep(2);
+  dock_window (win->manager_window, win->plug_xlib);
+  
+  gtk_main ();
   
   gdk_error_trap_push();
    
-  XGetWindowAttributes (GDK_DISPLAY(), tray_win_xlib, &wa);
+  XGetWindowAttributes (GDK_DISPLAY(), win->plug_xlib, &wa);
   
   if (!gdk_error_trap_pop()) {
              
@@ -329,50 +396,61 @@ void create_tray_and_dock (win_struct *win)
     height=24;
       
   }
-
-  background_pixbuf=gdk_pixbuf_xlib_get_from_drawable (NULL, tray_win_xlib, 0, NULL,
-    0, 0, 0, 0, width, height);
- 
+  
+  if (debug) printf ("tray: height: %d, width: %d\n", height, width);
+    
   win->fixed= gtk_fixed_new ();
   gtk_fixed_set_has_window(GTK_FIXED (win->fixed),TRUE);
-  gtk_container_add(GTK_CONTAINER(win->tray_window), win->fixed);
+  gtk_container_add(GTK_CONTAINER(win->plug), win->fixed);
   
-  image_back=gtk_image_new ();
-  gtk_image_set_from_pixbuf(GTK_IMAGE(image_back), background_pixbuf);
-  g_object_unref (background_pixbuf);
+    
+  if (!win->gtk_tray) {
 
-  gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (image_back), 0, 0);
+    background_pixbuf=gdk_pixbuf_xlib_get_from_drawable
+      (NULL, win->plug_xlib, 0, NULL, 0, 0, 0, 0, width, height);
+   
+    
+    image_back=gtk_image_new ();
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image_back), background_pixbuf);
+    g_object_unref (background_pixbuf);
   
-  win->image_icon=gtk_image_new ();
+    gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (image_back), 0, 0);
+        
+  }  
+  
+  win->image_icon=gtk_image_new ();  
   gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->icon);
-  gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (win->image_icon), 0, 
+  gtk_fixed_put (GTK_FIXED (win->fixed), GTK_WIDGET (win->image_icon),
+    width  >=24 ? (width /2) -12 : 0,
     height >=24 ? (height/2) -12 : 0);
   
-  gtk_widget_show (image_back);
+  if (!win->gtk_tray)
+    gtk_widget_show (image_back);
   gtk_widget_show (win->image_icon);
   gtk_widget_show(win->fixed);
-  gtk_widget_show (win->tray_window);
+  gtk_widget_show (win->plug);
 
-  g_signal_connect (win->tray_window, "button_press_event",
+  g_signal_connect ((gpointer) win->plug, "button_press_event",
                     G_CALLBACK (on_icon_window_press_event),
                     (gpointer) win);
+  
+  g_signal_connect ((gpointer) win->plug, "configure_event",
+                    G_CALLBACK (icon_window_configure_event),
+                    (gpointer) win);         
+                    
                     
   tray_update_tooltip (win);
   
-  gdk_window_set_events(win->tray_window->window, GDK_ALL_EVENTS_MASK);
-  gdk_window_add_filter(win->tray_window->window, tray_window_filter, (gpointer) win);    
-  
-   
 }
 
 void tray_update_tooltip (win_struct *win)
 {
 
-  if (win->tray_window && win->title) {
-     if (debug) printf ("update tooltip have tray window\n");
+  if (win->plug && win->title) {
+     if (debug) printf ("update tooltip have plug window\n");
         
       gtk_tooltips_set_tip(GTK_TOOLTIPS(win->tooltip),
-          GTK_WIDGET(win->tray_window), win->title, NULL);
+          GTK_WIDGET(win->plug), win->title, NULL);
     }
   
 }
@@ -387,7 +465,7 @@ void tray_init (win_struct *win)
   win->tooltip = gtk_tooltips_new();
   
   if (win->manager_window) {
-  
+          
     if (debug) printf ("have manager window.... now creat_tray.....\n");
     create_tray_and_dock(win);
   } else
