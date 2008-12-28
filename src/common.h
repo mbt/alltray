@@ -83,7 +83,8 @@ typedef struct _win_struct {
   int visibility;
 
   GArray *workspace;
-  
+  GArray *command_menu;
+      
   gboolean show;
   gchar *command;
   gchar *command_only;
@@ -125,6 +126,10 @@ typedef struct _wm_state_struct {
   gboolean show_in_taskbar;
 } wm_state_struct;
 
+typedef struct _command_menu_struct {
+  gchar *entry;
+  gchar *command;
+} command_menu_struct;
 
 GdkFilterReturn parent_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);
 GdkFilterReturn child_window_filter (GdkXEvent *xevent, GdkEvent *event, gpointer user_data);

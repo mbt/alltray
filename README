@@ -56,6 +56,8 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
     --icon; -i  <path to png>: use this icon
     --large_icons; -l: allow large icons (> 24x24)
     --borderless; -x: move border, title, frame... from parent
+    --menu; -m: "menu text:command": add entry to popdown menu
+      (and execute "command"...)
 
 
 **Requirements:

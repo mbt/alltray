@@ -14,7 +14,8 @@ void gtk_sleep (gint sec);
 gboolean withdrawn (Window window);
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gint *show, gboolean *hide_start,
-    gboolean *debug, gboolean *borderless, gboolean *large_icons);
+    gboolean *debug, gboolean *borderless,
+    gboolean *large_icons, GArray *command_menu);
 gchar *strip_command (gchar *command);
 gboolean window_match (Window window, win_struct *win);
 void update_window_icon(win_struct *win);

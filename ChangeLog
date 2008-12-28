@@ -1,3 +1,8 @@
+Mar, 1, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- added "--menu" option. add own menu entries to popdown menu to
+  execute commands. example: --menu "Sync:/bin/sync".
+- set version to 0.41
+
 Feb, 23, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - alltray works now with Fluxbox and WindowMaker
   (wmaker with "docker" dockapp)

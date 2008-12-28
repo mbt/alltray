@@ -532,9 +532,62 @@ void display_window_id(Display *display, Window window)
 
 }
 
+gboolean append_command_to_menu(GArray *command_menu, gchar *string)
+{
+  
+  command_menu_struct new;
+  
+  new.entry=NULL;
+  new.command=NULL;
+    
+  gchar *tmp=NULL;
+  gchar *command=NULL;
+  
+  tmp=g_strdup (string);
+  
+  if (!tmp)
+    return FALSE;
+        
+  command = g_strrstr (tmp,":");
+  
+  if (debug) printf ("command: %s\n", command);
+    
+  if (!command) {
+    g_free (tmp);
+    return FALSE;
+  }
+  
+  new.command=g_strdup(++command);
+  
+  if (strlen (new.command) == 0) {
+    g_free (tmp);
+    g_free (new.command);
+    return FALSE;
+  }
+   
+  if (debug) printf ("new.command: %s\n", new.command);
+  
+  *(--command)=0;
+  
+  if (strlen (tmp) == 0) {
+    g_free (tmp);
+    g_free (new.command);
+    return FALSE;
+  }
+  
+  new.entry=tmp;
+    
+  if (debug) printf ("new.entry: %s\n", new.entry);
+    
+  g_array_append_val(command_menu, new);
+  
+  return TRUE;
+}
+
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *hide_start,
-    gboolean *debug, gboolean *borderless, gboolean *large_icons)
+    gboolean *debug, gboolean *borderless,
+    gboolean *large_icons, GArray *command_menu)
 {
   int i;
   char rest_buf[4096]="";
@@ -589,7 +642,23 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         i++;
         break;
       }
-    
+      
+      if (!strcmp(argv[i], "--menu") || !strcmp(argv[i], "-m")) {
+        if ((i+1) ==  argc) {
+          show_help();
+          return FALSE;
+        }
+        
+        if (!append_command_to_menu(command_menu, argv[i+1])) {
+          printf ("\nAllTray: \"%s\" is not a valid menu entry !\n"\
+          "         Syntax: -m \"menu text:command\"\n", argv[i+1]);
+          return FALSE;
+        }
+                        
+        i++;
+        break;
+      }
+
       if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
         *debug=TRUE;
         break;
@@ -1742,7 +1811,8 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
   g_object_unref (win->window_icon);
   g_object_unref (win->tray_icon);
   g_array_free (win->workspace, FALSE);
-  
+  g_array_free (win->command_menu, TRUE);
+    
   XDestroyWindow(win->display, win->parent_xlib);
   g_free (win);
 
@@ -1765,7 +1835,9 @@ void show_help(void)
              "  --hide_window; -hw: hide window during startup (experimental)\n"\
              "  --icon; -i  <path to png>: use this icon\n"\
              "  --large_icons; -l: allow large icons (> 24x24)\n"\
-             "  --borderless; -x: remove border, title, frame... from parent\n", VERSION);
+             "  --borderless; -x: remove border, title, frame... from parent\n"\
+             "  --menu; -m: \"menu text:command\": add entry to popdown menu\n"
+  , VERSION);
 
 }
 

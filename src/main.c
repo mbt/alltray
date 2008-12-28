@@ -405,6 +405,7 @@ void win_struct_init(win_struct *win)
   win->visibility=VisibilityUnobscured;
   
   win->workspace=g_array_new (FALSE, FALSE, sizeof (wm_state_struct));
+  win->command_menu=g_array_new (FALSE, FALSE, sizeof (command_menu_struct));
    
   gint desktops=get_number_of_desktops();
   gint i;
@@ -456,7 +457,8 @@ void command_line_init (win_struct *win, int argc, char **argv)
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
     &win->command, &win->show, &win->hide_start,
-    &debug, &win->borderless, &win->large_icons)) {
+    &debug, &win->borderless,
+    &win->large_icons, win->command_menu)) {
       
     exit(1);
   }

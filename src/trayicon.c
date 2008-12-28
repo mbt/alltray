@@ -81,11 +81,25 @@ void show_hide_call (GtkWidget * button, gpointer user_data)
   show_hide_window (win, force_disabled, FALSE);
 }
 
+void command_menu_call (GtkWidget * button, gpointer user_data)
+{
+
+  gchar *command= (gchar*) user_data;
+  
+  if (debug) printf ("command_menu_call: %s\n", command);
+  
+  exec_command (command);
+}
+
 void menu_init (win_struct *win)
 {
   
   menu = gtk_menu_new();
-
+  
+  command_menu_struct command;
+  gint i;
+     
+  
   GtkWidget *title = gtk_menu_item_new_with_label("   AllTray");
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), title);
   gtk_widget_set_sensitive(title, FALSE);
@@ -93,16 +107,42 @@ void menu_init (win_struct *win)
   GtkWidget *separator1 = gtk_menu_item_new();
   gtk_widget_show(separator1);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator1);
+  
+  
+  if (debug) printf ("command_menu->len: %d\n", win->command_menu->len);
+  
+  if (win->command_menu->len >0) {
+  
+    for (i=0; i < win->command_menu->len; i++) {
+      
+      command=g_array_index (win->command_menu, command_menu_struct, i);
+      
+      if (debug) printf ("found command.entry: %s\n", command.entry);
+      
+      GtkWidget *item = gtk_menu_item_new_with_label(command.entry);
+      g_signal_connect(G_OBJECT(item), "activate",
+        G_CALLBACK(command_menu_call), (gpointer) command.command);
+      gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+  
+    }
+    
+    GtkWidget *separator2 = gtk_menu_item_new();
+    gtk_widget_show(separator2);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator2);
+    gtk_widget_set_sensitive(separator2, FALSE);
+  
+  }
+  
  
   show_item = gtk_menu_item_new_with_label("Show/Hide");
   g_signal_connect(G_OBJECT(show_item), "activate",
       G_CALLBACK(show_hide_call), (gpointer) win);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), show_item);
 
-  GtkWidget *separator2 = gtk_menu_item_new();
-  gtk_widget_show(separator2);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator2);
-  gtk_widget_set_sensitive(separator2, FALSE);
+  GtkWidget *separator3 = gtk_menu_item_new();
+  gtk_widget_show(separator3);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), separator3);
+  gtk_widget_set_sensitive(separator3, FALSE);
 
   exit_item = gtk_menu_item_new_with_label("Exit");
   g_signal_connect(G_OBJECT(exit_item), "activate",
