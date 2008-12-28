@@ -128,10 +128,12 @@ GdkFilterReturn event_filter (GdkXEvent *xevent,
 
     case ConfigureNotify:
 
-        if (debug) printf ("configure notify\n");
 
-        if (win->xmms || !win->parent_is_visible || win->borderless || win->kde)
+        if (win->xmms || !win->parent_is_visible || win->nomini || win->kde)
           break;
+
+         if (debug) printf ("configure notify\n");  
+
         
         if (!GDK_IS_DRAWABLE (win->target_our_gdk))
           break;

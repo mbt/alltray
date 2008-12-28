@@ -209,21 +209,21 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   }
   
   balloon->x=(balloon->dock_x + balloon->dock_w/2- tail_x);
-  
-  if (balloon->dock_y < balloon->dock_h + pad) {
-    
-    if (debug) printf ("on top\n");
+
+
+  if ((balloon->dock_y - pad - balloon->h) <= 1) {
+    if (debug) printf ("nach unten\n");
     balloon->tail_on_top=TRUE;
     balloon->y=balloon->dock_y + balloon->dock_h + pad;
-    
-    balloon->x-=tailwidth/2;
-    
+    balloon->x-=tailwidth/2;                                  
+
+
   } else {
-    
+    if (debug) printf ("nach oben\n");
     balloon->tail_on_top=FALSE;
-    if (debug) printf ("nicht on top\n");
     balloon->y=balloon->dock_y - balloon->h -pad;
   }
+
 
   do {
   

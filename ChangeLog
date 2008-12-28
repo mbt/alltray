@@ -1,4 +1,13 @@
-Jun 23, 2006: Jochen Baier <email@jochen-baier.de>
+Jul 6, 2006: Jochen Baier <email@jochen-baier.de>
+- added "Stop" to the xmms menu. requested by me ;)
+- get the gnome theme file by reading "XDG_DATA_DIRS". usefull if gnome is not installed in "/usr..."
+  bug reported by Laurent Hilsz
+- fixed shortcut bug. report and patch from Travis Hartwell
+- fixed segfault which occur if apps where closed with "FILE->QUIT"
+- fixed tooltip location with 2 panels on top. reported by Christer Edwards
+- set version 0.69
+
+Jun 23, 2006:
 - support for keyboard-shortcut. Toggle apps with a key stroke.
 - added "--notray" option: display no tray icon. usefull with a keyboard-shortcut.
 - added "--nominimize" option: click on window close button: do not minimize back to tray, close

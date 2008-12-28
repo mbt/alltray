@@ -45,8 +45,6 @@
 #define GCONF_METACITY_THEME_PATH "/apps/metacity/general/theme"
 #define THEME_FILENAME "metacity-theme-1.xml"
 #define THEME_SUBDIR "metacity-1"
-#define THEME_DIR1 "/usr/share/"
-#define THEME_DIR2 "/usr/local/share/"
  
 static int depth= 0;
 static gboolean found_element=FALSE;
@@ -155,9 +153,11 @@ gboolean parse_theme (win_struct *win) {
   gsize length=0;
   GError *err=NULL;
   GMarkupParseContext *ctx;
-  gchar *theme_dir, *theme_file;
+  gchar *theme_file;
   gchar *metacity_theme=NULL;
-
+  const char * const *system_data_dirs;
+  gint i;
+      
   metacity_theme=get_metacity_theme (win);
   if (metacity_theme == NULL) {
      printf ("\n\nAlltray: ups...\n");
@@ -166,34 +166,39 @@ gboolean parse_theme (win_struct *win) {
   
   if (debug) printf ("theme name: %s\n", metacity_theme);
 
-  theme_dir = g_build_filename (g_get_home_dir (), ".themes", metacity_theme, 
-      THEME_SUBDIR, NULL);
-  theme_file = g_build_filename (theme_dir, THEME_FILENAME, NULL);
-  
-  err = NULL;
-  if (!g_file_get_contents (theme_file, &content, &length, &err)) {
-    if (debug) printf( "Failed to read theme from file %s: %s\n",  theme_file, err->message);
-    g_error_free (err);
-    g_free (theme_dir);
-    g_free (theme_file);
- }
+  theme_file = g_build_filename (g_get_home_dir (), ".themes", metacity_theme, 
+      THEME_SUBDIR, THEME_FILENAME, NULL);
 
-  if (content == NULL) {
+  if (debug) printf ("theme_file: <%s>\n", theme_file);
+    
+  err = NULL;
+  g_file_get_contents (theme_file, &content, &length, &err);
+  if (debug && !content) printf( "Failed to read theme from file %s: %s\n",  theme_file, err->message);
+  if (err) g_error_free (err);
+  g_free (theme_file);
   
-    theme_dir = g_build_filename (THEME_DIR1, "themes", metacity_theme,
-      THEME_SUBDIR, NULL);
-    
-    if (debug) printf ("try location: %s\n", theme_dir);
-    
-    theme_file = g_build_filename (theme_dir, THEME_FILENAME, NULL);
-    
-    err = NULL;
-    if (!g_file_get_contents (theme_file, &content, &length, &err)) {
-    if (debug) printf ("Failed to read theme from file %s: %s\n",  theme_file, err->message);
-    g_error_free (err);
-    g_free (theme_file);
-    g_free (theme_dir);
-    return FALSE;
+  if (content == NULL) {
+
+    system_data_dirs = g_get_system_data_dirs ();
+
+    for (i = 0; system_data_dirs[i] != NULL; i++) {
+
+      theme_file = g_build_filename (system_data_dirs[i], "themes", metacity_theme, THEME_SUBDIR, 
+          THEME_FILENAME,  NULL);
+      if (debug) printf ("theme_file: <%s>\n", theme_file); 
+
+      err = NULL;
+      if (!g_file_get_contents (theme_file, &content, &length, &err)) {
+        if (debug) printf ("Failed to read theme from file %s: %s\n",  theme_file, err->message);
+        if (err) g_error_free (err);
+        g_free (theme_file);
+        continue;
+      } else {
+        if (err) g_error_free (err);
+        g_free (theme_file);
+        break;
+      }
+                
     }
   
   }
@@ -202,9 +207,6 @@ gboolean parse_theme (win_struct *win) {
   g_assert (content);
 
   g_free (metacity_theme);
-  g_free (theme_file);
-  g_free (theme_dir);
-
 
   err = NULL;
   ctx = g_markup_parse_context_new (&parser, 0, (gpointer) win, NULL);

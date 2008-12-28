@@ -514,8 +514,8 @@ void show_help(void)
              "   --key; -k [Modifier:]Key: Keyboard shortcut:\n"\
              "     Modifier=\"Shift\", \"Control\", \"Alt\", \"AltGr\"\n"\
              "     Key (Examples) = \"a\", \"F1\", \"End\" ...\n"\
-             "     or \"Keycode\" (Number) returned by the program \"xev\". \n"\ 
-             "   --notray; -nt: display no tray icon (usefull only with the \"--key\" option or what ever\n"\
+             "     or \"Keycode\" (Number) returned by the program \"xev\"\n"\
+             "   --notray; -nt: display no tray icon (usefull only with the \"--key\" option)\n"\
              "   --nominimize; -nm: click on window close button: do not minimize back to system tray, close\n"\
             "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\

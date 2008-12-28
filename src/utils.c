@@ -1572,8 +1572,12 @@ void destroy_all_and_exit (win_struct *win, gboolean kill_child)
 
   child_dead=!assert_window (child);
 
-  if (child_dead && debug)
-    printf ("child allready dead\n");
+  if (child_dead) {
+    if (debug) printf ("child already dead\n");
+    win->xmms_main_window_gdk=NULL;
+    win->child_gdk=NULL;
+  }
+
 
   do {
 

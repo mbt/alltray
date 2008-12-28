@@ -68,7 +68,7 @@ gboolean parse_shortcut (gchar *string,
     *key_return =atoi (++colon);
     
     if (*key_return == 0)
-      *key_return=XKeysymToKeycode(GDK_DISPLAY(), XStringToKeysym(++colon));
+      *key_return=XKeysymToKeycode(GDK_DISPLAY(), XStringToKeysym(colon));
 
    *(--colon)=0;
    modifier=tmp;

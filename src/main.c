@@ -230,6 +230,9 @@ void command_line_init (win_struct *win, int argc, char **argv)
     exit (0);
   }
 
+  if (win->borderless)
+    win->nomini=TRUE;
+  
   if (win->nomini) {
 
     win->gnome=FALSE;
@@ -368,13 +371,14 @@ main (int argc, char *argv[])
   if (win->xmms) {
     win->xmms_main_window_gdk=gdk_window_foreign_new(win->xmms_main_window_xlib);
     append_command_to_menu(win->command_menu, "Play:xmms -p");
+    append_command_to_menu(win->command_menu, "Stop:xmms -s"); 
     append_command_to_menu(win->command_menu, "Pause:xmms -u");
     append_command_to_menu(win->command_menu, "Next:xmmsnext");
   }
 
   win->child_gdk=gdk_window_foreign_new(win->child_xlib);
 
-  if (win->borderless && win->no_reparent) {
+  if (win->borderless) {
       gdk_window_set_decorations(win->child_gdk, 0);
       gtk_sleep (100);
   }
@@ -472,9 +476,6 @@ main (int argc, char *argv[])
       (guchar *)&net_wm_window_type_normal, 1);
   
     win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
-    
-    if (win->borderless)
-      gdk_window_set_decorations (win->parent_gdk, 0);
        
     XReparentWindow (GDK_DISPLAY(), win->child_xlib, win->parent_xlib, 0, 0);
     XSync (GDK_DISPLAY(), FALSE);
