@@ -1,3 +1,9 @@
+Sep 24, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- fixed probs with binreloc (configure with non default path settings)
+- updated binreloc
+- fixed configure.in stuff
+- set version to 0.62
+
 Sep 07, Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - removed  "#include <X11/Xmu/WinUtil.h>" from common.h
 - replaced g_open, g_mkdir... with open and mkdir...

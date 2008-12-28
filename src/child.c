@@ -43,7 +43,7 @@
 #include "common.h"
 #include "utils.h"
 #include "trayicon.h"
-#include "prefix.h"
+#include "binreloc.h"
 #include "clientwin.h"
 
 #define PRELOAD_LIB "/liballtray.so.0.0.0"
@@ -292,11 +292,23 @@ void set_env_stuff (gpointer user_data)
 
   
   win_struct *win= (win_struct*) user_data;
-
-  if (debug)
-    path_to_lib=g_strdup ("/usr/lib/liballtray.so.0.0.0");
-  else
-   path_to_lib=g_strdup_printf (BR_LIBDIR(PRELOAD_LIB));
+ 
+  if (debug) {
+    path_to_lib=g_strdup ("/usr/lib");
+  } else {
+    #ifdef ENABLE_BINRELOC
+    if (debug) printf ("binreloc is working\n");
+    path_to_lib = gbr_find_lib_dir (NULL);
+    if (path_to_lib ==NULL) {
+      g_warning ("probs with binreloc. i will use /usr/lib/liballtray.so.0.0.0 just for fun.");
+      path_to_lib=g_strdup ("/usr/lib");
+    }
+    #else
+    if (debug) printf ("binreloc is not working\n");
+    path_to_lib=g_strdup (PACKAGE_LIB_DIR);
+    #endif
+  }
+ 
 
   if (debug) printf ("lib is here: %s\n", path_to_lib);
   
@@ -309,13 +321,13 @@ void set_env_stuff (gpointer user_data)
     if (debug) printf ("have old preload\n");
     
     preload_string = g_strconcat ("LD_PRELOAD=",
-       old_preload, " ", path_to_lib , NULL);
+       old_preload, " ", path_to_lib, PRELOAD_LIB, NULL);
     
     setenv ("OLD_PRELOAD", old_preload, 1);
     
   } else {
     preload_string = g_strconcat ("LD_PRELOAD=",
-        path_to_lib, NULL);
+        path_to_lib, PRELOAD_LIB, NULL);
   }
 
   if (debug) printf ("preload string: %s\n", preload_string);

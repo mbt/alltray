@@ -3,7 +3,7 @@
 /* Include pthread support for binary relocation? */
 #undef BR_PTHREAD
 
-/* binary relocation working ? */
+/* Use binary relocation? */
 #undef ENABLE_BINRELOC
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
@@ -12,8 +12,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* HAVE LD_PRELOAD */
-#undef HAVE_LD_PRELOAD
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

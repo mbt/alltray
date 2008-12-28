@@ -2,7 +2,7 @@
 
 man_MANS=alltray.1
 
-SUBDIRS = src $(LIBDIR)
+SUBDIRS = src lib
 
 EXTRA_DIST = \
 	autogen.sh \

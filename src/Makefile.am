@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
+  -DPACKAGE_LIB_DIR=\""$(libdir)"\" \
   @PACKAGE_CFLAGS@
 
 bin_PROGRAMS = alltray
@@ -25,8 +26,8 @@ alltray_SOURCES = \
   xmms.h \
   clickmode.c \
   clickmode.h \
-  prefix.c \
-  prefix.h \
+  binreloc.c \
+  binreloc.h \
   grab.c \
   grab.h \
   gnome_theme.c \

@@ -51,6 +51,7 @@
 #include "clickmode.h"
 #include "grab.h"
 #include "kde.h"
+#include "binreloc.h"
 
 gboolean debug=FALSE;
 
@@ -325,6 +326,7 @@ main (int argc, char *argv[])
   
   gtk_init (&argc, &argv);
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
+  gbr_init (NULL);
   atom_init ();
      
   win_struct *win = malloc (sizeof (win_struct));
