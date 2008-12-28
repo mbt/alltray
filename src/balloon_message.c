@@ -115,9 +115,7 @@ gboolean one_moment (gpointer user_data)
     return FALSE;
   
   gtk_widget_show (win->balloon->window);
-  
-  win->balloon->handler_id=g_signal_connect ((gpointer) win->plug,
-    "leave_notify_event", G_CALLBACK (leave_handler), (gpointer) win);
+
 
   return FALSE;
 }
@@ -331,5 +329,9 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   
   g_signal_connect ((gpointer) balloon->window, "expose_event",
                     G_CALLBACK (expose_handler), (gpointer) balloon);
+  
+  win->balloon->handler_id=g_signal_connect ((gpointer) win->plug,
+    "leave_notify_event", G_CALLBACK (leave_handler), (gpointer) win);
+  
 
 }

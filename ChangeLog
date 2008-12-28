@@ -1,3 +1,7 @@
+Apr, 19, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- bug fix release: do not show balloon message if mouse left icon (already)
+- set version to 0.51
+
 Apr, 18, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - xmms support:
     -no window decoration
