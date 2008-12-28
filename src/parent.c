@@ -308,10 +308,11 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless,
-    gboolean *large_icons, GArray *command_menu, gint *title_time)
+    gboolean *large_icons, GArray *command_menu, gint *title_time, gchar **geometry)
 {
   int i;
   char rest_buf[4096]="";
+  int x, y, w, h;
   
   if (argc == 1) {
     show_help();
@@ -359,6 +360,23 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         break;
       }
       
+     if (!strcmp(argv[i], "--geometry") || !strcmp(argv[i], "-g")) {
+        if ((i+1) ==  argc) {
+          show_help();
+          return FALSE;
+        }
+      
+        *geometry=g_strdup (argv[i+1]);
+        
+        if (XParseGeometry(*geometry, &x, &y, &w, &h) == 0) {
+          show_help();
+          return FALSE;
+        }
+        
+        i++;
+        break;
+     } 
+      
      if (!strcmp(argv[i], "--title") || !strcmp(argv[i], "-t")) {
       if ((i+1) ==  argc) {
         show_help();
@@ -374,7 +392,7 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
       
       i++;
       break;
-     }
+    }
       
     if (!strcmp(argv[i], "--menu") || !strcmp(argv[i], "-m")) {
       if ((i+1) ==  argc) {
@@ -550,6 +568,8 @@ void show_help(void)
              "  --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
              "  --title; -t <sec>: show title change for <sec> seconds\n"\
              "                     probably most usefull for xmms\n"\
+             "  --geometry; -g [<width>x<height>][+<x>+<y>]: initial position/geo\n"\
+             "    (Note: xmms loads automatically the old position)\n"\
   , VERSION);
 
 }

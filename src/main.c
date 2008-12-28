@@ -61,7 +61,11 @@ void win_struct_init(win_struct *win)
    
   win->screen_width=gdk_screen_get_width (gdk_screen_get_default());
   win->screen_height=gdk_screen_get_height (gdk_screen_get_default());
-    
+  
+  win->initial_x=0;
+  win->initial_y=0;
+  win->initial_w=0;
+  win->initial_h=0;
   win->parent_gdk=NULL;
   win->parent_xlib=None;
   
@@ -131,15 +135,20 @@ void win_struct_init(win_struct *win)
 
 void command_line_init (win_struct *win, int argc, char **argv)
 {
+  
+  gchar *geometry=NULL;
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
     &win->command, &win->show, &debug, &win->borderless,
-    &win->large_icons, win->command_menu, &win->title_time)) {
+    &win->large_icons, win->command_menu, &win->title_time, &geometry)) {
     
     if (win->user_icon_path)
       g_free(win->user_icon_path);
     if (win->command)
       g_free (win->command);
+    
+    if (geometry)
+      g_free (geometry);
     
     if (win->workspace)
       g_array_free (win->workspace, FALSE);
@@ -159,14 +168,26 @@ void command_line_init (win_struct *win, int argc, char **argv)
     win->xmms=TRUE;
     if (debug) printf ("child is xmms\n");
   }
-   
   
+  
+  if (geometry) {
+    
+    XParseGeometry(geometry, &win->initial_x, &win->initial_y,
+              &win->initial_w, &win->initial_h);
+    
+    if (debug) printf ("inital values: x:%d y: %d, w:%d, h:%d\n",
+                        win->initial_x, win->initial_y, win->initial_w, win->initial_h);
+    
+  }
+
   if (debug) {
     printf ("command: %s\n", win->command);
     if (win->show) printf ("show=TRUE\n");
     if (win->user_icon) printf ("have user icon\n");
     if (win->borderless) printf ("borderless=TRUE\n");
     printf ("win->title_time: %d\n", win->title_time);
+    if (geometry) printf ("geometry: %s\n", geometry);
+    
   }
 
 }
@@ -227,9 +248,18 @@ main (int argc, char *argv[])
     withdraw_window(win);
     
     get_child_size (win->child_gdk, &w,&h);
+    
+    if (win->initial_w != 0)
+      w=win->initial_w;
+    
+    if (win->initial_h != 0)
+      h=win->initial_h;
+    
+    if (win->initial_h || win->initial_w)
+      gdk_window_resize (win->child_gdk, w, h);
       
-    win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
-          w, h, 0, 0, 0);
+    win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, win->initial_x, 
+      win->initial_y, w, h, 0, 0, 0);
   
     classHint=XAllocClassHint();
     classHint->res_name="alltray";
@@ -250,6 +280,10 @@ main (int argc, char *argv[])
     err=gdk_error_trap_pop();
     
     if (err==0) {
+      
+      if (win->initial_x || win->initial_y || win->initial_w || win->initial_h)
+        sizehints.flags |= USPosition;
+ 
       XSetWMNormalHints(win->display, win->parent_xlib, &sizehints);
     }
   
@@ -258,6 +292,14 @@ main (int argc, char *argv[])
     protocols[2]=net_wm_ping;
     
     XSetWMProtocols (win->display, win->parent_xlib, protocols, 3); 
+
+    XChangeProperty (GDK_DISPLAY(), win->parent_xlib,
+      net_wm_pid, XA_CARDINAL, 32, PropModeReplace,
+      (guchar *)&win->parent_pid, 1);
+    
+    XChangeProperty (GDK_DISPLAY(), win->parent_xlib,
+      net_wm_window_type, XA_ATOM, 32, PropModeReplace,
+      (guchar *)&net_wm_window_type_normal, 1);
   
     win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
     

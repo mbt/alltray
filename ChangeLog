@@ -1,3 +1,10 @@
+Apr, 22, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- add "--geometry" option: display window on user ask position
+- removed "alltray" string in balloon message (pointed out by Tony)
+  add padding instead to achieve balloon shape
+- fixed "undefined symbol: XSetErrorHandler" bug. (reported by Diego Bazzanello)
+- set version to 0.52 (dev snap)
+
 Apr, 19, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - bug fix release: do not show balloon message if mouse left icon (already)
 - set version to 0.51

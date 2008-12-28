@@ -6,6 +6,7 @@
 #define border 10
 #define radius 3
 #define pad 5
+#define inner_padding 10
 
 void destroy_balloon (win_struct *win)
 {
@@ -131,9 +132,7 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   gint tail_x;
   gint w;
   gint h;
-  gchar *title_string;
-  
-  
+ 
   if (!win->balloon_message_allowed)
     return;
   
@@ -156,7 +155,7 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   gtk_widget_set_app_paintable (balloon->window, TRUE);
   gtk_window_set_policy (GTK_WINDOW (balloon->window), FALSE, FALSE, TRUE);
   gtk_widget_set_name (balloon->window, "alltray-balloon_message");
-  gtk_container_set_border_width (GTK_CONTAINER (balloon->window), border+4);
+  gtk_container_set_border_width (GTK_CONTAINER (balloon->window), border+inner_padding);
   
   gtk_widget_realize (balloon->window);
   
@@ -189,10 +188,7 @@ void show_balloon (win_struct *win, gchar *message, gint timeout)
   gtk_widget_show (label);
   
   gtk_container_add (GTK_CONTAINER (balloon->window), label);
-  
-  title_string=g_strconcat (message, "\n-----------\n (AllTray)", NULL);
-  gtk_label_set_markup (GTK_LABEL (label), title_string);
-  g_free (title_string);
+  gtk_label_set_markup (GTK_LABEL (label), message);
 
   gtk_window_get_size (GTK_WINDOW (balloon->window), &balloon->w, &balloon->h);
   

@@ -106,6 +106,11 @@ typedef struct _win_struct {
 
   gint parent_window_x;
   gint parent_window_y;
+  
+  gint initial_x;
+  gint initial_y;
+  gint initial_w;
+  gint initial_h;
 
   int visibility;
 

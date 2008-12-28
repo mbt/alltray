@@ -169,7 +169,27 @@ int iconic (Display *display, Window window)
 
   if (first_call) {
     DPRINTF ((stderr, "set error handler\n"));
-    XSetErrorHandler (error_handler);
+    
+    void *dlh_xerr = NULL;
+    int (*fptr_xerr)() = 0;
+    
+    dlh_xerr = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    
+    if (dlh_xerr == NULL) 
+      dlh_xerr = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+  
+    if (dlh_xerr != NULL) {
+      dlclose (dlh_xerr);
+      
+      fptr_xerr = (int (*)())dlsym (dlh_xerr, "XSetErrorHandler");
+      
+      if (fptr_xerr != NULL) {
+        DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+        (*fptr_xerr) (error_handler);
+      }
+      
+    }
+
     first_call=0;
   }
 
@@ -210,7 +230,27 @@ int window_is_visible (Display *display, Window window)
 
   if (first_call) {
     DPRINTF ((stderr, "set error handler\n"));
-    XSetErrorHandler (error_handler);
+    
+    void *dlh_xerr = NULL;
+    int (*fptr_xerr)() = 0;
+    
+    dlh_xerr = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    
+    if (dlh_xerr == NULL) 
+      dlh_xerr = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+  
+    if (dlh_xerr != NULL) {
+      dlclose (dlh_xerr);
+      
+      fptr_xerr = (int (*)())dlsym (dlh_xerr, "XSetErrorHandler");
+      
+      if (fptr_xerr != NULL) {
+        DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+        (*fptr_xerr) (error_handler);
+      }
+      
+    }
+    
     first_call=0;
   }
 
@@ -254,8 +294,26 @@ XMapWindow (Display* display, Window w)
   if (fptr == 0) {
     
     DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
-    XSetErrorHandler (error_handler);
     
+    void *dlh_xerr = NULL;
+    int (*fptr_xerr)() = 0;
+    
+    dlh_xerr = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    
+    if (dlh_xerr == NULL) 
+      dlh_xerr = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+  
+    if (dlh_xerr != NULL) {
+      dlclose (dlh_xerr);
+      
+      fptr_xerr = (int (*)())dlsym (dlh_xerr, "XSetErrorHandler");
+      
+      if (fptr_xerr != NULL) {
+        DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+        (*fptr_xerr) (error_handler);
+      }
+      
+    }
   
     #ifdef RTLD_NEXT
       fptr = (int (*)())dlsym (RTLD_NEXT, "XMapWindow");
@@ -385,7 +443,27 @@ XMapRaised (Display* display, Window w)
     
     
     DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
-    XSetErrorHandler (error_handler);
+    
+    void *dlh_xerr = NULL;
+    int (*fptr_xerr)() = 0;
+    
+    dlh_xerr = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    
+    if (dlh_xerr == NULL) 
+      dlh_xerr = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+  
+    if (dlh_xerr != NULL) {
+      dlclose (dlh_xerr);
+      
+      fptr_xerr = (int (*)())dlsym (dlh_xerr, "XSetErrorHandler");
+      
+      if (fptr_xerr != NULL) {
+        DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+        (*fptr_xerr) (error_handler);
+      }
+      
+    }
+
   
     #ifdef RTLD_NEXT
       fptr = (int (*)())dlsym (RTLD_NEXT, "XMapRaised");
