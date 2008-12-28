@@ -482,8 +482,7 @@ void show_help(void)
              "   --geometry; -g [<width>x<height>][{+-}<x>{+-}<y>]: initial position (if not supported native)\n"\
             "   --configure; -conf: show KDE configuration dialog\n\n"\
              "usage: alltray\n\n"\
-             " Click-Mode: Click on the window you would like to dock.\n"\
-             " (Abort with <c>)\n\n"
+             " Click-Mode: Click on the window you would like to dock.\n\n"\
 
   , VERSION);
 

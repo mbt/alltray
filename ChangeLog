@@ -1,3 +1,8 @@
+Jun 9, 2006, Jochen Baier <email@jochen-baier.de>
+- clickmode.c revised, "Cancel" button added, Cancel with "c" removed
+- alltray.spec updated by Michael Krylov
+- set version to 0.67 (dev snap)
+
 Apr 26, 2006, Jochen Baier <email@jochen-baier.de>
 - fixed problems with Gnome 2.14 and Metacity themes, gconf is now required
 - support to align Windows on the left or right screen side with "-geometry -0-0"

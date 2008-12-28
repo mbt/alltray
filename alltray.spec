@@ -1,13 +1,7 @@
-%define name    alltray
-%define version 0.66
-%define release 0
-
-%define prefix  /usr
-
 Summary: Alltray allows to dock any program.
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: alltray
+Version: 0.67
+Release: 1
 Prefix: %{prefix}
 License: GPL
 Group: Applications/System
@@ -25,12 +19,12 @@ With AllTray you can dock any application with no native tray icon (like Evoluti
 %setup -n %{name}-%{version}
 
 %build
-./configure --prefix=%{prefix}
+%configure
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -38,11 +32,15 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %{_bindir}/%{name}
-%{prefix}/man/*
-%{_libdir}/*
-%{prefix}/share/*
+%{_datadir}/man/*
+%{_libdir}/liballtray.*
+%{_datadir}/applications/alltray.desktop
+%{_datadir}/pixmaps/alltray.png
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 
 %changelog
 * Sat Dec 10 2005 Michael Krylov <m.krylov@mail.ru>
 - Initial spec for alltray-0.65
+
+
+
