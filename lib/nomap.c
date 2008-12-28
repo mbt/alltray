@@ -36,7 +36,7 @@
 
 #undef DEBUG 
 /* Uncomment below for debugging */
-// #define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #   define DPRINTF(args) fprintf args
@@ -55,8 +55,8 @@
 
 #include "config.h"
 
-
-static int window_found=0;
+static int xmms_support=0;
+static int do_nothing=0;
 
 int 
 error_handler (Display *dpy, XErrorEvent *xerr) {
@@ -93,18 +93,10 @@ _init ()
 {
     void *dlh = NULL;
     char *old_preload=NULL;
-
+    char *xmms_env=NULL;
+  
     DPRINTF ((stderr, "liballtraynomap: _init\n"));
-
-    old_preload=getenv ("OLD_PRELOAD");
-
-    DPRINTF ((stderr, "old preload: %s\n", old_preload));
-
-    if (old_preload && *old_preload != '\0')
-      setenv ("LD_PRELOAD", old_preload, 1);
-    else
-      unsetenv ("LD_PRELOAD");
-    
+  
     dlh = dlopen (NULL, RTLD_GLOBAL | RTLD_NOW);
 
     if (dlsym (dlh, "XSync") == NULL) {
@@ -114,6 +106,23 @@ _init ()
     }
   
     dlclose(dlh);
+
+    old_preload=getenv ("OLD_PRELOAD");
+
+    DPRINTF ((stderr, "old preload: %s\n", old_preload));
+
+    if (old_preload && *old_preload != '\0')
+      setenv ("LD_PRELOAD", old_preload, 1);
+    else
+      unsetenv ("LD_PRELOAD");
+
+    xmms_env=getenv ("ALLTRAY_XMMS");
+    
+    if (xmms_env && *xmms_env != '\0') {
+      xmms_support=1;
+      DPRINTF ((stderr, "liballtraynomap: found ALLTRAY_XMMS\n"));
+      unsetenv ("ALLTRAY_XMMS");
+    }
 
 }
 
@@ -155,7 +164,6 @@ int iconic (Display *display, Window window)
 
   XWMHints *wm_hints;
   static int first_call=1;
-  static int do_nothing=0;
 
   int return_val=0;
 
@@ -191,28 +199,63 @@ int iconic (Display *display, Window window)
 
 }
 
+int window_is_visible (Display *display, Window window)
+{
+  
+  XWindowAttributes wa;
+ 
+  static int first_call=1;
+
+  int return_val=0;
+
+  if (first_call) {
+    DPRINTF ((stderr, "set error handler\n"));
+    XSetErrorHandler (error_handler);
+    first_call=0;
+  }
+
+  XGetWindowAttributes (display, window, &wa);
+         
+    if (wa.map_state != IsViewable) {
+      return 0;
+    }
+    
+   return 1;
+    
+}
+
 extern int 
 XMapWindow (Display* display, Window w)
 {
 
   static int (*fptr)() = 0;
-  static int first_call=1;
   int value;
   
+  static int xmms_main=0;
+  static int xmms_playlist=0;
+  static int xmms_equalizer=0;
   
-  if (window_found)
+  static Window xmms_main_window;
+  
+  
+  if (do_nothing && fptr != 0)
     return (*fptr)(display, w);
   
-  DPRINTF ((stderr, "liballtraynomap: XMapWindow %d\n", w));
-    
-  
-  if (first_call) {
-    DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
-    XSetErrorHandler (error_handler);
-    first_call=0;
+  if (xmms_support && xmms_main != None) {
+    if (window_is_visible (display, xmms_main_window)) {
+      do_nothing=1;
+      return (*fptr)(display, w);
+    }
   }
+  
+  DPRINTF ((stderr, "liballtraynomap: XMapWindow %d\n", w));
+  
 
   if (fptr == 0) {
+    
+    DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+    XSetErrorHandler (error_handler);
+    
   
     #ifdef RTLD_NEXT
       fptr = (int (*)())dlsym (RTLD_NEXT, "XMapWindow");
@@ -243,44 +286,106 @@ XMapWindow (Display* display, Window w)
     }
   
   }
-      
-  window_found=iconic (display,w);
   
-  value=(*fptr)(display, w);
-
-  if (window_found) {
-    DPRINTF ((stderr, "liballtraynomap: withdraw !\n"));
-    XWithdrawWindow (display, w,0);
-    sent_found_window_to_parent (display, w);
+  if (iconic (display,w)) {
+   
+    if (xmms_support) {
+  
+      char *win_name;
+    
+      XFetchName(display, w, &win_name);
+   
+      DPRINTF ((stderr, "win_name: %s\n", win_name));
+    
+     
+      do {
+      
+        if (!strcmp (win_name, "XMMS")) {
+          
+          value=(*fptr)(display, w);
+          
+          if (xmms_main==1)
+            break;
+          
+          XWithdrawWindow (display, w,0);
+          sent_found_window_to_parent (display, w);
+          
+          xmms_main=1;
+          xmms_main_window=w;
+    
+          break;
+        }
+        
+        if (!strcmp (win_name, "XMMS Playlist")) {
+          
+          value=(*fptr)(display, w);
+          
+          if (xmms_playlist==1)
+            break;
+          
+          XWithdrawWindow (display, w,0);
+          sent_found_window_to_parent (display, w);
+          
+          xmms_playlist=1;
+    
+          break;
+        }
+        
+        if (!strcmp (win_name, "XMMS Equalizer")) {
+          
+          value=(*fptr)(display, w);
+          
+          if (xmms_equalizer==1)
+            break;
+          
+          XWithdrawWindow (display, w,0);
+          sent_found_window_to_parent (display, w);
+          
+          xmms_equalizer=1;
+    
+          break;
+        }
+  
+      
+      } while (0);
+      
+      XFree (win_name);
+    
+    } else {
+      
+      value=(*fptr)(display, w);
+      XWithdrawWindow (display, w,0);
+      sent_found_window_to_parent (display, w);
+      do_nothing=1;
+    }
+      
+  
+  } else {
+    
+    value=(*fptr)(display, w);
   }
 
   return value;
 
 }
 
-
 extern int 
 XMapRaised (Display* display, Window w)
 {
   
   static int (*fptr)() = 0;
-  static int first_call=1;
   int value;
   
-  
-  if (window_found)
+  if (do_nothing && fptr != 0)
     return (*fptr)(display, w);
   
   DPRINTF ((stderr, "liballtraynomap: XMapRaised %d\n", w));
-    
-  
-  if (first_call) {
-    DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
-    XSetErrorHandler (error_handler);
-    first_call=0;
-  }
 
   if (fptr == 0) {
+    
+    
+    DPRINTF ((stderr, "liballtraynomap: set error handler\n"));
+    XSetErrorHandler (error_handler);
   
     #ifdef RTLD_NEXT
       fptr = (int (*)())dlsym (RTLD_NEXT, "XMapRaised");
@@ -312,17 +417,18 @@ XMapRaised (Display* display, Window w)
   
   }
       
-  window_found=iconic (display,w);
+  if (iconic (display,w)) {
   
-  value=(*fptr)(display, w);
-
-  if (window_found) {
-    DPRINTF ((stderr, "liballtraynomap: withdraw !\n"));
+    value=(*fptr)(display, w);
+      
     XWithdrawWindow (display, w,0);
     sent_found_window_to_parent (display, w);
+  } else {
+    
+    value=(*fptr)(display, w);
+  
   }
 
   return value;
 
- 
 }

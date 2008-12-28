@@ -21,6 +21,10 @@ alltray_SOURCES = \
   utils.h \
   trayicon.c \
   trayicon.h \
+  balloon_message.c \
+  balloon_message.h \
+  xmms.c \
+  xmms.h \
   inlinepixbufs.h
 
 

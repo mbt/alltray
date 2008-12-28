@@ -46,7 +46,7 @@
 #include "child.h"
 #include "utils.h"
 #include "trayicon.h"
-
+#include "xmms.h"
 
 gboolean debug=FALSE;
 
@@ -114,7 +114,19 @@ void win_struct_init(win_struct *win)
   win->user_icon_path=NULL;
 
   win->gnome_panel_found=FALSE;
+  
+  win->balloon=NULL;
+  win->balloon_message_allowed=FALSE;
 
+  win->xmms=FALSE;
+  win->xmms_main_window_xlib=None;
+  win->xmms_main_window_gdk=NULL;
+  
+  win->xmms_playlist_window_xlib=None;
+  win->xmms_equalizer_window_xlib=None;
+  
+  win->title_time=0;
+ 
 }
 
 void command_line_init (win_struct *win, int argc, char **argv)
@@ -122,7 +134,7 @@ void command_line_init (win_struct *win, int argc, char **argv)
 
   if (!parse_arguments(argc, argv, &win->user_icon_path,
     &win->command, &win->show, &debug, &win->borderless,
-    &win->large_icons, win->command_menu)) {
+    &win->large_icons, win->command_menu, &win->title_time)) {
     
     if (win->user_icon_path)
       g_free(win->user_icon_path);
@@ -138,18 +150,24 @@ void command_line_init (win_struct *win, int argc, char **argv)
     exit(1);
   }
   
+  if (win->user_icon_path)
+    win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
+
+  win->command_only=strip_command(win);
+  
+  if (!strcmp (win->command_only, "xmms")) {
+    win->xmms=TRUE;
+    if (debug) printf ("child is xmms\n");
+  }
+   
+  
   if (debug) {
     printf ("command: %s\n", win->command);
     if (win->show) printf ("show=TRUE\n");
     if (win->user_icon) printf ("have user icon\n");
-    if (win->hide_start) printf ("hide_start=TRUE\n");
     if (win->borderless) printf ("borderless=TRUE\n");
+    printf ("win->title_time: %d\n", win->title_time);
   }
-
-  win->command_only=strip_command(win);
-
-  if (win->user_icon_path)
-    win->user_icon=get_user_icon (win->user_icon_path, 30, 30);
 
 }
 
@@ -180,81 +198,99 @@ main (int argc, char *argv[])
   win->gnome_panel_found=search_gnome_panel();
   
   exec_and_wait_for_window(win);
-
-  win->child_gdk=gdk_window_foreign_new(win->child_xlib);
   
-  gdk_error_trap_push ();
-  leader_change = XGetWMHints(GDK_DISPLAY(), win->child_xlib);
-  err=gdk_error_trap_pop ();
-    
-  if (err==0 && leader_change!=NULL) {
-    
-    if (debug) printf ("leader change\n");
-    
-    leader_change->flags = (leader_change->flags | WindowGroupHint);
-    leader_change->window_group = GDK_ROOT_WINDOW();
-    XSetWMHints(GDK_DISPLAY(),win->child_xlib, leader_change);
-    XFree(leader_change);
-  }  
-  
-  withdraw_window(win);
-  
-  get_child_size (win->child_gdk, &w,&h);
-    
-  win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
-        w, h, 0, 0, 0);
-
-  classHint=XAllocClassHint();
-  classHint->res_name="alltray";
-  classHint->res_class="Alltray";
-  XSetClassHint(win->display, win->parent_xlib, classHint);
-  XFree (classHint);
-
-  wmhints=XAllocWMHints();
-  wmhints->input=False;
-  wmhints->initial_state=NormalState;
-  wmhints->flags = InputHint | StateHint;
-  XSetWMHints(win->display, win->parent_xlib, wmhints);
-  XFree (wmhints);
-  
-  gdk_error_trap_push();
-  XGetWMNormalHints(win->display, win->child_xlib, &sizehints,
-      &supplied_return);
-  err=gdk_error_trap_pop();
-  
-  if (err==0) {
-    XSetWMNormalHints(win->display, win->parent_xlib, &sizehints);
+  if (win->xmms) {
+    win->xmms_main_window_gdk=gdk_window_foreign_new(win->xmms_main_window_xlib);
+    append_command_to_menu(win->command_menu, "Play:xmms -p");
+    append_command_to_menu(win->command_menu, "Pause:xmms -u");
+    append_command_to_menu(win->command_menu, "Next:xmmsnext");
   }
 
-  protocols[0]=wm_delete_window;
-  protocols[1]=wm_take_focus;
-  protocols[2]=net_wm_ping;
-  
-  XSetWMProtocols (win->display, win->parent_xlib, protocols, 3); 
-
-  win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
-  
-  if (win->borderless)
-    gdk_window_set_decorations (win->parent_gdk, 0);
-     
-  XReparentWindow (GDK_DISPLAY(), win->child_xlib, win->parent_xlib, 0, 0);
-  XSync (GDK_DISPLAY(), FALSE);
-
-  XMapWindow (GDK_DISPLAY(), win->child_xlib);
-  XSync (GDK_DISPLAY(), FALSE);
-
-  update_window_icon(win);
+  if (!win->xmms) {
+ 
+    win->child_gdk=gdk_window_foreign_new(win->child_xlib);
     
-  tray_init (win);
+    gdk_error_trap_push ();
+    leader_change = XGetWMHints(GDK_DISPLAY(), win->child_xlib);
+    err=gdk_error_trap_pop ();
+      
+    if (err==0 && leader_change!=NULL) {
+      
+      if (debug) printf ("leader change\n");
+      
+      leader_change->flags = (leader_change->flags | WindowGroupHint);
+      leader_change->window_group = GDK_ROOT_WINDOW();
+      XSetWMHints(GDK_DISPLAY(),win->child_xlib, leader_change);
+      XFree(leader_change);
+    }  
+    
+    withdraw_window(win);
+    
+    get_child_size (win->child_gdk, &w,&h);
+      
+    win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
+          w, h, 0, 0, 0);
   
+    classHint=XAllocClassHint();
+    classHint->res_name="alltray";
+    classHint->res_class="Alltray";
+    XSetClassHint(win->display, win->parent_xlib, classHint);
+    XFree (classHint);
+  
+    wmhints=XAllocWMHints();
+    wmhints->input=False;
+    wmhints->initial_state=NormalState;
+    wmhints->flags = InputHint | StateHint;
+    XSetWMHints(win->display, win->parent_xlib, wmhints);
+    XFree (wmhints);
+    
+    gdk_error_trap_push();
+    XGetWMNormalHints(win->display, win->child_xlib, &sizehints,
+        &supplied_return);
+    err=gdk_error_trap_pop();
+    
+    if (err==0) {
+      XSetWMNormalHints(win->display, win->parent_xlib, &sizehints);
+    }
+  
+    protocols[0]=wm_delete_window;
+    protocols[1]=wm_take_focus;
+    protocols[2]=net_wm_ping;
+    
+    XSetWMProtocols (win->display, win->parent_xlib, protocols, 3); 
+  
+    win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
+    
+    if (win->borderless)
+      gdk_window_set_decorations (win->parent_gdk, 0);
+       
+    XReparentWindow (GDK_DISPLAY(), win->child_xlib, win->parent_xlib, 0, 0);
+    XSync (GDK_DISPLAY(), FALSE);
+  
+    XMapWindow (GDK_DISPLAY(), win->child_xlib);
+    XSync (GDK_DISPLAY(), FALSE);
+  }
+  
+  update_window_icon(win);
+
+  tray_init (win);
   update_window_title(win);
-
-  gdk_window_set_events(win->child_gdk, GDK_STRUCTURE_MASK);
-  gdk_window_add_filter(win->child_gdk, child_window_filter, (gpointer) win); 
-
-  gdk_window_set_events(win->parent_gdk, GDK_STRUCTURE_MASK | 
-    GDK_VISIBILITY_NOTIFY_MASK);
-  gdk_window_add_filter(win->parent_gdk, parent_window_filter, (gpointer) win); 
+  
+  if (!win->xmms) {
+    
+    gdk_window_set_events(win->child_gdk, GDK_STRUCTURE_MASK);
+    gdk_window_add_filter(win->child_gdk, child_window_filter, (gpointer) win); 
+  
+    gdk_window_set_events(win->parent_gdk, GDK_STRUCTURE_MASK | 
+      GDK_VISIBILITY_NOTIFY_MASK);
+    gdk_window_add_filter(win->parent_gdk, parent_window_filter, (gpointer) win); 
+  
+    
+  } else {
+    
+    xmms_filter_init (win);
+    
+  }
 
   gdk_window_set_events(win->root_gdk,GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_workspace, (gpointer) win); 

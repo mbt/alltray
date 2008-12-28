@@ -224,19 +224,65 @@ liballtraynomap_filter(GdkXEvent *xevent, GdkEvent *event, gpointer user_data)
   XEvent *xev = (XEvent *)xevent;
   win_struct *win= (win_struct *) user_data;
   static Atom alltray_found_window;
+  int result;
+  XClassHint class_hints;
     
   if (debug) printf ("liballtraynomap_filter event: %s\n", event_names[xev->xany.type]);
   
   if (!alltray_found_window)
     alltray_found_window=XInternAtom (GDK_DISPLAY(), "ALLTRAY_FOUND_WINDOW", False);
    
-  
   if (xev->xany.type == ClientMessage &&
       xev->xclient.message_type == alltray_found_window) {
-
-      if (debug) printf ("got window from lib: %d\n", (gint) xev->xclient.data.l[0]);
+        
+    if (debug) printf ("got window from lib: %d\n", (gint) xev->xclient.data.l[0]);
+        
+        
+    if (win->xmms) {
+    
+      Window window=xev->xclient.data.l[0];
+      
+      gdk_error_trap_push();
+      result=XGetClassHint(GDK_DISPLAY(), window, &class_hints);
+      gint err=gdk_error_trap_pop();
+      
+      if (err || result==0 || class_hints.res_name == NULL) {
+        if (debug) printf ("ERROR get class hints\n"); 
+        exit (1);
+      }
+      
+      if (debug) printf ("found strings: res_class: %s  res_name %s   \n",
+          class_hints.res_class, class_hints.res_name);
+      
+      do {
+      
+        if (!strcmp(class_hints.res_name,"XMMS_Player")) {
+          win->xmms_main_window_xlib=window;
+          gtk_main_quit();
+          //break;
+        }
+        
+        if (!strcmp(class_hints.res_name,"XMMS_Playlist")) {
+          win->xmms_playlist_window_xlib=window;
+          break;
+        }
+        
+        if (!strcmp(class_hints.res_name,"XMMS_Equalizer")) {
+          win->xmms_equalizer_window_xlib=window;
+          break;
+        }
+      
+      } while (0);
+      
+      
+      XFree (class_hints.res_class);
+      XFree (class_hints.res_name);
+    } else {
       win->child_xlib=(gint) xev->xclient.data.l[0];
       gtk_main_quit();
+    }
+    
+    
   }
 
   return GDK_FILTER_CONTINUE;
@@ -279,6 +325,10 @@ void set_env_stuff (gpointer user_data)
   if (win->libspy_window) {
     spy_id_string = g_strdup_printf ("%d", (int) win->libspy_window);
     setenv ("ALLTRAY_SPY_WINDOW", spy_id_string, 1);
+  }
+  
+  if (win->xmms) {
+    setenv ("ALLTRAY_XMMS", "YES",1);
   }
 
 #endif
@@ -377,13 +427,20 @@ void exec_and_wait_for_window(win_struct *win)
   gdk_window_remove_filter(win->root_gdk, root_filter_map, (gpointer) win);
   
   #ifdef HAVE_LD_PRELOAD
+  if (!win->xmms) {
     gdk_window_remove_filter(win->libspy_window_gdk, 
       liballtraynomap_filter, (gpointer) NULL);
     XDestroyWindow (GDK_DISPLAY(), win->libspy_window);
+  }
   #endif
 
   if (debug) {
-    printf ("found child window: %d\n", (int) win->child_xlib);
+    
+     if (!win->xmms)
+      printf ("found child window: %d\n", (int) win->child_xlib);
+    else
+      printf ("found xmms main window: %d\n", (int) win->xmms_main_window_xlib);
+    
     printf ("child have pid: %d\n", (int) win->child_pid);
   }
 

@@ -43,6 +43,8 @@
 #include "common.h"
 #include "utils.h"
 #include "trayicon.h"
+#include "balloon_message.h"
+#include "xmms.h"
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
@@ -68,6 +70,8 @@ void exit_call(GtkWidget * button, gpointer user_data)
 {
 
   win_struct *win= (win_struct*) user_data;
+  
+  if (debug) printf ("exit_call\n");
  
   destroy_all_and_exit (win, TRUE);
 
@@ -87,8 +91,12 @@ void command_menu_call (GtkWidget * button, gpointer user_data)
   gchar *command= (gchar*) user_data;
   
   if (debug) printf ("command_menu_call: %s\n", command);
+    
+  if (!strcmp (command, "xmmsnext"))
+    system ("xmms -f && xmms -p &");
+  else
+    exec_command (command);
   
-  exec_command (command);
 }
 
 void menu_init (win_struct *win)
@@ -158,6 +166,8 @@ void update_tray_icon(win_struct *win)
   GdkPixbuf *tmp=NULL;
   XWindowAttributes wa;
   gboolean resize=FALSE;
+  
+  gint req_h, req_w;
    
   gdk_error_trap_push();
   XGetWindowAttributes (GDK_DISPLAY(), win->plug_xlib, &wa);
@@ -176,23 +186,33 @@ void update_tray_icon(win_struct *win)
   }
   
   if (resize) {
-    
-    if (win->user_icon_path)
-      tmp=get_user_icon (win->user_icon_path, wa.height, wa.height);
-  
-    if (!tmp)
-      tmp=get_window_icon (win->child_xlib, wa.height, wa.height);
-
-    if (win->tray_icon)
-      g_object_unref(win->tray_icon);
-    win->tray_icon=tmp;
-    
+    req_w=wa.height;
+    req_h=wa.height;
+  } else {
+    req_w=24;
+    req_h=24;
   }
 
+  if (win->user_icon_path)
+    tmp=get_user_icon (win->user_icon_path, req_w, req_h);
+  
+  if (!tmp) {
+    
+     if (win->xmms)
+        tmp=get_xmms_icon (req_w, req_h);
+      else
+        tmp=get_window_icon (win->child_xlib, req_w, req_h);
+  }
+  
+  if (win->tray_icon)
+    g_object_unref(win->tray_icon);
+  
+  win->tray_icon=tmp;
+  
   if (!resize)
     gtk_fixed_move (GTK_FIXED(win->fixed), win->image_icon, 
-    (wa.width - 24) /2, (wa.height -24) /2);
-    
+      (wa.width - 24) /2, (wa.height -24) /2);
+  
   if (GTK_IS_WIDGET (win->image_icon))
     gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->tray_icon);
 
@@ -302,6 +322,10 @@ gboolean on_icon_window_press_event(GtkWidget *widget, GdkEventButton * event,
   win_struct *win= (win_struct*) user_data;
   
   if (debug) printf ("icon window press event\n");
+    
+  
+  if (win->balloon)
+    destroy_balloon (win);
 
   /*right click */
   if (event->button == 1) {
@@ -342,6 +366,23 @@ gboolean icon_window_configure_event (GtkWidget *widget,
   return FALSE;
     
 }
+
+gboolean icon_window_enter_event(GtkWidget *widget, GdkEventButton * event,
+    gpointer user_data)
+{
+  
+  win_struct *win= (win_struct*) user_data;
+  
+  if (debug) printf ("icon window enter event\n");
+    
+  win->balloon_message_allowed=TRUE;
+
+  show_balloon (win, win->title, 0);
+  
+  return FALSE;
+
+}
+
 
 /*check for gdk_timestamp_prop. if this is set the system*/
 /*tray seems to be made with GTK. -> no fake transparency*/
@@ -543,7 +584,11 @@ void create_tray_and_dock (win_struct *win)
     win->tray_icon=get_user_icon (win->user_icon_path, icon_width, icon_height);
   
   if (!win->tray_icon) {
-    win->tray_icon=get_window_icon (win->child_xlib, icon_width, icon_height);
+    
+    if (win->xmms)
+      win->tray_icon=get_xmms_icon (icon_width, icon_height);
+    else
+      win->tray_icon=get_window_icon (win->child_xlib, icon_width, icon_height);
   }
 
   gtk_image_set_from_pixbuf(GTK_IMAGE(win->image_icon), win->tray_icon);
@@ -571,24 +616,14 @@ void create_tray_and_dock (win_struct *win)
   g_signal_connect ((gpointer) win->plug, "configure_event",
                     G_CALLBACK (icon_window_configure_event),
                     (gpointer) win);
-
   
-  tray_update_tooltip (win);
+  
+   g_signal_connect ((gpointer) win->plug, "enter_notify_event",
+                    G_CALLBACK (icon_window_enter_event),
+                    (gpointer) win);
 
   
   //update_tray_icon (win);
-  
-}
-
-void tray_update_tooltip (win_struct *win)
-{
-
-  if (win->plug && win->title) {
-     if (debug) printf ("update tooltip have plug window\n");
-        
-      gtk_tooltips_set_tip(GTK_TOOLTIPS(win->tooltip),
-          GTK_WIDGET(win->plug), win->title, NULL);
-    }
   
 }
 
@@ -598,8 +633,6 @@ void tray_init (win_struct *win)
   menu_init(win);
 
   win->manager_window=get_manager_window();
-
-  win->tooltip = gtk_tooltips_new();
   
   if (win->manager_window) {
           

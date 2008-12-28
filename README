@@ -57,6 +57,8 @@ AllTray: Copyright 2004, 2005, Jochen Baier, email@jochen-baier.de
     --borderless; -x: move border, title, frame... from parent
     --menu; -m: "menu text:command": add entry to popdown menu
       (and execute "command"...)
+    --title; -t <sec>: show title change for <sec> seconds
+                     probably most usefull for xmms
 
 
 **Requirements:

@@ -1,3 +1,14 @@
+Apr, 18, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- xmms support:
+    -no window decoration
+    -minimize to tray
+    -nice icon
+    -Play, Pause, Next menu
+- add "--title <sec>" option. display title change (for example: next song)
+- balloon shaped tooltips
+- add manpage (written by Carlos C Soto <csoto at sia-solutions.com>)
+- set version to 0.50
+
 Apr, 4, 2005: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - hide window before it is docked/reparent with use of XMap function preloading
   (avoid ugly window appearing for half a second, do not work with all apps)

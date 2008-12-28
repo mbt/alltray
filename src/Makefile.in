@@ -97,7 +97,7 @@ bin_PROGRAMS = alltray
 AM_CFLAGS =    -Wall   -DLIBDIR=\""$(libdir)"\"
 
 
-alltray_SOURCES =  	main.c    common.h   parent.c   parent.h   child.c   child.h   utils.c   utils.h   trayicon.c   trayicon.h   inlinepixbufs.h
+alltray_SOURCES =  	main.c    common.h   parent.c   parent.h   child.c   child.h   utils.c   utils.h   trayicon.c   trayicon.h   balloon_message.c   balloon_message.h   xmms.c   xmms.h   inlinepixbufs.h
 
 
 alltray_LDFLAGS = -L/usr/X11R6/lib
@@ -114,7 +114,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 alltray_OBJECTS =  main.$(OBJEXT) parent.$(OBJEXT) child.$(OBJEXT) \
-utils.$(OBJEXT) trayicon.$(OBJEXT)
+utils.$(OBJEXT) trayicon.$(OBJEXT) balloon_message.$(OBJEXT) \
+xmms.$(OBJEXT)
 alltray_DEPENDENCIES = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -259,11 +260,16 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+balloon_message.o: balloon_message.c ../config.h common.h utils.h
 child.o: child.c ../config.h common.h utils.h trayicon.h
-main.o: main.c ../config.h common.h parent.h child.h utils.h trayicon.h
+main.o: main.c ../config.h common.h parent.h child.h utils.h trayicon.h \
+	xmms.h
 parent.o: parent.c ../config.h common.h parent.h utils.h trayicon.h
-trayicon.o: trayicon.c common.h utils.h trayicon.h
-utils.o: utils.c common.h utils.h trayicon.h inlinepixbufs.h ../config.h
+trayicon.o: trayicon.c common.h utils.h trayicon.h balloon_message.h \
+	xmms.h
+utils.o: utils.c common.h utils.h trayicon.h xmms.h balloon_message.h \
+	inlinepixbufs.h ../config.h
+xmms.o: xmms.c ../config.h common.h parent.h utils.h inlinepixbufs.h
 
 info-am:
 info: info-am

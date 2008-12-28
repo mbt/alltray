@@ -308,7 +308,7 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 
 gboolean parse_arguments(int argc, char **argv, gchar **icon,
     gchar  **rest, gboolean *show, gboolean *debug, gboolean *borderless,
-    gboolean *large_icons, GArray *command_menu)
+    gboolean *large_icons, GArray *command_menu, gint *title_time)
 {
   int i;
   char rest_buf[4096]="";
@@ -359,41 +359,58 @@ gboolean parse_arguments(int argc, char **argv, gchar **icon,
         break;
       }
       
-      if (!strcmp(argv[i], "--menu") || !strcmp(argv[i], "-m")) {
-        if ((i+1) ==  argc) {
-          show_help();
-          return FALSE;
-        }
-        
-        if (!append_command_to_menu(command_menu, argv[i+1])) {
-          printf ("\nAllTray: \"%s\" is not a valid menu entry !\n"\
-          "         Syntax: -m \"menu text:command\"\n", argv[i+1]);
-          return FALSE;
-        }
-                        
-        i++;
-        break;
-      }
-
-      if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
-        *debug=TRUE;
-        break;
-      }  
-
-      if (g_str_has_prefix (argv[i],"-")) {
-        printf ("\nAlltray: Unknown option '%s'\n\n", argv[i]);
+     if (!strcmp(argv[i], "--title") || !strcmp(argv[i], "-t")) {
+      if ((i+1) ==  argc) {
+        show_help();
         return FALSE;
       }
-  
-      if (strlen (rest_buf) + strlen (argv[i]) >= 4096) {
-        printf ("Alltray: Command Buffer too small (; [max 4096 letters]\n");
+    
+      *title_time=atoi (argv[i+1]);
+      
+      if (*title_time == 0) {
+        show_help ();
         return FALSE;
       }
-              
-      if (strlen (rest_buf) > 0)
-        strcat (rest_buf, " ");
-        
-      strcat (rest_buf, argv[i]);
+      
+      i++;
+      break;
+     }
+      
+    if (!strcmp(argv[i], "--menu") || !strcmp(argv[i], "-m")) {
+      if ((i+1) ==  argc) {
+        show_help();
+        return FALSE;
+      }
+      
+      if (!append_command_to_menu(command_menu, argv[i+1])) {
+        printf ("\nAllTray: \"%s\" is not a valid menu entry !\n"\
+        "         Syntax: -m \"menu text:command\"\n", argv[i+1]);
+        return FALSE;
+      }
+                      
+      i++;
+      break;
+    }
+
+    if (!strcmp(argv[i], "--debug") || !strcmp(argv[i], "-d")) {
+      *debug=TRUE;
+      break;
+    }  
+
+    if (g_str_has_prefix (argv[i],"-")) {
+      printf ("\nAlltray: Unknown option '%s'\n\n", argv[i]);
+      return FALSE;
+    }
+
+    if (strlen (rest_buf) + strlen (argv[i]) >= 4096) {
+      printf ("Alltray: Command Buffer too small (; [max 4096 letters]\n");
+      return FALSE;
+    }
+            
+    if (strlen (rest_buf) > 0)
+      strcat (rest_buf, " ");
+      
+    strcat (rest_buf, argv[i]);
       
     }while (0);
   
@@ -530,7 +547,9 @@ void show_help(void)
              "  --icon; -i  <path to png>: use this icon\n"\
              "  --large_icons; -l: allow large icons (> 24x24)\n"\
              "  --borderless; -x: remove border, title, frame... from parent\n"\
-             "  --menu; -m: \"menu text:command\": add entry to popdown menu\n"
+             "  --menu; -m: \"menu text:command\": add entry to popdown menu\n" \
+             "  --title; -t <sec>: show title change for <sec> seconds\n"\
+             "                     probably most usefull for xmms\n"\
   , VERSION);
 
 }

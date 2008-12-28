@@ -58,6 +58,33 @@ Atom net_client_list_stacking;
 Atom net_client_list;
 Atom gdk_timestamp_prop;
 
+typedef struct _balloon_struct {
+  
+  GtkWidget *window;
+  GdkGC *gc;
+  
+  gint x;
+  gint y;
+    
+  gint w;
+  gint h;
+  
+  gboolean tail_on_top;
+  gint dock_x;
+  gint dock_y;
+  gint dock_w;
+  gint dock_h;
+  
+  gint tail_x;
+  
+  gulong handler_id;
+  gint timeout;
+  
+  guint start_delay;
+  
+} balloon_struct;
+
+
 typedef struct _win_struct {
 
   Display *display;
@@ -69,8 +96,7 @@ typedef struct _win_struct {
   Window parent_xlib;
   
   gboolean parent_is_visible;
-  
-  gboolean hide_start;
+
   gboolean large_icons;
     
   gboolean borderless;
@@ -115,7 +141,8 @@ typedef struct _win_struct {
 
   GtkWidget *fixed;
   GtkWidget *image_icon;
-  GtkTooltips *tooltip;
+  
+  balloon_struct *balloon;
   
   gboolean gtk_tray;
     
@@ -124,7 +151,18 @@ typedef struct _win_struct {
   gint desktop;
   
   gboolean gnome_panel_found;
-    
+  
+  gboolean xmms;
+  Window xmms_main_window_xlib;
+  GdkWindow *xmms_main_window_gdk;
+  
+  
+  Window xmms_playlist_window_xlib;
+  Window xmms_equalizer_window_xlib;
+  
+  gint title_time;
+  gboolean balloon_message_allowed;
+
 } win_struct;
 
 typedef struct _wm_state_struct {

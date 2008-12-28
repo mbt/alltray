@@ -7,7 +7,6 @@
 void tray_init(win_struct *win);
 void tray_done (win_struct *win);
 void update_tray_icon(win_struct *win);
-void tray_update_tooltip (win_struct *win);
 Window get_manager_window (void);
 
 GdkFilterReturn
