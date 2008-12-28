@@ -1,3 +1,12 @@
+Dec, 15, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
+- fixed bug in XFCE4, alltray now work with XFCE4 cvs newer then dec 15, 04
+- fixed: block other applications to become toplevel window (workspace switch bug)
+- fixed: show window in taskbar if visible
+- set focus to child on WM_TAKE_FOCUS client message
+- support for NET_WM_PING (window manager stuff..)
+- copy WM_SIZE_HINTS from child (useful for terminal resize)
+- set version to 0.22
+
 Dec, 2, 2004: Jochen Baier <Jochen.Baier@stud.uni-karlsruhe.de>
 - switched from gtk_socket stuff to normal xlib reparent: better focus handling,
   alltray maybe now work with more desktops, window manager (maybe !)

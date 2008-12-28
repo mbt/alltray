@@ -72,6 +72,6 @@ Window one_under_root (Display *display, Window window);
 void show_short_help (void);
 void show_tested_programs (void);
 void get_window_position (Window window, gint *x, gint *y);
-void show_hide_window (win_struct *win, gboolean force, gboolean force_show);
+void show_hide_window (win_struct *win, gint force_state);
 void skip_taskbar (Window window, gboolean add);
 #endif

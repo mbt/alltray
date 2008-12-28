@@ -1565,7 +1565,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=alltray
- VERSION=0.2
+ VERSION=0.22
 
 
 cat >>confdefs.h <<_ACEOF

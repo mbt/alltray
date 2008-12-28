@@ -136,28 +136,36 @@ GdkFilterReturn parent_window_filter (GdkXEvent *xevent,
 
     break;
       
-    case FocusIn:
-       
-       if (debug) printf ("focus in event\n");
-       
-        if (!assert_window (win->child_xlib))
-          break;
-          
-        if (!xlib_window_is_viewable (win->child_xlib))
-         break;
-    
-        XSetInputFocus (win->display, win->child_xlib, RevertToParent, CurrentTime);
+    case ClientMessage:
 
-     break;
+      if (xev->xclient.data.l[0] == wm_delete_window) {
+        if (debug) printf ("delete event!\n");
         
-     case ClientMessage:
-
-       if (xev->xclient.data.l[0] == wm_delete_window) {
-         if (debug) printf ("delete event!\n");
-           
-         show_hide_window (win, TRUE, FALSE);
-       }   
-       
+        show_hide_window (win, force_hide);
+        break;
+      }
+      
+      if (xev->xclient.data.l[0] == wm_take_focus) {
+        if (debug) printf ("wm take focus !!!\n");
+        
+        XSetInputFocus (win->display, win->child_xlib, 
+          RevertToParent, xev->xclient.data.l[1]);
+        
+        break;
+      }   
+      
+      if (xev->xclient.data.l[0] == net_wm_ping) {
+        if (debug) printf ("net wm ping!\n");
+        
+        XEvent xe = *xev;
+        
+        xe.xclient.window = win->root_xlib;
+        XSendEvent (win->display, win->root_xlib, False, 
+          SubstructureRedirectMask | SubstructureNotifyMask, &xe);
+        
+        break;
+      }   
+     
       break;
      
       case VisibilityNotify:
@@ -266,8 +274,12 @@ GdkFilterReturn root_filter_workspace (GdkXEvent *xevent,
   if (xev->xany.type == ClientMessage &&
       xev->xclient.message_type == net_current_desktop) {
       
-      if (debug) printf ("workspace switched %d\n", (int) xev->xclient.data.l[0]);  
-      
+      if (debug) printf ("workspace switched %d\n", (int) xev->xclient.data.l[0]);
+        
+       /*if an other program get the focus on the same desktop, we get this message too*/
+      if (win->desktop == (gint) xev->xclient.data.l[0]) 
+        return GDK_FILTER_CONTINUE;  
+
       win->desktop=(gint) xev->xclient.data.l[0];
       num=win->desktop +1;
          
@@ -285,7 +297,7 @@ GdkFilterReturn root_filter_workspace (GdkXEvent *xevent,
 
       state=g_array_index(win->workspace, gboolean, num -1);
 
-      show_hide_window (win, TRUE, state);
+      show_hide_window (win, state);
 
   }
 
@@ -456,7 +468,7 @@ void exec_and_wait_for_window(win_struct *win)
 void free_wm_stuff (win_struct *win)
 {
 
-   if (win->wm_res_class)
+  if (win->wm_res_class)
     g_free(win->wm_res_class);
   if (win->wm_res_name)
     g_free(win->wm_res_name);
@@ -536,8 +548,12 @@ main (int argc, char *argv[])
 
   XClassHint *classHint;
   XWMHints *wmhints;
+  XWMHints *leader_change;
+  XSizeHints *sizehints;
+  long supplied_return;
+  Atom protocols[3];
   
-
+  
   gtk_init (&argc, &argv);
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
   atom_init ();
@@ -564,7 +580,7 @@ main (int argc, char *argv[])
   win->parent_xlib= XCreateSimpleWindow(win->display, win->root_xlib, 0, 0, 
         child_window_w, child_window_h, 0, 0, 0);
   
-  XWMHints *leader_change;
+  
   leader_change = XGetWMHints(GDK_DISPLAY(),win->child_xlib);
   leader_change->flags = (leader_change->flags | WindowGroupHint);
   leader_change->window_group = GDK_ROOT_WINDOW();
@@ -582,14 +598,21 @@ main (int argc, char *argv[])
   wmhints->flags = InputHint | StateHint;
   XSetWMHints(win->display, win->parent_xlib, wmhints);
   XFree(wmhints);
-     
-  Atom protocols [2];
   
+  sizehints = XAllocSizeHints();
+  
+  XGetWMNormalHints(win->display, win->child_xlib, sizehints,
+      &supplied_return);
+  XSetWMNormalHints(win->display, win->parent_xlib, sizehints);
+  XFree(sizehints);
+     
+   
   protocols[0]=wm_delete_window;
   protocols[1]=wm_take_focus;
+  protocols[2]=net_wm_ping;
+  
+  XSetWMProtocols (win->display, win->parent_xlib, protocols, 3); 
 
-  XSetWMProtocols (win->display, win->parent_xlib, protocols, 2); 
-     
   win->parent_gdk= gdk_window_foreign_new (win->parent_xlib);
         
   XReparentWindow (GDK_DISPLAY(), win->child_xlib, win->parent_xlib, 0, 0);
@@ -597,8 +620,7 @@ main (int argc, char *argv[])
 
   XMapWindow (GDK_DISPLAY(), win->child_xlib);
   XSync (GDK_DISPLAY(), FALSE);
- 
-      
+
   update_window_icon(win);
   
   if (win->hide_start) {
@@ -622,10 +644,9 @@ main (int argc, char *argv[])
   gdk_window_set_events(win->root_gdk,GDK_SUBSTRUCTURE_MASK);
   gdk_window_add_filter(win->root_gdk, root_filter_workspace, (gpointer) win); 
 
-
   
   if (win->show)
-    show_hide_window (win, FALSE, FALSE);
+    show_hide_window (win, force_show);
   
   free_wm_stuff(win);
   

@@ -98,7 +98,6 @@ gboolean assert_window (Window window)
 void atom_init (void)
 {
 
-  //net_client_list_stacking = XInternAtom(GDK_DISPLAY(), "_NET_CLIENT_LIST_STACKING", False);
   wm_name_atom = XInternAtom(GDK_DISPLAY(), "WM_NAME", False);
   wm_icon_atom = XInternAtom(GDK_DISPLAY(), "WM_ICON", False);
   net_wm_icon = XInternAtom(GDK_DISPLAY(), "_NET_WM_ICON", False);
@@ -106,6 +105,7 @@ void atom_init (void)
   net_current_desktop = XInternAtom(GDK_DISPLAY(), "_NET_CURRENT_DESKTOP", False);
   wm_delete_window = XInternAtom (GDK_DISPLAY(), "WM_DELETE_WINDOW", False);
   wm_take_focus = XInternAtom (GDK_DISPLAY(), "WM_TAKE_FOCUS", False);
+  net_wm_ping = XInternAtom (GDK_DISPLAY(), "_NET_WM_PING", False);
   net_wm_state_skip_pager= XInternAtom (GDK_DISPLAY(), "_NET_WM_STATE_SKIP_PAGER", False);
   net_wm_state_skip_taskbar=XInternAtom (GDK_DISPLAY(), "_NET_WM_STATE_SKIP_TASKBAR", False);
   net_wm_state = XInternAtom (GDK_DISPLAY(), "_NET_WM_STATE", False);
@@ -114,7 +114,6 @@ void atom_init (void)
   net_wm_desktop= XInternAtom (GDK_DISPLAY(), "_NET_WM_DESKTOP", False);
   net_active_window= XInternAtom(GDK_DISPLAY(), "_NET_ACTIVE_WINDOW", False);
 
-  
   char temp[50];
   Screen *screen = XDefaultScreenOfDisplay(GDK_DISPLAY());
 
@@ -195,7 +194,6 @@ void skip_pager (Window window)
      SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
-
 void sticky (Window window)
 {
   
@@ -252,15 +250,17 @@ static GdkFilterReturn parent_filter_map (GdkXEvent *xevent,
   return GDK_FILTER_CONTINUE;
 }
 
-void show_hide_window (win_struct *win, gboolean force, gboolean force_show)
+void show_hide_window (win_struct *win, gint force_state)
 {
 
   gboolean show=TRUE;
   static gboolean first_click=TRUE;
   gint x, y;
 
-   if ( (first_click && !force) || (first_click && force && force_show) ) {
+  if (first_click) {
 
+    if (debug) printf ("first click\n");
+   
     gdk_window_add_filter(win->parent_gdk, parent_filter_map, (gpointer) win);
    
     XMapWindow (win->display, win->parent_xlib);
@@ -272,45 +272,53 @@ void show_hide_window (win_struct *win, gboolean force, gboolean force_show)
    skip_pager(win->parent_xlib);
       
    first_click=FALSE;
-  } else {
+   
+   return;
+    
+}
 
-    if (!force) {
+  do {
   
-      if (win->visibility != VisibilityUnobscured  &&  win->parent_xlib != get_active_window()) {
-        gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
-        return;
-      }
+    if (force_state == force_show) {
+      show=TRUE;
+      break;
+    }
   
-      show=(!xlib_window_is_viewable(win->parent_xlib));
-    } else {
-    
-      show=force_show;
-    
+    if (force_state ==force_hide) {
+      show=FALSE;
+      break;
     }
 
-    if (show) {
+    if (win->visibility != VisibilityUnobscured  &&  win->parent_xlib != get_active_window()) {
+      show=TRUE;
+      break;
+    }
     
-      if (debug) printf ("show\n");
+    show=(!xlib_window_is_viewable(win->parent_xlib));
   
-      skip_taskbar (win->parent_xlib, FALSE);  
-      gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
+   } while (0);
+
+ 
+  if (show) {
+  
+    if (debug) printf ("show\n");
+
+    skip_taskbar (win->parent_xlib, FALSE);  
+    gdk_window_focus (win->parent_gdk, gtk_get_current_event_time());
+  
+    get_window_position (win->parent_xlib, &x, &y);
+    gdk_window_move (win->parent_gdk, x, y); //force taskbar update
+
     
-      get_window_position (win->parent_xlib, &x, &y);
-      gdk_window_move (win->parent_gdk, x, y); //force taskbar update
-
-      
-     } else {
-     
-       if (debug) printf ("hide\n");
-         
-       XIconifyWindow (GDK_DISPLAY(), win->parent_xlib, DefaultScreen(GDK_DISPLAY()));
-       skip_taskbar (win->parent_xlib, TRUE);
-  
-     }
+   } else {
    
-   
- }
+    if (debug) printf ("hide\n");
+       
+    XIconifyWindow (GDK_DISPLAY(), win->parent_xlib, DefaultScreen(GDK_DISPLAY()));
+    skip_taskbar (win->parent_xlib, TRUE);
 
+   }
+ 
   gboolean *value;
   gboolean new_value=show;
    
@@ -1596,7 +1604,7 @@ void show_tested_programs (void)
 
 void show_short_help (void)
 {
-  printf ("\nAllTray Version 0.1\n" \
+  printf ("\nAllTray Version 0.22\n" \
             "\n\n    To tray new program run alltray with \"alltray --windowinfo\" \n    and follow the instructions.\n\n"\
 
              "    all options with \"alltray -h\"\n");
@@ -1604,7 +1612,7 @@ void show_short_help (void)
 
 void show_help(void)
 {
-  printf ("\nAllTray Version 0.1\n\n" \
+  printf ("\nAllTray Version 0.22\n\n" \
             "\n\nI recommend to start alltray with \"alltray --windowinfo\" and follow the instructions!\n\n\n"\
 
              "usage: alltray [options] <program_name> [program parameter]\n\n" \

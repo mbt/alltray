@@ -63,6 +63,10 @@
 #define NormalState 1
 #define IconicState 3
 
+#define force_show 1
+#define force_hide 0
+#define force_disabled -1
+
 
 //Atom net_client_list_stacking;
 Atom wm_name_atom;
@@ -71,6 +75,7 @@ Atom net_wm_icon;
 Atom net_close_window;
 Atom wm_delete_window;
 Atom wm_take_focus;
+Atom net_wm_ping;
 Atom net_current_desktop;
 Atom net_wm_state_skip_pager;
 Atom net_wm_state_skip_taskbar;

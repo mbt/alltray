@@ -79,7 +79,7 @@ void show_hide_call (GtkWidget * button, gpointer user_data)
 
   win_struct *win= (win_struct*) user_data;
 
-  show_hide_window (win, FALSE, FALSE);
+  show_hide_window (win, force_disabled);
 }
 
 void menu_init (win_struct *win)
@@ -227,7 +227,7 @@ gboolean on_icon_window_press_event(GtkWidget *widget, GdkEventButton * event,
   /*right click */
   if (event->button == 1) {
   
-    show_hide_window (win, FALSE, FALSE);
+    show_hide_window (win, force_disabled);
     return TRUE;
 
   }

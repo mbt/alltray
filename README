@@ -3,7 +3,10 @@ AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
 
   With AllTray you can dock any application into the system tray/notification area.
   A high-light feature is that a click on the "close" button will minimize to system tray.
-  It is written in C using GTK and Xlib. It works well with Gnome and OK with KDE.
+  It is written in C using GTK and Xlib. It works well with Gnome, KDE and XFCE4*.
+
+  *XFCE CVS Version newer than Dec 15. 04
+
 
 
 **Install:
@@ -53,7 +56,7 @@ AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
   
     --help; -h:  print this message\n"
     --show; -s:  do not hide window after start
-    --hide_window; -hw: hide window during startup (experimental, Gnome only)
+    --hide_window; -hw: hide window during startup (experimental)
     --hints; -hi "WM_CLASS CLASS; WM_CLASS NAME; WM_NAME"
     --icon; -i  <path to png>: use this icon
     --windowinfo; -wi: get hints string by clicking on window
@@ -69,7 +72,7 @@ AllTray: Copyright 2004, Jochen Baier, email@jochen-baier.de
    
    Run:
    
-     - Gnome 2.6 (2.8 ?) with "Panel Notification Area" applet.
+     - Gnome 2 with "Panel Notification Area" applet.
      - KDE (>= 3.3) with System tray.
 
 
