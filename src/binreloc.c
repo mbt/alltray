@@ -1,10 +1,15 @@
 /*
- * BinReloc - a library for creating relocatable executables
- * Written by: Hongli Lai <h.lai@chello.nl>
- * http://autopackage.org/
+ * binreloc.c: A library for creating relocatable executables.
+ * Written by Hongli Lai <h.lai@chello.nl> for Autopackage
+ * Copyright (c) 2008 Michael B. Trausch <mike@trausch.us>
  *
- * This source code is public domain. You can relicense this code
- * under whatever license you want.
+ * Was public domain; relicensed under the GPL v3.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License Version
+ * 3, as published by the Free Software Foundation.  See the
+ * COPYING.GPL3 file included with this distribution for information
+ * on the license terms which apply to this file.
  *
  * See http://autopackage.org/docs/binreloc/ for
  * more information and how to use this.
