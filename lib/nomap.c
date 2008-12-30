@@ -1,38 +1,15 @@
 /*
- * GPL Notice:
+ * nomap.c: <DESCRIPTION>
+ * Copyright (c) 2005 Jochen Baier <email@Jochen-Baier.de>
  *
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License Version
+ * 3, as published by the Free Software Foundation.  See the
+ * COPYING.GPL3 file included with this distribution for information
+ * on the license terms which apply to this file.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Library General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *
- *
- * Name:
- *
- *    liballtraynomap, lib for use with alltray
- *
- *
- * Copyright:
- * 
- *    Jochen Baier, 2005 (email@Jochen-Baier.de)
- *
- *
- * Based on code from:
- *
- *    xalf (Peter Åstrand <astrand@lysator.liu.se>)
- *
- *
-*/
-
+ * Based on code from xalf by Peter Åstrand <astrand@lysator.liu.se>
+ */
 
 #undef DEBUG 
 /* Uncomment below for debugging */
