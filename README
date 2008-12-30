@@ -1,116 +1,160 @@
-AllTray: Copyright 2004, 2005, 2006, 2007 Jochen Baier, email@jochen-baier.de
+AllTray README
+==============
 
-  With AllTray you can dock any application with no native tray icon
-  (like Evolution, Thunderbird, Terminals) into the system tray.
-  A high-light feature is that a click on the "close" button
-  will minimize back to system tray. It works well with Gnome,
-  KDE, XFCE 4*, Fluxbox* and WindowMaker*.
+  AllTray enables one to dock any application with no native docking
+  support into the system tray or notification area.  It is useful
+  when used with software such as Evolution, Thunderbird, or any other
+  application that one may want to run persistently but not always
+  have the window open and/or available.
 
-  *no drag 'n drop support. Enable with "-nm" option.
+  AllTray aims to be desktop environment and window manager
+  independent software.  It is known to work with GNOME, KDE, XFCE,
+  Fluxbox, and WindowMaker.  It aims to work transparently to the
+  user, and provide functionality that is useful for all of its users.
 
+Overview
+========
 
-**Install:
+  Installation instructions follow the usual process for GNU software.
+  For any additional assistance in building and installing the
+  software, see the INSTALL document that comes with the source
+  distribution of this software.  See also some of the installation
+  notes below in the “Installation Notes” section for additional
+  information.
 
-  (./autogen.sh)
-  ./configure
-  make
+  To use AllTray, just start AllTray with:
 
-  and as root:
+   $ alltray program_name
 
-  make install
+  This will dock the program into the system tray. A single click with
+  the left mouse button on the icon will show the program.  A click
+  with the right mouse button will show a popup (context) menu.
 
+  To dock an already-running application (“click mode”), just run:
 
-**Run:
+   $ alltray
 
-  just start alltray with:
+  ... and then click on the window that you would like to dock.
 
-    alltray program_name
+  A click on the "close" button ("X") in the window title will not
+  exit the application. The application will be minimized.
 
-  This will dock the program into the system tray. A single click
-  with the left mouse button on the icon will show the program.
-  A click with the right mouse button will show a popdown menu.
+  To quit the application, you can terminate it in the usual way; if
+  the usual way is to use the window’s close button, you can use the
+  context menu on the docked icon to quit the application.
 
-  For the "Click-Mode" start alltray with:
+  For details on AllTray usage, please see the AllTray man page (say
+  “man alltray” to view the man page after AllTray is installed).
 
-    alltray
+Copyright & License
+===================
 
-  and click on the target window.
+  AllTray is Copyright 2004--2007 Jochen Baier <email@jochen-baier.de>,
+                       2007--2008 Michael B. Trausch <mike@trausch.us>.
 
+  Portions of AllTray may be copyrighted by third parties, please see
+  the AUTHORS file for detailed copyright information.
 
+  AllTray is licensed under the GNU GPL v2.  It may be relicensed
+  under the GPL v3 in the future.
 
-  A click on the "close" button ("X") in the window title will not exit the
-  application. The application will be minimized.
+Project Hosting
+===============
 
-  To quit the application use the popdown menu or the "FILE->QUIT" menu
-  from the application.
+  AllTray is hosted on the Launchpad project hosting/management
+  service run by Canonical[1].  It uses the Bazaar (bzr) revision
+  control system (which is part of the GNU project).  Bugs in AllTray
+  should be reported on Launchpad[2].
 
-  The "Undock" menu item will undock the window. Yeahh really ;)
+  Because AllTray now has a public revision control system, people can
+  work on it and submit patches much more easily than they could
+  previously.  If you have the time and ability to fix something,
+  please create a local branch of the bzr repository on your system by
+  issuing the following command (assuming that bzr is installed):
 
-  If you use the "--borderless" option, you can move the window with
-  "Alt-left_mouse_button".
+   $ bzr branch lp:alltray/trunk
 
+  You will then be able to make modifications to the code and commit
+  to your local branch.  When your changes are ready to be reviewed,
+  you can push those changes back up to Launchpad:
 
-  Note: * Under KDE the "large_icon" option has no effect.
-        * "--configure" option will only work under KDE. You need to configure
-              AllTray after each theme change.
-        * If you do not use KDE or Gnome and you want Drag n Drop: use the "--nm" option.
-        * If you do not have Gconf/Gnome installed. Use the "--disable-gconf" configure option.
+   $ bzr push lp:~YOUR_LP_USERNAME/alltray/MY_BRANCH_NAME
 
+  Replace YOUR_LP_USERNAME with your Launchpad login, and replace
+  MY_BRANCH_NAME with a short name which effectively describes your
+  branch.  For example if you created a local branch to add the
+  ability to view widgets in the software, and your LP username is
+  “acme”, you would use something similar to the following:
 
-**All options:
+   $ bzr push lp:~acme/alltray/view-widgets
 
-  alltray -h:
+  After you have done that, you can link the branch to a bug in
+  Launchpad, or you can propose that the branch be merged into the
+  mainline (trunk) for AllTray development.
 
-  usage: alltray [options] ["] <program_name> [program parameter] ["]
+  See the Launchpad Help[3] for more information on using Launchpad,
+  and if you have any questions, feel free to email the maintainer
+  directly[4].
 
-   where options include:
-   --help; -h:  print this message
-   --version; -v: print version
-   --debug; -d: show debug messages
-   --show; -s:  do not hide window after start
-   --icon; -i  <path to png>: use this icon
-   --large_icons; -l: allow large icons (> 24x24)
-   --sticky; -st: visible on all workspaces
-   --skip-taskbar; -stask: not visible in taskbar
-   --borderless; -x: remove border, title, frame (if not supported native)
-   --menu; -m: "menu text:command": add entry to popdown menu
-   --title; -t <sec>: show tooltip with title for <sec> seconds after song change
-   --geometry; -g [<width>x<height>][{+-}<x>{+-}<y>]: initial position (if not supported native)
-   --key; -k [Modifier:]Key: Keyboard shortcut:
-     Modifier="Shift", "Control", "Alt", "AltGr"
-     Key (Examples) = "a", "F1", "End" ...
-     or "Keycode" (Number) returned by the program "xev"
-   --notray; -nt: display no tray icon (usefull only with the "--key" option or what ever
-   --nominimize; -nm: click on window close button: do not minimize back to system tray, close
-   --configure; -conf: show KDE configuration dialog
+Releases and Announcements
+==========================
 
+  Old releases of AllTray are available from the historic releases
+  portion of the project on Launchpad[5].  Project news will be
+  disseminated using the Launchpad Announcements system, and can be
+  tracked in an RSS reader by subscribing to the feed[6].
 
- usage: alltray
+  New releases of AllTray will be announced on Launchpad, and builds
+  of AllTray will be provided for both the current LTS and current
+  interim release of Ubuntu shortly after new releases are made.  For
+  other distributions, you will need to either build AllTray manually
+  or wait for your distribution to package a new release of the
+  AllTray software.
 
- Click-Mode: Click on the window you would like to dock.
- (Abort with <c>)
+Installation Notes
+==================
 
+  If you are installing AllTray on a system that does not use GConf,
+  you will need to pass --disable-gconf to the configure script.  This
+  is temporary; this should be detected as a conditional dependency
+  and will be fixed in a future release.
 
-**Requirements:
+Usage Notes
+===========
 
-   Compile:
+  Under some window managers/desktop environments, you may need to
+  pass the --nm option to AllTray for drag-and-drop functionality to
+  work properly.
 
-    - X Window stuff
-    - GTK+ >= 2.2
-    - Gconf stuff. if not disabled with "--disable-gconf"
+Bugs
+====
 
-   Run:
+  See Launchpad for the list of current bugs.  Also, the fact that
+  there is a need for the two previous sections in this file is a bug
+  that needs to be fixed in a future release of AllTray.
 
-    - Gnome 2 with "Panel Notification Area" applet.
-    - KDE (>= 3.2 [3.1 ?] ) with System tray.
-    - XFCE 4.2 with System tray.
-    - Fluxbox (devel version)
-    - WindowMaker with "docker" dockapp.
+Dependencies
+============
 
+  Build-time dependencies:
+    * An implementation of the X11 Window System (tested with X11R7,
+      using the X.org implementation).  Development headers are also
+      required.
+    * GTK+ 2.2 or later.
+    * Optionally: GConf 2.x
 
-**License: GPL
+  Run-time dependencies: 
 
+    * The build-time dependencies (minus the development headers).
+    * A window manager, desktop environment, or other software which
+      implements the System Tray specification.
 
-**Contact:
+Footnotes
+=========
 
-   email@jochen-baier.de (i do not longer support alltray !!!  do not send bug reports etc)
+[1] Project page: https://launchpad.net/alltray
+[2] File a bug: https://launchpad.net/alltray/+filebug
+[3] Launchpad Documentation: https://help.launchpad.net/
+[4] Maintainer Email: Michael B. Trausch <mike@trausch.us>
+[5] Historic Releases: https://launchpad.net/alltray/historic-releases
+[6] Announcements Feed: http://feeds.launchpad.net/alltray/announcements.atom
