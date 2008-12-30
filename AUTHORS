@@ -1,7 +1,31 @@
+This file contains a list of files and the copyright(s) which are held on
+those files, and the license under which those contribution(s) were made.
+Unless otherwise specified, the copyright license is the GNU GPL v2.
+
+Last-Updated: 2008-12-30
+
+AllTray program:
+  Author: Jochen Baier <email@jochen-baier.de>
+  Author: Michael B. Trausch <mike@trausch.us>
+  Maintainer: Michael B. Trausch <mike@trausch.us>
+  License: GNU GPL v2
+
+Manual page:
+  Author: Carlos C. Soto <csoto@sia-solutions.com>
+  Maintainer: Michael B. Trausch <mike@trausch.us>
+  License: GNU GPL v2
+
+AllTray icon:
+  Author: Eugene Alex <Frame3@narod.ru>
+  Maintainer: Michael B. Trausch <mike@trausch.us>
+  License: Unknown
+
+
+Old file contents follow:
+
 alltray: till the end of 2007: Jochen Baier (email@jochen-baier.de), atm no maintainer
 man page: Carlos C Soto <csoto@sia-solutions.com>
 xmms icon: ? (see xmms homepage)
 fallback icon: gnome
 alltray icon: modified from: glaux mplayer icon, Eugene Alex,
               <Frame3@narod.ru>
-alltray.spec: Michael Krylov <m.krylov@moduldp.com.ua>
