@@ -1,3 +1,14 @@
+/*
+ * balloon_message.c: Provide the balloon popup on tray mouseover.
+ * Copyright (c) 2004-2007 Jochen Baier <email@Jochen-Baier.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License Version
+ * 3, as published by the Free Software Foundation.  See the
+ * COPYING.GPL3 file included with this distribution for information
+ * on the license terms which apply to this file.
+ */
+
 #include "config.h"
 #include "common.h"
 #include "utils.h"
