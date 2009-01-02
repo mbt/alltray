@@ -26,8 +26,6 @@ alltray_SOURCES = \
   xmms.h \
   clickmode.c \
   clickmode.h \
-  binreloc.c \
-  binreloc.h \
   grab.c \
   grab.h \
   gnome_theme.c \

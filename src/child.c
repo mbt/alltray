@@ -26,7 +26,6 @@
 #include "common.h"
 #include "utils.h"
 #include "trayicon.h"
-#include "binreloc.h"
 #include "clientwin.h"
 
 #define PRELOAD_LIB "/liballtray.so.0.0.0"
