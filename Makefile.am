@@ -4,16 +4,13 @@ man_MANS=alltray.1
 
 SUBDIRS = src lib
 
-EXTRA_DIST = \
-	autogen.sh \
-	alltray.1 \
+EXTRA_DIST = autogen.sh \
+  alltray.1 \
   alltray.desktop \
-  alltray.png \
-  alltray.spec \
-  autopackage/default.apspec.in
-  
+  images/alltray.png
+
 appsdir = $(datadir)/applications
 apps_DATA = alltray.desktop
 
 icondir = $(datadir)/pixmaps
-icon_DATA = alltray.png
+icon_DATA = images/alltray.png

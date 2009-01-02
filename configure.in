@@ -44,5 +44,4 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 lib/Makefile
-autopackage/default.apspec
 ])

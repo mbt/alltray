@@ -50,7 +50,6 @@
 #include "clickmode.h"
 #include "grab.h"
 #include "kde.h"
-#include "binreloc.h"
 #include "shortcut.h"
 #include "eventfilter.h"
 #include "gnome_theme.h"
@@ -349,7 +348,6 @@ main (int argc, char *argv[])
   #endif
 
   gdk_pixbuf_xlib_init (GDK_DISPLAY(), DefaultScreen (GDK_DISPLAY()));
-  gbr_init (NULL);
   atom_init ();
 
   win_struct *win = malloc (sizeof (win_struct));

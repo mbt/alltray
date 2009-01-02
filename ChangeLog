@@ -1,3 +1,13 @@
+2009-01-01  Michael B. Trausch  <mike@trausch.us>
+
+	* Removed autopackage support from the source tree, since it
+	really belongs in a dedicated packaging repository of one form or
+	another like would be the case for Debian or Red Hat (or another
+	system) packaging.  Source changes required for such packaging
+	ought to be managed by the packager.
+
+	* Updated copyright date on ChangeLog.
+
 2008-12-30  Michael B. Trausch  <mike@trausch.us>
 
 	* NEWS: Added information regarding change of maintainership for
@@ -9,6 +19,6 @@
 	* README: Re-wrote for clarity and to provide additional
 	  information on new project hosting location.
 
-Copyright 2008 Michael B. Trausch.
+Copyright 2008-2009 Michael B. Trausch <mike@trausch.us>.
 Copying and distribution of this file, with or without modification, are
 permitted provided the copyright notice and this notice are preserved.
