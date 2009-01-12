@@ -21,6 +21,10 @@ AC_CONFIG_SRCDIR([src/main.c])
 AC_PROG_CC
 AC_PROG_INSTALL
 
+# Library checks.
+AC_CHECK_LIB([dl], [dlopen],
+             printf "yes", printf "\nError: libdl required."; exit)
+
 # pkg-config checks need to be inserted here.
 
 # Configuration wrap-up.
