@@ -26,6 +26,23 @@ AC_CHECK_LIB([dl], [dlopen],
              printf "yes", printf "\nError: libdl required."; exit)
 
 # pkg-config checks need to be inserted here.
+PKG_CHECK_MODULES(X11, x11, [have_x11=yes], [have_x11=no])
+PKG_CHECK_MODULES(GLIB, glib-2.0, [have_glib=yes], [have_glib=no])
+
+if test x"$have_x11" = xno; then
+   printf "error: X11 is required\n"
+   exit 1
+fi
+
+if test x"$have_glib" = xno; then
+   printf "error: glib is required\n"
+   exit 1
+fi
+
+AC_SUBST(X11_CFLAGS)
+AC_SUBST(X11_LIBS)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
 
 # Configuration wrap-up.
 AC_CONFIG_FILES([Makefile
