@@ -1,24 +1,10 @@
-2009-01-01  Michael B. Trausch  <mike@trausch.us>
+2009-01-12  Michael B. Trausch  <mike@trausch.us>
 
-	* Removed autopackage support from the source tree, since it
-	really belongs in a dedicated packaging repository of one form or
-	another like would be the case for Debian or Red Hat (or another
-	system) packaging.  Source changes required for such packaging
-	ought to be managed by the packager.
+	* Created a new ChangeLog to go with the complete and utter
+	re-working of the source tree.  Real ChangeLog entries will begin
+	after we move away from refactoring and into implementing new and
+	interesting things.
 
-	* Updated copyright date on ChangeLog.
-
-2008-12-30  Michael B. Trausch  <mike@trausch.us>
-
-	* NEWS: Added information regarding change of maintainership for
-	  AllTray.
-
-	* ChangeLog.2004-2008:  Renamed old ChangeLog and created this
-	  new changelog.
-
-	* README: Re-wrote for clarity and to provide additional
-	  information on new project hosting location.
-
-Copyright 2008-2009 Michael B. Trausch <mike@trausch.us>.
+Copyright 2009 Michael B. Trausch <mike@trausch.us>.
 Copying and distribution of this file, with or without modification, are
 permitted provided the copyright notice and this notice are preserved.

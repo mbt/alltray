@@ -1,16 +1,3 @@
-## Process this file with automake to produce Makefile.in
+EXTRA_DIST = ChangeLog.2004-2006
 
-man_MANS=alltray.1
-
-SUBDIRS = src lib
-
-EXTRA_DIST = autogen.sh \
-  alltray.1 \
-  alltray.desktop \
-  images/alltray.png
-
-appsdir = $(datadir)/applications
-apps_DATA = alltray.desktop
-
-icondir = $(datadir)/pixmaps
-icon_DATA = images/alltray.png
+SUBDIRS = data images lib man src
