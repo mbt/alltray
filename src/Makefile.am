@@ -19,5 +19,7 @@ alltray_SOURCES = main.c \
 	eventfilter.c eventfilter.h \
 	inlinepixbufs.h
 
-alltray_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@
-alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@
+AM_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GDK_CFLAGS@ @GDKPIXBUF_CFLAGS@ \
+	@GTK_CFLAGS@ @GCONF_CFLAGS@
+alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GDK_LIBS@ @GDKPIXBUF_LIBS@ \
+	@GTK_LIBS@ @GCONF_LIBS@
