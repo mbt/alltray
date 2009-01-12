@@ -20,6 +20,7 @@ AC_CONFIG_SRCDIR([src/main.c])
 # Check for programs necessary to build and install AllTray.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 # Library checks.
 AC_CHECK_LIB([dl], [dlopen],
