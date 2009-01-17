@@ -54,7 +54,8 @@ AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 # Configuration wrap-up.
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([README
+        Makefile
         data/Makefile
         images/Makefile
         man/Makefile
