@@ -66,7 +66,8 @@ static gchar *atoms[] = {
 /**
  * Initializes the X11 module, opening a connection to an X11 server.
  *
- * @returns TRUE on success (X was present and connected to), FALSE on failure.
+ * @returns TRUE on success (X was present and connected to), FALSE on
+ * failure.
  */
 gboolean
 alltray_x11_init(const gchar *display_name) {
@@ -159,7 +160,7 @@ free_dynamic_storage(gpointer node, gpointer ignored) {
   g_free(data);
 }
 
-/**
+/** 
  * Initializes the list of "common" atoms.
  *
  * This function is used during the initialization of this module so as
