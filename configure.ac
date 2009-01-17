@@ -21,21 +21,6 @@ AC_CONFIG_SRCDIR([src/main.c])
 AC_PROG_CC
 AC_PROG_SED
 
-AC_ARG_ENABLE(full-debug,
-  [AS_HELP_STRING([--enable-full-debug],
-    [Enable full debugging (default: disabled)])],
-  [CFLAGS='-ggdb -O0'])
-
-AC_ARG_ENABLE(optimizations,
-  [AS_HELP_STRING([--disable-optimizations],
-    [Disable compiler optimizations (default: enabled)])],
-  [CFLAGS=`echo $CFLAGS|sed 's|-O.|-O0|g;'`])
-
-AC_ARG_ENABLE(extra-optimizations,
-  [AS_HELP_STRING([--enable-extra-optimizations],
-    [Enable extra compiler optimizations (default: disabled)])],
-  [CFLAGS=`echo $CFLAGS|sed 's|-O.|-O3|g;'`])
-
 # Check for ISO C99 support in the C compiler.
 AC_MSG_CHECKING([for c99 support in gcc])
 

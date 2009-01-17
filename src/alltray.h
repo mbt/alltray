@@ -6,6 +6,11 @@
 #ifndef __ALLTRAY_H_INCLUDED__
 #define __ALLTRAY_H_INCLUDED__
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 #include <glib.h>
 #include <config.h>
 

@@ -3,12 +3,6 @@
  * main.c - AllTray entry point.
  * Copyright © 2009 Michael B. Trausch <mike@trausch.us>
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <glib.h>
-#include <libintl.h>
 #include <alltray.h>
 
 void
@@ -44,4 +38,6 @@ main(int argc, char *argv[]) {
   cmdline_parse(&argc, &argv);
 
   if((!cmdline_quiet) && output_is_terminal()) alltray_display_banner();
+
+  return(ALLTRAY_EXIT_SUCCESS);
 }
