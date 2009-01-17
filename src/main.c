@@ -46,5 +46,7 @@ main(int argc, char *argv[]) {
     exit(ALLTRAY_EXIT_X11_ERROR);
   }
 
+  atexit(alltray_x11_cleanup);
+
   return(ALLTRAY_EXIT_SUCCESS);
 }

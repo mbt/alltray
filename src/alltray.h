@@ -51,6 +51,7 @@ gboolean alltray_x11_init(const gchar *display_name)
   __attribute__((warn_unused_result));
 Atom alltray_x11_get_atom(const gchar *atom_name)
   __attribute__((warn_unused_result));
+void alltray_x11_cleanup(void);
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000

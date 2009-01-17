@@ -96,11 +96,11 @@ alltray_x11_init(const gchar *display_name) {
  * have lingering around.  This function is intended to be used as an
  * atexit() callback, though it could conceivably be called manually.
  */
-gboolean
+void
 alltray_x11_cleanup() {
   if(!internal_state.initialized) {
     DEBUG_X11("Warning: alltray_x11_cleanup() called, "
-              "but X11 module not init'd!");
+              "but X11 module not initialized!");
     return(FALSE);
   }
 
