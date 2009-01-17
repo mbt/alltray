@@ -19,64 +19,54 @@ AC_CONFIG_SRCDIR([src/main.c])
 
 # Check for programs necessary to build and install AllTray.
 AC_PROG_CC
+AC_PROG_SED
+
+AC_ARG_ENABLE(full-debug,
+  [AS_HELP_STRING([--enable-full-debug],
+    [Enable full debugging (default: disabled)])],
+  [CFLAGS='-ggdb -O0'])
+
+AC_ARG_ENABLE(optimizations,
+  [AS_HELP_STRING([--disable-optimizations],
+    [Disable compiler optimizations (default: enabled)])],
+  [CFLAGS=`echo $CFLAGS|sed 's|-O.|-O0|g;'`])
+
+AC_ARG_ENABLE(extra-optimizations,
+  [AS_HELP_STRING([--enable-extra-optimizations],
+    [Enable extra compiler optimizations (default: disabled)])],
+  [CFLAGS=`echo $CFLAGS|sed 's|-O.|-O3|g;'`])
+
+# Check for ISO C99 support in the C compiler.
+AC_MSG_CHECKING([for c99 support in gcc])
+
+old_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -std=gnu99"
+AC_COMPILE_IFELSE([dnl
+    int foo(int a) { for(int i = 0; i < a; i++) if (i % 4) break; int s = a; }],
+    ac_cv_c99=yes, ac_cv_c99=no)
+CFLAGS="$old_CFLAGS"
+if test x"$ac_cv_c99" != xyes; then
+   AC_MSG_RESULT(no)
+   AC_MSG_ERROR([gcc with c99 support is required])
+else
+   AC_MSG_RESULT(yes)
+   CFLAGS="$CFLAGS -std=gnu99"
+fi
+
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 # Library checks.
-AC_CHECK_LIB([dl], [dlopen],
-             printf "yes", printf "\nError: libdl required."; exit)
+AC_CHECK_LIB([dl], [dlopen],,AC_MSG_ERROR([libdl is required]))
 
 # pkg-config checks need to be inserted here.
-PKG_CHECK_MODULES(X11, x11, [have_x11=yes], [have_x11=no])
-PKG_CHECK_MODULES(GLIB, glib-2.0, [have_glib=yes], [have_glib=no])
-dnl PKG_CHECK_MODULES(GTK, gtk+-2.0 > 2.2.0, [have_gtk=yes], [have_gtk=no])
-dnl PKG_CHECK_MODULES(GDK, gdk-2.0, [have_gdk=yes], [have_gdk=no])
-dnl PKG_CHECK_MODULES(GCONF, gconf-2.0, [have_gconf=yes], [have_gconf=no])
-dnl PKG_CHECK_MODULES(GDKPIXBUF, gdk-pixbuf-xlib-2.0, [have_gdkpixbuf=yes],
-dnl                              [have_gdk_pixbuf=no])
-dnl 
-if test x"$have_x11" = xno; then
-   printf "error: X11 is required\n"
-   exit 1
-fi
-
-if test x"$have_glib" = xno; then
-   printf "error: glib is required\n"
-   exit 1
-fi
-
-dnl if test x"$have_gtk" = xno; then
-dnl    printf "error: gtk 2.2.0 or later is required\n"
-dnl    exit 1
-dnl fi
-dnl 
-dnl if test x"$have_gdk" = xno; then
-dnl    printf "error: gdk is required\n"
-dnl    exit 1
-dnl fi
-dnl 
-dnl if test x"$have_gdkpixbuf" = xno; then
-dnl    printf "error: gdkpixbuf is required\n"
-dnl    exit 1
-dnl fi
-dnl 
-dnl if test x"$have_gconf" = xno; then
-dnl    printf "error: gconf is required\n"
-dnl    exit 1
-dnl fi
+PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
+PKG_CHECK_MODULES(GLIB, glib-2.0,, AC_MSG_ERROR([glib-2.0 is required]))
 
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
-dnl AC_SUBST(GDK_CFLAGS)
-dnl AC_SUBST(GDK_LIBS)
-dnl AC_SUBST(GDKPIXBUF_CFLAGS)
-dnl AC_SUBST(GDKPIXBUF_LIBS)
-dnl AC_SUBST(GTK_CFLAGS)
-dnl AC_SUBST(GTK_LIBS)
-dnl AC_SUBST(GCONF_CFLAGS)
-dnl AC_SUBST(GCONF_LIBS)
 
 # Configuration wrap-up.
 AC_CONFIG_FILES([Makefile
@@ -87,3 +77,12 @@ AC_CONFIG_FILES([Makefile
         src/Makefile])
 
 AC_OUTPUT
+
+# Configuration results report
+printf "\nConfiguration results (%s %s)\n\n" "$PACKAGE_NAME" "$PACKAGE_VERSION"
+
+printf "C Compiler:\t%s\n" "$CC"
+printf "C Flags:\t%s\n" "$CFLAGS"
+printf "Install path:\t%s\n" "$prefix"
+printf "\n"
+

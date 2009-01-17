@@ -31,7 +31,7 @@ alltray_debug_init() {
   environment_value = getenv("ALLTRAY_DEBUG");
   if(!environment_value) return;
 
-  for(debug_flag_record cur_flag = &debug_flags[0]; cur_flag->flag != 0;
+  for(debug_flag_record *cur_flag = &debug_flags[0]; cur_flag->flag != 0;
       cur_flag++) {
     if(strstr(cur_flag->env_value, environment_value)) {
       enabled_debug_flags |= cur_flag->flag;
@@ -42,4 +42,16 @@ alltray_debug_init() {
 gboolean
 alltray_debug_enabled(gint desired_flag) {
   return((enabled_debug_flags & desired_flag) != 0);
+}
+
+void
+alltray_debug_display_opts() {
+  g_print("\nFlag name\tDescription\n");
+  g_print("\n---------\t-----------\n\n");
+
+  for(debug_flag_record *cur_flag = &debug_flags[0];
+      cur_flag->flag != 0;
+      cur_flag++) {
+    g_print("%s\t\t%s\n", cur_flag->env_value, cur_flag->description);
+  }
 }

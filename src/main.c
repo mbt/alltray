@@ -11,8 +11,8 @@
 #include <libintl.h>
 #include <alltray.h>
 
-static void
-display_banner() {
+void
+alltray_display_banner() {
   g_print("%s version %s\n", PACKAGE_NAME, PACKAGE_VERSION);
   g_print("  Copyright © 2004-2006 Jochen Baier <email@Jochen-Baier.de>\n");
   g_print("  Copyright © 2009 Michael B. Trausch <mike@trausch.us>\n");
@@ -43,5 +43,5 @@ int
 main(int argc, char *argv[]) {
   cmdline_parse(&argc, &argv);
 
-  if((!quiet) && output_is_terminal()) display_banner();
+  if((!cmdline_quiet) && output_is_terminal()) alltray_display_banner();
 }

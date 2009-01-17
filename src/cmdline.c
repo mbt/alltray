@@ -19,18 +19,20 @@ static GOptionEntry cmdline_entries[] = {
     "Display title changes for SEC seconds", "SEC" },
   { "modify-title", 'm', 0, G_OPTION_ARG_NONE, &cmdline_modify_window_title,
     "Add \"(AllTray)\" to managed window titles", NULL },
-  { "display", '\0', 0, G_OPTION_ARG_STRING, &cmdline_x11_display,
-    "Specify an X11 display to use", "DISP" },
 
   { "quiet", 'q', 0, G_OPTION_ARG_NONE, &cmdline_quiet,
     "Do not display verbose messages", NULL },
   { "list-debug-opts", 'L', 0, G_OPTION_ARG_NONE,
     &cmdline_list_debug_opts,
-    "List debugging options and exit", NULL }
+    "List debugging options and exit", NULL },
   { "debug", 'D', 0, G_OPTION_ARG_NONE, &cmdline_debug_enabled,
     "Enable debugging messages", NULL },
   { "version", 'v', 0, G_OPTION_ARG_NONE, &cmdline_show_version,
     "Display version info and exit", NULL },
+
+  { "display", '\0', 0, G_OPTION_ARG_STRING, &cmdline_x11_display,
+    "Specify an X11 display to use", "DISP" },
+
   { NULL }
 };
 
@@ -53,22 +55,22 @@ static gchar *cmdline_help = ""
  * specified, this function DOES NOT RETURN and will exit the program
  * immediately after processing those options.
  */
-void cmdline_parse(int *argc, char *argv[]) {
+void cmdline_parse(int *argc, char ***argv) {
   GError *error = NULL;
   GOptionContext *context;
 
   context = g_option_context_new("[--] [PROGRAM] [ARGS]");
 
   g_option_context_set_summary(context, cmdline_help);
-  g_option_context_add_main_entries(context, entries, PACKAGE);
+  g_option_context_add_main_entries(context, cmdline_entries, PACKAGE);
 
-  if(!g_option_context_parse(context, &argc, &argv, &error)) {
+  if(!g_option_context_parse(context, argc, argv, &error)) {
     g_print("error: %s\n", error->message);
     exit(ALLTRAY_EXIT_INVALID_ARGS);
   }
 
   if(cmdline_show_version) {
-    alltray_display_version();
+    alltray_display_banner();
     exit(ALLTRAY_EXIT_SUCCESS);
   }
 

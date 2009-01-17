@@ -8,7 +8,7 @@
 
 gboolean cmdline_debug_enabled = FALSE;
 gboolean cmdline_initially_show_window = FALSE;
-gboolean cmdline_skip_taskbar = FALSE;
+gboolean cmdline_hide_taskbar = FALSE;
 gboolean cmdline_modify_window_title = FALSE;
 gboolean cmdline_sticky_windows = FALSE;
 gboolean cmdline_list_debug_opts = FALSE;
