@@ -170,11 +170,12 @@ free_dynamic_storage(gpointer node, gpointer ignored) {
 static void
 local_atoms_init() {
   Atom throwaway;
+  int i;
 
   DEBUG_X11("Attempting to initialize local atoms");
   gchar *atom_name;
 
-  for(int i = 0, atom_name = atoms[i];
+  for(i = 0, atom_name = atoms[i];
       atom_name != NULL; i++, atom_name = atoms[i]) {
     DEBUG_X11(g_strdup_printf("Initializing atom %s", atom_name));
     throwaway = alltray_x11_get_atom(atom_name);
