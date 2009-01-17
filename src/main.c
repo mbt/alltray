@@ -14,8 +14,8 @@
 void
 alltray_display_banner() {
   g_print("%s version %s\n", PACKAGE_NAME, PACKAGE_VERSION);
-  g_print("  Copyright © 2004-2006 Jochen Baier <email@Jochen-Baier.de>\n");
-  g_print("  Copyright © 2009 Michael B. Trausch <mike@trausch.us>\n");
+  g_print("  Copyright (c) 2004-2006 Jochen Baier <email@Jochen-Baier.de>\n");
+  g_print("  Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>\n");
   g_print("Bug reports: %s\n", PACKAGE_BUGREPORT);
 
   if(strstr(VERSION, "dev") != NULL) {
