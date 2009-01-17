@@ -29,12 +29,12 @@ AC_CHECK_LIB([dl], [dlopen],
 # pkg-config checks need to be inserted here.
 PKG_CHECK_MODULES(X11, x11, [have_x11=yes], [have_x11=no])
 PKG_CHECK_MODULES(GLIB, glib-2.0, [have_glib=yes], [have_glib=no])
-PKG_CHECK_MODULES(GTK, gtk+-2.0 > 2.2.0, [have_gtk=yes], [have_gtk=no])
-PKG_CHECK_MODULES(GDK, gdk-2.0, [have_gdk=yes], [have_gdk=no])
-PKG_CHECK_MODULES(GCONF, gconf-2.0, [have_gconf=yes], [have_gconf=no])
-PKG_CHECK_MODULES(GDKPIXBUF, gdk-pixbuf-xlib-2.0, [have_gdkpixbuf=yes],
-                             [have_gdk_pixbuf=no])
-
+dnl PKG_CHECK_MODULES(GTK, gtk+-2.0 > 2.2.0, [have_gtk=yes], [have_gtk=no])
+dnl PKG_CHECK_MODULES(GDK, gdk-2.0, [have_gdk=yes], [have_gdk=no])
+dnl PKG_CHECK_MODULES(GCONF, gconf-2.0, [have_gconf=yes], [have_gconf=no])
+dnl PKG_CHECK_MODULES(GDKPIXBUF, gdk-pixbuf-xlib-2.0, [have_gdkpixbuf=yes],
+dnl                              [have_gdk_pixbuf=no])
+dnl 
 if test x"$have_x11" = xno; then
    printf "error: X11 is required\n"
    exit 1
@@ -45,38 +45,38 @@ if test x"$have_glib" = xno; then
    exit 1
 fi
 
-if test x"$have_gtk" = xno; then
-   printf "error: gtk 2.2.0 or later is required\n"
-   exit 1
-fi
-
-if test x"$have_gdk" = xno; then
-   printf "error: gdk is required\n"
-   exit 1
-fi
-
-if test x"$have_gdkpixbuf" = xno; then
-   printf "error: gdkpixbuf is required\n"
-   exit 1
-fi
-
-if test x"$have_gconf" = xno; then
-   printf "error: gconf is required\n"
-   exit 1
-fi
+dnl if test x"$have_gtk" = xno; then
+dnl    printf "error: gtk 2.2.0 or later is required\n"
+dnl    exit 1
+dnl fi
+dnl 
+dnl if test x"$have_gdk" = xno; then
+dnl    printf "error: gdk is required\n"
+dnl    exit 1
+dnl fi
+dnl 
+dnl if test x"$have_gdkpixbuf" = xno; then
+dnl    printf "error: gdkpixbuf is required\n"
+dnl    exit 1
+dnl fi
+dnl 
+dnl if test x"$have_gconf" = xno; then
+dnl    printf "error: gconf is required\n"
+dnl    exit 1
+dnl fi
 
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
-AC_SUBST(GDK_CFLAGS)
-AC_SUBST(GDK_LIBS)
-AC_SUBST(GDKPIXBUF_CFLAGS)
-AC_SUBST(GDKPIXBUF_LIBS)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
-AC_SUBST(GCONF_CFLAGS)
-AC_SUBST(GCONF_LIBS)
+dnl AC_SUBST(GDK_CFLAGS)
+dnl AC_SUBST(GDK_LIBS)
+dnl AC_SUBST(GDKPIXBUF_CFLAGS)
+dnl AC_SUBST(GDKPIXBUF_LIBS)
+dnl AC_SUBST(GTK_CFLAGS)
+dnl AC_SUBST(GTK_LIBS)
+dnl AC_SUBST(GCONF_CFLAGS)
+dnl AC_SUBST(GCONF_LIBS)
 
 # Configuration wrap-up.
 AC_CONFIG_FILES([Makefile
