@@ -36,8 +36,15 @@ output_is_terminal() {
 int
 main(int argc, char *argv[]) {
   cmdline_parse(&argc, &argv);
-
   if((!cmdline_quiet) && output_is_terminal()) alltray_display_banner();
+
+  if(cmdline_debug_enabled) alltray_debug_init();
+
+  if(!alltray_x11_init(cmdline_x11_display)) {
+    g_print("Error: Unable to initialize the X11 module.\n");
+    g_print("Is the DISPLAY variable correctly set?\n");
+    exit(ALLTRAY_EXIT_X11_ERROR);
+  }
 
   return(ALLTRAY_EXIT_SUCCESS);
 }

@@ -1,6 +1,6 @@
 /* -*- mode: c; c-basic-offset: 2; indent-tabs-mode: nil; -*-
  *
- * alltray.h - Project-wide include file.
+ * alltray.h - Project-wide include file
  * Copyright © 2009 Michael B. Trausch <mike@trausch.us>
  */
 #ifndef __ALLTRAY_H_INCLUDED__
@@ -11,12 +11,16 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <X11/Xutil.h>
 #include <glib.h>
 #include <config.h>
 
 // Exit codes.
 #define ALLTRAY_EXIT_SUCCESS  0
 #define ALLTRAY_EXIT_INVALID_ARGS 1
+#define ALLTRAY_EXIT_X11_ERROR 2
 
 // Prototypes for cmdline.c
 void cmdline_parse(int *argc, char ***argv);
@@ -41,6 +45,12 @@ extern gchar *cmdline_x11_display;
 // Prototypes for main.c
 int main(int argc, char *argv[]);
 void alltray_display_banner(void);
+
+// Prototypes for x11.c
+gboolean alltray_x11_init(const gchar *display_name)
+  __attribute__((warn_unused_result));
+Atom alltray_x11_get_atom(const gchar *atom_name)
+  __attribute__((warn_unused_result));
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
