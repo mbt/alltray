@@ -1,0 +1,144 @@
+How to Help!
+============
+
+  Of course, like any open-source project, help is welcome.  Please,
+  please, PLEASE read this file first, though:  I am a fairly nit-picky
+  person, I suppose.  Most of this document is about how to prepare
+  patches for being sent for inclusion into AllTray.
+
+  First, AllTray uses the Bazaar[1] revision control system.  This means
+  that you don't have to work with patches directly if you don't want
+  to.  Of course, you still can---but it would be easier if you'd use
+  Bazaar and create your own personal branch on Launchpad, and then just
+  request that I pull from it.
+
+ Patching AllTray
+ ----------------
+
+  To get started, you’ll need a bleeding-edge copy of the source code.
+  After the 0.7.1dev release, you can pull the bleeding-edge (trunk,
+  mainline, whatever you want to call it) by simply running:
+
+   $ bzr branch lp:alltray
+
+  Which will give you the development tree for AllTray.  (I say after
+  0.7.1dev, because 0.7.1dev is essentially going to be a somewhat major
+  undertaking and massive rewrite; people may or may not want to jump in
+  and start working on it when it’s going to be so actively up
+  in-the-air.)
+
+  Then, it’s time to write your changes; make modifications, add files,
+  delete files, whatever.  Commit as (in)frequently as you want to your
+  local branch---after all, it's yours!  See below for the rules.
+
+ Code Formatting
+ ---------------
+
+  Code formatting is pretty simple:
+
+    * Indentations are two spaces and NEVER, EVER tabs.
+
+    * Global prototypes go in <alltray.h>.
+
+    * Global functions must be prefixed with alltray_$MODULENAME_.  For
+      example, all global functions in the x11.c module begin with
+      alltray_x11_ (e.g., alltray_x11_init()).
+
+    * Static (local) functions MUST NOT use a prefix unless there is a
+      clash with something else.  In the event of a clash, ALL static
+      functions in a module (for consistency) acquire a $MODULENAME_
+      prefix.  However, do not use alltray_$MODULENAME_ for a prefix,
+      since that is a visual cue that the function is a global function
+      and can be called from elsewhere.
+
+    * Global data MUST be located in global.c, and referenced from
+      <alltray.h>.  Adding any global data is strongly, strongly
+      discouraged unless it is absolutely the only way to do something.
+
+    * All includes are centrally included in <alltray.h>.
+
+    * All structures must be typedef’d to an appropriate name.
+
+    * New structures must be located in a module file unless there is a
+      requirement for their use throughout the entire program.  It is
+      easier to promote from local to global, than to demote from
+      global to local.
+
+    * New functions are REQUIRED to have docstrings which can be parsed
+      by Doxygen.  These start with /** and end with */; see any source
+      file for an example of them.  It would be nice if new data had
+      them, too.
+
+    * Readability is paramount, but please try to keep unnecessary
+      whitespace to a minimum.  I *hate* things like:
+
+        function_call ( param, ( x + y ) );
+
+      And I think it is absolutely, positively HORRIBLE.  This is
+      better:
+
+        function_call(param, (x + y));
+
+      Use an editor that highlights the matching brace so you do not
+      have to brace-count, too.
+
+ DOs and DON’Ts
+ --------------
+
+  * DO use UTF-8 in code and documentation.  We no longer live in an
+    ASCII world.  ASCII is fine, too, but you are not compelled to use
+    it.
+
+  * DO use ISO C99 with GNU extensions.  The GNU compiler is available
+    damn near everywhere, and it is the de facto standard.  We require
+    C99 anyway.
+
+  * DO write code that can be used with other compilers if it is easily
+    possible and you know how to do it, to help people that would like
+    to use other compilers.
+
+  * DO use the debugging macros when writing code.  If you need a new
+    category of debugging messages, DO create it---it isn’t that hard,
+    see debug.c and alltray.h.
+
+  * DO (_always_) build your code with -Werror enabled before asking for
+    it to be merged into the mainline.  If it doesn’t build with
+    -Werror, I won’t even think about it.  Quality is important.
+
+  * DO reasonably test changes.  Obviously, they do not have to be 100%
+    bug-free, since you’re working on the development tree, it is
+    probably not bug-free anyway.  But make it as good as you can
+    without paralyzing yourself.
+
+  * DO ask for help if you need it.
+
+  * DO fix-as-you-go.  Think of the program as the pile of dishes in the
+    kitchen---leave it better than you found it if at all possible.
+
+  * DO write flexible code.  If you need to initialize 20 things, try to
+    loop over them to get to it, instead of hard-coding every one in a
+    function.  (Good example: see x11.c, static gchar *atoms[] and
+    static void local_atoms_init().)  This makes things more
+    maintainable.
+
+  * DO realize that I am *far* from perfect, and if you an expert in C
+    programming, and you think I am doing something wrong, I probably
+    am.  Tell me, and do fix it... ;)
+
+  * DON’T write new code and have no debugging statements for it.  We
+    have -D/--debug and ALLTRAY_DEBUG for a reason!
+
+  * DON’T have debugging code which creates side effects---distributors
+    ARE ALLOWED to compile the code with -DALLTRAY_NO_DEBUG to turn off
+    debugging entirely if necessary!
+
+  * DON’T be afraid to have a lot of DEBUG macro calls, there really
+    cannot be too many of them.
+
+  * DON’T directly test for debug flags; DO always use the macro calls,
+    which provide output in a consistent format.
+
+Links
+-----
+
+  [1] http://bazaar-vcs.org/
