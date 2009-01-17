@@ -1,0 +1,155 @@
+.TH alltray 1 "January 17, 2008" "Version @PACKAGE_VERSION@" "User Commands"
+.SH NAME
+alltray \(en Dock any program into the system tray
+.SH SYNOPSIS
+.B alltray
+[OPTION...] [\-\-]
+.I [program] [args]
+.SH DESCRIPTION
+Start
+.I program
+with optional arguments provided in
+.I args
+and dock it to the system tray.  If
+.I args
+contains options which start with dashes (\- or \-\-) then the special
+``end of options'' argument (\-\-) must be given before
+.I program
+on the command line.  For example:
+.RS 1in
+.P
+alltray xterm
+.RE
+.P
+is a legal command, but:
+.RS 1in
+.P
+alltray xterm \-geometry 132x40
+.RE
+.P
+is not.  Instead, the latter must be written:
+.RS 1in
+.P
+alltray \-\- xterm \-geometry 132x40
+.RE
+.P
+because the ``\-\-'' option tells AllTray that the rest of the command
+line is for the program you want to start under AllTray.
+
+AllTray has two modes: regular and ``click mode''.  To use click mode,
+simply do not specify a
+.I
+program
+on the command line; AllTray will then let you click on an
+already-existing window and dock it instead of the windows which belong
+to a new process.
+.SH OPTIONS
+This program follows the usual GNU command line syntax: short options
+have a single dash, and long options have two dashes before them.  Since
+AllTray version 0.7.1dev, option parsing has become more robust because
+it uses the command-line parser included with
+.IR glib ,
+the GNU general-purpose utility library.
+.IP "\-?, \-\-help"
+Show the help (usage) screen.
+.IP "\-s, \-\-show"
+Show the window(s) initially.  The default behavior is to dock the
+application to the system tray as soon as it opens.
+.I This behavior may change in the future.
+.IP "\-S, \-\-sticky"
+Make managed windows ``sticky''.  That is, the windows will appear on
+all desktops, not just one.
+.IP "\-h, \-\-hide\-from\-taskbar"
+Hide the application's window(s) from the system task bar.
+.IP "\-d \fIsec\fR, \-\-display\-title\-change=\fIsec\fR"
+Show window name (title) changes for \fIsec\fR seconds after they
+happen.  This notification will appear as an alert bubble that will
+display near the docked application's icon in the system tray.
+.IP "\-m, \-\-modify\-title"
+Append ``(AllTray)'' to the title of windows which are controlled by
+AllTray.  This may make the window easier to identify, but it can also
+be annoying.
+.I Prior to AllTray 0.70, this feature was enabled by default.
+.IP "\-q, \-\-quiet"
+Do not emit verbose messages or display the program's startup banner
+even if AllTray is being run on a terminal.  By default, if AllTray is
+running on a terminal, a startup banner will display which announces the
+version, copyright, and license of the program (as with \-\-version, but
+the program continues instead of halting after displaying this
+information).
+.IP "\-L, \-\-list\-debug\-opts"
+Lists the debug ``flags'' that AllTray supports.  The items in this list
+are allowed values in an environment variable named \fBALLTRAY_DEBUG\fR;
+see the \fBENVIRONMENT VARIABLES\fR section for more information.
+.IP "\-D, \-\-debug"
+Enable the debug message printing mechanism of AllTray.  Note that this
+requires also setting the environment variable \fBALLTRAY_DEBUG\fR, to
+get any debug output; see the \fBENVIRONMENT VARIABLES\fR section below.
+.IP "\-v, \-\-version"
+Show the program version, copyright, and license.
+.IP "\-\-display=\fIdisp\fR"
+Use the X11 display specified by \fIdisp\fR.  The default is to use the
+X11 display referenced by the \fBDISPLAY\fR environment variable.
+.SH ENVIRONMENT VARIABLES
+AllTray uses environment variables and can have some of its behaviors
+specified that way.
+.IP "ALLTRAY_OPTIONS"
+AllTray reads this environment variable for any default options.  Any of
+the options above in \fBOPTIONS\fR can be specified in this environment
+variable.  This environment variable is looked at \fIbefore\fR the
+command line, so the command line will override it should there be any
+conflict.  \fIThis feature is not yet implemented as of 0.7.1dev.\fR
+.IP "ALLTRAY_DEBUG"
+When the \-d or \-\-debug options are specified on the command line,
+AllTray looks at this environment variable to see which types of debug
+messages you are interested in seeing.  For example, setting this
+variable to ``CMDLINE X11'' and enabling debugging will tell AllTray to
+display messages pertaining to command-line parsing and communication
+with the X Window System..
+
+For a list of valid tokens, run ``alltray -L'' which will output the
+list of supported debugging messages.  Also, you can specify \fBALL\fR
+to enable every type of debugging message that AllTray supports.
+.IP "DISPLAY"
+AllTray reads this environment variable to determine how to find and
+connect to your instance of the X Window System.  Using the \-\-display
+command line option can override it, or provide it if unset.
+.SH DIAGNOSTICS
+The exit code can be tested for success or failure.  If AllTray exits
+with status zero, it was able to spawn the requested program (or it was
+able to attach to the requested window, for click mode) and ran until
+the program exited or AllTray was instructed to undock the application.
+
+Any non-zero exit value indicates a failure of some sort.  See
+\fBalltray.h\fR for error exit codes.
+.SH BUGS
+Interaction with compiz is a bit iffy\(emclick mode in particular is
+troublesome with the compiz window manager.
+
+Some applications\(emin particular, GNU Emacs\(emdo not always properly
+dock.
+
+Session management support needs to be implemented.  If you rely on
+session management support for your application software, you may
+encounter surprising results when combining that software with AllTray
+at present.
+
+The error exit codes from AllTray need to be documented here.
+
+There are likely many more.  If you should find one, please report it at
+https://launchpad.net/alltray/+filebug.
+.SH AUTHOR
+AllTray was started in 2004 by Jochen Baier <email@jochen-baier.de>.  It
+is currently being written and maintained by Michael B. Trausch
+<mike@trausch.us>.
+.SH COPYRIGHT
+Copyright \(co 2004\(en2007 Jochen Baier <email@jochen-baier.de>
+.br
+Copyright \(co 2009 Michael B. Trausch <mike@trausch.us>
+
+AllTray is licensed under the terms of the GNU GPL Version 3 license.
+For the full-text of the license, see the full-text of the license on
+the GNU web site: http://www.gnu.org/licenses/gpl-3.0.html
+
+The license should also be available on your computer.  In the source
+distribution for AllTray, it is the file \fBCOPYING\fR.

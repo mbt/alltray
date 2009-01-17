@@ -74,7 +74,8 @@ AC_CONFIG_FILES([Makefile
         images/Makefile
         man/Makefile
         lib/Makefile
-        src/Makefile])
+        src/Makefile
+        man/alltray.1])
 
 AC_OUTPUT
 
