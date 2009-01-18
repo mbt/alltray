@@ -9,7 +9,7 @@
 AC_INIT([AllTray], [0.7.1dev], [https://launchpad.net/alltray/+filebug])
 
 # Initialize automake
-AM_INIT_AUTOMAKE(check-news -Wall)
+AM_INIT_AUTOMAKE(foreign check-news -Wall)
 
 # Minimum required version of autoconf
 AC_PREREQ(2.60)
