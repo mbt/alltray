@@ -51,6 +51,12 @@ gboolean alltray_x11_init(const gchar *display_name)
   __attribute__((warn_unused_result));
 Atom alltray_x11_get_atom(const gchar *atom_name)
   __attribute__((warn_unused_result));
+gchar *alltray_x11_get_window_name(Window win)
+  __attribute__((warn_unused_result));
+GList *alltray_x11_get_window_text_property(Window win, const gchar *prop_name)
+  __attribute__((warn_unused_result));
+gchar *alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name)
+  __attribute__((warn_unused_result));
 void alltray_x11_cleanup(void);
 
 // Debug constants and macros

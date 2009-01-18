@@ -101,9 +101,13 @@ How to Help!
     category of debugging messages, DO create it---it isn’t that hard,
     see debug.c and alltray.h.
 
-  * DO (_always_) build your code with -Werror enabled before asking for
-    it to be merged into the mainline.  If it doesn’t build with
-    -Werror, I won’t even think about it.  Quality is important.
+  * DO (_always_) build your code with “-Wall -Werror” enabled before
+    asking for it to be merged into the mainline.  If it doesn’t build
+    with “-Wall -Werror”, I won’t even think about it.  Quality is
+    important.  If you really want to make sure the code is good, use
+    “-Wall -Wextra -Werror”, which will tell you about other things that
+    can be fixed.  Personally, my goal is to compile quietly using the
+    latter option, simply because we can.  :-)
 
   * DO reasonably test changes.  Obviously, they do not have to be 100%
     bug-free, since you’re working on the development tree, it is

@@ -101,7 +101,7 @@ alltray_x11_cleanup() {
   if(!internal_state.initialized) {
     DEBUG_X11("Warning: alltray_x11_cleanup() called, "
               "but X11 module not initialized!");
-    return(FALSE);
+    return;
   }
 
   internal_state.x11_default_screen = NULL;
@@ -109,17 +109,25 @@ alltray_x11_cleanup() {
   XCloseDisplay(internal_state.x11_display);
 
   internal_state.initialized = FALSE;
-  return(TRUE);
+  return;
 }
 
 /**
  * Fetches an atom from the list; if it does not exist, it interns it
- * and appends it to the list, and then fetches it.
+ * and appends it to the list, and then fetches it.  If this function is
+ * called prior to alltray_x11_init(), it will call abort() as there is
+ * an obvious program bug present.
  *
  * @returns An interned X11 atom.
  */
 Atom
 alltray_x11_get_atom(const gchar *atom_name) {
+  if(!internal_state.initialized) {
+    g_print("error: alltray_x11_get_atom() called, but X11 module has not\n");
+    g_print("been initialized.");
+    abort();
+  }
+
   Atom retval;
   x11_atom_node *data = g_malloc(sizeof(x11_atom_node));
   data->name = g_strdup(atom_name);
@@ -142,6 +150,105 @@ alltray_x11_get_atom(const gchar *atom_name) {
 }
 
 /**
+ * [Convenience function] -- Returns the name of a given X11 Window.
+ */
+gchar *
+alltray_x11_get_window_name(Window win) {
+  gchar *retval;
+
+  retval = alltray_x11_get_window_utf8_property(win, "_NET_WM_VISIBLE_NAME");
+  if(!retval) {
+    DEBUG_X11("_NET_WM_VISIBLE_NAME had no value, trying next method...");
+    retval = alltray_x11_get_window_utf8_property(win, "_NET_WM_NAME");
+  }
+
+  if(!retval) {
+    DEBUG_X11("_NET_WM_NAME had no value, trying next method...");
+    GList *text_property_name = NULL;
+    text_property_name = alltray_x11_get_window_text_property(win, "WM_NAME");
+
+    if(!text_property_name) {
+      DEBUG_X11("WM_NAME had no value, program didn't set a name!");
+      retval = g_strdup("(unknown window name)");
+    } else {
+      retval = g_strdup(((gchar *)g_list_first(text_property_name)->data));
+    }
+  }
+
+  return(retval);
+}
+
+/**
+ * Returns a list of strings associated with a text property for the
+ * specified X11 Window.
+ */
+GList *
+alltray_x11_get_window_text_property(Window win, const gchar *prop_name) {
+  XTextProperty ret_text_property;
+  Atom prop_atom;
+  Status x11_status;
+  GList *retval = NULL;
+
+  prop_atom = alltray_x11_get_atom(prop_name);
+  x11_status = XGetTextProperty(internal_state.x11_display,
+                                win, &ret_text_property, prop_atom);
+  if(!x11_status) {
+    g_critical("X11 returned an error while getting text properties");
+  } else {
+    gchar **text_list;
+    int text_list_count;
+
+    x11_status = XTextPropertyToStringList(&ret_text_property,
+                                           &text_list, &text_list_count);
+    for(int i = 0; i < text_list_count; i++) {
+      retval = g_list_append(retval, g_strdup(text_list[i]));
+    }
+
+    XFreeStringList(text_list);
+  }
+
+  return(retval);
+}
+
+/**
+ * Returns a UTF-8 string property associated with an X11 Window.
+ */
+gchar *
+alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name) {
+  int x11_status = 0;
+  Atom prop_atom = alltray_x11_get_atom(prop_name);
+  Atom req_type = alltray_x11_get_atom("UTF8_STRING");
+  Atom actual_type_return;
+  int actual_format_return;
+  unsigned long num_items_return;
+  unsigned long bytes_after_return;
+  unsigned char *property_return;
+
+  gchar *retval = NULL;
+
+  x11_status = XGetWindowProperty(internal_state.x11_display, win, prop_atom,
+                                  0, G_MAXINT32, False, req_type,
+                                  &actual_type_return,
+                                  &actual_format_return,
+                                  &num_items_return,
+                                  &bytes_after_return,
+                                  &property_return);
+
+  if(actual_type_return == None) {
+    retval = NULL;
+  } else if(actual_type_return != req_type) {
+    retval = NULL;
+  } else if(actual_format_return != 8) {
+    retval = NULL;
+  } else {
+    retval = g_strdup((char *)property_return);
+    XFree(property_return);
+  }
+
+  return(retval);
+}
+
+/**
  * Clears the list of atoms, freeing all storage used by the list.
  */
 static void
@@ -154,7 +261,8 @@ clear_atom_list() {
  * Frees the dynamic storage in an interned atom.
  */
 static void
-free_dynamic_storage(gpointer node, gpointer ignored) {
+free_dynamic_storage(gpointer node,
+                     gpointer ignored __attribute__((unused))) {
   x11_atom_node *data = (x11_atom_node *)node;
   g_free(data->name);
   g_free(data);

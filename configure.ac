@@ -27,7 +27,7 @@ AC_MSG_CHECKING([for c99 support in gcc])
 old_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -std=gnu99"
 AC_COMPILE_IFELSE([dnl
-    int foo(int a) { for(int i = 0; i < a; i++) if (i % 4) break; int s = a; }],
+    int foo(int a) { for(int i = 0; i < a; i++) if (i % 4) break; int s = a; return(s); }],
     ac_cv_c99=yes, ac_cv_c99=no)
 CFLAGS="$old_CFLAGS"
 if test x"$ac_cv_c99" != xyes; then

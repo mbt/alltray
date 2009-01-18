@@ -33,7 +33,7 @@ static GOptionEntry cmdline_entries[] = {
   { "display", '\0', 0, G_OPTION_ARG_STRING, &cmdline_x11_display,
     "Specify an X11 display to use", "DISP" },
 
-  { NULL }
+  { NULL, '\0', 0, 0, NULL, NULL, NULL }
 };
 
 static gchar *cmdline_help = ""
