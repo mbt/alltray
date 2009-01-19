@@ -28,6 +28,20 @@ alltray_display_banner() {
   }
 }
 
+void
+alltray_display_extended_banner() {
+  g_print("Compilation Environment\n"
+          "=======================\n\n");
+  g_print("CFLAGS:\t\t%s\n", ALLTRAY_COMPILE_FLAGS);
+  g_print("Compiler:\t%s\n", ALLTRAY_COMPILE_COMPILER);
+  g_print("Build kernel:\t%s\n", ALLTRAY_COMPILE_OS);
+  g_print(" ... release:\t%s\n", ALLTRAY_COMPILE_OS_REL);
+  g_print(" ... version:\t%s\n", ALLTRAY_COMPILE_OS_VER);
+  g_print(" ... hostname:\t%s\n", ALLTRAY_COMPILE_OS_HOST);
+  g_print("Build UTC:\t%s\n", ALLTRAY_COMPILE_BUILD_DATE);
+  g_print("Build EST5EDT:\t%s\n", ALLTRAY_COMPILE_BUILD_DATE_EUS);
+}
+
 static gboolean
 output_is_terminal() {
   return(isatty(fileno(stdout)));
@@ -41,12 +55,15 @@ main(int argc, char *argv[]) {
   if(cmdline_debug_enabled) alltray_debug_init();
 
   if(!alltray_x11_init(cmdline_x11_display)) {
-    g_print("Error: Unable to initialize the X11 module.\n");
-    g_print("Is the DISPLAY variable correctly set?\n");
+    g_printerr("Error: Unable to initialize the X11 module.\n"
+               "Is the DISPLAY variable correctly set?\n");
     exit(ALLTRAY_EXIT_X11_ERROR);
   }
 
-  atexit(alltray_x11_cleanup);
+  if(!alltray_wm_init()) {
+    g_printerr("Error: Unable to initialize the window manager module.\n"
+               "Are you running an EWMH-compliant window manager?\n");
+  }
 
   return(ALLTRAY_EXIT_SUCCESS);
 }

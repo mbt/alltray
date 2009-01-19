@@ -6,6 +6,35 @@
 #include <glib.h>
 #include <alltray.h>
 
+gboolean cmdline_debug_enabled;
+gboolean cmdline_initially_show_window;
+gboolean cmdline_hide_taskbar;
+gboolean cmdline_modify_window_title;
+gboolean cmdline_sticky_windows;
+gboolean cmdline_list_debug_opts;
+gboolean cmdline_quiet;
+gboolean cmdline_show_version;
+gboolean cmdline_show_ext_version;
+guint cmdline_display_title_changes_delay;
+gchar *cmdline_x11_display;
+gboolean cmdline_wait_for_wm;
+gboolean cmdline_wait_for_systray;
+
+/*
+ * The following flag is set when we receive the --test-mode option.
+ * The --test-mode option is *NOT* intended for use by regular users,
+ * and so it is omitted from the manpage as well as the --help output.
+ *
+ * In test mode, AllTray will not spawn a new application; instead, it
+ * will create a tray icon and submit it to the system tray manager, and
+ * pretend that the tray belongs to a fictitious application which does
+ * nothing.
+ *
+ * Do not depend on the existence of test mode in any way, it may get
+ * violently yanked away from the sources someday.
+ */
+gboolean cmdline_test_mode;
+
 // Module-local data.
 static GOptionEntry cmdline_entries[] = {
   { "show", 's', 0, G_OPTION_ARG_NONE, &cmdline_initially_show_window,
@@ -29,9 +58,17 @@ static GOptionEntry cmdline_entries[] = {
     "Enable debugging messages", NULL },
   { "version", 'v', 0, G_OPTION_ARG_NONE, &cmdline_show_version,
     "Display version info and exit", NULL },
+  { "extended-version", 'V', 0, G_OPTION_ARG_NONE, &cmdline_show_ext_version,
+    "Display extended version info and exit", NULL },
 
   { "display", '\0', 0, G_OPTION_ARG_STRING, &cmdline_x11_display,
     "Specify an X11 display to use", "DISP" },
+  { "wait-for-wm", '\0', 0, G_OPTION_ARG_NONE, &cmdline_wait_for_wm,
+    "Wait for a window manager to load", NULL },
+  { "wait-for-systray", '\0', 0, G_OPTION_ARG_NONE, &cmdline_wait_for_systray,
+    "Wait for a system tray to load", NULL },
+  { "test-mode", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, 
+    &cmdline_test_mode, "Jump directly to a testing mode", NULL },
 
   { NULL, '\0', 0, 0, NULL, NULL, NULL }
 };
@@ -67,6 +104,12 @@ void cmdline_parse(int *argc, char ***argv) {
   if(!g_option_context_parse(context, argc, argv, &error)) {
     g_print("error: %s\n", error->message);
     exit(ALLTRAY_EXIT_INVALID_ARGS);
+  }
+
+  if(cmdline_show_ext_version) {
+    alltray_display_banner();
+    alltray_display_extended_banner();
+    exit(ALLTRAY_EXIT_SUCCESS);
   }
 
   if(cmdline_show_version) {

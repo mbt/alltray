@@ -7,6 +7,7 @@ alltray_SOURCES = main.c \
 	cmdline.c \
 	debug.c \
 	global.c \
+	wm.c \
 	x11.c
 
 AM_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ -DPACKAGE_LIB_DIR=\""$(libdir)"\"

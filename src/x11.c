@@ -8,7 +8,7 @@
 typedef struct {
   gboolean initialized;
   Display *x11_display;
-  Screen *x11_default_screen;
+  int x11_default_screen;
 } x11_internal_state;
 
 typedef struct {
@@ -16,19 +16,22 @@ typedef struct {
   Atom interned_atom;
 } x11_atom_node;
 
-static x11_internal_state internal_state = { FALSE, NULL, NULL };
+static x11_internal_state internal_state;
 static GList *interned_atoms = NULL;
 
 static void clear_atom_list(void);
 static void local_atoms_init(void);
 static void free_dynamic_storage(gpointer data, gpointer ignored);
 static gboolean atom_compare(gconstpointer this, gconstpointer that);
+static void x11_cleanup(void);
 
 static gchar *atoms[] = {
-  "WINDOW",
-  "UTF8_STRING",
+  "CARDINAL",
   "MANAGER",
+  "UTF8_STRING",
+  "WINDOW",
 
+  "WM_CLIENT_MACHINE",
   "WM_DELETE_WINDOW",
   "WM_ICON",
   "WM_NAME",
@@ -36,24 +39,25 @@ static gchar *atoms[] = {
   "WM_TAKE_FOCUS",
 
   "_NET_ACTIVE_WINDOW",
-  "_NET_CLIENT_LIST_STACKING",
   "_NET_CLIENT_LIST",
+  "_NET_CLIENT_LIST_STACKING",
   "_NET_CLOSE_WINDOW",
   "_NET_CURRENT_DESKTOP",
   "_NET_NUMBER_OF_DESKTOPS",
   "_NET_SUPPORTING_WM_CHECK",
+
+  "_NET_WM_DESKTOP",
   "_NET_WM_ICON",
   "_NET_WM_NAME",
-  "_NET_WM_PING",
   "_NET_WM_PID",
+  "_NET_WM_PING",
   "_NET_WM_STATE",
   "_NET_WM_STATE_SKIP_PAGER",
   "_NET_WM_STATE_SKIP_TASKBAR",
   "_NET_WM_STATE_STICKY",
-  "_NET_WM_DESKTOP",
+  "_NET_WM_VISIBLE_NAME",
   "_NET_WM_WINDOW_TYPE",
   "_NET_WM_WINDOW_TYPE_NORMAL",
-  "_NET_WM_VISIBLE_NAME",
 
   "_NET_SYSTEM_TRAY",
   "_NET_SYSTEM_TRAY_OPCODE",
@@ -72,6 +76,7 @@ static gchar *atoms[] = {
 gboolean
 alltray_x11_init(const gchar *display_name) {
   gboolean retval = FALSE;
+  memset(&internal_state, 0, sizeof(internal_state));
 
   DEBUG_X11("Attempting to initialize the display");
   internal_state.x11_display = XOpenDisplay(display_name);
@@ -79,37 +84,15 @@ alltray_x11_init(const gchar *display_name) {
   if(internal_state.x11_display) {
     DEBUG_X11("Succeeded in initializing the display");
     internal_state.x11_default_screen =
-      XDefaultScreenOfDisplay(internal_state.x11_display);
+      XDefaultScreen(internal_state.x11_display);
+
     local_atoms_init();
 
     retval = internal_state.initialized = TRUE;
   }
 
+  atexit(x11_cleanup);
   return(retval);
-}
-
-/**
- * Performs cleanup for the module when it is no longer going to be used.
- *
- * This function closes the connection to the X11 server that was
- * connected to in alltray_x11_init() and cleans up any data that we
- * have lingering around.  This function is intended to be used as an
- * atexit() callback, though it could conceivably be called manually.
- */
-void
-alltray_x11_cleanup() {
-  if(!internal_state.initialized) {
-    DEBUG_X11("Warning: alltray_x11_cleanup() called, "
-              "but X11 module not initialized!");
-    return;
-  }
-
-  internal_state.x11_default_screen = NULL;
-  clear_atom_list();
-  XCloseDisplay(internal_state.x11_display);
-
-  internal_state.initialized = FALSE;
-  return;
 }
 
 /**
@@ -122,9 +105,9 @@ alltray_x11_cleanup() {
  */
 Atom
 alltray_x11_get_atom(const gchar *atom_name) {
-  if(!internal_state.initialized) {
-    g_print("error: alltray_x11_get_atom() called, but X11 module has not\n");
-    g_print("been initialized.");
+  if(!internal_state.x11_display) {
+    g_printerr("error: alltray_x11_get_atom() called, but X11 module has not\n"
+               "established an X11 connection.\n");
     abort();
   }
 
@@ -146,6 +129,16 @@ alltray_x11_get_atom(const gchar *atom_name) {
     retval = ((x11_atom_node *)list_node->data)->interned_atom;
   }
 
+  return(retval);
+}
+
+/**
+ * Get the X11 root window.
+ */
+Window
+alltray_x11_get_root_window() {
+  Window retval = XRootWindow(internal_state.x11_display,
+                              internal_state.x11_default_screen);
   return(retval);
 }
 
@@ -174,6 +167,82 @@ alltray_x11_get_window_name(Window win) {
       retval = g_strdup(((gchar *)g_list_first(text_property_name)->data));
     }
   }
+
+  return(retval);
+}
+
+/**
+ * Returns a cardinal property, cast to a gint.
+ */
+gint
+alltray_x11_get_window_cardinal_property(Window win, const gchar *prop_name) {
+  union {
+    gint8 card8;
+    gint16 card16;
+    gint32 card32;
+  } cardinal_property;
+
+  gint retval, x11_status;
+  Atom prop_atom = alltray_x11_get_atom(prop_name);
+  Atom req_type = alltray_x11_get_atom("CARDINAL");
+  Atom actual_type_return;
+  gint actual_format_return;
+  gulong num_items_return, bytes_after_return;
+  guchar *property_return;
+
+  memset(&cardinal_property, 0, sizeof(cardinal_property));
+  x11_status = XGetWindowProperty(internal_state.x11_display, win,
+                                  prop_atom, 0, G_MAXLONG, False,
+                                  req_type, &actual_type_return,
+                                  &actual_format_return, &num_items_return,
+                                  &bytes_after_return, &property_return);
+
+  switch(actual_format_return) {
+  case 8:
+    cardinal_property.card8 = *((gint8 *)property_return);
+    retval = (gint)cardinal_property.card8;
+    break;
+  case 16:
+    cardinal_property.card16 = *((gint16 *)property_return);
+    retval = (gint)cardinal_property.card16;
+    break;
+  case 32:
+    cardinal_property.card32 = *((gint32 *)property_return);
+    retval = (gint)cardinal_property.card32;
+    break;
+  default:
+    g_printerr(g_strdup_printf("%s has encountered an internal error.",
+                               PACKAGE_NAME));
+    abort();
+  }
+
+  XFree(property_return);
+  return(retval);
+}
+
+/**
+ * [Convenience function] -- Returns the Window of a given property on
+ * an X11 Window.
+ */
+Window
+alltray_x11_get_window_window_property(Window win, const gchar *prop_name) {
+  Window retval;
+
+  gint x11_status = 0;
+  Atom prop_atom = alltray_x11_get_atom(prop_name);
+  Atom req_type = alltray_x11_get_atom("WINDOW");
+  Atom actual_type_return;
+  gint actual_format_return;
+  gulong num_items_return, bytes_after_return;
+  guchar *property_return;
+
+  x11_status = XGetWindowProperty(internal_state.x11_display, win,
+                                  prop_atom, 0, G_MAXLONG, False,
+                                  req_type, &actual_type_return,
+                                  &actual_format_return, &num_items_return,
+                                  &bytes_after_return, &property_return);
+  retval = *((long *)property_return);
+  XFree(property_return);
 
   return(retval);
 }
@@ -208,6 +277,60 @@ alltray_x11_get_window_text_property(Window win, const gchar *prop_name) {
   }
 
   return(retval);
+}
+
+/**
+ * Returns the owner Window of an X11 selection.
+ */
+Window
+alltray_x11_get_selection_owner(const gchar *selection_name) {
+  Atom selection_atom = alltray_x11_get_atom(selection_name);
+  return(XGetSelectionOwner(internal_state.x11_display, selection_atom));
+}
+
+/**
+ * Returns a string property associated with an X11 Window.
+ */
+gchar *
+alltray_x11_get_window_string_property(Window win, const gchar *prop_name) {
+  int x11_status = 0;
+  Atom prop_atom = alltray_x11_get_atom(prop_name);
+  Atom req_type = alltray_x11_get_atom("STRING");
+  Atom actual_type_return;
+  int actual_format_return;
+  unsigned long num_items_return, bytes_after_return;
+  unsigned char *property_return;
+
+  gchar *retval = NULL;
+  x11_status = XGetWindowProperty(internal_state.x11_display, win, prop_atom,
+                                  0, G_MAXLONG, False, req_type,
+                                  &actual_type_return,
+                                  &actual_format_return,
+                                  &num_items_return,
+                                  &bytes_after_return, &property_return);
+
+  if((actual_type_return != req_type) &&
+     (property_return != NULL)) {
+    DEBUG_X11(g_strdup_printf("Wanted %s, got %s",
+                              alltray_x11_get_atom_name(prop_atom),
+                              alltray_x11_get_atom_name(actual_type_return)));
+    retval = g_strdup((gchar *)property_return);
+  } else if(property_return != NULL) {
+    retval = g_strdup((gchar *)property_return);
+  } else {
+    retval = NULL;
+  }
+
+  if(property_return != NULL) XFree(property_return);
+  return(retval);
+}
+
+/**
+ * Converts an atom into a string.
+ */
+gchar *
+alltray_x11_get_atom_name(Atom atom) {
+  return(XGetAtomName(internal_state.x11_display, atom));
 }
 
 /**
@@ -303,4 +426,28 @@ atom_compare(gconstpointer a, gconstpointer b) {
   x11_atom_node *that = (x11_atom_node *)b;
 
   return(strcmp(this->name, that->name));
+}
+
+/**
+ * Performs cleanup for the module when it is no longer going to be used.
+ *
+ * This function closes the connection to the X11 server that was
+ * connected to in alltray_x11_init() and cleans up any data that we
+ * have lingering around.  This function is intended to be used as an
+ * atexit() callback, though it could conceivably be called manually.
+ */
+static void
+x11_cleanup() {
+  if(!internal_state.initialized) {
+    DEBUG_X11("Warning: alltray_x11_cleanup() called, "
+              "but X11 module not initialized!");
+    return;
+  }
+
+  internal_state.x11_default_screen = NULL;
+  clear_atom_list();
+  XCloseDisplay(internal_state.x11_display);
+
+  internal_state.initialized = FALSE;
+  return;
 }

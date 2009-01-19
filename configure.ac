@@ -38,11 +38,24 @@ else
    CFLAGS="$CFLAGS -std=gnu99"
 fi
 
+AC_MSG_CHECKING([for warn_unused_result support])
+AC_COMPILE_IFELSE([dnl
+  int foo(int a) __attribute__((warn_unused_result));
+  int foo(int a) {
+    return(a);
+  } ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE([WARN_UNUSED_RESULT], [__attribute__((warn_unused_result))],
+            [Hint to GCC to warn if the result of a function is unused.]),
+  AC_MSG_RESULT(no)
+  AC_DEFINE([WARN_UNUSED_RESULT], [], []))
+
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 # Library checks.
-AC_CHECK_LIB([dl], [dlopen],,AC_MSG_ERROR([libdl is required]))
+# AC_CHECK_LIB([dl], [dlopen],,libdl_external=no)
+AC_SEARCH_LIBS([dlopen], [dl],,AC_MSG_ERROR([dlopen() is missing]))
 
 # pkg-config checks need to be inserted here.
 PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
@@ -52,6 +65,18 @@ AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_COMPILER, "${CC}", [Compiler])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS, "$(uname -s) ($(uname -o))",
+  [Build OS Kernel and Name])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_REL, "$(uname -r)", [Build OS Release])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_VER, "$(uname -v)", [Build OS Version])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_HOST, "$(hostname -f)",
+  [Build OS hostname])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)", 
+  [Build Date (UTC)])
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
+  "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
 
 # Configuration wrap-up.
 AC_CONFIG_FILES([README

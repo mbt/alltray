@@ -38,6 +38,24 @@ How to Help!
 
     * Indentations are two spaces and NEVER, EVER tabs.
 
+    * Lines are no longer than 80 characters, unless for some reason it
+      is ABSOLUTELY necessary to have a line that is longer (e.g., it
+      can't be trimmed due to technical reasons).
+
+    * Functions should be no longer than 25-50 lines when possible.
+      There are of course going to be exceptions, but break functions
+      down into small chunks whenever possible (this also tends to
+      increase the utility of functions in the code base).  Essentially,
+      though, a function should be less than a screen-full of lines at a
+      reasonable point size in an editor such as GNU Emacs or any
+      terminal-based editor.
+
+      In the event that functions *do* run long, keeping the lines under
+      80 characters is even more important---80 character lines are the
+      largest that many printers will actually print by default.  Also,
+      terminals default to being 80 characters wide, as does the GNU
+      Emacs text editor.  ;-)
+
     * Global prototypes go in <alltray.h>.
 
     * Global functions must be prefixed with alltray_$MODULENAME_.  For

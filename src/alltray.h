@@ -21,6 +21,8 @@
 #define ALLTRAY_EXIT_SUCCESS  0
 #define ALLTRAY_EXIT_INVALID_ARGS 1
 #define ALLTRAY_EXIT_X11_ERROR 2
+#define ALLTRAY_EXIT_NO_WM 3
+#define ALLTRAY_EXIT_NO_SYSTRAY 4
 
 // Prototypes for cmdline.c
 void cmdline_parse(int *argc, char ***argv);
@@ -39,25 +41,42 @@ extern gboolean cmdline_sticky_windows;
 extern gboolean cmdline_list_debug_opts;
 extern gboolean cmdline_quiet;
 extern gboolean cmdline_show_version;
+extern gboolean cmdline_show_ext_version;
 extern guint cmdline_display_title_changes_delay;
 extern gchar *cmdline_x11_display;
+extern gboolean cmdline_wait_for_wm;
+extern gboolean cmdline_wait_for_systray;
+extern gboolean cmdline_test_mode;
 
 // Prototypes for main.c
 int main(int argc, char *argv[]);
 void alltray_display_banner(void);
 
+// Prototypes for wm.c
+gboolean alltray_wm_init(void);
+Window alltray_wm_get_window(void);
+gchar * alltray_wm_get_name(void);
+gboolean alltray_wm_get_process_info(GPid *wm_pid, gchar **wm_host);
+
 // Prototypes for x11.c
-gboolean alltray_x11_init(const gchar *display_name)
-  __attribute__((warn_unused_result));
-Atom alltray_x11_get_atom(const gchar *atom_name)
-  __attribute__((warn_unused_result));
-gchar *alltray_x11_get_window_name(Window win)
-  __attribute__((warn_unused_result));
+gboolean alltray_x11_init(const gchar *display_name) WARN_UNUSED_RESULT;
+Atom alltray_x11_get_atom(const gchar *atom_name) WARN_UNUSED_RESULT;
+gchar *alltray_x11_get_window_name(Window win) WARN_UNUSED_RESULT;
 GList *alltray_x11_get_window_text_property(Window win, const gchar *prop_name)
-  __attribute__((warn_unused_result));
+  WARN_UNUSED_RESULT;
 gchar *alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name)
-  __attribute__((warn_unused_result));
-void alltray_x11_cleanup(void);
+  WARN_UNUSED_RESULT;
+Window alltray_x11_get_root_window(void) WARN_UNUSED_RESULT;
+Window alltray_x11_get_window_window_property(Window win, 
+                                              const gchar *prop_name)
+  WARN_UNUSED_RESULT;
+gint alltray_x11_get_window_cardinal_property(Window win,
+                                              const gchar *prop_name)
+  WARN_UNUSED_RESULT;
+gchar *alltray_x11_get_window_string_property(Window win,
+                                              const gchar *prop_name) 
+WARN_UNUSED_RESULT;
+gchar *alltray_x11_get_atom_name(Atom atom) WARN_UNUSED_RESULT;
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
