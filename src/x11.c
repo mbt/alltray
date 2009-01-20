@@ -143,6 +143,37 @@ alltray_x11_get_root_window() {
 }
 
 /**
+ * Create a new X11 window in a simple fashion.
+ *
+ * @returns The Window ID of the newly-created X11 Window.
+ */
+Window
+alltray_x11_create_window(Window parent, int location_x, int location_y,
+                          int width, int height) {
+  Window retval =
+    XCreateSimpleWindow(internal_state.x11_display, parent,
+                        location_x, location_y, width, height, 0, 0, 0);
+
+  return(retval);
+}
+
+Window
+alltray_x11_get_window_parent(Window win) {
+  Window root_return, parent_return;
+  Window *children_return;
+  guint number_of_children;
+
+  XQueryTree(internal_state.x11_display, win, &root_return, &parent_return,
+             &children_return, &number_of_children);
+
+  if(number_of_children > 0) {
+    XFree(children_return);
+  }
+
+  return(parent_return);
+}
+
+/**
  * [Convenience function] -- Returns the name of a given X11 Window.
  */
 gchar *
@@ -211,8 +242,7 @@ alltray_x11_get_window_cardinal_property(Window win, const gchar *prop_name) {
     retval = (gint)cardinal_property.card32;
     break;
   default:
-    g_printerr(g_strdup_printf("%s has encountered an internal error.",
-                               PACKAGE_NAME));
+    g_printerr("%s has encountered an internal error.", PACKAGE_NAME);
     abort();
   }
 
@@ -444,7 +474,7 @@ x11_cleanup() {
     return;
   }
 
-  internal_state.x11_default_screen = NULL;
+  internal_state.x11_default_screen = 0;
   clear_atom_list();
   XCloseDisplay(internal_state.x11_display);
 

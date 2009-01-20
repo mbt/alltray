@@ -51,6 +51,7 @@ extern gboolean cmdline_test_mode;
 // Prototypes for main.c
 int main(int argc, char *argv[]);
 void alltray_display_banner(void);
+void alltray_display_extended_banner(void);
 
 // Prototypes for wm.c
 gboolean alltray_wm_init(void);
@@ -59,24 +60,22 @@ gchar * alltray_wm_get_name(void);
 gboolean alltray_wm_get_process_info(GPid *wm_pid, gchar **wm_host);
 
 // Prototypes for x11.c
-gboolean alltray_x11_init(const gchar *display_name) WARN_UNUSED_RESULT;
-Atom alltray_x11_get_atom(const gchar *atom_name) WARN_UNUSED_RESULT;
-gchar *alltray_x11_get_window_name(Window win) WARN_UNUSED_RESULT;
-GList *alltray_x11_get_window_text_property(Window win, const gchar *prop_name)
-  WARN_UNUSED_RESULT;
-gchar *alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name)
-  WARN_UNUSED_RESULT;
-Window alltray_x11_get_root_window(void) WARN_UNUSED_RESULT;
+gboolean alltray_x11_init(const gchar *display_name);
+Atom alltray_x11_get_atom(const gchar *atom_name);
+gchar *alltray_x11_get_window_name(Window win);
+GList *alltray_x11_get_window_text_property(Window win, const gchar *prop_name);
+gchar *alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name);
+Window alltray_x11_get_root_window(void);
 Window alltray_x11_get_window_window_property(Window win, 
-                                              const gchar *prop_name)
-  WARN_UNUSED_RESULT;
+                                              const gchar *prop_name);
 gint alltray_x11_get_window_cardinal_property(Window win,
-                                              const gchar *prop_name)
-  WARN_UNUSED_RESULT;
+                                              const gchar *prop_name);
 gchar *alltray_x11_get_window_string_property(Window win,
-                                              const gchar *prop_name) 
-WARN_UNUSED_RESULT;
-gchar *alltray_x11_get_atom_name(Atom atom) WARN_UNUSED_RESULT;
+                                              const gchar *prop_name);
+gchar *alltray_x11_get_atom_name(Atom atom);
+Window alltray_x11_create_window(Window parent, int location_x, int location_y,
+                                 int width, int height);
+Window alltray_x11_get_window_parent(Window win);
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
