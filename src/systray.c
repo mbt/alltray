@@ -16,9 +16,16 @@ static systray_internal_state internal_state;
 gboolean
 alltray_systray_init() {
   gboolean retval = FALSE;
+  DEBUG_TRAY("Initializing the system tray module");
 
   memset(&internal_state, 0, sizeof(internal_state));
   internal_state.systray_window = alltray_systray_get_window();
+  DEBUG_TRAY(g_strdup_printf("Got system tray window: 0x%08x",
+                             (guint)internal_state.systray_window));
+
+  internal_state.systray_window_name = alltray_systray_get_window_name();
+  DEBUG_TRAY(g_strdup_printf("Got system tray window name: %s",
+                             internal_state.systray_window_name));
 
   if((internal_state.systray_window != 0) &&
      (internal_state.systray_window_name != NULL)) {
@@ -30,10 +37,29 @@ alltray_systray_init() {
 
 Window
 alltray_systray_get_window() {
-  return(alltray_x11_get_selection_owner("_NET_SYSTEM_TRAY"));
+  // System tray is _NET_SYSTEM_TRAY_Sn where n is the screen number.
+  gint screen = alltray_x11_get_default_screen();
+  gchar *system_tray_selection = g_strdup_printf("_NET_SYSTEM_TRAY_S%01d",
+                                                 screen);
+  Window retval = alltray_x11_get_selection_owner(system_tray_selection);
+  return(retval);
 }
 
 gchar *
 alltray_systray_get_window_name() {
-  return(alltray_x11_get_window_name(internal_state.systray_window));
+  gchar *retval;
+
+  retval = alltray_x11_get_window_name(internal_state.systray_window);
+  return(retval);
+}
+
+/**
+ * Check once per second until there is a system tray available.
+ */
+void
+alltray_systray_wait_for_available() {
+  while(alltray_systray_get_window() == 0) {
+    DEBUG_TRAY("Waiting for a system tray to start...");
+    sleep(1);
+  }
 }

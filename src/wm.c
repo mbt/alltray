@@ -43,6 +43,7 @@ static void wm_cleanup(void);
 gboolean
 alltray_wm_init() {
   gboolean retval = FALSE;
+  DEBUG_WM("Initializing window manager module");
   
   memset(&internal_state, 0, sizeof(internal_state));
   
@@ -59,6 +60,16 @@ alltray_wm_init() {
 }
 
 /**
+ * Check once per second until there is a window manager available.
+ */
+void alltray_wm_wait_for_available() {
+  while(alltray_wm_get_window() == 0) {
+    DEBUG_WM("Waiting for a window manager to start...");
+    sleep(1);
+  }
+}
+
+/**
  * Return the window created by the currently-running window manager.
  *
  * This is also how we detect whether or not the currently-running
@@ -72,6 +83,8 @@ alltray_wm_init() {
 Window
 alltray_wm_get_window() {
   Window root_window = alltray_x11_get_root_window();
+  int screen = alltray_x11_get_default_screen();
+
   Window retval =
     alltray_x11_get_window_window_property(root_window,
                                            "_NET_SUPPORTING_WM_CHECK");

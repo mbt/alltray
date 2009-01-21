@@ -249,6 +249,14 @@ How to Help!
   * DON’T directly test for debug flags; DO always use the macro calls,
     which provide output in a consistent format.
 
+  * DON'T hard-code values into the code.  Things like the program name
+    and version number are defined as macros that evaluate to strings;
+    if you have magic numbers or certain types of embedded strings, do
+    this for them, as well.  The only exception to this is atom and
+    property names for the X Window System, because the strings are
+    actually the keys for numbers that the X Window System stores
+    internally to the server.
+
 Links
 -----
 

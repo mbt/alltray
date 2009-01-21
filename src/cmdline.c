@@ -107,13 +107,13 @@ void cmdline_parse(int *argc, char ***argv) {
   }
 
   if(cmdline_show_ext_version) {
-    alltray_display_banner();
-    alltray_display_extended_banner();
+    main_display_banner();
+    main_display_extended_banner();
     exit(ALLTRAY_EXIT_SUCCESS);
   }
 
   if(cmdline_show_version) {
-    alltray_display_banner();
+    main_display_banner();
     exit(ALLTRAY_EXIT_SUCCESS);
   }
 

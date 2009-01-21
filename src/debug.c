@@ -16,6 +16,7 @@ static debug_flag_record debug_flags[] = {
     "Command line parsing debugging messages" },
   { ALLTRAY_DEBUG_X11, "X11", "X11 debugging messages" },
   { ALLTRAY_DEBUG_TRAY, "TRAY", "System tray debugging messages" },
+  { ALLTRAY_DEBUG_WM, "WM", "Window manager debugging messages" },
   { ALLTRAY_DEBUG_MISC, "MISC", "Miscellaneous debugging messages" },
   { ALLTRAY_DEBUG_ALL, "ALL", "Enable all debugging messages" },
   { 0, NULL, NULL }

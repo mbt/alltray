@@ -15,14 +15,19 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <glib.h>
+#include <glib-object.h>
 #include <config.h>
 
 // Exit codes.
 #define ALLTRAY_EXIT_SUCCESS  0
 #define ALLTRAY_EXIT_INVALID_ARGS 1
 #define ALLTRAY_EXIT_X11_ERROR 2
-#define ALLTRAY_EXIT_NO_WM 3
-#define ALLTRAY_EXIT_NO_SYSTRAY 4
+#define ALLTRAY_EXIT_WM_ERROR 3
+#define ALLTRAY_EXIT_SYSTRAY_ERROR 4
+#define ALLTRAY_EXIT_SPAWN_ERROR 5
+
+// This is a stop-gap until the remainder of the program is (re)written.
+#define ALLTRAY_EXIT_NOT_IMPLEMENTED 126
 
 // Prototypes for cmdline.c
 void cmdline_parse(int *argc, char ***argv);
@@ -50,14 +55,31 @@ extern gboolean cmdline_test_mode;
 
 // Prototypes for main.c
 int main(int argc, char *argv[]);
-void alltray_display_banner(void);
-void alltray_display_extended_banner(void);
+void main_display_banner(void);
+void main_display_extended_banner(void);
+
+// Data & Prototypes for process.c
+typedef struct {
+  GPid child_pid;
+
+  int window_count;
+  GList *window_list;
+} alltray_instance_process_info;
+
+gboolean alltray_process_spawn_new(char *argv[], GPid *pid) WARN_UNUSED_RETVAL;
+
+// Prototypes for systray.c
+gboolean alltray_systray_init(void);
+Window alltray_systray_get_window(void);
+gchar *alltray_systray_get_window_name(void);
+void alltray_systray_wait_for_available(void);
 
 // Prototypes for wm.c
 gboolean alltray_wm_init(void);
 Window alltray_wm_get_window(void);
 gchar * alltray_wm_get_name(void);
 gboolean alltray_wm_get_process_info(GPid *wm_pid, gchar **wm_host);
+void alltray_wm_wait_for_available(void);
 
 // Prototypes for x11.c
 gboolean alltray_x11_init(const gchar *display_name);
@@ -76,16 +98,20 @@ gchar *alltray_x11_get_atom_name(Atom atom);
 Window alltray_x11_create_window(Window parent, int location_x, int location_y,
                                  int width, int height);
 Window alltray_x11_get_window_parent(Window win);
+Window alltray_x11_get_selection_owner(const gchar *selection_name);
+gint alltray_x11_get_default_screen(void);
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
 #define ALLTRAY_DEBUG_CMDLINE 0x0001
 #define ALLTRAY_DEBUG_X11 0x0002
 #define ALLTRAY_DEBUG_TRAY 0x0004
-#define ALLTRAY_DEBUG_MISC 0x0008
+#define ALLTRAY_DEBUG_WM 0x0008
+#define ALLTRAY_DEBUG_MISC 0x00F0
 
 #define ALLTRAY_DEBUG_ALL ((ALLTRAY_DEBUG_CMDLINE | ALLTRAY_DEBUG_X11 | \
-                            ALLTRAY_DEBUG_TRAY | ALLTRAY_DEBUG_MISC))
+                            ALLTRAY_DEBUG_TRAY | ALLTRAY_DEBUG_WM | \
+                            ALLTRAY_DEBUG_MISC))
 
 #ifndef ALLTRAY_DISABLE_DEBUG
 
@@ -104,6 +130,11 @@ Window alltray_x11_get_window_parent(Window win);
     g_print("[Debug:TRAY] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
   }
 
+#define DEBUG_WM(msg) \
+  if(alltray_debug_enabled(ALLTRAY_DEBUG_WM)) { \
+    g_print("[Debug:WM] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
+  }
+
 #define DEBUG_MISC(msg) \
   if(alltray_debug_enabled(ALLTRAY_DEBUG_MISC)) { \
     g_print("[Debug:MISC] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
@@ -117,5 +148,8 @@ Window alltray_x11_get_window_parent(Window win);
 #define DEBUG_MISC(msg) NULL
 
 #endif /* !ALLTRAY_DISABLE_DEBUG */
+
+// Other constants
+#define ALLTRAY_HELPER_LIBRARY "alltray_helper.so"
 
 #endif /* !__ALLTRAY_H_INCLUDED__ */

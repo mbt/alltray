@@ -45,10 +45,10 @@ AC_COMPILE_IFELSE([dnl
     return(a);
   } ],
   AC_MSG_RESULT(yes)
-  AC_DEFINE([WARN_UNUSED_RESULT], [__attribute__((warn_unused_result))],
+  AC_DEFINE([WARN_UNUSED_RETVAL], [__attribute__((warn_unused_result))],
             [Hint to GCC to warn if the result of a function is unused.]),
   AC_MSG_RESULT(no)
-  AC_DEFINE([WARN_UNUSED_RESULT], [], []))
+  AC_DEFINE([WARN_UNUSED_RETVAL], [], []))
 
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
@@ -59,12 +59,16 @@ AC_SEARCH_LIBS([dlopen], [dl],,AC_MSG_ERROR([dlopen() is missing]))
 
 # pkg-config checks need to be inserted here.
 PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
-PKG_CHECK_MODULES(GLIB, glib-2.0,, AC_MSG_ERROR([glib-2.0 is required]))
+PKG_CHECK_MODULES(GLIB, glib-2.0,,AC_MSG_ERROR([glib-2.0 is required]))
+PKG_CHECK_MODULES(GOBJECT, gobject-2.0,,AC_MSG_ERROR([gobject-2.0 is required]))
 
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+AC_SUBST(GOBJECT_CFLAGS)
+AC_SUBST(GOBJECT_LIBS)
+
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_COMPILER, "$(${CC} --version|head -1)",
   [Compiler])

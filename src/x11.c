@@ -19,10 +19,10 @@ typedef struct {
 static x11_internal_state internal_state;
 static GList *interned_atoms = NULL;
 
-static void clear_atom_list(void);
-static void local_atoms_init(void);
-static void free_dynamic_storage(gpointer data, gpointer ignored);
-static gboolean atom_compare(gconstpointer this, gconstpointer that);
+static void x11_clear_atom_list(void);
+static void x11_local_atoms_init(void);
+static void x11_free_dynamic_storage(gpointer data, gpointer ignored);
+static gboolean x11_atom_compare(gconstpointer this, gconstpointer that);
 static void x11_cleanup(void);
 
 static gchar *atoms[] = {
@@ -59,7 +59,6 @@ static gchar *atoms[] = {
   "_NET_WM_WINDOW_TYPE",
   "_NET_WM_WINDOW_TYPE_NORMAL",
 
-  "_NET_SYSTEM_TRAY",
   "_NET_SYSTEM_TRAY_OPCODE",
 
   "_ALLTRAY_MANAGED",
@@ -86,7 +85,7 @@ alltray_x11_init(const gchar *display_name) {
     internal_state.x11_default_screen =
       XDefaultScreen(internal_state.x11_display);
 
-    local_atoms_init();
+    x11_local_atoms_init();
 
     retval = internal_state.initialized = TRUE;
   }
@@ -114,13 +113,14 @@ alltray_x11_get_atom(const gchar *atom_name) {
   Atom retval;
   x11_atom_node *data = g_malloc(sizeof(x11_atom_node));
   data->name = g_strdup(atom_name);
-  GList *list_node = g_list_find_custom(interned_atoms, data, atom_compare);
+  GList *list_node = g_list_find_custom(interned_atoms, data, x11_atom_compare);
 
   if(!list_node) {
     // Need to create the atom and add it to the list.
     data->interned_atom = XInternAtom(internal_state.x11_display,
                                       atom_name, False);
-    interned_atoms = g_list_insert_sorted(interned_atoms, data, atom_compare);
+    interned_atoms = g_list_insert_sorted(interned_atoms, data, 
+                                          x11_atom_compare);
     retval = data->interned_atom;
   } else {
     g_free(data->name);
@@ -140,6 +140,14 @@ alltray_x11_get_root_window() {
   Window retval = XRootWindow(internal_state.x11_display,
                               internal_state.x11_default_screen);
   return(retval);
+}
+
+/**
+ * Get the X11 default screen number.
+ */
+gint
+alltray_x11_get_default_screen() {
+  return(internal_state.x11_default_screen);
 }
 
 /**
@@ -405,8 +413,8 @@ alltray_x11_get_window_utf8_property(Window win, const gchar *prop_name) {
  * Clears the list of atoms, freeing all storage used by the list.
  */
 static void
-clear_atom_list() {
-  g_list_foreach(interned_atoms, free_dynamic_storage, NULL);
+x11_clear_atom_list() {
+  g_list_foreach(interned_atoms, x11_free_dynamic_storage, NULL);
   g_list_free(interned_atoms);
 }
 
@@ -414,8 +422,8 @@ clear_atom_list() {
  * Frees the dynamic storage in an interned atom.
  */
 static void
-free_dynamic_storage(gpointer node,
-                     gpointer ignored __attribute__((unused))) {
+x11_free_dynamic_storage(gpointer node,
+                         gpointer ignored __attribute__((unused))) {
   x11_atom_node *data = (x11_atom_node *)node;
   g_free(data->name);
   g_free(data);
@@ -430,7 +438,7 @@ free_dynamic_storage(gpointer node,
  * atoms array; to add more atoms to the list, add them there.
  */
 static void
-local_atoms_init() {
+x11_local_atoms_init() {
   Atom throwaway;
   int i;
 
@@ -439,9 +447,10 @@ local_atoms_init() {
 
   for(i = 0, atom_name = atoms[i];
       atom_name != NULL; i++, atom_name = atoms[i]) {
-    DEBUG_X11(g_strdup_printf("Initializing atom %s", atom_name));
     throwaway = alltray_x11_get_atom(atom_name);
   }
+
+  DEBUG_X11("Atoms initialized");
 }
 
 /**
@@ -451,7 +460,7 @@ local_atoms_init() {
  * g_list_insert_sorted() functions from GLib.
  */
 static gboolean
-atom_compare(gconstpointer a, gconstpointer b) {
+x11_atom_compare(gconstpointer a, gconstpointer b) {
   x11_atom_node *this = (x11_atom_node *)a;
   x11_atom_node *that = (x11_atom_node *)b;
 
@@ -475,7 +484,7 @@ x11_cleanup() {
   }
 
   internal_state.x11_default_screen = 0;
-  clear_atom_list();
+  x11_clear_atom_list();
   XCloseDisplay(internal_state.x11_display);
 
   internal_state.initialized = FALSE;

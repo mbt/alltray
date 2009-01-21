@@ -6,7 +6,7 @@
 #include <alltray.h>
 
 void
-alltray_display_banner() {
+main_display_banner() {
   g_print("%s version %s\n", PACKAGE_NAME, PACKAGE_VERSION);
   g_print("  Copyright (c) 2004-2006 Jochen Baier <email@Jochen-Baier.de>\n");
   g_print("  Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>\n");
@@ -29,7 +29,7 @@ alltray_display_banner() {
 }
 
 void
-alltray_display_extended_banner() {
+main_display_extended_banner() {
   g_print("Compilation Environment\n"
           "=======================\n\n");
   g_print("CFLAGS:\t\t%s\n", ALLTRAY_COMPILE_FLAGS);
@@ -43,27 +43,86 @@ alltray_display_extended_banner() {
 }
 
 static gboolean
-output_is_terminal() {
+output_is_terminal(void) {
   return(isatty(fileno(stdout)));
+}
+
+static int
+main_spawn_mode(int argc, char *argv[]) {
+  GPid child_pid;
+  gboolean success;
+
+  success = alltray_process_spawn_new(argv, &child_pid);
+  if(!success) {
+    return(ALLTRAY_EXIT_SPAWN_ERROR);
+  }
+
+  return(ALLTRAY_EXIT_NOT_IMPLEMENTED);
+}
+
+static int
+main_click_mode(void) {
+  return(ALLTRAY_EXIT_NOT_IMPLEMENTED);
+}
+
+static int
+main_required_init() {
+  if(!alltray_x11_init(cmdline_x11_display)) {
+    g_printerr("Error: Unable to initialize the X11 module.\n"
+               "Is the DISPLAY variable correctly set?\n");
+    return(ALLTRAY_EXIT_X11_ERROR);
+  }
+
+  if(!alltray_wm_init()) {
+    if(G_LIKELY(cmdline_wait_for_wm == FALSE)) {
+      g_printerr("Error: Unable to initialize the window manager module.\n"
+                 "Are you running an EWMH-compliant window manager?\n");
+      return(ALLTRAY_EXIT_WM_ERROR);
+    } else {
+      alltray_wm_wait_for_available();
+      alltray_wm_init();
+    }
+  }
+
+  if(!alltray_systray_init()) {
+    if(G_LIKELY(cmdline_wait_for_systray == FALSE)) {
+      g_printerr("Error: Unable to initialize the system tray module.\n"
+                 "Are you running a system tray manager?\n");
+      return(ALLTRAY_EXIT_SYSTRAY_ERROR);
+    } else {
+      alltray_systray_wait_for_available();
+      alltray_systray_init();
+    }
+  }
 }
 
 int
 main(int argc, char *argv[]) {
-  cmdline_parse(&argc, &argv);
-  if((!cmdline_quiet) && output_is_terminal()) alltray_display_banner();
+  int retval = 0;
+  g_type_init();
 
+  cmdline_parse(&argc, &argv);
+  if((!cmdline_quiet) && output_is_terminal()) main_display_banner();
   if(cmdline_debug_enabled) alltray_debug_init();
 
-  if(!alltray_x11_init(cmdline_x11_display)) {
-    g_printerr("Error: Unable to initialize the X11 module.\n"
-               "Is the DISPLAY variable correctly set?\n");
-    exit(ALLTRAY_EXIT_X11_ERROR);
+  retval = main_required_init();
+
+  // Only try to do anything if we've been successful thus far.
+  if(retval != 0) {
+    if(argc > 1) {
+      int passed_argv_start = 1;
+      int passed_argc = (argc - 1);
+
+      if(strcmp(argv[1], "--") == 0) {
+        passed_argc--;
+        passed_argv_start++;
+      }
+
+      retval = main_spawn_mode(passed_argc, &argv[passed_argv_start]);
+    } else {
+      retval = main_click_mode();
+    }
   }
 
-  if(!alltray_wm_init()) {
-    g_printerr("Error: Unable to initialize the window manager module.\n"
-               "Are you running an EWMH-compliant window manager?\n");
-  }
-
-  return(ALLTRAY_EXIT_SUCCESS);
+  return(retval);
 }
