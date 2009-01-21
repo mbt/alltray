@@ -3,7 +3,6 @@
  * debug.c - AllTray runtime debugging support.
  * Copyright © 2009 Michael B. Trausch <mike@trausch.us>
  */
-#include <glib.h>
 #include <alltray.h>
 
 typedef struct {
