@@ -1,31 +1,23 @@
 This file contains a list of files and the copyright(s) which are held on
 those files, and the license under which those contribution(s) were made.
-Unless otherwise specified, the copyright license is the GNU GPL v2.
+Unless otherwise specified, the copyright license is the GNU GPL v3.
 
-Last-Updated: 2008-12-30
+Last-Updated: 2009-Jan-21
 
 AllTray program:
-  Author: Jochen Baier <email@jochen-baier.de>
   Author: Michael B. Trausch <mike@trausch.us>
   Maintainer: Michael B. Trausch <mike@trausch.us>
-  License: GNU GPL v2
+  License: GNU GPL v3
 
-Manual page:
-  Author: Carlos C. Soto <csoto@sia-solutions.com>
-  Maintainer: Michael B. Trausch <mike@trausch.us>
-  License: GNU GPL v2
+CREDITS
+=======
 
-AllTray icon:
-  Author: Eugene Alex <Frame3@narod.ru>
-  Maintainer: Michael B. Trausch <mike@trausch.us>
-  License: Unknown
+AllTray was originally written by Jochen Baier and was released under
+the GPL v2 (or later) license.  The original AllTray icon was created by
+Eugene Alex <Frame3@narod.ru>, and the original AllTray man page was
+created by Carlos C. Soto <csoto@sia-solutions.com>.
 
-
-Old file contents follow:
-
-alltray: till the end of 2007: Jochen Baier (email@jochen-baier.de), atm no maintainer
-man page: Carlos C Soto <csoto@sia-solutions.com>
-xmms icon: ? (see xmms homepage)
-fallback icon: gnome
-alltray icon: modified from: glaux mplayer icon, Eugene Alex,
-              <Frame3@narod.ru>
+None of the original components exists as it used to; in particular, a
+new icon was created and the man page was completely rewritten.  The
+AllTray source code is (currently) being re-written as well to bring it
+up-to-date and make it consistent with itself.
