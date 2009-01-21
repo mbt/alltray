@@ -57,43 +57,55 @@ main_spawn_mode(int argc, char *argv[]) {
     return(ALLTRAY_EXIT_SPAWN_ERROR);
   }
 
+  g_printerr("Spawn Mode is not yet implemented.\n");
   return(ALLTRAY_EXIT_NOT_IMPLEMENTED);
 }
 
 static int
 main_click_mode(void) {
+  g_printerr("Click Mode is not yet implemented.\n");
   return(ALLTRAY_EXIT_NOT_IMPLEMENTED);
 }
 
 static int
 main_required_init() {
+  int retval = 0;
+
   if(!alltray_x11_init(cmdline_x11_display)) {
     g_printerr("Error: Unable to initialize the X11 module.\n"
                "Is the DISPLAY variable correctly set?\n");
-    return(ALLTRAY_EXIT_X11_ERROR);
+    retval = ALLTRAY_EXIT_X11_ERROR;
+  } else {
+    DEBUG_X11("X11 initialized");
   }
 
-  if(!alltray_wm_init()) {
+  if(!alltray_wm_init() && !retval) {
     if(G_LIKELY(cmdline_wait_for_wm == FALSE)) {
       g_printerr("Error: Unable to initialize the window manager module.\n"
                  "Are you running an EWMH-compliant window manager?\n");
-      return(ALLTRAY_EXIT_WM_ERROR);
+      retval = ALLTRAY_EXIT_WM_ERROR;
     } else {
       alltray_wm_wait_for_available();
       alltray_wm_init();
     }
+  } else {
+    DEBUG_WM("WM initialized");
   }
 
-  if(!alltray_systray_init()) {
+  if(!alltray_systray_init() && !retval) {
     if(G_LIKELY(cmdline_wait_for_systray == FALSE)) {
       g_printerr("Error: Unable to initialize the system tray module.\n"
                  "Are you running a system tray manager?\n");
-      return(ALLTRAY_EXIT_SYSTRAY_ERROR);
+      retval = ALLTRAY_EXIT_SYSTRAY_ERROR;
     } else {
       alltray_systray_wait_for_available();
       alltray_systray_init();
     }
+  } else {
+    DEBUG_TRAY("TRAY initialized");
   }
+
+  return(retval);
 }
 
 int
@@ -108,7 +120,7 @@ main(int argc, char *argv[]) {
   retval = main_required_init();
 
   // Only try to do anything if we've been successful thus far.
-  if(retval != 0) {
+  if(retval == 0) {
     if(argc > 1) {
       int passed_argv_start = 1;
       int passed_argc = (argc - 1);
