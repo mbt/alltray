@@ -42,6 +42,9 @@ How to Help!
       is ABSOLUTELY necessary to have a line that is longer (e.g., it
       can't be trimmed due to technical reasons).
 
+    * Blank lines must be truly blank; they must contain only a UNIX
+      newline.  No spaces or other non-printing (whitespace) characters.
+
     * Functions should be no longer than 25-50 lines when possible.
       There are of course going to be exceptions, but break functions
       down into small chunks whenever possible (this also tends to
@@ -103,17 +106,31 @@ How to Help!
  DOs and DON’Ts
  --------------
 
+ I am a bit picky, perhaps even O-C about the code.  That's more than I
+ can say about my meatspace desk, but still...
+
+  * DO use bzr for development, so that you can continually rebase your
+    changes against the trunk if they take more than a very small amount
+    of time to work with (or at least so that you can easily rebase them
+    at the end of your work).  You can do this with straight patches,
+    but it is much harder.  I won't fold anything in that doesn't
+    cleanly merge against the trunk!  Note that this also means that if
+    you ask to merge and someone else does, and the merges somehow
+    conflict with each other, I will ask somebody to rebase and fix
+    unless it's trivial.
+
   * DO use UTF-8 in code and documentation.  We no longer live in an
     ASCII world.  ASCII is fine, too, but you are not compelled to use
     it.
 
   * DO use ISO C99 with GNU extensions.  The GNU compiler is available
-    damn near everywhere, and it is the de facto standard.  We require
-    C99 anyway.
+    damn near everywhere, and it (the compiler) is the de facto
+    standard.  We require C99 and GNU extensions for the most part,
+    anyway.
 
-  * DO write code that can be used with other compilers if it is easily
-    possible and you know how to do it, to help people that would like
-    to use other compilers.
+  * DO write portable (to other operating systems) code when at all
+    possible, and if you read code that you know to be non-portable,
+    modify it with portable code (and test your changes).
 
   * DO use the debugging macros when writing code.  If you need a new
     category of debugging messages, DO create it---it isn’t that hard,
@@ -125,7 +142,9 @@ How to Help!
     important.  If you really want to make sure the code is good, use
     “-Wall -Wextra -Werror”, which will tell you about other things that
     can be fixed.  Personally, my goal is to compile quietly using the
-    latter option, simply because we can.  :-)
+    latter option, simply because we can.  It is, of course, quite
+    alright to have your interim commits not be clean, as long as the
+    final result of the work is when merging is requested.
 
   * DO reasonably test changes.  Obviously, they do not have to be 100%
     bug-free, since you’re working on the development tree, it is
@@ -143,9 +162,79 @@ How to Help!
     static void local_atoms_init().)  This makes things more
     maintainable.
 
+  * DO write code to be read by humans; use extra whitespace, explain
+    magic numbers or NULL values with a quick comment, and generally
+    format code like it already is.  Prefer declaring short-lived
+    temporary variables to function call chaining or direct function
+    calls in if statements, unless the function call in the if statement
+    reads well.  For example, the following is not terribly fun to read
+    (g_spawn_async() takes 8 parameters and makes this look horrible):
+
+       if(g_spawn_async(...))
+
+    Instead, use:
+
+       gboolean status = g_spawn_async(...);
+       if(status == FALSE) { ... }
+
+    This also means that when testing things, make the tests readable.
+    For example, the following I think is ugly:
+
+       if(isatty(fileno(stdout))) { ... }
+
+    I think that this is much better:
+
+       gboolean
+       output_is_terminal() {
+         return(isatty(fileno(stdout)));
+       }
+
+       [...]
+
+       if(output_is_terminal()) { ... }
+
+    In short, readability is more important than simply being
+    technically correct code.  Besides, the compiler will optimize a
+    great deal of the code away in its various stages of the
+    optimization process.
+
   * DO realize that I am *far* from perfect, and if you an expert in C
-    programming, and you think I am doing something wrong, I probably
-    am.  Tell me, and do fix it... ;)
+    programming (or portable UNIX programming), and you think I am doing
+    something wrong, I probably am.  Please fix anything you find that I
+    have done wrong.
+
+  * DO understand the following statement: “We should forget about small
+    efficiencies, say about 97% of the time: premature optimization is
+    the root of all evil.”
+
+    If you don’t understand it, read /Structured Programming with go to
+    Statements/, the paper by Donald Knuth.[2]  Write efficiently,
+    favoring the human eye slightly more than the computer’s brain.
+    This is not a license to write horrible code in itself or suffer its
+    existence, or a license to not think about the impact of the code
+    when designing it!
+
+  * DO use well-tested code as opposed to reinventing the wheel, unless
+    it is somehow necessary.  Using a GList is much better than
+    reinventing the wheel and implementing doubly-linked lists yet
+    again.  GList is general and easy to use, and likely more optimized
+    due to its existence and wide-spread use than what would be written
+    as part of an application.
+
+    If a library needs to have an improvement made to it, check it out,
+    prepare a patch, and submit that fix to the maintainer(s).  It's
+    likely to wind up taking less time than writing the functionality
+    from scratch, and more people then benefit.  Of course, follow their
+    style guidelines when working on their code, even if it hurts.  ;)
+
+  * DON'T mix bulk formatting changes and code changes in a single
+    commit; if patching and not committing to a bzr repository (why?!)
+    then prepare two patches, one that has the bulk formatting changes,
+    and one that has the subsequent code changes.  Clearly mark
+    formatting-change-only commits in the log message as such.  If you
+    need to make formatting changes and code changes sequentially, try
+    to commit the formatting changes first in their own commit, and then
+    commit the code changes.
 
   * DON’T write new code and have no debugging statements for it.  We
     have -D/--debug and ALLTRAY_DEBUG for a reason!
@@ -164,3 +253,4 @@ Links
 -----
 
   [1] http://bazaar-vcs.org/
+  [2] http://pplab.snu.ac.kr/courses/adv_pl05/papers/p261-knuth.pdf
