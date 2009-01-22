@@ -441,8 +441,6 @@ static void
 x11_local_atoms_init() {
   Atom throwaway;
   int i;
-
-  DEBUG_X11("Attempting to initialize local atoms");
   gchar *atom_name;
 
   for(i = 0, atom_name = atoms[i];

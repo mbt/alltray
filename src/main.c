@@ -48,17 +48,21 @@ output_is_terminal(void) {
 }
 
 static int
-main_spawn_mode(int argc, char *argv[]) {
+main_spawn_mode(int argc, char *argv[], GMainLoop *loop) {
   GPid child_pid;
   gboolean success;
+  int retval = 0;
 
   success = alltray_process_spawn_new(argv, &child_pid);
-  if(!success) {
-    return(ALLTRAY_EXIT_SPAWN_ERROR);
+
+  if(G_LIKELY(success)) {
+    g_child_watch_add(child_pid, alltray_process_child_exited, loop);
+    g_main_loop_run(loop);
+  } else {
+    retval = ALLTRAY_EXIT_SPAWN_ERROR;
   }
 
-  g_printerr("Spawn Mode is not yet implemented.\n");
-  return(ALLTRAY_EXIT_NOT_IMPLEMENTED);
+  return(retval);
 }
 
 static int
@@ -111,7 +115,10 @@ main_required_init() {
 int
 main(int argc, char *argv[]) {
   int retval = 0;
+  GMainLoop *alltray_main_loop;
+
   g_type_init();
+  alltray_main_loop = g_main_loop_new(NULL, FALSE);
 
   cmdline_parse(&argc, &argv);
   if((!cmdline_quiet) && output_is_terminal()) main_display_banner();
@@ -130,7 +137,8 @@ main(int argc, char *argv[]) {
         passed_argv_start++;
       }
 
-      retval = main_spawn_mode(passed_argc, &argv[passed_argv_start]);
+      retval = main_spawn_mode(passed_argc, &argv[passed_argv_start],
+                               alltray_main_loop);
     } else {
       retval = main_click_mode();
     }

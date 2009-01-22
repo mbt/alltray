@@ -66,7 +66,19 @@ typedef struct {
   GList *window_list;
 } alltray_instance_process_info;
 
+typedef enum {
+  ALLTRAY_PROCESS_SUID_EXECUTABLE,
+  ALLTRAY_PROCESS_SGID_EXECUTABLE,
+  ALLTRAY_PROCESS_NOT_FOUND,
+  ALLTRAY_PROCESs_PERMISSION_DENIED
+} AllTrayProcessError;
+
+#define ALLTRAY_PROCESS_ERROR alltray_process_error_quark()
+
 gboolean alltray_process_spawn_new(char *argv[], GPid *pid) WARN_UNUSED_RETVAL;
+void alltray_process_child_exited(GPid which, gint exit_status,
+                                  gpointer main_loop);
+GQuark alltray_process_error_quark(void);
 
 // Prototypes for systray.c
 gboolean alltray_systray_init(void);
@@ -107,11 +119,12 @@ gint alltray_x11_get_default_screen(void);
 #define ALLTRAY_DEBUG_X11 0x0002
 #define ALLTRAY_DEBUG_TRAY 0x0004
 #define ALLTRAY_DEBUG_WM 0x0008
+#define ALLTRAY_DEBUG_PROCESS 0x0010
 #define ALLTRAY_DEBUG_MISC 0x00F0
 
 #define ALLTRAY_DEBUG_ALL ((ALLTRAY_DEBUG_CMDLINE | ALLTRAY_DEBUG_X11 | \
                             ALLTRAY_DEBUG_TRAY | ALLTRAY_DEBUG_WM | \
-                            ALLTRAY_DEBUG_MISC))
+                            ALLTRAY_DEBUG_PROCESS | ALLTRAY_DEBUG_MISC))
 
 #ifndef ALLTRAY_DISABLE_DEBUG
 
@@ -140,16 +153,22 @@ gint alltray_x11_get_default_screen(void);
     g_print("[Debug:MISC] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
   }
 
+#define DEBUG_PROCESS(msg) \
+  if(alltray_debug_enabled(ALLTRAY_DEBUG_PROCESS)) { \
+    g_print("[Debug:PROCESS] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
+  }
+
 #else /* !ALLTRAY_DISABLE_DEBUG */
 
 #define DEBUG_CMDLINE(msg) NULL
 #define DEBUG_X11(msg) NULL
 #define DEBUG_TRAY(msg) NULL
 #define DEBUG_MISC(msg) NULL
+#define DEBUG_PROCESS(msg) NULL
 
 #endif /* !ALLTRAY_DISABLE_DEBUG */
 
 // Other constants
-#define ALLTRAY_HELPER_LIBRARY "alltray_helper.so"
+#define ALLTRAY_HELPER_LIBRARY "alltray-helper.so"
 
 #endif /* !__ALLTRAY_H_INCLUDED__ */

@@ -51,6 +51,7 @@ AC_COMPILE_IFELSE([dnl
   AC_DEFINE([WARN_UNUSED_RETVAL], [], []))
 
 AC_PROG_INSTALL
+AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
 # Library checks.
@@ -68,6 +69,7 @@ AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 AC_SUBST(GOBJECT_CFLAGS)
 AC_SUBST(GOBJECT_LIBS)
+AC_SUBST(pkglib)
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_COMPILER, "$(${CC} --version|head -1)",
@@ -100,6 +102,7 @@ AC_OUTPUT
 printf "\nConfiguration results (%s %s)\n\n" "$PACKAGE_NAME" "$PACKAGE_VERSION"
 
 printf "C Compiler:\t%s\n" "$CC"
+printf "%s version:\t%s\n" "$CC" "$(${CC} --version|head -1)"
 printf "C Flags:\t%s\n" "$CFLAGS"
 printf "Install path:\t%s\n" "$prefix"
 printf "\n"
