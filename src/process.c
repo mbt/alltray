@@ -46,8 +46,8 @@ process_spawn(char *argv[], GPid *pid) {
     switch(error_code) {
     case ALLTRAY_PROCESS_SUID_EXECUTABLE:
       g_printerr("Error: %s is a setuid executable, and as such may not\n"
-                 "properly work under %s because the helper library\n",
-                 "will not load for it.  If there are problems, you\n",
+                 "properly work under %s because the helper library\n"
+                 "will not load for it.  If there are problems, you\n"
                  "can make the helper library setuid to the same user as the\n"
                  "executable, which may make this problem go away.\n"
                  "\nNot attempting to execute the program.\n",
@@ -56,8 +56,8 @@ process_spawn(char *argv[], GPid *pid) {
 
     case ALLTRAY_PROCESS_SGID_EXECUTABLE:
       g_printerr("Error: %s is a setgid executable, and as such may not\n"
-                 "properly work under %s because the helper library\n",
-                 "will not load for it.  If there are problems, you\n",
+                 "properly work under %s because the helper library\n"
+                 "will not load for it.  If there are problems, you\n"
                  "can make the helper library setgid to the same user as the\n"
                  "executable, which may make this problem go away.\n"
                  "\nNot attempting to execute the program.\n",
