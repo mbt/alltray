@@ -86,6 +86,17 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)",
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
   "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
 
+if test -d .bzr; then
+    BZR_BRANCH_NAME="$(bzr version-info|grep ^branch-nick|cut -f2 -d' ')"
+    BZR_REV_ID="$(bzr version-info|grep ^revision-id|cut -f2 -d' ')"
+
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BUILD, "TRUE", [Set if built from bzr tree])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BRANCH,
+      "$BZR_BRANCH_NAME", [Branch this was built from])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVID,
+      "$BZR_REV_ID", [Revision ID we are built from])
+fi
+
 # Configuration wrap-up.
 AC_CONFIG_FILES([README
         Makefile
@@ -105,5 +116,6 @@ printf "C Compiler:\t%s\n" "$CC"
 printf "%s version:\t%s\n" "$CC" "$(${CC} --version|head -1)"
 printf "C Flags:\t%s\n" "$CFLAGS"
 printf "Install path:\t%s\n" "$prefix"
+printf "bzr info:\t%s %s\n" "$BZR_BRANCH_NAME" "$BZR_REV_ID"
 printf "\n"
 

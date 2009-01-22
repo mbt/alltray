@@ -8,6 +8,12 @@
 void
 main_display_banner() {
   g_print("%s version %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+#ifdef ALLTRAY_BZR_BUILD
+  g_print(" (from bzr branch %s,\n"
+          "           revid %s)\n\n",
+          ALLTRAY_BZR_BRANCH, ALLTRAY_BZR_REVID);
+#endif /* ALLTRAY_BZR_BUILD */
+
   g_print("  Copyright (c) 2004-2006 Jochen Baier <email@Jochen-Baier.de>\n");
   g_print("  Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>\n");
   g_print("Bug reports: %s\n", PACKAGE_BUGREPORT);
