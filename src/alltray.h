@@ -113,6 +113,33 @@ Window alltray_x11_get_window_parent(Window win);
 Window alltray_x11_get_selection_owner(const gchar *selection_name);
 gint alltray_x11_get_default_screen(void);
 
+// Data & Prototypes for x11-error.c
+typedef enum {
+  ALLTRAY_X11_ERROR_BAD_ACCESS,
+  ALLTRAY_X11_ERROR_BAD_ALLOC,
+  ALLTRAY_X11_ERROR_BAD_ATOM,
+  ALLTRAY_X11_ERROR_BAD_COLOR,
+  ALLTRAY_X11_ERROR_BAD_CURSOR,
+  ALLTRAY_X11_ERROR_BAD_FONT,
+  ALLTRAY_X11_ERROR_BAD_GC,
+  ALLTRAY_X11_ERROR_BAD_ID_CHOICE,
+  ALLTRAY_X11_ERROR_BAD_IMPLEMENTATION,
+  ALLTRAY_X11_ERROR_BAD_LENGTH,
+  ALLTRAY_X11_ERROR_BAD_MATCH,
+  ALLTRAY_X11_ERROR_BAD_NAME,
+  ALLTRAY_X11_ERROR_BAD_PIXMAP,
+  ALLTRAY_X11_ERROR_BAD_REQUEST,
+  ALLTRAY_X11_ERROR_BAD_VALUE,
+  ALLTRAY_X11_ERROR_BAD_WINDOW,
+  ALLTRAY_X11_ERROR_FAILED
+} AllTrayX11Error;
+
+#define ALLTRAY_X11_ERROR alltray_x11_error_quark();
+
+void alltray_x11_error_init(Display *disp, gint screen_number);
+gboolean alltray_x11_error_install_handler(void);
+GSList *alltray_x11_error_uninstall_handler(void);
+
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
 #define ALLTRAY_DEBUG_CMDLINE 0x0001
@@ -120,11 +147,13 @@ gint alltray_x11_get_default_screen(void);
 #define ALLTRAY_DEBUG_TRAY 0x0004
 #define ALLTRAY_DEBUG_WM 0x0008
 #define ALLTRAY_DEBUG_PROCESS 0x0010
+#define ALLTRAY_DEBUG_X11_ERROR 0x0020
 #define ALLTRAY_DEBUG_MISC 0x00F0
 
 #define ALLTRAY_DEBUG_ALL ((ALLTRAY_DEBUG_CMDLINE | ALLTRAY_DEBUG_X11 | \
                             ALLTRAY_DEBUG_TRAY | ALLTRAY_DEBUG_WM | \
-                            ALLTRAY_DEBUG_PROCESS | ALLTRAY_DEBUG_MISC))
+                            ALLTRAY_DEBUG_PROCESS | ALLTRAY_DEBUG_MISC | \
+                            ALLTRAY_DEBUG_X11_ERROR))
 
 #ifndef ALLTRAY_DISABLE_DEBUG
 
@@ -136,6 +165,11 @@ gint alltray_x11_get_default_screen(void);
 #define DEBUG_X11(msg) \
   if(alltray_debug_enabled(ALLTRAY_DEBUG_X11)) { \
     g_print("[Debug:X11] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
+  }
+
+#define DEBUG_X11_ERROR(msg) \
+  if(alltray_debug_enabled(ALLTRAY_DEBUG_X11_ERROR)) { \
+    g_print("[Debug:X11_ERROR] (%s:%i) %s\n", __FILE__, __LINE__, msg); \
   }
 
 #define DEBUG_TRAY(msg) \
@@ -162,6 +196,7 @@ gint alltray_x11_get_default_screen(void);
 
 #define DEBUG_CMDLINE(msg) NULL
 #define DEBUG_X11(msg) NULL
+#define DEBUG_X11_ERROR(msg) NULL
 #define DEBUG_TRAY(msg) NULL
 #define DEBUG_MISC(msg) NULL
 #define DEBUG_PROCESS(msg) NULL
