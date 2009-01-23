@@ -54,6 +54,14 @@ alltray_systray_get_window_name() {
 }
 
 /**
+ * Send a message to the system tray icon.
+ */
+void
+alltray_systray_send_message(gchar *msg) {
+#error "To be implemented, shouldn't build yet"
+}
+
+/**
  * Check once per second until there is a system tray available.
  */
 void

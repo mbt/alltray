@@ -15,7 +15,7 @@ static debug_flag_record debug_flags[] = {
   { ALLTRAY_DEBUG_CMDLINE, "CMDLINE",
     "Command line parsing debugging messages" },
   { ALLTRAY_DEBUG_X11, "X11", "X11 debugging messages" },
-  { ALLTRAY_DEBUG_X11_ERROR, "X11_ERROR", "X11 error debugging messages",
+  { ALLTRAY_DEBUG_X11_ERROR, "X11_ERROR", "X11 error debugging messages" },
   { ALLTRAY_DEBUG_TRAY, "TRAY", "System tray debugging messages" },
   { ALLTRAY_DEBUG_WM, "WM", "Window manager debugging messages" },
   { ALLTRAY_DEBUG_PROCESS, "PROCESS", "Child process debugging messages" },
