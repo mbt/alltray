@@ -85,13 +85,12 @@ alltray_x11_init(const gchar *display_name) {
     internal_state.x11_default_screen =
       XDefaultScreen(internal_state.x11_display);
 
+    alltray_x11_error_init(internal_state.x11_display,
+                           internal_state.x11_default_screen);
     x11_local_atoms_init();
 
     retval = internal_state.initialized = TRUE;
   }
-
-  alltray_x11_error_init(internal_state.x11_display,
-                         internal_state.x11_default_screen);
 
   atexit(x11_cleanup);
   return(retval);

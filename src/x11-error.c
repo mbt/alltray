@@ -76,6 +76,7 @@ alltray_x11_error_install_handler() {
   XFlush(internal_state.x11_display);
 
   internal_state.old_x11_error_handler = XSetErrorHandler(x11_error_handler);
+  internal_state.error_handler_installed = TRUE;
   DEBUG_X11_ERROR("Installed X11 error handler");
 }
 
@@ -96,7 +97,7 @@ alltray_x11_error_uninstall_handler(GSList **error_list) {
 
   XSetErrorHandler(internal_state.old_x11_error_handler);
   internal_state.old_x11_error_handler = NULL;
-  internal_state.error_handler_installed == FALSE;
+  internal_state.error_handler_installed = FALSE;
 
   DEBUG_X11_ERROR(g_strdup_printf("Uninstalled X11 error handler (%d errors "
                                   "caught)", retval));
@@ -144,7 +145,8 @@ x11_error_translate_code(unsigned char x11_error_code) {
   }
 
   if((x11_error_code >= FirstExtensionError) &&
-     (x11_error_code <= LastExtensionError) && (retval == 0)) {
+     (x11_error_code < LastExtensionError) &&
+     (retval == 0)) {
     retval = ALLTRAY_X11_ERROR_EXTENSION_FAILED;
   } else {
     retval = ALLTRAY_X11_ERROR_FAILED;
