@@ -41,16 +41,15 @@ alltray_x11_error_init(Display *disp, gint screen) {
  * error handler was already installed and this function was
  * redundantly called.
  */
-gboolean
+void
 alltray_x11_error_install_handler() {
-  if(internal_state.error_handler_installed == TRUE) {
-    DEBUG_X11_ERROR("Warning: alltray_x11_error_install_handler() called with "
-		    "no effect");
-    return(FALSE);
-  }
+  if(internal_state.error_handler_installed) alltray_common_bug_detected();
+
+  // Ensure that we won't catch any previously-generated errors.
+  XFlush();
 
   internal_state.old_x11_error_handler = XSetErrorHandler(x11_error_handler);
-  return(TRUE);
+  DEBUG_X11_ERROR("Installed X11 error handler");
 }
 
 /**
@@ -60,20 +59,20 @@ alltray_x11_error_install_handler() {
  */
 static gint
 alltray_x11_error_uninstall_handler(GSList **error_list) {
-  if(internal_state.error_handler_installed == FALSE) {
-    // Calling this function without the handler installed is a big bug.
-    g_error("%s has encountered a programming error.\n\n"
-	    "Please file a bug report at %s and\n"
-	    "include the core dump, if possible.\n",
-	    PACKAGE_NAME, PACKAGE_BUGREPORT);
-    abort();
-  }
+  if(!internal_state.error_handler_installed) alltray_common_bug_detected();
+
+  XFlush();
 
   gint retval = g_slist_length(internal_state.error_list);
   *error_list = internal_state.error_list;
   internal_state.error_list = NULL;
+
+  XSetErrorHandler(internal_state.old_x11_error_handler);
+  internal_state.old_x11_error_handler = NULL;
   internal_state.error_handler_installed == FALSE;
 
+  DEBUG_X11_ERROR(g_strdup_printf("Uninstalled X11 error handler (%s errors "
+                                  "caught)", retval));
   return(retval);
 }
 

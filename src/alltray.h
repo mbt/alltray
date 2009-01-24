@@ -32,6 +32,9 @@
 // Prototypes for cmdline.c
 void cmdline_parse(int *argc, char ***argv);
 
+// Prototypes for common.c
+void alltray_common_bug_detected() __attribute__((noreturn));
+
 // Prototypes for debug.c
 void alltray_debug_init(void);
 gboolean alltray_debug_enabled(gint desired_flag);

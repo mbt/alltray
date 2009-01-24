@@ -90,39 +90,74 @@ alltray_x11_init(const gchar *display_name) {
     retval = internal_state.initialized = TRUE;
   }
 
+  alltray_x11_error_init(internal_state.x11_display,
+                         internal_state.x11_default_screen);
+
   atexit(x11_cleanup);
   return(retval);
 }
 
 /**
  * Fetches an atom from the list; if it does not exist, it interns it
- * and appends it to the list, and then fetches it.  If this function is
- * called prior to alltray_x11_init(), it will call abort() as there is
+ * and appends it to the list, and then fetches it.  If this function
+ * is called prior to alltray_x11_init(), it will call
+ * alltray_common_bug_detected() (which does not return) as there is
  * an obvious program bug present.
  *
  * @returns An interned X11 atom.
  */
 Atom
 alltray_x11_get_atom(const gchar *atom_name) {
-  if(!internal_state.x11_display) {
-    g_printerr("error: alltray_x11_get_atom() called, but X11 module has not\n"
-               "established an X11 connection.\n");
-    abort();
-  }
+  if(!internal_state.x11_display) alltray_common_bug_detected();
 
   Atom retval;
   x11_atom_node *data = g_malloc(sizeof(x11_atom_node));
   data->name = g_strdup(atom_name);
   GList *list_node = g_list_find_custom(interned_atoms, data, x11_atom_compare);
+  int error_count;
+  GSList *error_list = NULL;
 
   if(!list_node) {
     // Need to create the atom and add it to the list.
+    alltray_x11_error_install_handler();
     data->interned_atom = XInternAtom(internal_state.x11_display,
                                       atom_name, False);
-    interned_atoms = g_list_insert_sorted(interned_atoms, data, 
-                                          x11_atom_compare);
-    retval = data->interned_atom;
+    error_count = alltray_x11_error_uninstall_handler(&error_data);
+
+    if(error_count == 0) {
+      interned_atoms = g_list_insert_sorted(interned_atoms, data, 
+                                            x11_atom_compare);
+      retval = data->interned_atom;
+    } else {
+      // We encountered error interning the atom.  We may not be able
+      // to continue.
+
+      for(GSList *err_item = error_data;
+          err_item != NULL;
+          err_item = err_item->next) {
+        GError *err = (GError *)err_item->data;
+
+        switch((AllTrayX11Error)err->code) {
+        case ALLTRAY_X11_ERROR_BAD_ALLOC:
+          g_printerr("Received a BadAlloc error in response to an XInternAtom "
+                     "request.\n"
+                     "This means the X server probably ran out of memory.\n"
+                     "You may need to adjust your X server settings, add more "
+                     "memory which X can\n"
+                     "use, or there may be a bug in your X11 server.\n\n"
+                     "%s cannot continue.\n", PACKAGE_NAME);
+          exit(ALLTRAY_EXIT_X11_ERROR);
+          break;
+
+        default:
+          alltray_common_bug_detected();
+          break;
+        }
+      }
+    }
   } else {
+    // We already have the atom, we can free our newly-allocated structure
+    // and just return the one we already have in memory.
     g_free(data->name);
     g_free(data);
 
