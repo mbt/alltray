@@ -1,3 +1,3 @@
 #!/bin/sh
-bzr clean-tree
-bzr clean-tree --ignored
+bzr clean-tree --ignored --unknown
+
