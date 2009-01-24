@@ -58,7 +58,8 @@ alltray_systray_get_window_name() {
  */
 void
 alltray_systray_send_message(gchar *msg) {
-#error "To be implemented, shouldn't build yet"
+  #warning Not yet implemented...
+  return;
 }
 
 /**

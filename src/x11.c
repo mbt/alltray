@@ -114,7 +114,7 @@ alltray_x11_get_atom(const gchar *atom_name) {
   x11_atom_node *data = g_malloc(sizeof(x11_atom_node));
   data->name = g_strdup(atom_name);
   GList *list_node = g_list_find_custom(interned_atoms, data, x11_atom_compare);
-  int error_count;
+  gint error_count;
   GSList *error_list = NULL;
 
   if(!list_node) {
@@ -122,7 +122,7 @@ alltray_x11_get_atom(const gchar *atom_name) {
     alltray_x11_error_install_handler();
     data->interned_atom = XInternAtom(internal_state.x11_display,
                                       atom_name, False);
-    error_count = alltray_x11_error_uninstall_handler(&error_data);
+    error_count = alltray_x11_error_uninstall_handler(&error_list);
 
     if(error_count == 0) {
       interned_atoms = g_list_insert_sorted(interned_atoms, data, 
@@ -132,7 +132,7 @@ alltray_x11_get_atom(const gchar *atom_name) {
       // We encountered error interning the atom.  We may not be able
       // to continue.
 
-      for(GSList *err_item = error_data;
+      for(GSList *err_item = error_list;
           err_item != NULL;
           err_item = err_item->next) {
         GError *err = (GError *)err_item->data;

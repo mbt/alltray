@@ -134,14 +134,17 @@ typedef enum {
   ALLTRAY_X11_ERROR_BAD_REQUEST,
   ALLTRAY_X11_ERROR_BAD_VALUE,
   ALLTRAY_X11_ERROR_BAD_WINDOW,
+  ALLTRAY_X11_ERROR_BAD_DRAWABLE,
+  ALLTRAY_x11_ERROR_BAD_LENGTH,
+  ALLTRAY_X11_ERROR_EXTENSION_FAILED,
   ALLTRAY_X11_ERROR_FAILED
 } AllTrayX11Error;
 
-#define ALLTRAY_X11_ERROR alltray_x11_error_quark();
+#define ALLTRAY_X11_ERROR alltray_x11_error_quark()
 
 void alltray_x11_error_init(Display *disp, gint screen_number);
-gboolean alltray_x11_error_install_handler(void);
-GSList *alltray_x11_error_uninstall_handler(void);
+void alltray_x11_error_install_handler(void);
+gint alltray_x11_error_uninstall_handler(GSList **error);
 
 // Debug constants and macros
 #define ALLTRAY_DEBUG_NONE 0x0000
