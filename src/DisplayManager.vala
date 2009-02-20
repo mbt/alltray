@@ -9,6 +9,7 @@ using Gdk;
 namespace AllTray {
 	public errordomain DisplayManagerError {
 		NO_DISPLAY,
+		NO_PREV_INSTANCE,
 		FAILED
 	}
 
@@ -58,17 +59,35 @@ namespace AllTray {
 
 		public bool is_selection_installed() {
 			bool retval = false;
-			Gdk.Atom selection_name =
-				Gdk.Atom.intern("_ALLTRAY_IS_RUNNING", false);
-
-			Gdk.Window selection_owner =
-				Gdk.selection_owner_get(selection_name);
+			Gdk.Window selection_owner = this.get_alltray_selection_window();
 
 			if(selection_owner != null) {
 				retval = true;
 			}
 
 			return(retval);
+		}
+
+		public string get_window_manager() {
+			return(Gdk.x11_screen_get_window_manager_name(this._screen));
+		}
+
+		public void send_args(string[] args) throws DisplayManagerError {
+			Gdk.Window selection_owner = this.get_alltray_selection_window();
+			if(selection_owner == null) {
+				throw new DisplayManagerError.NO_PREV_INSTANCE("Application "+
+															   "tried to send "+
+															   "args, but no "+
+															   "running "+
+															   "AllTray "+
+															   "found.");
+			}
+		}
+
+		private Gdk.Window get_alltray_selection_window() {
+			Gdk.Atom selection_name =
+				Gdk.Atom.intern("_ALLTRAY_IS_RUNNING", false);
+			return(Gdk.selection_owner_get(selection_name));
 		}
 
 		private void on_composite_state_change() {

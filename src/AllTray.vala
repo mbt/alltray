@@ -9,6 +9,7 @@ namespace AllTray {
 	public class Program : GLib.Object {
 		private string[] _args;
 		private AllTray.DisplayManager _dispManager;
+		private AllTray.WindowManager _winManager;
 		private GLib.MainLoop _main_loop;
 
 		private static bool _cl_debug;
@@ -41,7 +42,14 @@ namespace AllTray {
 				Debug.Notification.emit(Debug.Subsystem.Misc,
 										Debug.Level.Information,
 										"No previous instance found.");
+			} else {
+				Debug.Notification.emit(Debug.Subsystem.Misc,
+										Debug.Level.Information,
+										"AllTray already running on display.");
+				this._dispManager.send_args(args);
 			}
+
+			this._winManager = new AllTray.WindowManager(_dispManager);
 
 			_main_loop = new GLib.MainLoop(null, false);
 		}
@@ -82,7 +90,7 @@ namespace AllTray {
 
 		private static void sighandler(int caught_signal) {
 			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information, "Got signal: " + 
+									Debug.Level.Information, "Caught signal: "+
 									caught_signal.to_string());
 
 			// Exit because user pressed Control+C.
