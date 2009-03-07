@@ -90,7 +90,7 @@ namespace AllTray.Debug {
 
 			string cur_time;
 
-			cur_time = new Time.local(new time_t()).format("%F %T %Z");
+			cur_time = Time.local(time_t()).format("%F %T %Z");
 
 			string lvl_str = lvl_to_string(lvl);
 			string subsys_str = subsys_to_string(subsys);

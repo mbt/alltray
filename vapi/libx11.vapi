@@ -128,7 +128,7 @@ namespace Native.XLib {
 	public const int NotifyNonlinearVirtual;
 	public const int NotifyPointer;
 	public const int NotifyPointerRoot;
-	public const int NotifyDetailNone
+	public const int NotifyDetailNone;
 
 	public const int VisibilityUnobscured;
 	public const int VisibilityPartiallyObscured;
@@ -428,59 +428,108 @@ namespace Native.XLib {
 	public const int QueuedAfterReady;
 	public const int QueuedAfterFlush;
 
-	[SimpleType]
-	public struct XPointer : char * {}
+	[Compact]
+	[CCode(cname = "XPointer")]
+	public class XPointer {}
 
 	[SimpleType]
-	[CCode(cname = "int")]
+	[CCode(cname = "Bool")]
 	public struct Bool : int {}
 
 	[SimpleType]
-	[CCode(cname = "int")]
+	[CCode(cname = "Status")]
 	public struct Status : int {}
 
 	[SimpleType]
+	[CCode(cname = "CARD32")]
 	public struct CARD32 : ulong {}
 
 	[SimpleType]
+	[CCode(cname = "XID")]
 	public struct XID : CARD32 {}
 
 	[SimpleType]
+	[CCode(cname = "Mask")]
 	public struct Mask : CARD32 {}
 
 	[SimpleType]
+	[CCode(cname = "Atom")]
 	public struct Atom : CARD32 {}
 
 	[SimpleType]
+	[CCode(cname = "VisualID")]
 	public struct VisualID : CARD32 {}
 
 	[SimpleType]
+	[CCode(cname = "Time")]
 	public struct Time : CARD32 {}
 
 	[SimpleType]
+	[CCode(cname = "Window")]
 	public struct Window : XID {}
 
 	[SimpleType]
+	[CCode(cname = "Drawable")]
 	public struct Drawable : XID {}
 
 	[SimpleType]
+	[CCode(cname = "Cursor")]
 	public struct Cursor : XID {}
 
 	[SimpleType]
-	public stuct Colormap : XID {}
+	[CCode(cname = "Colormap")]
+	public struct Colormap : XID {}
 
 	[SimpleType]
+	[CCode(cname = "GContext")]
 	public struct GContext : XID {}
 
 	[SimpleType]
+	[CCode(cname = "KeySym")]
 	public struct KeySym : XID {}
 
 	[SimpleType]
+	[CCode(cname = "KeyCode")]
 	public struct KeyCode : uchar {}
 
 	[SimpleType]
+	[CCode(cname = "wchar")]
 	public struct wchar_t : ulong {}
 
+	[SimpleType]
+	[CCode(cname = "GC")]
+	public struct GC {}
+
+	[SimpleType]
+	[CCode(cname = "Pixmap")]
+	public struct Pixmap : XID {}
+
+	[SimpleType]
+	[CCode(cname = "Font")]
+	public struct Font : XID {}
+
+	[SimpleType]
+	[CCode(cname = "XPixmapFormatValues")]
+	public struct XPixmapFormatValues {
+		public int depth;
+		public int bits_per_pixel;
+		public int scanline_pad;
+
+		[CCode(cname = "XListPixmapFormats")]
+		public static XPixmapFormatValues[] get_formats_for_display(Display d);
+	}
+
+	[CCode(cname = "XColor")]
+	public struct XColor {
+		ulong pixel;
+		ushort red;
+		ushort green;
+		ushort blue;
+		char flags;
+		char pad;
+	}
+
+	[CCode(cname = "XSetWindowAttributes")]
 	public struct XSetWindowAttributes {
 		Pixmap background_pixmap;
 		ulong background_pixel;
@@ -499,5 +548,478 @@ namespace Native.XLib {
 		Cursor cursor;
 	}
 
-	
+	[CCode(cname = "XWindowAttributes")]
+	public struct XWindowAttributes {
+		int x;
+		int y;
+		int width;
+		int height;
+		int depth;
+		Visual visual;
+		Window root;
+		[CCode(cname = "class")] int win_class;
+		int bit_gravity;
+		int win_gravity;
+		int backing_store;
+		ulong backing_planes;
+		ulong backing_pixel;
+		bool save_under;
+		Colormap colormap;
+		bool map_installed;
+		int map_state;
+		long all_event_masks;
+		long your_event_mask;
+		long do_not_propagate_mask;
+		bool override_redirect;
+		Screen screen;
+	}
+
+	[CCode(cname = "XWindowChanges")]
+	public struct XWindowChanges {
+		int x;
+		int y;
+		int width;
+		int height;
+		Window sibling;
+		int stack_mode;
+	}
+
+	[CCode(cname = "Visual")]
+	public struct Visual {
+		// Opaque structure?
+		[CCode(cname = "XVisualIDFromVisual")]
+		public VisualID get_visual_id();
+	}
+
+	[CCode(cname = "XInitThreads")]
+	public Status init_threads();
+
+	[CCode(cname = "XFree")]
+	public void free(void* data);
+
+	[Compact]
+	[CCode(cname = "Display", cprefix = "", lower_case_cprefix = "",
+		   free_function = "XCloseDisplay")]
+	public class Display {
+		[CCode(cname = "XOpenDisplay")]
+		public Display(string? name = null);
+
+		[CCode(cname = "XAllPlanes")]
+		public static ulong get_all_planes();
+
+		[CCode(cname = "XConnectionNumber")]
+		public int get_connection_number();
+
+		[CCode(cname = "XDefaultRootWindow")]
+		public Window get_default_root_window();
+
+		[CCode(cname = "XDefaultScreenOfDisplay")]
+		public unowned Screen get_default_screen();
+
+		[CCode(cname = "XScreenOfDisplay")]
+		public unowned Screen get_screen_by_id(int screen_number);
+
+		[CCode(cname = "XDisplayString")]
+		public string get_display_string();
+
+		[CCode(cname = "XMaxRequestSize")]
+		public long get_max_request_size();
+
+		[CCode(cname = "XExtendedMaxRequestSize")]
+		public long get_max_extended_request_size();
+
+		[CCode(cname = "XLastKnownRequestProcessed")]
+		public ulong get_last_known_request_processed();
+
+		[CCode(cname = "XNextRequest")]
+		public ulong get_next_request_id();
+
+		[CCode(cname = "XProtocolVersion")]
+		public int get_protocol_version();
+
+		[CCode(cname = "XProtocolRevision")]
+		public int get_protocol_revision();
+
+		[CCode(cname = "XQLength")]
+		public int get_event_queue_length();
+
+		[CCode(cname = "XScreenCount")]
+		public int get_number_of_screens();
+
+		[CCode(cname = "XServerVendor")]
+		public string get_xserver_vendor_name();
+
+		[CCode(cname = "XVendorRelease")]
+		public string get_xserver_vendor_release();
+
+		[CCode(cname = "XImageByteOrder")]
+		public int get_image_byte_order();
+
+		[CCode(cname = "XBitmapBitOrder")]
+		public int get_bitmap_bit_order();
+
+		[CCode(cname = "XBitmapUnit")]
+		public int get_bitmap_scanline_unit();
+
+		[CCode(cname = "XBitmapPad")]
+		public int get_bitmap_scanline_padding();
+
+		[CCode(cname = "XNoOp")]
+		public void no_operation();
+
+		[CCode(cname = "XSetCloseDownMode")]
+		public void set_close_down_mode(int close_mode);
+
+		[CCode(cname = "XLockDisplay")]
+		public void acquire_lock();
+
+		[CCode(cname = "XUnlockDisplay")]
+		public void release_lock();
+
+		/*
+		 * How to wrap XConnectionWatchProc and
+		 * XAddConnectionWatch/XRemoveConnectionWatch?
+		 * (see p29, Xlib Reference manual)
+		 */
+
+		[CCode(cname = "XProcessInternalConnection")]
+		public void process_internal_connection(int fd);
+
+		[CCode(cname = "XInternalConnectionNumbers")]
+		public Status get_internal_connections(ref int[] fd_return);
+
+		[CCode(cname = "XFlush")]
+		public int flush();
+
+		// Display functions, sort of.  Really, they are Window functions.
+		[CCode(cname = "XCreateWindow")]
+		public Window create_window(Window parent, int x, int y,
+									uint width, uint height, uint border_width,
+									int depth, uint win_class, Visual vis,
+									XSetWindowAttributes attribs);
+
+		[CCode(cname = "XCreateSimpleWindow")]
+		public Window create_simple_window(Window parent, int x, int y,
+										   uint width, uint height,
+										   uint border_width, ulong border,
+										   ulong background);
+
+		[CCode(cname = "XDestroyWindow")]
+		public void destroy_window(Window win);
+
+		[CCode(cname = "XDestroySubwindows")]
+		public void destroy_subwindows(Window win);
+
+		[CCode(cname = "XMapWindow")]
+		public void map_window(Window win);
+
+		[CCode(cname = "XMapRaised")]
+		public void map_window_and_raise_window(Window win);
+
+		[CCode(cname = "XMapSubwindows")]
+		public void map_subwindows(Window win);
+
+		[CCode(cname = "XUnmapWindow")]
+		public void unmap_window(Window win);
+
+		[CCode(cname = "XUnmapSubwindows")]
+		public void unmap_subwindows(Window win);
+
+		[CCode(cname = "XConfigureWindow")]
+		public void configure_window(Window win, uint value_mask,
+									 XWindowChanges changes);
+
+		[CCode(cname = "XMoveWindow")]
+		public void move_window(Window win, int x, int y);
+
+		[CCode(cname = "XResizeWindow")]
+		public void resize_window(Window win, uint width, uint height);
+
+		[CCode(cname = "XMoveResizeWindow")]
+		public void move_and_resize_window(Window win, int x, int y,
+										   uint width, uint height);
+
+		[CCode(cname = "XSetWindowBorderWidth")]
+		public void set_window_border_width(Window win, uint width);
+
+		[CCode(cname = "XRaiseWindow")]
+		public void raise_window(Window win);
+
+		[CCode(cname = "XLowerWindow")]
+		public void lower_window(Window win);
+
+		[CCode(cname = "XCirculateSubwindows")]
+		public void circulate_subwindows(Window win, int direction);
+
+		[CCode(cname = "XCirculateSubwindowsUp")]
+		public void circulate_subwindows_up(Window win);
+
+		[CCode(cname = "XCirculateSubwindowsDown")]
+		public void circulate_subwindows_down(Window win);
+
+		[CCode(cname = "XRestackWindows")]
+		public void restack_windows(Window[] windows);
+
+		[CCode(cname = "XChangeWindowAttributes")]
+		public void change_window_attribs(Window win, ulong value_mask,
+										  XSetWindowAttributes attribs);
+
+		[CCode(cname = "XSetWindowBackground")]
+		public void set_window_background(Window win, ulong bg_pixel);
+
+		[CCode(cname = "XSetWindowBackgroundPixmap")]
+		public void set_window_background_pixmap(Window win, Pixmap bg_pixmap);
+
+		[CCode(cname = "XSetWindowBorder")]
+		public void set_window_border(Window win, ulong border_pixel);
+
+		[CCode(cname = "XSetWindowBorderPixmap")]
+		public void set_window_border_pixmap(Window win, Pixmap border_pixmap);
+
+		[CCode(cname = "XSetWindowColormap")]
+		public void set_window_colormap(Window win, Colormap cmap);
+
+		[CCode(cname = "XDefineCursor")]
+		public void define_cursor(Window win, Cursor cur);
+
+		[CCode(cname = "XUndefineCursor")]
+		public void undefine_cursor(Window win);
+
+		[CCode(cname = "XQueryTree")]
+		public Status query_window_tree(Window win, out Window root,
+										out Window parent,
+										out Window[] children);
+
+		[CCode(cname = "XGetWindowAttributes")]
+		public Status get_window_attributes(Window win,
+											out XWindowAttributes retval);
+
+		[CCode(cname = "XTranslateCoordinates")]
+		public bool translate_coordinates(Window src, Window dest, int src_X,
+										  int src_y, out int dest_x,
+										  out int dest_y, out Window child);
+
+		[CCode(cname = "XQueryPointer")]
+		public bool query_pointer(Window win, out Window root,
+								  out Window child, out int root_x,
+								  out int root_y, out int win_x, out int win_y,
+								  out uint mask);
+
+		[CCode(cname = "XGetWindowProperty")]
+		public int get_window_property(Window win, Atom prop, long offset,
+									   long length, bool delete, Atom req_type,
+									   out Atom actual_type,
+									   out int actual_format,
+									   out ulong item_count,
+									   out ulong bytes_after,
+									   uchar*[] prop_ret);
+
+		[CCode(cname = "XListProperties")]
+		public Atom[] list_properties(Window win, out int count);
+
+		[CCode(cname = "XChangeProperty")]
+		public void change_property(Window win, Atom property,
+									Atom type, int format, int mode,
+									uchar[] data, int count);
+
+		[CCode(cname = "XRotateWindowProperties")]
+		public void rotate_properites(Window win, Atom[] properties, int npos);
+
+		[CCode(cname = "XDeleteProperty")]
+		public void delete_property(Window win, Atom prop);
+
+		[CCode(cname = "XSetSelectionOwner")]
+		public void set_selection_owner(Atom selection, Window who, Time when);
+
+		[CCode(cname = "XGetSelectionOwner")]
+		public Window get_selection_owner(Atom selection);
+
+		[CCode(cname = "XConvertSelection")]
+		public void convert_selection(Atom selection, Atom target, Atom prop,
+									  Window requestor, Time when);
+
+		[CCode(cname = "XGetGeometry")]
+		public Status get_geometry(Drawable d, out Window root,
+								   out int x, out int y, out int width,
+								   out int height, out int border_width,
+								   out int depth);
+
+		[CCode(cname = "XInternAtom")]
+		public Atom intern_atom(string atom_name, bool only_if_exists);
+
+		[CCode(cname = "XInternAtoms")]
+		public Atom intern_atoms(string[] names, bool only_if_exists,
+								 Atom[] atoms);
+
+		[CCode(cname = "XGetAtomName")]
+		public string get_atom_name(Atom a);
+
+		[CCode(cname = "XGetAtomNames")]
+		public string get_atom_names(Atom[] atoms, string[] names);
+
+		// Pixmap functions
+		[CCode(cname = "XCreatePixmap")]
+		public Pixmap create_pixmap(Drawable d, uint width, uint height,
+									uint depth);
+
+		[CCode(cname = "XFreePixmap")]
+		public void free_pixmap(Pixmap p);
+
+		[CCode(cname = "XCreateFontCursor",
+			   cheader_filename = "X11/cursorfont.h")]
+		public Cursor create_font_cursor(uint shape);
+
+		[CCode(cname = "XCreateGlyphCursor")]
+		public Cursor create_glyph_cursor(Font source_font, Font mask_font,
+										  uint source_char, uint mask_char,
+										  XColor fg_color, XColor bg_color);
+
+		[CCode(cname = "XCreatePixmapCursor")]
+		public Cursor create_pixmap_cursor(Pixmap source, Pixmap mask,
+										   XColor fg_color, XColor bg_color);
+
+		[CCode(cname = "XQueryBestCursor")]
+		public Status query_best_cursor(Drawable d, uint width, uint height,
+										out uint width_return,
+										out uint height_return);
+
+		[CCode(cname = "XRecolorCursor")]
+		public void recolor_cursor(Cursor cursor, XColor fg, XColor bg);
+
+		[CCode(cname = "XFreeCursor")]
+		public void free_cursor(Cursor cursor);
+
+		[CCode(cname = "XCreateColormap")]
+		public Colormap create_colormap(Window win, Visual vis, int alloc);
+
+		[CCode(cname = "XCopyColormapAndFree")]
+		public Colormap copy_and_free(Colormap cmap);
+
+		[CCode(cname = "XFreeColormap")]
+		public void free_colormap(Colormap cmap);
+
+		[CCode(cname = "XLookupColor")]
+		public Status lookup_color(Colormap cmap, string color_name,
+								   out XColor exact, out XColor screen);
+
+		[CCode(cname = "XParseColor")]
+		public Status parse_color(Colormap cmap, string color_name,
+								  out XColor exact);
+
+		[CCode(cname = "XAllocColor")]
+		public Status alloc_color(Colormap cmap, ref XColor screen_io);
+
+		[CCode(cname = "XAllocNamedColor")]
+		public Status alloc_named_color(Colormap cmap, string color_name,
+										out XColor screen_def,
+										out XColor exact_def);
+
+		[CCode(cname = "XAllocColorCells")]
+		public Status alloc_color_cells(Colormap cmap, bool contig,
+										out ulong[] plane_masks,
+										out ulong[] pixels);
+
+		[CCode(cname = "XAllocColorPlanes")]
+		public Status alloc_color_planes(Colormap cmap, bool contig,
+										 out ulong[] pixels,
+										 int nreds, int ngreens, int nblues,
+										 out ulong rmask, out ulong gmask,
+										 out ulong bmask);
+
+		[CCode(cname = "XFreeColors")]
+		public void free_colors(Colormap cmap, ulong[] pixels, ulong planes);
+
+		[CCode(cname = "XStoreColor")]
+		public void store_color(Colormap cmap, XColor col);
+
+		[CCode(cname = "XStoreColors")]
+		public void store_colors(Colormap cmap, XColor[] colors);
+
+		[CCode(cname = "XStoreNamedColor")]
+		public void store_named_color(Colormap cmap, string color, ulong pixel,
+									  int flags);
+
+		[CCode(cname = "XQueryColor")]
+		public void query_color(Colormap cmap, ref XColor color_io);
+
+		[CCode(cname = "XQueryColors")]
+		public void query_colors(Colormap cmap, ref XColor[] defs_io);
+
+		// No Xcms functions (yet).
+
+		// No Graphics Context functions (yet).
+
+	}
+
+	[Compact]
+	[CCode(cname = "Screen", free_func = "")]
+	public class Screen {
+		// Commented out until Vala supports multiple constructors!
+		// [CCode(cname = "XDefaultScreenOfDisplay")]
+		// public Screen(Display disp);
+
+		[CCode(cname = "XScreenOfDisplay")]
+		public static unowned Screen
+			get_screen(Display disp, int screen_number);
+
+		[CCode(cname = "XBlackPixelOfScreen")]
+		public ulong get_black_pixel();
+
+		[CCode(cname = "XWhitePixelOfScreen")]
+		public ulong get_white_pixel();
+
+		[CCode(cname = "XCellsOfScreen")]
+		public int get_colormap_cells();
+
+		[CCode(cname = "XDefaultColormapOfScreen")]
+		public Colormap get_default_colormap();
+
+		[CCode(cname = "XDefaultDepthOfScreen")]
+		public int get_depth();
+
+		[CCode(cname = "XDefaultGCOfScreen")]
+		public GC get_default_graphics_context();
+
+		[CCode(cname = "XDefaultVisualOfScreen")]
+		public Visual get_default_visual();
+
+		[CCode(cname = "XDoesBackingStore")]
+		public int does_backing_store();
+
+		[CCode(cname = "XDoesSaveUnders")]
+		public bool does_save_unders();
+
+		[CCode(cname = "XDisplayOfScreen")]
+		public Display get_display();
+
+		[CCode(cname = "XScreenNumberOfScreen")]
+		public int get_screen_number();
+
+		[CCode(cname = "XEventMaskOfScreen")]
+		public long get_event_mask();
+
+		[CCode(cname = "XWidthOfScreen")]
+		public int get_width();
+
+		[CCode(cname = "XWidthMMOfScreen")]
+		public int get_width_in_mm();
+
+		[CCode(cname = "XHeightOfScreen")]
+		public int get_height();
+
+		[CCode(cname = "XHeightMMOfScreen")]
+		public int get_height_in_mm();
+
+		[CCode(cname = "XMaxCmapsOfScreen")]
+		public int get_max_colormap_count();
+
+		[CCode(cname = "XMinCmapsOfScreen")]
+		public int get_min_colormap_count();
+
+		[CCode(cname = "XPlanesOfScreen")]
+		public int get_planes();
+
+		[CCode(cname = "XRootWindowOfScreen")]
+		public Window get_root_window();
+	}
 }

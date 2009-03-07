@@ -10,27 +10,30 @@ namespace AllTray {
 	public errordomain DisplayManagerError {
 		NO_DISPLAY,
 		NO_PREV_INSTANCE,
+		INVAL_OP,
 		FAILED
 	}
 
 	public class DisplayManager : GLib.Object {
 		private static DisplayManager _instance;
 
-		private Gdk.Display _display;
-		private Gdk.Screen _screen;
-		private Gdk.Window _rootWindow;
+		private X.Display _display;
+		private X.Screen _screen;
+		private X.Window _rootWindow;
+		private X.Window _selectionWindow;
+		private bool _screenIsComposited;
 
 		public DisplayManager() throws DisplayManagerError {
 			if(DisplayManager._instance == null) {
-				this._display = Gdk.Display.open(null);
-
-				Debug.Notification.emit(Debug.Subsystem.Display,
-										Debug.Level.Information,
-										"Opened display via GDK.");
+				this._display = X.Display.open(null);
 
 				if(this._display == null) {
 					throw new DisplayManagerError.NO_DISPLAY("Unable to open "+
 															 "display.");
+				} else {
+					Debug.Notification.emit(Debug.Subsystem.Display,
+											Debug.Level.Information,
+											"Opened display via Xlib.");
 				}
 
 				this._screen = this._display.get_default_screen();
@@ -57,9 +60,9 @@ namespace AllTray {
 			}
 		}
 
-		public bool is_selection_installed() {
+		public bool is_selection_installed() throws DisplayManagerError {
 			bool retval = false;
-			Gdk.Window selection_owner = this.get_alltray_selection_window();
+			Gdk.Window selection_owner = this.get_selection_window();
 
 			if(selection_owner != null) {
 				retval = true;
@@ -73,21 +76,79 @@ namespace AllTray {
 		}
 
 		public void send_args(string[] args) throws DisplayManagerError {
-			Gdk.Window selection_owner = this.get_alltray_selection_window();
+			Gdk.Window selection_owner = this.get_selection_window();
 			if(selection_owner == null) {
-				throw new DisplayManagerError.NO_PREV_INSTANCE("Application "+
-															   "tried to send "+
-															   "args, but no "+
-															   "running "+
-															   "AllTray "+
-															   "found.");
+				throw new DisplayManagerError.INVAL_OP("Application tried to "+
+													   "send args, but no "+
+													   "running AllTray was "+
+													   "found.");
 			}
 		}
 
-		private Gdk.Window get_alltray_selection_window() {
-			Gdk.Atom selection_name =
-				Gdk.Atom.intern("_ALLTRAY_IS_RUNNING", false);
-			return(Gdk.selection_owner_get(selection_name));
+		public void install_selection() throws DisplayManagerError {
+			Debug.Notification.emit(Debug.Subsystem.Display,
+									Debug.Level.Information,
+									"In install_selection()");
+			Gdk.Atom selection = Gdk.Atom.intern("_ALLTRAY_IS_RUNNING",
+												 false);
+			create_selection_window();
+			GLib.TimeVal tv = GLib.TimeVal();
+			uint32 timestamp = (uint32)tv.tv_sec;
+			
+			bool success;
+			success =
+				Gdk.selection_owner_set(_selectionWindow, selection,
+										Gdk.CURRENT_TIME, true);
+
+			if(success) {
+				Debug.Notification.emit(Debug.Subsystem.Display,
+										Debug.Level.Information,
+										"Installed selection.");
+			} else {
+				Debug.Notification.emit(Debug.Subsystem.Display,
+										Debug.Level.Fatal,
+										"I don't understand what just "+
+										"happened.");
+			}
+		}
+
+		private void create_selection_window() throws DisplayManagerError {
+			if(is_selection_installed()) {
+				throw new DisplayManagerError.INVAL_OP("Cannot create "+
+													   "selection window when "+
+													   "one already exists.");
+			}
+
+			Gdk.WindowAttr attribs = {};
+			int attribs_mask;
+
+			attribs.window_type = Gdk.WindowType.TOPLEVEL;
+			attribs.width = 0;
+			attribs.height = 0;
+			attribs.wclass = Gdk.WindowClass.INPUT_ONLY;
+			attribs.title = "AllTray Selection Window";
+
+			attribs_mask = Gdk.WindowAttributesType.TITLE;
+
+			_selectionWindow = new Gdk.Window(null, attribs, attribs_mask);
+
+			if(_selectionWindow == null) {
+				Debug.Notification.emit(Debug.Subsystem.Display,
+										Debug.Level.Fatal,
+										"Oops.  Could not create window, WTF?");
+			} else {
+				GLib.StringBuilder sb = new GLib.StringBuilder();
+
+				sb.append_printf("Selection-owner window installed.");
+				Debug.Notification.emit(Debug.Subsystem.Display,
+										Debug.Level.Information,
+										sb.str);
+			}
+		}
+
+		private Gdk.Window get_selection_window() {
+			Gdk.Atom selection = Gdk.Atom.intern("_ALLTRAY_IS_RUNNING", false);
+			return(Gdk.selection_owner_get(selection));
 		}
 
 		private void on_composite_state_change() {

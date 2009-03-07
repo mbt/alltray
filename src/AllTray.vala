@@ -42,6 +42,7 @@ namespace AllTray {
 				Debug.Notification.emit(Debug.Subsystem.Misc,
 										Debug.Level.Information,
 										"No previous instance found.");
+				this._dispManager.install_selection();
 			} else {
 				Debug.Notification.emit(Debug.Subsystem.Misc,
 										Debug.Level.Information,
