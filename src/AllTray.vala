@@ -8,9 +8,6 @@ using Native;
 namespace AllTray {
 	public class Program : GLib.Object {
 		private string[] _args;
-		private AllTray.DisplayManager _dispManager;
-		private AllTray.WindowManager _winManager;
-		private GLib.MainLoop _main_loop;
 
 		private static bool _cl_debug;
 		private static Program _instance;
@@ -35,30 +32,16 @@ namespace AllTray {
 			Debug.Notification.emit(Debug.Subsystem.CommandLine,
 									Debug.Level.Information,
 									"Command line options parsed.");
-
-			this._dispManager = new AllTray.DisplayManager();
-
-			if(!this._dispManager.is_selection_installed()) {
-				Debug.Notification.emit(Debug.Subsystem.Misc,
-										Debug.Level.Information,
-										"No previous instance found.");
-				this._dispManager.install_selection();
-			} else {
-				Debug.Notification.emit(Debug.Subsystem.Misc,
-										Debug.Level.Information,
-										"AllTray already running on display.");
-				this._dispManager.send_args(args);
-			}
-
-			this._winManager = new AllTray.WindowManager(_dispManager);
-
-			_main_loop = new GLib.MainLoop(null, false);
 		}
 
 		public void command_line_init(ref unowned string[] args) {
+			Gtk.init(ref args);
+
 			GLib.OptionContext opt_ctx =
 				new GLib.OptionContext("- Dock software to the systray");
 			opt_ctx.add_main_entries(this._acceptedCmdLineOptions, null);
+			opt_ctx.add_group(Gtk.get_option_group(true));
+
 			try {
 				opt_ctx.parse(ref args);
 			} catch(OptionError e) {
@@ -77,8 +60,6 @@ namespace AllTray {
 			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
 
-			_main_loop.run();
-
 			return(0);
 		}
 
@@ -93,12 +74,6 @@ namespace AllTray {
 			Debug.Notification.emit(Debug.Subsystem.Misc,
 									Debug.Level.Information, "Caught signal: "+
 									caught_signal.to_string());
-
-			// Exit because user pressed Control+C.
-			if(caught_signal == 2) {
-				stderr.printf("User sent SIGINT, exiting...\n");
-				Program._instance._main_loop.quit();
-			}
 		}
 	}
 }
