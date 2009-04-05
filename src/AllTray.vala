@@ -8,6 +8,7 @@ using Native;
 namespace AllTray {
 	public class Program : GLib.Object {
 		private string[] _args;
+		private Process[] _plist;
 
 		private static bool _cl_debug;
 		private static Program _instance;
@@ -26,15 +27,15 @@ namespace AllTray {
 
 		public Program(ref unowned string[] args) {
 			this._args = args;
-			Gdk.init(ref args);
-			this.command_line_init(ref args);
+			Gdk.init(ref _args);
+			this.command_line_init(ref _args);
 
 			Debug.Notification.emit(Debug.Subsystem.CommandLine,
 									Debug.Level.Information,
 									"Command line options parsed.");
 		}
 
-		public void command_line_init(ref unowned string[] args) {
+		public void command_line_init(ref string[] args) {
 			Gtk.init(ref args);
 
 			GLib.OptionContext opt_ctx =
@@ -55,12 +56,33 @@ namespace AllTray {
 
 		public int run() {
 			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
+			// StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
 
+			// The remaining arguments are to be sent to the process.
+			string[] a = get_command_line(_args);
+			Process p = new Process(a);
+			p.run();
+			
+			if(!p.running) {
+				return(1);
+			}
+
+			Gtk.main();
 			return(0);
+		}
+
+		public string[] get_command_line(string[] args) {
+			int curItem = 0;
+			string[] retval = new string[args.length];
+			foreach(string arg in args) {
+				if(arg.contains("alltray")) continue;
+				retval[curItem++] = arg;
+			}
+
+			return(retval);
 		}
 
 		public static int main(string[] args) {
