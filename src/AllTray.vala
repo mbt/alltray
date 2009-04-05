@@ -42,10 +42,32 @@ namespace AllTray {
 		public void command_line_init(ref string[] args) {
 			Gtk.init(ref args);
 
+			// First, see if there are environment arguments.
+			string? default_flags =
+				GLib.Environment.get_variable("ALLTRAY_OPTIONS");
+			string[] env_args = null;
+
+			if(default_flags != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append_printf("%s", args[0]);
+				sb.append_printf(" %s", default_flags);
+				env_args = sb.str.split(" ");
+			}
+
 			GLib.OptionContext opt_ctx =
 				new GLib.OptionContext("- Dock software to the systray");
 			opt_ctx.add_main_entries(this._acceptedCmdLineOptions, null);
 			opt_ctx.add_group(Gtk.get_option_group(true));
+
+			if(env_args != null) {
+				try {
+					opt_ctx.parse(ref env_args);
+				} catch(OptionError e) {
+					stderr.printf("error: env flag parsing failed (%s)\n",
+								  e.message);
+					Native.StdC.Stdlib.exit(1);
+				}
+			}
 
 			try {
 				opt_ctx.parse(ref args);

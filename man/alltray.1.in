@@ -99,7 +99,7 @@ AllTray reads this environment variable for any default options.  Any of
 the options above in \fBOPTIONS\fR can be specified in this environment
 variable.  This environment variable is looked at \fIbefore\fR the
 command line, so the command line will override it should there be any
-conflict.  \fIThis feature is not yet implemented as of 0.7.1dev.\fR
+conflict.
 .IP "ALLTRAY_DEBUG"
 When the \-d or \-\-debug options are specified on the command line,
 AllTray looks at this environment variable to see which types of debug
