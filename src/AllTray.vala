@@ -6,9 +6,13 @@ using GLib;
 using Native;
 
 namespace AllTray {
+	public errordomain AllTrayError {
+		FAILED
+	}
+
 	public class Program : GLib.Object {
 		private string[] _args;
-		private Process[] _plist;
+		private List<Process> _plist;
 
 		private static bool _cl_debug;
 		private static Program _instance;
@@ -55,18 +59,14 @@ namespace AllTray {
 		}
 
 		public int run() {
-			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
-			// StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
+			_plist = new List<Process>();
 
-			// The remaining arguments are to be sent to the process.
-			string[] a = get_command_line(_args);
-			Process p = new Process(a);
-			p.run();
-			
-			if(!p.running) {
+			install_signal_handlers();
+
+			try {
+				spawn_new_process();
+			} catch(AllTrayError e) {
+				stderr.printf(e.message);
 				return(1);
 			}
 
@@ -74,7 +74,55 @@ namespace AllTray {
 			return(0);
 		}
 
-		public string[] get_command_line(string[] args) {
+		private void spawn_new_process() {
+			string[] a = get_command_line(_args);
+			Process p = new Process(a);
+			p.process_died += cleanup_for_process;
+			p.run();
+			
+			if(!p.running) {
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Error,
+										"Whoops.  Not running?");
+				throw new AllTrayError.FAILED("Failed to start process");
+			}
+
+			_plist.append(p);
+		}
+
+		private void install_signal_handlers() {
+			// For the moment, we _DO NOT_ use these.  We will soon.
+			return;
+
+			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
+		}
+
+		public static int main(string[] args) {
+			Program atray = new Program(ref args);
+			Program._instance = atray;
+
+			return(atray.run());
+		}
+
+		private void cleanup_for_process(Process p) {
+			Debug.Notification.emit(Debug.Subsystem.Process,
+									Debug.Level.Information,
+									"Cleaning up for child...");
+			_plist.remove(p);
+
+			if(_plist.length() == 0) {
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Information,
+										"No more children. Dying.");
+				Gtk.main_quit();
+			}
+		}
+
+		private string[] get_command_line(string[] args) {
 			int curItem = 0;
 			string[] retval = new string[args.length];
 			foreach(string arg in args) {
@@ -83,13 +131,6 @@ namespace AllTray {
 			}
 
 			return(retval);
-		}
-
-		public static int main(string[] args) {
-			Program atray = new Program(ref args);
-			Program._instance = atray;
-
-			return(atray.run());
 		}
 
 		private static void sighandler(int caught_signal) {

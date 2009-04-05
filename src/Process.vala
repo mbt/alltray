@@ -13,11 +13,15 @@ namespace AllTray {
 		private Gtk.StatusIcon _statusIcon;
 		private Pid _child;
 		private bool _visible;
-
+		private bool _running;
 		private string[] _argv;
 
+		public signal void process_died(Process p);
+
 		public bool running {
-			get; set;
+			get {
+				return(_running);
+			}
 		}
 
 		public Process(string[] argv) {
@@ -32,11 +36,17 @@ namespace AllTray {
 										 SpawnFlags.DO_NOT_REAP_CHILD |
 										 SpawnFlags.SEARCH_PATH,
 										 null, out _child);
-				running = true;
+				_running = true;
 				ChildWatch.add(_child, child_died);
+				StringBuilder msg = new StringBuilder();
+				msg.append_printf("Child process %d (%s) now running.",
+								  (int)_child, _argv[0]);
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Information,
+										msg.str);
 			} catch(SpawnError e) {
 				stdout.printf("An error occurred: %s\n", e.message);
-				running = false;
+				_running = false;
 			}
 
 			_statusIcon = new Gtk.StatusIcon.from_stock(Gtk.STOCK_MISSING_IMAGE);
@@ -45,7 +55,7 @@ namespace AllTray {
 		}
 
 		public void child_died() {
-			running = false;
+			_running = false;
 			_statusIcon.visible = false;
 			StringBuilder msg = new StringBuilder();
 
@@ -55,6 +65,7 @@ namespace AllTray {
 			Debug.Notification.emit(Debug.Subsystem.Process,
 									Debug.Level.Information,
 									msg.str);
+			process_died(this);
 		}
 
 		public void toggle_visibility() {
