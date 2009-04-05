@@ -3,10 +3,13 @@
  * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
  * License: GNU GPL v3.0 as published by the Free Software Fondation
  */
-#include <glib/glib.h>
+#include <glib.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include "x11_glue.h"
 
 static Atom _net_wm_pid;
+static gulong find_window(GPid pid, Display *d, Window w);
 
 gulong
 alltray_get_x11_window_from_pid(GPid pid, Display *d) {
@@ -29,9 +32,10 @@ find_window(GPid pid, Display *d, Window w) {
   int status;
   gulong nItems;
   gulong bytesAfter;
-  guchar *prop_ret = null;
+  guchar *prop_ret = NULL;
+  Atom _net_wm_pid = XInternAtom(d, "_NET_WM_PID", True);
 
-  status = XGetWindowProperty(d, w, 0, 1, False, XA_CARDINAL,
+  status = XGetWindowProperty(d, w, _net_wm_pid, 0, 1, False, XA_CARDINAL,
 			      &type, &format, &nItems, &bytesAfter, &prop_ret);
   if(status == Success) {
     if(prop_ret != 0) {
@@ -51,7 +55,7 @@ find_window(GPid pid, Display *d, Window w) {
 
   if(XQueryTree(d, w, &root, &parent, &child, &child_count) != 0) {
     for(guint i = 0; i < child_count; i++) {
-      guint retval = search(child[i]);
+      guint retval = find_window(pid, d, child[i]);
       if(retval != 0) return(retval);
     }
   }

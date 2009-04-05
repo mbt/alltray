@@ -18,7 +18,7 @@ namespace AllTray {
 			ulong xWin;
 
 			_process = p;
-			xWin = get_xwin_from_pid(p.pid);
+			xWin = get_xwin_from_pid(p.get_pid());
 		}
 
 		private ulong get_xwin_from_pid(Pid pid) {

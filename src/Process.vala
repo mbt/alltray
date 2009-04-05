@@ -17,7 +17,6 @@ namespace AllTray {
 		private bool _visible;
 		private bool _running;
 		private string[] _argv;
-		//private List<ManagedWindow> _managedWindows;
 
 		public signal void process_died(Process p);
 
@@ -27,17 +26,22 @@ namespace AllTray {
 			}
 		}
 
+		// Not for now, bug in Vala.
+		/*
 		public Pid pid {
 			get {
 				return(_child);
 			}
 		}
+		*/
 
 		public Process(string[] argv) {
 			_argv = argv;
-			_child = (Pid)0;
 			_visible = true;
-			//_managedWindows = new List<ManagedWindow>();
+		}
+
+		public Pid get_pid() {
+			return(_child);
 		}
 
 		public void run() {
