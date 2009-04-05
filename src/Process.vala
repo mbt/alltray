@@ -1,5 +1,7 @@
 /*
  * Process.vala - Child process management
+ * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
+ * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
 
@@ -15,6 +17,7 @@ namespace AllTray {
 		private bool _visible;
 		private bool _running;
 		private string[] _argv;
+		//private List<ManagedWindow> _managedWindows;
 
 		public signal void process_died(Process p);
 
@@ -24,10 +27,17 @@ namespace AllTray {
 			}
 		}
 
+		public Pid pid {
+			get {
+				return(_child);
+			}
+		}
+
 		public Process(string[] argv) {
 			_argv = argv;
 			_child = (Pid)0;
 			_visible = true;
+			//_managedWindows = new List<ManagedWindow>();
 		}
 
 		public void run() {

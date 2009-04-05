@@ -61,6 +61,7 @@ namespace AllTray {
 		public int run() {
 			_plist = new List<Process>();
 
+			Wnck.set_client_type(Wnck.ClientType.PAGER);
 			install_signal_handlers();
 
 			try {

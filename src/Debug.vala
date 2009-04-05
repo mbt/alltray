@@ -6,16 +6,15 @@
 using GLib;
 
 namespace AllTray.Debug {
-	[Flags]
 	public enum Subsystem {
-		None,
-		CommandLine,
-		Display,
-		SystemTray,
-		WindowManager,
-		Process,
-		Misc,
-		Bug
+		None = 0x00,
+		CommandLine = 0x01,
+		Display = 0x02,
+		SystemTray = 0x04,
+		WindowManager = 0x08,
+		Process = 0x10,
+		Misc = 0x20,
+		Bug = 0x40
 	}
 
 	public enum Level {

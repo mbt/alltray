@@ -1,4 +1,6 @@
 SOURCES = AllTray.vala \
+	Application.vala \
+	x11_glue.c \
 	Debug.vala \
 	Process.vala
 
@@ -10,7 +12,7 @@ CLEAN_FILES = AllTray.c \
 	Process.h
 
 VALA_FLAGS = -g --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
-	--pkg gtk+-2.0 --vapidir ../vapi
+	--pkg gtk+-2.0 --pkg libwnck-1.0 --pkg x11_glue --vapidir ../vapi
 VALA_FLAGS += ${VALAC_FLAGS}
 
 alltray: clean

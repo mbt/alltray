@@ -14,5 +14,8 @@ config.h.in
 config.guess
 aclocal.m4
 doc/src-docs
-*.{c,h}
 alltray
+src/AllTray.[ch]
+src/Application.[ch]
+src/Debug.[ch]
+src/Process.[ch]
