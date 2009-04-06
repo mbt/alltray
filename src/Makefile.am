@@ -13,6 +13,9 @@ alltray_VALASOURCES = AllTray.vala \
 	Process.vala \
 	TrayIcon.vala
 
+MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
+	$(alltray_VALASOURCES:.vala=.h)
+
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c
 
