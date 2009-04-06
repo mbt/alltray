@@ -12,6 +12,7 @@ namespace AllTray {
 
 	public class Program : GLib.Object {
 		private string[] _args;
+		private string[] _cleanArgs;
 		private List<Process> _plist;
 
 		private static bool _cl_debug;
@@ -36,14 +37,14 @@ namespace AllTray {
 		public Program(ref unowned string[] args) {
 			this._args = args;
 			Gdk.init(ref _args);
-			this.command_line_init(ref _args);
+			_cleanArgs = this.command_line_init(ref _args);
 
 			Debug.Notification.emit(Debug.Subsystem.CommandLine,
 									Debug.Level.Information,
 									"Command line options parsed.");
 		}
 
-		public void command_line_init(ref string[] args) {
+		public string[] command_line_init(ref string[] args) {
 			Gtk.init(ref args);
 
 			// First, see if there are environment arguments.
@@ -86,6 +87,21 @@ namespace AllTray {
 				Native.StdC.Stdlib.exit(0);
 			}
 			if(_cl_debug) Debug.Notification.init();
+
+			// Strip "--" out of the command line arguments
+			if(args[1] == "--") {
+				StringBuilder sb = new StringBuilder();
+
+				foreach(string arg in args) {
+					if(arg == "--") continue;
+					sb.append_printf("%s@&@", arg);
+				}
+
+				string[] newargs = sb.str.split("@&@");
+				return(newargs);
+			}
+
+			return(args);
 		}
 
 		public int run() {
@@ -115,7 +131,7 @@ namespace AllTray {
 		}
 
 		private void spawn_new_process() {
-			string[] a = get_command_line(_args);
+			string[] a = get_command_line(_cleanArgs);
 			Process p = new Process(a);
 			p.process_died += cleanup_for_process;
 			p.run();
