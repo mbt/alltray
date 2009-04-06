@@ -31,7 +31,7 @@ namespace AllTray {
 				Debug.Notification.emit(Debug.Subsystem.Process,
 										Debug.Level.Information,
 										"No App yet. Waiting for one.");
-				GLib.Timeout.add_seconds(1, get_wapp);
+				GLib.Timeout.add(50, get_wapp);
 			}
 
 			_appVisible = true;
@@ -43,7 +43,6 @@ namespace AllTray {
 				Debug.Notification.emit(Debug.Subsystem.Process,
 										Debug.Level.Information,
 										"No App yet. Waiting for one.");
-				GLib.Timeout.add_seconds(1, get_wapp);
 				return(true);
 			} else {
 				Debug.Notification.emit(Debug.Subsystem.Process,
@@ -63,6 +62,14 @@ namespace AllTray {
 				msg.truncate(0);
 				msg.append_printf("Setting window 0x%08lx visibility to %s",
 								  w.get_xid(), _appVisible.to_string());
+
+				if(_appVisible) {
+					w.unminimize(Gdk.CURRENT_TIME);
+					w.set_skip_tasklist(false);
+				} else {
+					w.minimize();
+					w.set_skip_tasklist(true);
+				}
 				Debug.Notification.emit(Debug.Subsystem.Application,
 										Debug.Level.Information,
 										msg.str);

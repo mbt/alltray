@@ -29,7 +29,7 @@ namespace AllTray {
 				// The application isn't ready yet.  Wait for it to
 				// become ready and _then_ get the icon setup.
 				_statusIcon.set_from_stock(Gtk.STOCK_MISSING_IMAGE);
-				GLib.Timeout.add_seconds(1, get_app_icon_retry);
+				GLib.Timeout.add(50, get_app_info_retry);
 			} else {
 				_statusIcon.set_from_pixbuf(_appForIcon.wnck_app.get_icon());
 			}
@@ -42,11 +42,12 @@ namespace AllTray {
 									msg.str);
 		}
 
-		public bool get_app_icon_retry() {
+		public bool get_app_info_retry() {
 			if(_appForIcon.wnck_app == null)
 				return(true);
 
 			_statusIcon.set_from_pixbuf(_appForIcon.wnck_app.get_icon());
+			_statusIcon.set_tooltip(_appForIcon.wnck_app.get_name());
 			return(false);
 		}
 

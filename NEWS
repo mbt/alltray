@@ -1,12 +1,89 @@
-0.7.1dev Snapshot Release 1
-===========================
+News for 0.7.1dev
+=================
 
-  * Doesn't work. :-)  That is, the functionality isn't there, but the
-    infrastructure is.
+THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
 
+It works (mostly)!  Much has to be worked out yet:
+      
+  * oocalc and friends don't work right.  This is probably because
+    their real PID is different from what g_spawn_async() returns, and
+    we currently depend on _NET_WM_PID to feed into libwnck to be able
+    to get the windows for the process.
+      
+    This applies to _anything_ whose real PID is going to be different
+    from what g_spawn_async() returns.  Obviously, we need to be a bit
+    more careful about how to determine what is what; perhaps tracking
+    our child's children processes and scanning for windows that are
+    owned by them would work as a general-purpose thing, and we can
+    stop looking with the first child's window we find.
 
-2009
-====
+  * Along the same lines as the previous flaw, software that is
+    non-conformant with current standards and specifications for
+    interaction on the X Window System currently are not handled by
+    AllTray.  This includes “xeyes”, and any other application that
+    does not set _NET_WM_PID in its window(s).
+      
+  * The tool-tip on the icon needs to display good info.  Being that
+    we are working in an application-centric way as opposed to a
+    window-centric way, it'll be different than before.  But that is
+    good.
+      
+  * There is no right-click menu on the icon yet.  It is planned, and
+    it will be more featureful than ever before, enabling not only all
+    windows to be docked, but just one particular window as well.
+      
+  * It DOES NOT intercept the close ("X") button on the window.  I
+    have to find a clean way to do this.  It is on the list before
+    0.8.0 since this is a feature which people _expect_ to have
+    (rightfully so).
+
+  * This release does not have session management support.  Session
+    management support is on the list of things for 0.8.0, so it'll be
+    coming to an 0.7.x release for testing at some point (hopefully
+    soon).
+      
+  * THIS HANDLES MULTIPLE WINDOWS!  FINALLY!  YES!  This is excellent.
+    You can truly dock an _APPLICATION_ now; not just one window.
+    Tested with gnome-terminal and Firefox 3.0 and 3.5-b4.  :)
+
+  * This release of AllTray has only been tested under GNOME 2.26, and
+    only with the Metacity and Compiz window managers.  Information on
+    how well it works on XFCE would be nice.
+
+  * This release of AllTray is pretty well dependent on GTK.  It also
+    requires libwnck.  This may be the way it is, since I hear tell
+    that KDocker is great and it integrates well into the KDE
+    environment.  It's tested to work on Ubuntu 9.04, the Jaunty
+    Jackalope.  Successful reports of this development release of
+    AllTray working on other systems would be greatly appreciated.
+
+  * The development snapshot only requires a C99 compiler (for
+    example, GNU GCC's C compiler, with the -gnu99 option).  It has
+    only been tested with gcc 4.3.3; but it should compile on any GNU
+    GCC version that implements -gnu99.
+
+  * IF YOU ARE BUILDING FROM TRUNK, you will require the Vala
+    compiler, 0.6.0 installed.  The Vala sources and build system
+    aren't yet compatible with 0.7.0.  This means that if your
+    operating system doesn't contain a new enough Vala compiler (or
+    too new of a Vala compiler), you will want to use the release or
+    snapshot tarballs, which do not require Vala to be built.
+
+If you have issues with this release, please report them:
+
+  https://bugs.launchpad.net/alltray/+filebug
+
+Please see:
+
+  https://answers.edge.launchpad.net/alltray/+faq/318
+
+Which contains a list of the minimum necessary information for a bug
+report to be useful.
+
+January, 2009
+=============
 
 New year, new maintainer, and massive changes to the source tree.
 
