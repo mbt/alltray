@@ -1,0 +1,22 @@
+
+If AllTray crashes and your windows are hidden, you _can_ recover.
+Follow these instructions:
+
+  * Get the XID(s) of the windows that are gone from view:
+
+    $ wnckprop --list
+
+  * For each of the windows that are hidden, run:
+
+    $ wnckprop --unminimize --unskip-tasklist --window={WINDOW_ID}
+
+    Replace {WINDOW_ID} with the number from --list.
+
+That will get your window back, so that you can use it without having
+to kill the process entirely.  :)
+
+You _shouldn't_ have to do this with a stable release.  It may be
+expected of development releases, though, so it's nice to know this.
+Either way, AllTray has a zero-crash policy: If you get a crash, check
+to see that the bug is reported.  If you aren't sure, report it again.
+Thanks!
