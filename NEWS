@@ -1,3 +1,14 @@
+News for 0.7.2dev
+=================
+
+THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+I was an idiot when I released 0.7.1dev, and somehow managed to not
+merge it 100% correctly.  This release is what 0.7.1dev should have
+been.  Sorry!
+
 News for 0.7.1dev
 =================
 
