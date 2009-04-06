@@ -18,6 +18,7 @@ namespace AllTray {
 		private bool _running;
 		private string[] _argv;
 		private AllTray.Application _app;
+		private AllTray.TrayIcon _trayIcon;
 
 		public signal void process_died(Process p);
 
@@ -64,11 +65,8 @@ namespace AllTray {
 				_running = false;
 			}
 
-			_statusIcon =
-				new Gtk.StatusIcon.from_stock(Gtk.STOCK_MISSING_IMAGE);
-
-			_statusIcon.set_visible(true);
-			_statusIcon.activate += toggle_visibility;
+			_app = new AllTray.Application(this);
+			_trayIcon = new AllTray.TrayIcon(this, _app);
 		}
 
 		public void child_died() {
@@ -83,45 +81,6 @@ namespace AllTray {
 									Debug.Level.Information,
 									msg.str);
 			process_died(this);
-		}
-
-		public void toggle_visibility() {
-			_visible = !_visible;
-			get_application();
-			unowned List<Wnck.Window> windows =
-				_app.wnck_app.get_windows();
-
-			StringBuilder msg = new StringBuilder();
-			foreach(Wnck.Window w in windows) {
-				stdout.printf("Found window: 0x%08lx, \"%s\"\n",
-							  w.get_xid(), w.get_name());
-			}
-
-			if(_visible) {
-				msg.append("I would show it, but I don't know how.");
-				foreach(Wnck.Window w in windows) {
-					w.unshade();
-				}
-			} else {
-				foreach(Wnck.Window w in windows) {
-					w.shade();
-				}
-				msg.append("I would hide it, but I don't know how.");
-			}
-			
-			foreach(Wnck.Window w in windows) {
-				msg.append_printf(" (win 0x%07lx)", w.get_xid());
-			}
-
-			Debug.Notification.emit(Debug.Subsystem.Process,
-									Debug.Level.Information,
-									msg.str);
-		}
-
-		private void get_application() {
-			if(_app == null) {
-				_app = new AllTray.Application(this);
-			}
 		}
 	}
 }

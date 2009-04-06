@@ -2,6 +2,7 @@ SOURCES = AllTray.vala \
 	Application.vala \
 	Debug.vala \
 	Process.vala \
+	TrayIcon.vala \
 	x11_glue.c
 
 CLEAN_FILES = AllTray.c \

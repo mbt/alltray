@@ -10,11 +10,12 @@ namespace AllTray.Debug {
 		None = 0x00,
 		CommandLine = 0x01,
 		Display = 0x02,
-		SystemTray = 0x04,
+		TrayIcon = 0x04,
 		WindowManager = 0x08,
 		Process = 0x10,
 		Misc = 0x20,
-		Bug = 0x40
+		Bug = 0x40,
+		Application = 0x80
 	}
 
 	public enum Level {
@@ -44,7 +45,7 @@ namespace AllTray.Debug {
 						_subsys |= Subsystem.Display;
 						break;
 					case "SYSTRAY":
-						_subsys |= Subsystem.SystemTray;
+						_subsys |= Subsystem.TrayIcon;
 						break;
 					case "WM":
 						_subsys |= Subsystem.WindowManager;
@@ -58,14 +59,18 @@ namespace AllTray.Debug {
 					case "BUG":
 						_subsys |= Subsystem.Bug;
 						break;
+					case "APP":
+						_subsys |= Subsystem.Application;
+						break;
 					case "ALL":
 						_subsys |= (Subsystem.CommandLine |
 									Subsystem.Display |
-									Subsystem.SystemTray |
+									Subsystem.TrayIcon |
 									Subsystem.WindowManager |
 									Subsystem.Process |
 									Subsystem.Misc |
-									Subsystem.Bug);
+									Subsystem.Bug |
+									Subsystem.Application);
 						break;
 					default:
 						GLib.warning("Unrecognized value '%s' in ALLTRAY_DEBUG",
@@ -119,8 +124,8 @@ namespace AllTray.Debug {
 				retval = "DISPLAY";
 				break;
 
-			case Subsystem.SystemTray:
-				retval = "SYSTRAY";
+			case Subsystem.TrayIcon:
+				retval = "TRAY";
 				break;
 
 			case Subsystem.WindowManager:
@@ -133,6 +138,10 @@ namespace AllTray.Debug {
 
 			case Subsystem.Misc:
 				retval = "MISC";
+				break;
+
+			case Subsystem.Application:
+				retval = "APP";
 				break;
 
 			case Subsystem.Bug:
