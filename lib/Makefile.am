@@ -1,1 +1,0 @@
-SUBDIRS = nomap x11
