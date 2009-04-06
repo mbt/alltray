@@ -104,6 +104,7 @@ AC_CONFIG_FILES([README
         images/Makefile
         man/Makefile
         src/Makefile
+	vapi/Makefile
         man/alltray.1])
 
 AC_OUTPUT

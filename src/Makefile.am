@@ -20,6 +20,7 @@ alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c
 
 EXTRA_DIST = $(alltray_VALASOURCES) \
+	$(alltray_VALASOURCES:.vala=.h) \
 	x11_glue.h
 
 VALA_FLAGS = -g --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
