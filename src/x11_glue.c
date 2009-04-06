@@ -3,6 +3,7 @@
  * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
  * License: GNU GPL v3.0 as published by the Free Software Fondation
  */
+#include <stdio.h>
 #include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -26,6 +27,31 @@ alltray_get_x11_window_from_pid(GPid pid, Display *d) {
 }
 
 static gulong
+get_window_leader(Display *d, Window w) {
+  Atom type;
+  int format;
+  int status;
+  gulong nItems;
+  gulong bytesAfter;
+  guchar *prop_ret = NULL;
+  Atom wm_client_leader = XInternAtom(d, "WM_CLIENT_LEADER", True);
+  gulong retval = 0;
+
+  status =
+    XGetWindowProperty(d, w, wm_client_leader, 0, 1, False, XA_WINDOW,
+		       &type, &format, &nItems, &bytesAfter, &prop_ret);
+
+  if(status == Success) {
+    if(prop_ret != 0) {
+      retval = *((unsigned long *)prop_ret);
+      return(retval);
+    }
+  } else {
+    return(0);
+  }
+}
+
+static gulong
 find_window(GPid pid, Display *d, Window w) {
   Atom type;
   int format;
@@ -35,11 +61,15 @@ find_window(GPid pid, Display *d, Window w) {
   guchar *prop_ret = NULL;
   Atom _net_wm_pid = XInternAtom(d, "_NET_WM_PID", True);
 
-  status = XGetWindowProperty(d, w, _net_wm_pid, 0, 1, False, XA_CARDINAL,
-			      &type, &format, &nItems, &bytesAfter, &prop_ret);
+  status =
+    XGetWindowProperty(d, w, _net_wm_pid, 0, 1, False, XA_CARDINAL,
+		       &type, &format, &nItems, &bytesAfter, &prop_ret);
+
   if(status == Success) {
     if(prop_ret != 0) {
       GPid returned_pid = *((unsigned long *)prop_ret);
+      fprintf(stderr, "returned_pid = %d, window 0x%08lx\n",
+	      returned_pid, w);
       if(returned_pid == pid) return(w);
     }
   } else {
@@ -56,7 +86,14 @@ find_window(GPid pid, Display *d, Window w) {
   if(XQueryTree(d, w, &root, &parent, &child, &child_count) != 0) {
     for(guint i = 0; i < child_count; i++) {
       guint retval = find_window(pid, d, child[i]);
-      if(retval != 0) return(retval);
+      if(retval != 0) {
+	fprintf(stderr, "find_window returning window 0x%08x\n",
+		retval);
+	retval = get_window_leader(d, retval);
+	fprintf(stderr, "get_window_leader returning window 0x%08x\n",
+		retval);	
+	return(get_window_leader(d, retval));
+      }
     }
   }
 

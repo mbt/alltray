@@ -17,6 +17,7 @@ namespace AllTray {
 		private bool _visible;
 		private bool _running;
 		private string[] _argv;
+		private AllTray.Application _app;
 
 		public signal void process_died(Process p);
 
@@ -26,7 +27,7 @@ namespace AllTray {
 			}
 		}
 
-		// Not for now, bug in Vala.
+		// XXX: Not for now, bug in Vala 0.[67].0
 		/*
 		public Pid pid {
 			get {
@@ -63,7 +64,9 @@ namespace AllTray {
 				_running = false;
 			}
 
-			_statusIcon = new Gtk.StatusIcon.from_stock(Gtk.STOCK_MISSING_IMAGE);
+			_statusIcon =
+				new Gtk.StatusIcon.from_stock(Gtk.STOCK_MISSING_IMAGE);
+
 			_statusIcon.set_visible(true);
 			_statusIcon.activate += toggle_visibility;
 		}
@@ -84,16 +87,30 @@ namespace AllTray {
 
 		public void toggle_visibility() {
 			_visible = !_visible;
-			string msg;
+			get_application();
+			unowned List<Wnck.Window> windows =
+				_app.wnck_app.get_windows();
+			StringBuilder msg = new StringBuilder();
+
 			if(_visible) {
-				msg = "I would show it.";
+				msg.append("I would show it, but I don't know how.");
 			} else {
-				msg = "I would hide it.";
+				msg.append("I would hide it, but I don't know how.");
+			}
+			
+			foreach(Wnck.Window w in windows) {
+				msg.append_printf(" (win 0x%07lx)", w.get_xid());
 			}
 
 			Debug.Notification.emit(Debug.Subsystem.Process,
 									Debug.Level.Information,
-									msg);
+									msg.str);
+		}
+
+		private void get_application() {
+			if(_app == null) {
+				_app = new AllTray.Application(this);
+			}
 		}
 	}
 }

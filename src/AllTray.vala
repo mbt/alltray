@@ -84,6 +84,9 @@ namespace AllTray {
 			_plist = new List<Process>();
 
 			Wnck.set_client_type(Wnck.ClientType.PAGER);
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"Set WNCK Client Type to PAGER");
 			install_signal_handlers();
 
 			try {
