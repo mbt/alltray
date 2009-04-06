@@ -1,4 +1,4 @@
-.TH alltray 1 "January 17, 2008" "Version @PACKAGE_VERSION@" "User Commands"
+.TH alltray 1 "April 6, 2009" "Version @PACKAGE_VERSION@" "User Commands"
 .ds UX U\s-3NIX\s+3
 \#
 .SH NAME
@@ -41,31 +41,6 @@ to a new process.
 \#
 .IP "\-?, \-\-help"
 Show the help (usage) screen.
-.IP "\-s, \-\-show"
-Show the window(s) initially.  The default behavior is to dock the
-application to the system tray as soon as it opens.
-.I This behavior may change in the future.
-.IP "\-S, \-\-sticky"
-Make managed windows \(lqsticky\(rq.  That is, the windows will appear on
-all desktops, not just one.
-.IP "\-h, \-\-hide\-from\-taskbar"
-Hide the application's window(s) from the system task bar.
-.IP "\-d \fIsec\fR, \-\-display\-title\-change=\fIsec\fR"
-Show window name (title) changes for \fIsec\fR seconds after they
-happen.  This notification will appear as an alert bubble that will
-display near the docked application's icon in the system tray.
-.IP "\-m, \-\-modify\-title"
-Append \(lq(AllTray)\(rq to the title of windows which are controlled by
-AllTray.  This may make the window easier to identify, but it can also
-be annoying.
-.I Prior to AllTray 0.70, this feature was enabled by default.
-.IP "\-q, \-\-quiet"
-Do not emit verbose messages or display the program's startup banner
-even if AllTray is being run on a terminal.  By default, if AllTray is
-running on a terminal, a startup banner will display which announces the
-version, copyright, and license of the program (as with \-\-version, but
-the program continues instead of halting after displaying this
-information).
 .IP "\-L, \-\-list\-debug\-opts"
 Lists the debug \(lqflags\(rq that AllTray supports.  The items in this list
 are allowed values in an environment variable named \fBALLTRAY_DEBUG\fR;
@@ -78,19 +53,6 @@ get any debug output; see the \fBENVIRONMENT VARIABLES\fR section below.
 Show the program version, copyright, and license.
 .IP "\-V, \-\-extended-version"
 Show the program version, copyright, license, and build information.
-.IP "\-\-display=\fIdisp\fR"
-Use the X11 display specified by \fIdisp\fR.  The default is to use the
-X11 display referenced by the \fBDISPLAY\fR environment variable.
-.IP "\-\-wait-for-wm"
-Wait for an EWMH-compliant window manager to load.  This is useful if
-you are starting AllTray in a \fI.xinitrc\fR file, or as an
-\(lqautostart\(rq program via your session manager.  By default, AllTray
-does not wait for a window manager to become available.
-.IP "\-\-wait-for-systray"
-Wait for a System Tray Specification-compliant program to load.  This is
-useful if you are starting AllTray in a \fI.xinitrc\fR file, or as an
-\(lqautostart\(rq program via your session manager.  By default, AllTray
-does not wait for a system tray to become available.
 \#
 .SH ENVIRONMENT VARIABLES
 \#
@@ -123,7 +85,7 @@ Here are some examples of invoking AllTray in various situations:
 alltray evolution
 \#
 .IP "Simple debugging example"
-ALLTRAY_DEBUG="X11 TRAY" alltray \-D evolution
+ALLTRAY_DEBUG="ALL" alltray \-D evolution
 \#
 .IP "Client command line arguments example"
 alltray \-\- xterm \-geometry 132x40
@@ -133,39 +95,8 @@ alltray \-\-wait\-for\-wm \-\-wait\-for\-systray evolution
 \#
 .SH DIAGNOSTICS
 \#
-The exit code can be tested for success or failure.  If AllTray exits
-with status zero, it was able to spawn the requested program (or it was
-able to attach to the requested window, for click mode) and ran until
-the program exited or AllTray was instructed to undock the application.
-
-In certain events, AllTray will return an error message (displayed on
-stderr) which provides information as to why it failed to work.  Some of
-these messages (and explanations for them) include:
-.RS 0.5i
-.P
-\fIError: Unable to initialize the window manager module.  Are you
-running an EWMH-compliant window manager?\fR
-.RS 0.2i
-.P
-This means that there was no EWMH-compliant window manager running.
-Known EWMH-compliant window managers include Metacity, KWin, Compiz, and
-Fluxbox.
-.RE
-.P
-\fIError: Unable to initialize the system tray module.  Are you running
-a system tray manager?\fR
-.RS 0.2i
-.P
-This means that AllTray found an EWMH-compliant window manager, but it
-did not find a system tray manager so that it could dock software.
-There are a number of these, and in GNOME, KDE, and Fluxbox (at least),
-a system tray manager is included with the system and available by
-default.
-.RE
-.RE
-
-Any non-zero exit value indicates a failure of some sort.  See
-\fBalltray.h\fR for error exit codes.
+AllTray doesn't (yet) emit very helpful diagnostic information on
+failure.  This will be remedied prior to the 0.8.0 release.
 \#
 .SH REQUIREMENTS
 \#
@@ -176,70 +107,27 @@ specified in the System Tray Specification.
 \#
 .SH BUGS
 \#
-Interaction with compiz is a bit iffy\(emclick mode in particular is
-troublesome with the compiz window manager.
-
-Some applications\(emin particular, GNU Emacs\(emdo not always properly
-dock.
-
 Session management support needs to be implemented.  If you rely on
 session management support for your application software, you may
 encounter surprising results when combining that software with AllTray
 at present.
 
-The error exit codes from AllTray need to be documented here.
-
-There are likely many more.  If you should find one, please report it at
-https://launchpad.net/alltray/+filebug.
-\#
-.SH REPORTING BUGS
-\#
-When reporting a bug, please submit all of the following information (or
-as much of it as is possible):
-.IP "\fIAllTray version\fR"
-You can get this from running \(lqalltray \-V\(rq
-\#
-.IP "\fICore file\fR"
-If the bug you are trying to report resulted in AllTray crashing
-(meaning it caught a signal like SIGSEGV or SIGABRT, or otherwise
-unexpectedly died), submit the core file.  Many distributions today will
-suppress the generation of core files; you may have to run \(lqulimit -c
-unlimited\(rq in a shell, and then run AllTray from that shell, to get a
-core file.
-\#
-.IP "\fISystem software versions\fR"
-Include the name and version of your window manager; desktop environment
-software (or whatever software provides your system tray\(emsome window
-managers perform this task); and your operating system kernel, version,
-and architecture (run \(lquname -a\(rq to get that).
-\#
-.IP "\fIHow to reproduce\fR"
-Write in as much detail as you can how to reproduce the bug.  Try not to
-leave anything out, even it if seems stupid and self-evident.  It is
-especially important that you also indicate the name and version number
-of the software that you were trying to use with AllTray, \fIeven if it
-is not generally available\fR, since it is sometimes possible that the
-program may be the cause of the issue.  However, \fBif the program is
-not generally available, it will be up to you (or someone else who has
-access to the same software) to identify the cause of the problem\fR so
-that it can be either reported to the program's vendor or the bug
-pinpointed and fixed in AllTray.
+There are likely undiscovered bugs.  If you should find one, please
+report it at https://launchpad.net/alltray/+filebug.
 \#
 .SH AUTHORS
 \#
-AllTray was started in 2004 by Jochen Baier <email@jochen-baier.de>.  It
-is currently being written and maintained by Michael B. Trausch
-<mike@trausch.us>.
+AllTray was started in 2004 by Jochen Baier <email@jochen-baier.de>.
+Michael B. Trausch became the maintainer in 2009 and has started a
+complete re-write of the AllTray code.
 \#
 .SH COPYRIGHT
 \#
-Copyright \(co 2004\(en2007 Jochen Baier <email@jochen-baier.de>
-.br
 Copyright \(co 2009 Michael B. Trausch <mike@trausch.us>
 
-AllTray is licensed under the terms of the GNU GPL Version 3 license.
-For the full-text of the license, see the license as published on the
-GNU web site.
+AllTray is licensed under the terms of the GNU GPL Version 3 license,
+as published by the Free Software Foundation.  For the full-text of
+the license, see the license as published on the GNU web site.
 
 The license should also be available on your computer.  In the source
 distribution for AllTray, it is the file \(lqCOPYING\(rq.
@@ -248,6 +136,9 @@ distribution for AllTray, it is the file \(lqCOPYING\(rq.
 \#
 The GNU GPL Version 3.0 is available on the Internet at
 http://www.gnu.org/licenses/gpl-3.0.html
+
+AllTray's project page is available on the Internet at
+https://launchpad.net/alltray
 
 The ICCCM is available on the Internet at
 http://tronche.com/gui/x/icccm/
