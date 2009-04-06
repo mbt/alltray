@@ -3,7 +3,6 @@
  * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
  * License: GNU GPL v3.0 as published by the Free Software Fondation
  */
-#include <stdio.h>
 #include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -68,8 +67,6 @@ find_window(GPid pid, Display *d, Window w) {
   if(status == Success) {
     if(prop_ret != 0) {
       GPid returned_pid = *((unsigned long *)prop_ret);
-      fprintf(stderr, "returned_pid = %d, window 0x%08lx\n",
-	      returned_pid, w);
       if(returned_pid == pid) return(w);
     }
   } else {
@@ -87,11 +84,7 @@ find_window(GPid pid, Display *d, Window w) {
     for(guint i = 0; i < child_count; i++) {
       guint retval = find_window(pid, d, child[i]);
       if(retval != 0) {
-	fprintf(stderr, "find_window returning window 0x%08x\n",
-		retval);
 	retval = get_window_leader(d, retval);
-	fprintf(stderr, "get_window_leader returning window 0x%08x\n",
-		retval);	
 	return(get_window_leader(d, retval));
       }
     }

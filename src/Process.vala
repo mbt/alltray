@@ -90,11 +90,22 @@ namespace AllTray {
 			get_application();
 			unowned List<Wnck.Window> windows =
 				_app.wnck_app.get_windows();
+
 			StringBuilder msg = new StringBuilder();
+			foreach(Wnck.Window w in windows) {
+				stdout.printf("Found window: 0x%08lx, \"%s\"\n",
+							  w.get_xid(), w.get_name());
+			}
 
 			if(_visible) {
 				msg.append("I would show it, but I don't know how.");
+				foreach(Wnck.Window w in windows) {
+					w.unshade();
+				}
 			} else {
+				foreach(Wnck.Window w in windows) {
+					w.shade();
+				}
 				msg.append("I would hide it, but I don't know how.");
 			}
 			
