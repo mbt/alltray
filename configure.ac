@@ -15,11 +15,14 @@ AM_INIT_AUTOMAKE(foreign check-news -Wall)
 AC_PREREQ(2.60)
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src/AllTray.vala])
 
 # Check for programs necessary to build and install AllTray.
 AC_PROG_CC
 AC_PROG_SED
+AC_PATH_PROG(VALAC, valac, valac)
+
+AC_SUBST(VALAC)
 
 # Check for ISO C99 support in the C compiler.
 AC_MSG_CHECKING([for c99 support in gcc])
@@ -70,6 +73,7 @@ AC_SUBST(GLIB_LIBS)
 AC_SUBST(GOBJECT_CFLAGS)
 AC_SUBST(GOBJECT_LIBS)
 AC_SUBST(pkglib)
+AC_SUBST(VALAC)
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_COMPILER, "$(${CC} --version|head -1)",
@@ -103,7 +107,6 @@ AC_CONFIG_FILES([README
         data/Makefile
         images/Makefile
         man/Makefile
-        lib/Makefile
         src/Makefile
         man/alltray.1])
 
@@ -113,6 +116,7 @@ AC_OUTPUT
 printf "\nConfiguration results (%s %s)\n\n" "$PACKAGE_NAME" "$PACKAGE_VERSION"
 
 printf "C Compiler:\t%s\n" "$CC"
+printf "Vala Compiler:\t%s\n" "$(valac --version)"
 printf "%s version:\t%s\n" "$CC" "$(${CC} --version|head -1)"
 printf "C Flags:\t%s\n" "$CFLAGS"
 printf "Install path:\t%s\n" "$prefix"
