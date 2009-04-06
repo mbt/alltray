@@ -1,47 +1,30 @@
-## Process this file with automake to produce Makefile.in
-
-INCLUDES = \
-  -DPACKAGE_LIB_DIR=\""$(libdir)"\" \
-  @PACKAGE_CFLAGS@
+# Automake file for AllTray
 
 bin_PROGRAMS = alltray
+AM_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
+	-DWNCK_I_KNOW_THIS_IS_UNSTABLE
+alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@
 
-AM_CFLAGS =\
-  -Wall
+AM_CFLAGS += -DALLTRAY_HELPER_DIRECTORY=\"$(pkglib)\"
 
-alltray_SOURCES = \
-  main.c \
-  common.h \
-  parent.c \
-  parent.h \
-  child.c \
-  child.h \
-  utils.c \
-  utils.h \
-  trayicon.c \
-  trayicon.h \
-  balloon_message.c \
-  balloon_message.h \
-  xmms.c \
-  xmms.h \
-  clickmode.c \
-  clickmode.h \
-  binreloc.c \
-  binreloc.h \
-  grab.c \
-  grab.h \
-  gnome_theme.c \
-  gnome_theme.h \
-  kde.c \
-  kde.h \
-  clientwin.c \
-  clientwin.h \
-  shortcut.c \
-  shortcut.h \
-  eventfilter.c \
-  eventfilter.h \
-  inlinepixbufs.h
+alltray_VALASOURCES = AllTray.vala \
+	Application.vala \
+	Debug.vala \
+	Process.vala \
+	TrayIcon.vala
 
+MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
+	$(alltray_VALASOURCES:.vala=.h)
 
-alltray_LDFLAGS =-L/usr/X11R6/lib
-alltray_LDADD = @PACKAGE_LIBS@
+alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
+	x11_glue.c
+
+EXTRA_DIST = $(alltray_VALASOURCES) \
+	x11_glue.h
+
+VALA_FLAGS = -g --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
+	--pkg gtk+-2.0 --pkg libwnck-1.0 --pkg x11_glue \
+	--pkg alltray
+
+$(alltray_SOURCES): $(alltray_VALASOURCES)
+	$(VALAC) -C --vapidir $(srcdir)/../vapi $(VALA_FLAGS) $^

@@ -1,0 +1,150 @@
+.TH alltray 1 "April 6, 2009" "Version @PACKAGE_VERSION@" "User Commands"
+.ds UX U\s-3NIX\s+3
+\#
+.SH NAME
+\#
+alltray \(en Dock any program into the system tray
+\#
+.SH SYNOPSIS
+\#
+.B alltray
+[OPTION...] [\-\-]
+.I [program] [args]
+\#
+.SH DESCRIPTION
+\#
+Start
+.I program
+with optional arguments provided in
+.I args
+and dock it to the system tray.  If
+.I args
+contains options which start with dashes (\- or \-\-) then the special
+\(lqend of options\(rq argument (\-\-) must be given before
+.I program
+on the command line.  See \fBEXAMPLES\fR below for examples on invoking
+AllTray.
+
+AllTray only works on \*(UX and \*(UX-like operating systems with the X11
+Window System and compliant window management and system tray management
+software running.
+
+AllTray has two modes: regular and \(lqclick mode\(rq.  To use click mode,
+simply do not specify a
+.I
+program
+on the command line; AllTray will then let you click on an
+already-existing window and dock it instead of the windows which belong
+to a new process.
+\#
+.SH OPTIONS
+\#
+.IP "\-?, \-\-help"
+Show the help (usage) screen.
+.IP "\-L, \-\-list\-debug\-opts"
+Lists the debug \(lqflags\(rq that AllTray supports.  The items in this list
+are allowed values in an environment variable named \fBALLTRAY_DEBUG\fR;
+see the \fBENVIRONMENT VARIABLES\fR section for more information.
+.IP "\-D, \-\-debug"
+Enable the debug message printing mechanism of AllTray.  Note that this
+requires also setting the environment variable \fBALLTRAY_DEBUG\fR, to
+get any debug output; see the \fBENVIRONMENT VARIABLES\fR section below.
+.IP "\-v, \-\-version"
+Show the program version, copyright, and license.
+.IP "\-V, \-\-extended-version"
+Show the program version, copyright, license, and build information.
+\#
+.SH ENVIRONMENT VARIABLES
+\#
+.IP "ALLTRAY_OPTIONS"
+AllTray reads this environment variable for any default options.  Any of
+the options above in \fBOPTIONS\fR can be specified in this environment
+variable.  This environment variable is looked at \fIbefore\fR the
+command line, so the command line will override it should there be any
+conflict.
+.IP "ALLTRAY_DEBUG"
+When the \-d or \-\-debug options are specified on the command line,
+AllTray looks at this environment variable to see which types of debug
+messages you are interested in seeing.  For example, setting this
+variable to \(lqCMDLINE X11\(rq and enabling debugging will tell AllTray to
+display messages pertaining to command-line parsing and communication
+with the X Window System.
+
+For a list of valid tokens, run \(lqalltray -L\(rq which will output the
+list of supported debugging messages.  Also, you can specify \fBALL\fR
+to enable every type of debugging message that AllTray supports.
+.IP "DISPLAY"
+AllTray reads this environment variable to determine how to find and
+connect to your instance of the X Window System.  Using the \-\-display
+command line option can override it, or provide it if unset.
+\#
+.SH EXAMPLES
+\#
+Here are some examples of invoking AllTray in various situations:
+.IP "Simple example"
+alltray evolution
+\#
+.IP "Simple debugging example"
+ALLTRAY_DEBUG="ALL" alltray \-D evolution
+\#
+.IP "Client command line arguments example"
+alltray \-\- xterm \-geometry 132x40
+\#
+.IP "Autostart example"
+alltray \-\-wait\-for\-wm \-\-wait\-for\-systray evolution
+\#
+.SH DIAGNOSTICS
+\#
+AllTray doesn't (yet) emit very helpful diagnostic information on
+failure.  This will be remedied prior to the 0.8.0 release.
+\#
+.SH REQUIREMENTS
+\#
+AllTray requires a window manager which implements the EWMH
+specification (and thus by definition the ICCCM specification).  It also
+requires another process which fills the role of the system tray, as
+specified in the System Tray Specification.
+\#
+.SH BUGS
+\#
+Session management support needs to be implemented.  If you rely on
+session management support for your application software, you may
+encounter surprising results when combining that software with AllTray
+at present.
+
+There are likely undiscovered bugs.  If you should find one, please
+report it at https://launchpad.net/alltray/+filebug.
+\#
+.SH AUTHORS
+\#
+AllTray was started in 2004 by Jochen Baier <email@jochen-baier.de>.
+Michael B. Trausch became the maintainer in 2009 and has started a
+complete re-write of the AllTray code.
+\#
+.SH COPYRIGHT
+\#
+Copyright \(co 2009 Michael B. Trausch <mike@trausch.us>
+
+AllTray is licensed under the terms of the GNU GPL Version 3 license,
+as published by the Free Software Foundation.  For the full-text of
+the license, see the license as published on the GNU web site.
+
+The license should also be available on your computer.  In the source
+distribution for AllTray, it is the file \(lqCOPYING\(rq.
+\#
+.SH LINKS
+\#
+The GNU GPL Version 3.0 is available on the Internet at
+http://www.gnu.org/licenses/gpl-3.0.html
+
+AllTray's project page is available on the Internet at
+https://launchpad.net/alltray
+
+The ICCCM is available on the Internet at
+http://tronche.com/gui/x/icccm/
+
+The EWMH is available on the Internet at
+http://standards.freedesktop.org/wm-spec/wm-spec-latest.html
+
+The System Tray Specification is available on the Internet at
+http://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html
