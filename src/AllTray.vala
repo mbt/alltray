@@ -15,12 +15,15 @@ namespace AllTray {
 		private List<Process> _plist;
 
 		private static bool _cl_debug;
+		private static bool _display_ver;
 		private static Program _instance;
 		private static Wnck.Screen _wnckScreen;
 
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
 			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
 			  "Enable debugging messages", null },
+			{ "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
+			  "Display AllTray version info", null },
 			{ null }
 		};
 
@@ -78,6 +81,10 @@ namespace AllTray {
 				Native.StdC.Stdlib.exit(1);
 			}
 
+			if(_display_ver) {
+				display_version();
+				Native.StdC.Stdlib.exit(0);
+			}
 			if(_cl_debug) Debug.Notification.init();
 		}
 
@@ -101,6 +108,10 @@ namespace AllTray {
 
 			Gtk.main();
 			return(0);
+		}
+
+		private void display_version() {
+			stdout.printf("AllTray %s\n", Build.PACKAGE_VERSION);
 		}
 
 		private void spawn_new_process() {
