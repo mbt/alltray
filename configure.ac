@@ -54,12 +54,6 @@ AC_COMPILE_IFELSE([dnl
   AC_DEFINE([WARN_UNUSED_RETVAL], [], []))
 
 AC_PROG_INSTALL
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
-
-# Library checks.
-# AC_CHECK_LIB([dl], [dlopen],,libdl_external=no)
-AC_SEARCH_LIBS([dlopen], [dl],,AC_MSG_ERROR([dlopen() is missing]))
 
 # pkg-config checks need to be inserted here.
 PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
@@ -107,7 +101,6 @@ fi
 # Configuration wrap-up.
 AC_CONFIG_FILES([README
         Makefile
-        data/Makefile
         images/Makefile
         man/Makefile
         src/Makefile
