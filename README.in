@@ -6,6 +6,9 @@ Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
   If you're looking to start playing with the source code, please read
   HACKING.
 
+  For information on this release, known issues, quirks, etc., please
+  read the NEWS file.
+
   Please send bug reports to:
     @PACKAGE_BUGREPORT@
 

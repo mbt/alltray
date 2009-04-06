@@ -71,6 +71,10 @@ It works (mostly)!  Much has to be worked out yet:
     too new of a Vala compiler), you will want to use the release or
     snapshot tarballs, which do not require Vala to be built.
 
+  * VPATH builds are not (yet) supported; this means that 'make
+    distcheck' will always fail.  If you can fix that, please
+    do---I’ve not yet been able to figure it out.
+
 If you have issues with this release, please report them:
 
   https://bugs.launchpad.net/alltray/+filebug
