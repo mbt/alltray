@@ -84,6 +84,7 @@ namespace AllTray {
 		private void maybe_update_window_count(Wnck.Screen scr,
 											   Wnck.Window win) {
 			StringBuilder sb = new StringBuilder();
+			_windows = _wnckApp.get_windows();
 			int wincount = _wnckApp.get_n_windows();
 			string plural = (wincount != 1 ? "s" : "");
 
