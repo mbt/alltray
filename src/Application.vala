@@ -123,6 +123,66 @@ namespace AllTray {
 			toggle_visibility();
 		}
 
+		/*
+		 * This looks like it works.  However, the user may notice the
+		 * window trying to appear for a moment before we catch it...
+		 *
+		 * TODO: Find a way to intercept the window activation and
+		 * prevent that from happening at all, and instead setting the
+		 * DEMANDS_ATTENTION window manager hint, and generally blink
+		 * the icon on DEMANDS_ATTENTION instead.
+		 */
+		private void maintain_hiddenness(Wnck.Window win,
+										 Wnck.WindowState changed_bits,
+										 Wnck.WindowState new_state) {
+			if(_appVisible) return;
+
+			debug_msg("*** WINDOW CHANGED BITMASK");
+			debug_display_windowstate(changed_bits);
+			debug_msg("*** WINDOW NEW STATE");
+			debug_display_windowstate(new_state);
+
+			if((new_state & Wnck.WindowState.MINIMIZED) == 0) {
+				win.minimize();
+				_appIcon.blinking = true;
+			}
+		}
+
+		private void debug_msg(string str) {
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									str);
+		}
+
+		private void debug_display_windowstate(Wnck.WindowState state) {
+			if((state & Wnck.WindowState.MINIMIZED) != 0)
+				debug_msg("MINIMIZED");
+			if((state & Wnck.WindowState.MAXIMIZED_HORIZONTALLY) != 0)
+				debug_msg("MAXIMIZED_HORIZONTALLY");
+			if((state & Wnck.WindowState.MAXIMIZED_VERTICALLY) != 0)
+				debug_msg("MAXIMIZED_VERTICALLY");
+			if((state & Wnck.WindowState.SHADED) != 0)
+				debug_msg("SHADED");
+			if((state & Wnck.WindowState.SKIP_PAGER) != 0)
+				debug_msg("SKIP_PAGER");
+			if((state & Wnck.WindowState.SKIP_TASKLIST) != 0)
+				debug_msg("SKIP_TASKLIST");
+			if((state & Wnck.WindowState.STICKY) != 0)
+				debug_msg("STICKY");
+			if((state & Wnck.WindowState.HIDDEN) != 0)
+				debug_msg("HIDDEN");
+			if((state & Wnck.WindowState.FULLSCREEN) != 0)
+				debug_msg("FULLSCREEN");
+			if((state & Wnck.WindowState.DEMANDS_ATTENTION) != 0)
+				debug_msg("DEMANDS_ATTENTION");
+			if((state & Wnck.WindowState.URGENT) != 0)
+				debug_msg("URGENT");
+			if((state & Wnck.WindowState.ABOVE) != 0)
+				debug_msg("ABOVE");
+			if((state & Wnck.WindowState.BELOW) != 0)
+				debug_msg("BELOW");
+		}
+
 		private void toggle_visibility() {
 			_appVisible = !_appVisible;
 
@@ -139,9 +199,13 @@ namespace AllTray {
 
 					w.unminimize((uint32)tv.tv_sec);
 					w.set_skip_tasklist(false);
+
+					w.state_changed -= maintain_hiddenness;
 				} else {
 					w.minimize();
 					w.set_skip_tasklist(true);
+
+					w.state_changed += maintain_hiddenness;
 				}
 				Debug.Notification.emit(Debug.Subsystem.Application,
 										Debug.Level.Information,
