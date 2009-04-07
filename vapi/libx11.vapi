@@ -1022,4 +1022,63 @@ namespace Native.XLib {
 		[CCode(cname = "XRootWindowOfScreen")]
 		public Window get_root_window();
 	}
+
+	[SimpleType]
+	[CCode(cname = "XAnyEvent", free_func = "")]
+	public struct XAnyEvent {
+		public int type;
+		public ulong serial;
+		public bool send_event;
+		public Display d;
+		public Window w;
+	}
+
+	[SimpleType]
+	[CCode(cname = "XKeyEvent", free_func = "")]
+	public struct XKeyEvent {
+		public int type;
+		public ulong serial;
+		public bool send_event;
+		public Display display;
+		public Window window;
+		public Window root;
+		public Window subwindow;
+		public long time;
+		public int x;
+		public int y;
+		public int x_root;
+		public int y_root;
+		public uint statek;
+		public uint keycode;
+		public bool same_screen;
+	}
+
+	[SimpleType]
+	[CCode(cname = "XButtonEvent", free_func = "")]
+	public struct XButtonEvent {
+		public int type;
+		public ulong serial;
+		public bool send_event;
+		public Display display;
+		public Window window;
+		public Window root;
+		public Window subwindow;
+		public long time;
+		public int x;
+		public int y;
+		public int x_root;
+		public int y_root;
+		public uint state;
+		public uint button;
+		public bool same_screen;
+	}
+
+	[Compact]
+	[CCode(cname = "XEvent", free_func = "")]
+	public class XEvent {
+		public int type;
+		public XAnyEvent xany;
+		public XKeyEvent xkey;
+		public XButtonEvent xbutton;
+	}
 }

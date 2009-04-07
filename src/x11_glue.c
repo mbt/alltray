@@ -6,8 +6,83 @@
 #include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+#include <libwnck/libwnck.h>
 #include "x11_glue.h"
 
+static gboolean wm_state_set (Window window);
+
+// Nearly directly from wnckprop.c in libwnck.
+WnckWindow *
+alltray_find_managed_window(Window window, GdkDisplay *gdk_display) {
+  Window root;
+  Window parent;
+  Window *kids = NULL;
+  WnckWindow *retval;
+  guint nkids;
+  int result;
+
+  if(wm_state_set(window)) {
+    return(wnck_window_get(window));
+  }
+
+  gdk_error_trap_push();
+  result = XQueryTree(gdk_display, window, &root, &parent, &kids, &nkids);
+  if(gdk_error_trap_pop() || !result) {
+    return NULL;
+  }
+
+  retval = NULL;
+  for(int i = 0; i < nkids; i++) {
+    if(wm_state_set(kids[i])) {
+      retval = wnck_window_get(kids[i]);
+      break;
+    }
+
+    retval = alltray_find_managed_window(kids[i]);
+    if(retval != NULL) break;
+  }
+
+  if(kids) XFree(kids);
+  return(retval);
+}
+
+// Same as last function.
+static gboolean
+wm_state_set (Window window)
+{
+  Atom    wm_state;
+  gulong  nitems;
+  gulong  bytes_after;
+  gulong *prop;
+  Atom    ret_type = None;
+  int     ret_format;
+  int     err, result;
+
+  wm_state = gdk_x11_get_xatom_by_name ("WM_STATE");
+
+  gdk_error_trap_push ();
+  result = XGetWindowProperty (gdk_display,
+                               window,
+                               wm_state,
+                               0, G_MAXLONG,
+                               False, wm_state, &ret_type, &ret_format, &nitems,
+                               &bytes_after, (gpointer) &prop);
+  err = gdk_error_trap_pop ();
+  if (err != Success ||
+      result != Success)
+    return FALSE;
+
+  XFree (prop);
+
+  if (ret_type != wm_state)
+    return FALSE;
+
+  return TRUE;
+}
+
+/// UNUSED?
 static Atom _net_wm_pid;
 static gulong find_window(GPid pid, Display *d, Window w);
 

@@ -104,7 +104,7 @@ namespace AllTray.Debug {
 			if(lvl == Level.Fatal) {
 				emit(subsys, Level.Information,
 					 "Exiting: encountered fatal error.");
-				Native.StdC.Stdlib.abort();
+				Native.StdC.abort();
 			}
 		}
 

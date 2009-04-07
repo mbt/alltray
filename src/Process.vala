@@ -37,6 +37,13 @@ namespace AllTray {
 		}
 
 		public void run() {
+			// Special case, if we're attaching, we do not actually
+			// spawn a new process.
+			if(_argv[0] == "alltray-internal-fake-process") {
+				run_fake(_argv[1].to_int());
+				return;
+			}
+
 			try {
 				GLib.Process.spawn_async(null, _argv, null,
 										 SpawnFlags.DO_NOT_REAP_CHILD |
@@ -56,6 +63,11 @@ namespace AllTray {
 			}
 
 			_app = new AllTray.Application(this);
+		}
+
+		private void run_fake(int pid) {
+			_running = true;
+			_child = (Pid)pid;
 		}
 
 		public void child_died() {

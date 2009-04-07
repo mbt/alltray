@@ -14,6 +14,10 @@ namespace AllTray {
 		private string[] _args;
 		private string[] _cleanArgs;
 		private List<Process> _plist;
+		private GLib.OptionContext opt_ctx;
+
+		private static bool _attach;
+		private static int _pid;
 
 		private static bool _cl_debug;
 		private static bool _display_ver;
@@ -23,8 +27,13 @@ namespace AllTray {
 		public static Wnck.Screen WnckScreen;
 
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
+			{ "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
+			  "Attach to a running program", null },
 			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
 			  "Enable debugging messages", null },
+			{ "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
+			  "Attach to already-running application",
+			  "PID" },
 			{ "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
 			  "Display AllTray version info", null },
 			{ "extended-version", 'V', 0, GLib.OptionArg.NONE,
@@ -64,8 +73,7 @@ namespace AllTray {
 				env_args = sb.str.split(" ");
 			}
 
-			GLib.OptionContext opt_ctx =
-				new GLib.OptionContext("- Dock software to the systray");
+			opt_ctx = new GLib.OptionContext("- Dock software to the systray");
 			opt_ctx.add_main_entries(this._acceptedCmdLineOptions, null);
 			opt_ctx.add_group(Gtk.get_option_group(true));
 
@@ -75,7 +83,7 @@ namespace AllTray {
 				} catch(OptionError e) {
 					stderr.printf("error: env flag parsing failed (%s)\n",
 								  e.message);
-					Native.StdC.Stdlib.exit(1);
+					StdC.exit(1);
 				}
 			}
 
@@ -84,17 +92,17 @@ namespace AllTray {
 			} catch(OptionError e) {
 				stderr.printf("error: command line parsing failed (%s)\n",
 							  e.message);
-				Native.StdC.Stdlib.exit(1);
+				StdC.exit(1);
 			}
 
 			if(_display_ver && !_display_extended_ver) {
 				display_version();
-				Native.StdC.Stdlib.exit(0);
+				StdC.exit(0);
 			}
 
 			if(_display_extended_ver) {
 				display_extended_version();
-				Native.StdC.Stdlib.exit(0);
+				StdC.exit(0);
 			}
 
 			if(_cl_debug) Debug.Notification.init();
@@ -119,58 +127,71 @@ namespace AllTray {
 			_plist = new List<Process>();
 
 			Wnck.set_client_type(Wnck.ClientType.PAGER);
-			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information,
-									"Set WNCK Client Type to PAGER");
 			install_signal_handlers();
 
 			WnckScreen = Wnck.Screen.get_default();
 
-			try {
-				spawn_new_process();
-			} catch(AllTrayError e) {
-				stderr.printf(e.message);
-				return(1);
+			if(_attach && (_pid == 0)) {
+				prompt_and_attach();
+			} else if(_pid > 0) {
+				attach_to_pid(_pid);
+			} else {
+				if(_cleanArgs.length == 1) {
+					display_help();
+					return(1);
+				}
+
+				try {
+					spawn_new_process();
+				} catch(AllTrayError e) {
+					stderr.printf(e.message);
+					return(1);
+				}
 			}
 
 			Gtk.main();
 			return(0);
 		}
 
-		private void display_version() {
-			if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
-				stdout.printf("AllTray %s+, from bzr branch %s,\n  rev-id %s\n",
-							  Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
-							  Build.ALLTRAY_BZR_REVID);
-			} else {
-				stdout.printf("AllTray %s\n",
-							  Build.PACKAGE_VERSION);
-			}
-
-			stdout.printf("Copyright (c) %s Michael B. Trausch "+
-						  "<mike@trausch.us>\n", Build.ALLTRAY_COPYRIGHT_YEARS);
-			stdout.printf("Licensed under the GNU GPL v3.0 as published by "+
-						  "the Free Software Foundation.\n");
+		private void delete_dialog(Gtk.Dialog d) {
+			d.destroy();
 		}
 
-		private void display_extended_version() {
-			display_version();
+		private void prompt_and_attach() {
+			PromptDialog pd = new PromptDialog();
+			bool answer_received = false;
 
-			stdout.printf("Configured %s on %s %s\n",
-						  Build.ALLTRAY_COMPILE_BUILD_DATE,
-						  Build.ALLTRAY_COMPILE_OS,
-						  Build.ALLTRAY_COMPILE_OS_REL);
+			pd.response += delete_dialog;
 
-			stdout.printf("Compilers: %s and %s\n",
-						  Build.ALLTRAY_VALA_COMPILER,
-						  Build.ALLTRAY_C_COMPILER);
+			pd.show_all();
 
-			if(Build.ALLTRAY_CONFIGURE_FLAGS == "") {
-				stdout.printf("Configure was run without flags\n");
-			} else {
-				stdout.printf("Configure flags: %s\n",
-							  Build.ALLTRAY_CONFIGURE_FLAGS);
+			// Setup and invoke a Gtk.main() that just waits for the user's
+			// response.  A new Gtk.main() will be called later that will
+			// actually begin the program's real work.
+			Idle.add(AttachHelper.get_target_window);
+			Gtk.main();
+
+			if(AttachHelper.success == false) {
+				stderr.printf("Failed to get a window; exiting.\n");
+				StdC.exit(1);
 			}
+		}
+
+		/*
+		 * Doing it this way reduces the number of code paths in the
+		 * program and so, while confusing, is preferable.  What we do
+		 * is give a sentinal "process name" to spawn_new_process()
+		 * for it to spawn.  Really, though, what happens is the
+		 * Process sees this sentinel value and just *acts* like it
+		 * spawned a process.
+		 */
+		private void attach_to_pid(int pid) {
+			_cleanArgs = new string[] {
+				"alltray-internal-fake-process",
+				pid.to_string()
+			};
+
+			spawn_new_process();
 		}
 
 		private void spawn_new_process() throws AllTrayError {
@@ -211,10 +232,23 @@ namespace AllTray {
 		}
 
 		private string[] get_command_line(string[] args) {
+			stderr.printf("In get_command_line()\n");
+			stderr.flush();
 			int curItem = 0;
 			string[] retval = new string[args.length];
+
 			foreach(string arg in args) {
+				StringBuilder sb = new StringBuilder();
+				sb.append_printf("Processing arg %s", arg);
+				Debug.Notification.emit(Debug.Subsystem.CommandLine,
+										Debug.Level.Information,
+										sb.str);
+				
 				if(arg.contains("alltray")) continue;
+				Debug.Notification.emit(Debug.Subsystem.CommandLine,
+										Debug.Level.Information,
+										"Passed continue");
+
 				retval[curItem++] = arg;
 			}
 
@@ -241,5 +275,46 @@ namespace AllTray {
 									caught_signal.to_string());
 		}
 		*/
+
+		private void display_help() {
+			stderr.printf(opt_ctx.get_help(true, null));
+			StdC.exit(1);
+		}
+
+		private void display_version() {
+			if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
+				stdout.printf("AllTray %s+, from bzr branch %s,\n  rev-id %s\n",
+							  Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
+							  Build.ALLTRAY_BZR_REVID);
+			} else {
+				stdout.printf("AllTray %s\n",
+							  Build.PACKAGE_VERSION);
+			}
+
+			stdout.printf("Copyright (c) %s Michael B. Trausch "+
+						  "<mike@trausch.us>\n", Build.ALLTRAY_COPYRIGHT_YEARS);
+			stdout.printf("Licensed under the GNU GPL v3.0 as published by "+
+						  "the Free Software Foundation.\n");
+		}
+
+		private void display_extended_version() {
+			display_version();
+
+			stdout.printf("Configured %s on %s %s\n",
+						  Build.ALLTRAY_COMPILE_BUILD_DATE,
+						  Build.ALLTRAY_COMPILE_OS,
+						  Build.ALLTRAY_COMPILE_OS_REL);
+
+			stdout.printf("Compilers: %s and %s\n",
+						  Build.ALLTRAY_VALA_COMPILER,
+						  Build.ALLTRAY_C_COMPILER);
+
+			if(Build.ALLTRAY_CONFIGURE_FLAGS == "") {
+				stdout.printf("Configure was run without flags\n");
+			} else {
+				stdout.printf("Configure flags: %s\n",
+							  Build.ALLTRAY_CONFIGURE_FLAGS);
+			}
+		}
 	}
 }
