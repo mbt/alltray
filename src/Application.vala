@@ -16,9 +16,7 @@ namespace AllTray {
 		private Gtk.StatusIcon _appIcon;
 		// private Sexy.Tooltip _appIconTooltip;
 		private Process _process;
-		private string _appName;
 		private bool _appVisible;
-		private ulong _xWin;
 
 		public Wnck.Application wnck_app {
 			get {
@@ -36,9 +34,30 @@ namespace AllTray {
 			 * application.
 			 */
 			Program.WnckScreen.application_opened += maybe_setup;
+			Program.WnckScreen.application_closed += bye_wnck_app;
+		}
+
+		private void bye_wnck_app(Wnck.Screen scr, Wnck.Application app) {
+			if(app == _wnckApp) {
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										"WHOA - The app went away‽  "+
+										"Looking for it to come back...");
+				Program.WnckScreen.application_opened += maybe_setup;
+			}
 		}
 
 		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("maybe_setup called: %d == %d? %s",
+							  app.get_pid(), (int)_process.get_pid(),
+							  (app.get_pid() ==
+							   (int)_process.get_pid()).to_string());
+
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg.str);
+
 			if(app.get_pid() != (int)_process.get_pid()) return;
 
 			scr.application_opened -= maybe_setup;
@@ -46,7 +65,23 @@ namespace AllTray {
 			_wnckApp = app;
 			_appVisible = true;
 			_windows = _wnckApp.get_windows();
+
+			scr.window_opened += maybe_update_window_count;
+			scr.window_closed += maybe_update_window_count;
+
 			create_icon();
+		}
+
+		private void maybe_update_window_count(Wnck.Screen scr,
+											   Wnck.Window win) {
+			StringBuilder sb = new StringBuilder();
+			int wincount = _wnckApp.get_n_windows();
+			string plural = (wincount != 1 ? "s" : "");
+
+			sb.append_printf("%s - %d window%s", _wnckApp.get_name(),
+							 _wnckApp.get_n_windows(), plural);
+							 
+			_appIcon.set_tooltip(sb.str);
 		}
 
 		private void create_icon() {

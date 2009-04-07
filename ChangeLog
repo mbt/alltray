@@ -12,6 +12,9 @@
 	applications like OOo and Mono-based software started from a
 	wrapper script.  Also, make better use of signals.
 
+	* src/Application.vala: Handle application going away and coming
+	back, as well as provide useful info in the tray icon tooltip.
+
 	* src/Makefile.am: Removed TrayIcon.vala
 
 	* src/Process.vala: Removed status icon and pid property.
