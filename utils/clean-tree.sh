@@ -1,3 +1,10 @@
 #!/bin/sh
-bzr clean-tree --ignored --unknown
+
+if [ "$1" = "-y" ]; then
+    force=--force
+else
+    force=""
+fi
+
+bzr clean-tree --ignored --unknown $force
 
