@@ -18,7 +18,8 @@ namespace AllTray {
 		private static bool _cl_debug;
 		private static bool _display_ver;
 		private static Program _instance;
-		private static Wnck.Screen _wnckScreen;
+
+		public static Wnck.Screen WnckScreen;
 
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
 			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
@@ -113,14 +114,14 @@ namespace AllTray {
 									"Set WNCK Client Type to PAGER");
 			install_signal_handlers();
 
+			WnckScreen = Wnck.Screen.get_default();
+
 			try {
 				spawn_new_process();
 			} catch(AllTrayError e) {
 				stderr.printf(e.message);
 				return(1);
 			}
-
-			_wnckScreen = Wnck.Screen.get_default();
 
 			Gtk.main();
 			return(0);

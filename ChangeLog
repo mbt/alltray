@@ -1,3 +1,21 @@
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/TrayIcon.vala: Removed.
+
+	* src/AllTray.vala: Made the static WnckScreen public so as to
+	enable its usage elsewhere in the program.
+
+	* src/Application.vala: Moved tray icon management into the
+	Application instance, removed polling for the Wnck.Application in
+	favor of watching for its signal instead.  Still deficient in that
+	it looks for a PID match, so it still doesn't work for
+	applications like OOo and Mono-based software started from a
+	wrapper script.  Also, make better use of signals.
+
+	* src/Makefile.am: Removed TrayIcon.vala
+
+	* src/Process.vala: Removed status icon and pid property.
+
 2009-04-06  Michael B. Trausch  <mike@trausch.us>
 
 	* Released: AllTray 0.7.1dev.

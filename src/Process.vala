@@ -12,13 +12,11 @@ namespace AllTray {
 	}
 
 	public class Process : GLib.Object {
-		private Gtk.StatusIcon _statusIcon;
 		private Pid _child;
 		private bool _visible;
 		private bool _running;
 		private string[] _argv;
 		private AllTray.Application _app;
-		private AllTray.TrayIcon _trayIcon;
 
 		public signal void process_died(Process p);
 
@@ -28,20 +26,12 @@ namespace AllTray {
 			}
 		}
 
-		// XXX: Not for now, bug in Vala 0.[67].0
-		/*
-		public Pid pid {
-			get {
-				return(_child);
-			}
-		}
-		*/
-
 		public Process(string[] argv) {
 			_argv = argv;
 			_visible = true;
 		}
 
+		// Property for Pid not (yet) possible due to Vala bug.
 		public Pid get_pid() {
 			return(_child);
 		}
@@ -66,12 +56,10 @@ namespace AllTray {
 			}
 
 			_app = new AllTray.Application(this);
-			_trayIcon = new AllTray.TrayIcon(this, _app);
 		}
 
 		public void child_died() {
 			_running = false;
-			_statusIcon.visible = false;
 			StringBuilder msg = new StringBuilder();
 
 			msg.append_printf("Child process %d (%s) died.",

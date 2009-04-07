@@ -10,8 +10,7 @@ AM_CFLAGS += -DALLTRAY_HELPER_DIRECTORY=\"$(pkglib)\"
 alltray_VALASOURCES = AllTray.vala \
 	Application.vala \
 	Debug.vala \
-	Process.vala \
-	TrayIcon.vala
+	Process.vala
 
 MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
 	$(alltray_VALASOURCES:.vala=.h)

@@ -11,8 +11,12 @@ namespace AllTray {
 	}
 
 	public class Application : GLib.Object {
+		private unowned List<Wnck.Window> _windows;
 		private Wnck.Application? _wnckApp;
+		private Gtk.StatusIcon _appIcon;
+		// private Sexy.Tooltip _appIconTooltip;
 		private Process _process;
+		private string _appName;
 		private bool _appVisible;
 		private ulong _xWin;
 
@@ -24,47 +28,65 @@ namespace AllTray {
 
 		public Application(Process p) {
 			_process = p;
-			_xWin = get_xwin_from_pid(p.get_pid());
 
-			_wnckApp = Wnck.Application.get(_xWin);
-			if(_wnckApp == null) {
-				Debug.Notification.emit(Debug.Subsystem.Process,
-										Debug.Level.Information,
-										"No App yet. Waiting for one.");
-				GLib.Timeout.add(50, get_wapp);
-			}
+			/*
+			 * Register interest in learning of new applications on
+			 * the display, and then we'll be able to perform the rest
+			 * of the setup after we get notification of the
+			 * application.
+			 */
+			Program.WnckScreen.application_opened += maybe_setup;
+		}
 
+		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
+			if(app.get_pid() != (int)_process.get_pid()) return;
+
+			scr.application_opened -= maybe_setup;
+
+			_wnckApp = app;
 			_appVisible = true;
+			_windows = _wnckApp.get_windows();
+			create_icon();
 		}
 
-		public bool get_wapp() {
-			_wnckApp = Wnck.Application.get(_xWin);
-			if(_wnckApp == null) {
-				Debug.Notification.emit(Debug.Subsystem.Process,
-										Debug.Level.Information,
-										"No App yet. Waiting for one.");
-				return(true);
-			} else {
-				Debug.Notification.emit(Debug.Subsystem.Process,
-										Debug.Level.Information,
-										"Got the app.");
-				return(false);
-			}			
+		private void create_icon() {
+			_appIcon = new Gtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
+			_appIcon.visible = true;
+			_appIcon.set_tooltip(_wnckApp.get_name());
+
+			_appIcon.activate += on_icon_click;
+			_wnckApp.icon_changed += update_icon_image;
+			_wnckApp.name_changed += update_icon_name;
 		}
 
-		public void toggle_visibility() {
+		private void update_icon_image(Wnck.Application app) {
+			_appIcon.set_from_pixbuf(app.get_icon());
+		}
+
+		private void update_icon_name(Wnck.Application app) {
+			_appIcon.set_tooltip(app.get_name());
+		}
+
+		private void on_icon_click(Gtk.StatusIcon icon) {
+			if(icon.blinking == true) icon.blinking = false;
+			toggle_visibility();
+		}
+
+		private void toggle_visibility() {
 			_appVisible = !_appVisible;
 
-			unowned List<Wnck.Window> windows = _wnckApp.get_windows();
 			StringBuilder msg = new StringBuilder();
 
-			foreach(Wnck.Window w in windows) {
+			foreach(Wnck.Window w in _windows) {
 				msg.truncate(0);
 				msg.append_printf("Setting window 0x%08lx visibility to %s",
 								  w.get_xid(), _appVisible.to_string());
 
 				if(_appVisible) {
-					w.unminimize(Gdk.CURRENT_TIME);
+					TimeVal tv = TimeVal();
+					tv.get_current_time();
+
+					w.unminimize((uint32)tv.tv_sec);
 					w.set_skip_tasklist(false);
 				} else {
 					w.minimize();
@@ -74,19 +96,6 @@ namespace AllTray {
 										Debug.Level.Information,
 										msg.str);
 			}
-		}
-
-		private ulong get_xwin_from_pid(Pid pid) {
-			void* Display =
-				Gdk.x11_display_get_xdisplay(Gdk.Display.get_default());
-
-			ulong xid = c_xwin_from_pid(pid, Display);
-			
-			while(xid == 0) {
-				xid = c_xwin_from_pid(pid, Display);
-			}
-
-			return(xid);
 		}
 	}
 }
