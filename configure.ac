@@ -87,7 +87,7 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)",
   [Build Date (UTC)])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
   "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
-AC_DEFINE_UNQUOTED(ALLTRAY_CONFIGURE_FLAGS, "$@", [Conf flags])
+AC_DEFINE_UNQUOTED(ALLTRAY_CONFIGURE_FLAGS, "$ac_configure_args", [Conf flags])
 AC_DEFINE_UNQUOTED(ALLTRAY_COPYRIGHT_YEARS, "2009", [Copyright years])
 
 if test -d .bzr; then

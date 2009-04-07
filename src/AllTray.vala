@@ -165,8 +165,12 @@ namespace AllTray {
 						  Build.ALLTRAY_VALA_COMPILER,
 						  Build.ALLTRAY_C_COMPILER);
 
-			stdout.printf("Configure flags: %s\n",
-						  Build.ALLTRAY_CONFIGURE_FLAGS);
+			if(Build.ALLTRAY_CONFIGURE_FLAGS == "") {
+				stdout.printf("Configure was run without flags\n");
+			} else {
+				stdout.printf("Configure flags: %s\n",
+							  Build.ALLTRAY_CONFIGURE_FLAGS);
+			}
 		}
 
 		private void spawn_new_process() throws AllTrayError {
