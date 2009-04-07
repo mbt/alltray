@@ -17,6 +17,7 @@ namespace AllTray {
 
 		private static bool _cl_debug;
 		private static bool _display_ver;
+		private static bool _display_extended_ver;
 		private static Program _instance;
 
 		public static Wnck.Screen WnckScreen;
@@ -26,6 +27,9 @@ namespace AllTray {
 			  "Enable debugging messages", null },
 			{ "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
 			  "Display AllTray version info", null },
+			{ "extended-version", 'V', 0, GLib.OptionArg.NONE,
+			  ref _display_extended_ver, "Display extended version info",
+			  null },
 			{ null }
 		};
 
@@ -83,10 +87,16 @@ namespace AllTray {
 				Native.StdC.Stdlib.exit(1);
 			}
 
-			if(_display_ver) {
+			if(_display_ver && !_display_extended_ver) {
 				display_version();
 				Native.StdC.Stdlib.exit(0);
 			}
+
+			if(_display_extended_ver) {
+				display_extended_version();
+				Native.StdC.Stdlib.exit(0);
+			}
+
 			if(_cl_debug) Debug.Notification.init();
 
 			// Strip "--" out of the command line arguments
@@ -128,10 +138,38 @@ namespace AllTray {
 		}
 
 		private void display_version() {
-			stdout.printf("AllTray %s\n", Build.PACKAGE_VERSION);
+			if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
+				stdout.printf("AllTray %s+, from bzr branch %s,\n  rev-id %s\n",
+							  Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
+							  Build.ALLTRAY_BZR_REVID);
+			} else {
+				stdout.printf("AllTray %s\n",
+							  Build.PACKAGE_VERSION);
+			}
+
+			stdout.printf("Copyright (c) %s Michael B. Trausch "+
+						  "<mike@trausch.us>\n", Build.ALLTRAY_COPYRIGHT_YEARS);
+			stdout.printf("Licensed under the GNU GPL v3.0 as published by "+
+						  "the Free Software Foundation.\n");
 		}
 
-		private void spawn_new_process() {
+		private void display_extended_version() {
+			display_version();
+
+			stdout.printf("Configured %s on %s %s\n",
+						  Build.ALLTRAY_COMPILE_BUILD_DATE,
+						  Build.ALLTRAY_COMPILE_OS,
+						  Build.ALLTRAY_COMPILE_OS_REL);
+
+			stdout.printf("Compilers: %s and %s\n",
+						  Build.ALLTRAY_VALA_COMPILER,
+						  Build.ALLTRAY_C_COMPILER);
+
+			stdout.printf("Configure flags: %s\n",
+						  Build.ALLTRAY_CONFIGURE_FLAGS);
+		}
+
+		private void spawn_new_process() throws AllTrayError {
 			string[] a = get_command_line(_cleanArgs);
 			Process p = new Process(a);
 			p.process_died += cleanup_for_process;
@@ -145,17 +183,6 @@ namespace AllTray {
 			}
 
 			_plist.append(p);
-		}
-
-		private void install_signal_handlers() {
-			// For the moment, we _DO NOT_ use these.  We will soon.
-			return;
-
-			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
 		}
 
 		public static int main(string[] args) {
@@ -190,10 +217,25 @@ namespace AllTray {
 			return(retval);
 		}
 
+		private void install_signal_handlers() {
+			// For the moment, we _DO NOT_ use these.  We will soon.
+			return;
+
+			/*
+			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
+			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
+			*/
+		}
+
+		/*
 		private static void sighandler(int caught_signal) {
 			Debug.Notification.emit(Debug.Subsystem.Misc,
 									Debug.Level.Information, "Caught signal: "+
 									caught_signal.to_string());
 		}
+		*/
 	}
 }

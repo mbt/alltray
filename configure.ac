@@ -73,8 +73,9 @@ AC_SUBST(pkglib)
 AC_SUBST(VALAC)
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
-AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_COMPILER, "$(${CC} --version|head -1)",
+AC_DEFINE_UNQUOTED(ALLTRAY_C_COMPILER, "$(${CC} --version|head -1)",
   [Compiler])
+AC_DEFINE_UNQUOTED(ALLTRAY_VALA_COMPILER, "$($VALAC --version)", [Vala ver])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS, "$(uname -s)",
   [Build OS Kernel and Name])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_REL, "$(uname -r)", [Build OS Release])
@@ -86,6 +87,8 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)",
   [Build Date (UTC)])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
   "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
+AC_DEFINE_UNQUOTED(ALLTRAY_CONFIGURE_FLAGS, "$@", [Conf flags])
+AC_DEFINE_UNQUOTED(ALLTRAY_COPYRIGHT_YEARS, "2009", [Copyright years])
 
 if test -d .bzr; then
     BZR_BRANCH_NAME="$(bzr version-info|grep ^branch-nick|cut -f2 -d' ')"
