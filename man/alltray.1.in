@@ -29,18 +29,22 @@ AllTray only works on \*(UX and \*(UX-like operating systems with the X11
 Window System and compliant window management and system tray management
 software running.
 
-AllTray has two modes: regular and \(lqclick mode\(rq.  To use click mode,
-simply do not specify a
-.I
-program
-on the command line; AllTray will then let you click on an
-already-existing window and dock it instead of the windows which belong
-to a new process.
+AllTray has two modes: regular and \(lqattach\(rq mode.  By default,
+AllTray will run in regular mode; to attach to an application, specify
+the \-\-attach argument, and AllTray will let you select which
+application to attach to.  Additionally, if you want to attach to a
+specific already running process, you can specify both \-\-attach and
+\-\-process arguments (or simply \-\-process, which implies
+\-\-attach); see \fBOPTIONS\fR for more information.
 \#
 .SH OPTIONS
 \#
 .IP "\-?, \-\-help"
 Show the help (usage) screen.
+.IP "\-a, \-\-attach"
+Attaches to an already-running application.  If \-\-process is not
+specified, AllTray will prompt the user to click on a window for the
+application the user would like to dock.
 .IP "\-L, \-\-list\-debug\-opts"
 Lists the debug \(lqflags\(rq that AllTray supports.  The items in this list
 are allowed values in an environment variable named \fBALLTRAY_DEBUG\fR;
@@ -49,6 +53,9 @@ see the \fBENVIRONMENT VARIABLES\fR section for more information.
 Enable the debug message printing mechanism of AllTray.  Note that this
 requires also setting the environment variable \fBALLTRAY_DEBUG\fR, to
 get any debug output; see the \fBENVIRONMENT VARIABLES\fR section below.
+.IP "\-p, \-\-process=PID"
+Specifies the process ID of the application to attach to; implies
+\-\-attach.
 .IP "\-v, \-\-version"
 Show the program version, copyright, and license.
 .IP "\-V, \-\-extended-version"
@@ -112,6 +119,16 @@ session management support for your application software, you may
 encounter surprising results when combining that software with AllTray
 at present.
 
+Some programs at present cannot be started under AllTray, but they
+should be ablle to be attached to after they are running.  Any program
+that creates windows with a PID other than what g_spawn_async()
+receives as a return value (including OpenOffice.org, Mono programs,
+and virtually programs started from a shell script which in turn
+handles the real program invocation) is affected by this bug.  A
+method is being worked on to reliably work around this problem.
+Should you find software like this, please do not hesitate to report
+it as a bug in AllTray.
+
 There are likely undiscovered bugs.  If you should find one, please
 report it at https://launchpad.net/alltray/+filebug.
 \#
@@ -119,7 +136,8 @@ report it at https://launchpad.net/alltray/+filebug.
 \#
 AllTray was started in 2004 by Jochen Baier <email@jochen-baier.de>.
 Michael B. Trausch became the maintainer in 2009 and has started a
-complete re-write of the AllTray code.
+complete re-write of the AllTray code.  This release,
+@PACKAGE_VERSION@, is a result of that (continuing) re-write.
 \#
 .SH COPYRIGHT
 \#
