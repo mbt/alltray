@@ -43,6 +43,10 @@ namespace AllTray {
 										Debug.Level.Information,
 										"WHOA - The app went away‽  "+
 										"Looking for it to come back...");
+
+				scr.window_opened -= maybe_update_window_count;
+				scr.window_closed -= maybe_update_window_count;
+
 				Program.WnckScreen.application_opened += maybe_setup;
 			}
 		}
@@ -69,7 +73,12 @@ namespace AllTray {
 			scr.window_opened += maybe_update_window_count;
 			scr.window_closed += maybe_update_window_count;
 
-			create_icon();
+			if(_appIcon == null) create_icon();
+			_appIcon.visible = true;
+
+			// Force an update to catch circumstances where the app
+			// disappears and reappears (e.g., The GIMP).
+			update_icon_image(_wnckApp);
 		}
 
 		private void maybe_update_window_count(Wnck.Screen scr,
@@ -80,13 +89,13 @@ namespace AllTray {
 
 			sb.append_printf("%s - %d window%s", _wnckApp.get_name(),
 							 _wnckApp.get_n_windows(), plural);
-							 
+			
 			_appIcon.set_tooltip(sb.str);
 		}
 
 		private void create_icon() {
 			_appIcon = new Gtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
-			_appIcon.visible = true;
+
 			_appIcon.set_tooltip(_wnckApp.get_name());
 
 			_appIcon.activate += on_icon_click;
@@ -95,7 +104,14 @@ namespace AllTray {
 		}
 
 		private void update_icon_image(Wnck.Application app) {
-			_appIcon.set_from_pixbuf(app.get_icon());
+			unowned Gdk.Pixbuf new_icon = app.get_icon();
+
+			_appIcon.set_from_pixbuf(new_icon);
+
+			if(new_icon == null) {
+				_appIcon.visible = false;
+				return;
+			}
 		}
 
 		private void update_icon_name(Wnck.Application app) {
