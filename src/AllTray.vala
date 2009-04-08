@@ -153,7 +153,7 @@ namespace AllTray {
 			return(0);
 		}
 
-		private void delete_dialog(Gtk.Dialog d) {
+		private void delete_dialog(Gtk.Dialog d, int unused) {
 			d.destroy();
 		}
 
