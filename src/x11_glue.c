@@ -41,7 +41,7 @@ alltray_find_managed_window(Window window, GdkDisplay *gdk_display) {
       break;
     }
 
-    retval = alltray_find_managed_window(kids[i]);
+    retval = alltray_find_managed_window(kids[i], gdk_display);
     if(retval != NULL) break;
   }
 
@@ -157,7 +157,8 @@ find_window(GPid pid, Display *d, Window w) {
   guint child_count;
 
   if(XQueryTree(d, w, &root, &parent, &child, &child_count) != 0) {
-    for(guint i = 0; i < child_count; i++) {
+    guint i;
+    for(i = 0; i < child_count; i++) {
       guint retval = find_window(pid, d, child[i]);
       if(retval != 0) {
 	retval = get_window_leader(d, retval);
