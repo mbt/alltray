@@ -244,7 +244,8 @@ namespace AllTray {
 										Debug.Level.Information,
 										sb.str);
 				
-				if(arg.contains("alltray")) continue;
+				if(arg.contains("alltray") &&
+				   !arg.contains("internal-fake-process")) continue;
 				Debug.Notification.emit(Debug.Subsystem.CommandLine,
 										Debug.Level.Information,
 										"Passed continue");
