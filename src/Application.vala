@@ -13,7 +13,7 @@ namespace AllTray {
 	public class Application : GLib.Object {
 		private unowned List<Wnck.Window> _windows;
 		private Wnck.Application? _wnckApp;
-		private Gtk.StatusIcon _appIcon;
+		private AllTray.LocalGtk.StatusIcon _appIcon;
 		// private Sexy.Tooltip _appIconTooltip;
 		private Process _process;
 		private bool _appVisible;
@@ -94,7 +94,7 @@ namespace AllTray {
 		}
 
 		private void create_icon() {
-			_appIcon = new Gtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
+			_appIcon = new LocalGtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
 
 			_appIcon.set_tooltip(_wnckApp.get_name());
 
@@ -118,7 +118,7 @@ namespace AllTray {
 			_appIcon.set_tooltip(app.get_name());
 		}
 
-		private void on_icon_click(Gtk.StatusIcon icon) {
+		private void on_icon_click(LocalGtk.StatusIcon icon) {
 			if(icon.blinking == true) icon.blinking = false;
 			toggle_visibility();
 		}
