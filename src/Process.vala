@@ -8,6 +8,7 @@ using GLib;
 namespace AllTray {
 	public errordomain ProcessError {
 		SPAWN_FAILED,
+		PROCESS_DOES_NOT_EXIST,
 		FAILED
 	}
 
@@ -36,7 +37,7 @@ namespace AllTray {
 			return(_child);
 		}
 
-		public void run() {
+		public void run() throws ProcessError {
 			// Special case, if we're attaching, we do not actually
 			// spawn a new process.
 			if(_argv[0] == "alltray-internal-fake-process") {
@@ -58,16 +59,63 @@ namespace AllTray {
 										Debug.Level.Information,
 										msg.str);
 			} catch(SpawnError e) {
-				stdout.printf("An error occurred: %s\n", e.message);
+				throw new ProcessError.SPAWN_FAILED(e.message);
 				_running = false;
 			}
 
 			_app = new AllTray.Application(this);
 		}
 
-		private void run_fake(int pid) {
+		private void run_fake(int pid) throws ProcessError {
 			_running = true;
 			_child = (Pid)pid;
+
+			if(!process_num_is_alive(pid)) {
+				throw new ProcessError.PROCESS_DOES_NOT_EXIST("The provided "+
+															  "PID does not "+
+															  "exist.");
+			}
+
+			Timeout.add(50, fake_child_monitor);
+			_app = new AllTray.Application(this);
+		}
+
+		private bool fake_child_monitor() {
+			if(process_num_is_alive((int)_child)) {
+				return(true);
+			}
+
+			_running = false;
+
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Attached process %d has died.",
+							  (int)_child);
+			Debug.Notification.emit(Debug.Subsystem.Process,
+									Debug.Level.Information,
+									msg.str);
+
+			process_died(this);
+			return(false);
+		}
+
+		/*
+		 * Watches for the child.  This function assumes that we are running
+		 * on a system that properly implements the null signal, specified
+		 * in POSIX (IEEE Std 1003.1 and the Single UNIX® Specification v2,
+		 * 1997.
+		 */
+		private bool process_num_is_alive(int pid) {
+			int kill_ret = Posix.kill((int)_child, 0);
+
+			// if Posix.kill returns 0, the process is alive.
+			if(kill_ret == 0) return(true);
+
+			// if Posix.errno is set to Posix.EPERM (Permission denied),
+			// the process is alive.
+			if(Posix.errno == Posix.EPERM) return(true);
+
+			// Anything else === process dead.
+			return(false);
 		}
 
 		public void child_died() {

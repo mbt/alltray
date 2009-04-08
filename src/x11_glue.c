@@ -34,7 +34,8 @@ alltray_find_managed_window(Window window, GdkDisplay *gdk_display) {
   }
 
   retval = NULL;
-  for(int i = 0; i < nkids; i++) {
+  int i;
+  for(i = 0; i < nkids; i++) {
     if(wm_state_set(kids[i])) {
       retval = wnck_window_get(kids[i]);
       break;
