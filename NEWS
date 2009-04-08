@@ -1,3 +1,13 @@
+News for 0.7.3dev
+=================
+
+THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+Now requires Vala > 0.7.0 to build properly.  Vala 0.7.1 (or current
+Vala "master") will work.
+
 News for 0.7.2dev
 =================
 
