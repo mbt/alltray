@@ -1,3 +1,24 @@
+News for 0.7.3dev
+=================
+
+THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+  * Now requires Vala > 0.7.0 to build properly.  Vala 0.7.1 (or
+    current Vala "master") will work.
+
+  * AllTray can now attach to processes again.  This is done
+    differently than in the old releases (0.69, 0.70 and prior) of
+    AllTray.  Instead of “click mode”, AllTray can now attach to
+    applications in two ways (so it is more appropriate to call it
+    “attach mode”).  To use this, run “alltray -a”, which will present
+    a dialog and let you click on a window to attach to that window’s
+    application, or “alltray -p XXX” (where XXX is the target
+    application’s process ID) to attach to an application by is
+    process ID number.  This functionality should work on all systems
+    which properly implement POSIX.
+
 News for 0.7.2dev
 =================
 

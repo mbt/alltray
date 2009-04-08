@@ -13,7 +13,7 @@ namespace AllTray {
 	public class Application : GLib.Object {
 		private unowned List<Wnck.Window> _windows;
 		private Wnck.Application? _wnckApp;
-		private Gtk.StatusIcon _appIcon;
+		private AllTray.LocalGtk.StatusIcon _appIcon;
 		// private Sexy.Tooltip _appIconTooltip;
 		private Process _process;
 		private bool _appVisible;
@@ -26,6 +26,9 @@ namespace AllTray {
 
 		public Application(Process p) {
 			_process = p;
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									"Hey hey, creating a new Application");
 
 			/*
 			 * Register interest in learning of new applications on
@@ -35,6 +38,13 @@ namespace AllTray {
 			 */
 			Program.WnckScreen.application_opened += maybe_setup;
 			Program.WnckScreen.application_closed += bye_wnck_app;
+
+			// If we got early notifications, let's work through them.
+			if(Program.WnckEarlyApps != null) {
+				foreach(Wnck.Application app in Program.WnckEarlyApps) {
+					maybe_setup(Program.WnckScreen, app);
+				}
+			}
 		}
 
 		private void bye_wnck_app(Wnck.Screen scr, Wnck.Application app) {
@@ -95,7 +105,7 @@ namespace AllTray {
 		}
 
 		private void create_icon() {
-			_appIcon = new Gtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
+			_appIcon = new LocalGtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
 
 			_appIcon.set_tooltip(_wnckApp.get_name());
 
@@ -119,7 +129,7 @@ namespace AllTray {
 			_appIcon.set_tooltip(app.get_name());
 		}
 
-		private void on_icon_click(Gtk.StatusIcon icon) {
+		private void on_icon_click(LocalGtk.StatusIcon icon) {
 			if(icon.blinking == true) icon.blinking = false;
 			toggle_visibility();
 		}

@@ -1,0 +1,23 @@
+Requirements and Depenedencies
+==============================
+
+  * Vala > 0.7.0 [from git as of April 8, 2009] to build from the bzr
+    branch which does not have the *.c files already generated.
+
+  * Currently in order to operate correctly, AllTray pretty much
+    requires that it not be used on KDE, and that it not be used to
+    dock KDE application software (and possibly Qt software).  This is
+    LP bug 357469.
+
+  * Required libraries:
+    - gtk 2.12 or better, glib and gobject
+    - libwnck
+
+  * An EWMH and ICCCM compliant desktop environment and software.  If
+    AllTray is deficient in implementing these standards in any way,
+    that is a bug in AllTray.  If AllTray is used with software that
+    is non-compliant, the results are undefined.
+
+  * Target applications _absolutely_ must have _NET_WM_PID set on
+    their windows or there is absolutely no hope that AllTray will
+    work with them.

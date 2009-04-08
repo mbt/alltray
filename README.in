@@ -1,7 +1,8 @@
 AllTray @PACKAGE_VERSION@ README
 Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
 
-  For installation instructions, please read INSTALL.
+  For installation instructions, please read REQUIREMENTS for system
+  and dependency requirements, then read INSTALL.
 
   If you're looking to start playing with the source code, please read
   HACKING.

@@ -21,38 +21,6 @@ AC_CONFIG_SRCDIR([src/AllTray.vala])
 AC_PROG_CC
 AC_PROG_SED
 AC_PATH_PROG(VALAC, valac, valac)
-
-AC_SUBST(VALAC)
-
-# Check for ISO C99 support in the C compiler.
-AC_MSG_CHECKING([for c99 support in gcc])
-
-old_CFLAGS="$CFLAGS"
-CFLAGS="$CFLAGS -std=gnu99"
-AC_COMPILE_IFELSE([dnl
-    int foo(int a) { for(int i = 0; i < a; i++) if (i % 4) break; int s = a; return(s); }],
-    ac_cv_c99=yes, ac_cv_c99=no)
-CFLAGS="$old_CFLAGS"
-if test x"$ac_cv_c99" != xyes; then
-   AC_MSG_RESULT(no)
-   AC_MSG_ERROR([gcc with c99 support is required])
-else
-   AC_MSG_RESULT(yes)
-   CFLAGS="$CFLAGS -std=gnu99"
-fi
-
-AC_MSG_CHECKING([for warn_unused_result support])
-AC_COMPILE_IFELSE([dnl
-  int foo(int a) __attribute__((warn_unused_result));
-  int foo(int a) {
-    return(a);
-  } ],
-  AC_MSG_RESULT(yes)
-  AC_DEFINE([WARN_UNUSED_RETVAL], [__attribute__((warn_unused_result))],
-            [Hint to GCC to warn if the result of a function is unused.]),
-  AC_MSG_RESULT(no)
-  AC_DEFINE([WARN_UNUSED_RETVAL], [], []))
-
 AC_PROG_INSTALL
 
 # pkg-config checks need to be inserted here.

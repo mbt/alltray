@@ -8,10 +8,8 @@
 namespace Native.StdC {
 	[CCode(cheader_filename = "stdlib.h", cprefix = "",
 		   lower_case_cprefix = "")]
-	namespace Stdlib {
-		public void exit(int program_retval);
-		public void abort();
-	}
+	public void exit(int program_retval);
+	public void abort();
 
 	[CCode(cheader_filename = "signal.h", cprefix = "",
 		   lower_case_cprefix = "")]

@@ -14,6 +14,10 @@ namespace AllTray {
 		private string[] _args;
 		private string[] _cleanArgs;
 		private List<Process> _plist;
+		private GLib.OptionContext opt_ctx;
+
+		private static bool _attach;
+		private static int _pid;
 
 		private static bool _cl_debug;
 		private static bool _display_ver;
@@ -21,10 +25,18 @@ namespace AllTray {
 		private static Program _instance;
 
 		public static Wnck.Screen WnckScreen;
+		public static List<Wnck.Application> WnckEarlyApps;
+
+		private PromptDialog _pd;
 
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
+			{ "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
+			  "Attach to a running program", null },
 			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
 			  "Enable debugging messages", null },
+			{ "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
+			  "Attach to already-running application",
+			  "PID" },
 			{ "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
 			  "Display AllTray version info and exit", null },
 			{ "extended-version", 'V', 0, GLib.OptionArg.NONE,
@@ -65,8 +77,7 @@ namespace AllTray {
 				env_args = sb.str.split(" ");
 			}
 
-			GLib.OptionContext opt_ctx =
-				new GLib.OptionContext("- Dock software to the systray");
+			opt_ctx = new GLib.OptionContext("- Dock software to the systray");
 			opt_ctx.add_main_entries(this._acceptedCmdLineOptions, null);
 			opt_ctx.add_group(Gtk.get_option_group(true));
 
@@ -76,7 +87,7 @@ namespace AllTray {
 				} catch(OptionError e) {
 					stderr.printf("error: env flag parsing failed (%s)\n",
 								  e.message);
-					Native.StdC.Stdlib.exit(1);
+					StdC.exit(1);
 				}
 			}
 
@@ -85,17 +96,17 @@ namespace AllTray {
 			} catch(OptionError e) {
 				stderr.printf("error: command line parsing failed (%s)\n",
 							  e.message);
-				Native.StdC.Stdlib.exit(1);
+				StdC.exit(1);
 			}
 
 			if(_display_ver && !_display_extended_ver) {
 				display_version();
-				Native.StdC.Stdlib.exit(0);
+				StdC.exit(0);
 			}
 
 			if(_display_extended_ver) {
 				display_extended_version();
-				Native.StdC.Stdlib.exit(0);
+				StdC.exit(0);
 			}
 
 			display_version();
@@ -121,21 +132,35 @@ namespace AllTray {
 			_plist = new List<Process>();
 
 			Wnck.set_client_type(Wnck.ClientType.PAGER);
-			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information,
-									"Set WNCK Client Type to PAGER");
 			install_signal_handlers();
 
 			WnckScreen = Wnck.Screen.get_default();
 
-			try {
-				spawn_new_process();
-			} catch(AllTrayError e) {
-				stderr.printf(e.message);
-				return(1);
+			if(_attach && (_pid == 0)) {
+				prompt_and_attach();
+			} else if(_pid > 0) {
+				attach_to_pid(_pid);
+			} else {
+				if(_cleanArgs.length == 1) {
+					display_help();
+					return(1);
+				}
+
+				try {
+					spawn_new_process();
+				} catch(AllTrayError e) {
+					stderr.printf(e.message);
+					return(1);
+				}
 			}
 
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"Starting GTK Main Loop");
 			Gtk.main();
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"Left GTK Main Loop");
 			return(0);
 		}
 
@@ -173,6 +198,69 @@ namespace AllTray {
 				stdout.printf("Configure flags: %s\n",
 							  Build.ALLTRAY_CONFIGURE_FLAGS);
 			}
+		}
+
+		private bool delete_pd_window() {
+			_pd.destroy();
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"delete_pd_window()");
+			return(false);
+		}
+
+		private void get_app_early(Wnck.Screen scr, Wnck.Application app) {
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Adding app (pid %d) to list of recv'd apps",
+							  app.get_pid());
+
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg.str);
+			WnckEarlyApps.append(app);
+		}
+
+		private void prompt_and_attach() {
+			_pd = new PromptDialog();
+			bool answer_received = false;
+
+			WnckEarlyApps = new List<Wnck.Application>();
+			WnckScreen.application_opened += get_app_early;
+
+			_pd.show_all();
+
+			// Setup and invoke a Gtk.main() that just waits for the user's
+			// response.  A new Gtk.main() will be called later that will
+			// actually begin the program's real work.
+			Idle.add(AttachHelper.get_target_window);
+			Gtk.main();
+
+			Idle.add(delete_pd_window);
+			WnckScreen.application_opened -= get_app_early;
+
+			if(AttachHelper.success == false) {
+				stderr.printf("Failed to get a window; exiting.\n");
+				StdC.exit(1);
+			}
+
+			_pid = AttachHelper.target_process;
+			attach_to_pid(_pid);
+		}
+
+		/*
+		 * Doing it this way reduces the number of code paths in the
+		 * program and so, while confusing, is preferable.  What we do
+		 * is give a sentinal "process name" to spawn_new_process()
+		 * for it to spawn.  Really, though, what happens is the
+		 * Process sees this sentinel value and just *acts* like it
+		 * spawned a process.
+		 */
+		private void attach_to_pid(int pid) {
+			_cleanArgs = new string[] {
+				"alltray-internal-fake-process",
+				pid.to_string()
+			};
+
+			spawn_new_process();
 		}
 
 		private void spawn_new_process() throws AllTrayError {
@@ -213,10 +301,24 @@ namespace AllTray {
 		}
 
 		private string[] get_command_line(string[] args) {
+			stderr.printf("In get_command_line()\n");
+			stderr.flush();
 			int curItem = 0;
 			string[] retval = new string[args.length];
+
 			foreach(string arg in args) {
-				if(arg.contains("alltray")) continue;
+				StringBuilder sb = new StringBuilder();
+				sb.append_printf("Evaluating %s", arg);
+				Debug.Notification.emit(Debug.Subsystem.CommandLine,
+										Debug.Level.Information,
+										sb.str);
+				
+				if(arg.contains("alltray") &&
+				   !arg.contains("internal-fake-process")) continue;
+				Debug.Notification.emit(Debug.Subsystem.CommandLine,
+										Debug.Level.Information,
+										"Actually processing arg");
+
 				retval[curItem++] = arg;
 			}
 
@@ -243,5 +345,10 @@ namespace AllTray {
 									caught_signal.to_string());
 		}
 		*/
+
+		private void display_help() {
+			stderr.printf(opt_ctx.get_help(true, null));
+			StdC.exit(1);
+		}
 	}
 }

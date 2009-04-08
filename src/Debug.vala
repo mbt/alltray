@@ -15,7 +15,8 @@ namespace AllTray.Debug {
 		Process = 0x10,
 		Misc = 0x20,
 		Bug = 0x40,
-		Application = 0x80
+		Application = 0x80,
+		AttachHelper = 0x100
 	}
 
 	public enum Level {
@@ -38,6 +39,9 @@ namespace AllTray.Debug {
 				string[] values = enabled_subsystems.split(" ");
 				foreach(string tmpSubsys in values) {
 					switch(tmpSubsys) {
+					case "AH":
+						_subsys |= Subsystem.AttachHelper;
+						break;
 					case "CL":
 						_subsys |= Subsystem.CommandLine;
 						break;
@@ -70,7 +74,8 @@ namespace AllTray.Debug {
 									Subsystem.Process |
 									Subsystem.Misc |
 									Subsystem.Bug |
-									Subsystem.Application);
+									Subsystem.Application |
+									Subsystem.AttachHelper);
 						break;
 					default:
 						GLib.warning("Unrecognized value '%s' in ALLTRAY_DEBUG",
@@ -104,7 +109,7 @@ namespace AllTray.Debug {
 			if(lvl == Level.Fatal) {
 				emit(subsys, Level.Information,
 					 "Exiting: encountered fatal error.");
-				Native.StdC.Stdlib.abort();
+				Native.StdC.abort();
 			}
 		}
 
@@ -114,6 +119,10 @@ namespace AllTray.Debug {
 			switch(subsys) {
 			case Subsystem.None:
 				retval = "None";
+				break;
+
+			case Subsystem.AttachHelper:
+				retval = "AH";
 				break;
 
 			case Subsystem.CommandLine:
