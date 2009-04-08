@@ -10,12 +10,14 @@ namespace AllTray {
 	public class AttachHelper : GLib.Object {
 		private static AttachHelper _sInstance;
 
-		public static unowned Wnck.Window chosen_window;
+		private static unowned Wnck.Window _chosen_window;
+		public static int target_process;
 		public static bool success;
 
 		public static bool get_target_window() {
 			_sInstance = new AttachHelper();
-			chosen_window = null;
+			_chosen_window = null;
+			target_process = 0;
 			success = false;
 
 			_sInstance.run();
@@ -82,22 +84,27 @@ namespace AllTray {
 			ulong xwin = ev.subwindow;
 			success = true;
 			Program.WnckScreen.force_update();
-			chosen_window = get_managed(xwin);
+			_chosen_window = get_managed(xwin);
 
 			StringBuilder sb = new StringBuilder();
 			sb.append_printf("Looks like we got win 0x%08lx", xwin);
-			Debug.Notification.emit(Debug.Subsystem.Process,
+			Debug.Notification.emit(Debug.Subsystem.AttachHelper,
 									Debug.Level.Information,
 									sb.str);
+
+			target_process = _chosen_window.get_pid();
+			sb.truncate(0);
+			sb.append_printf("Win 0x%08lx pid = %d", xwin, target_process);
+			Debug.Notification.emit(Debug.Subsystem.AttachHelper,
+									Debug.Level.Information,
+									sb.str);
+
+			
+			Gtk.main_quit();
 		}
 
 		private unowned Wnck.Window? get_managed(ulong xwin) {
 			return(c_find_managed_window(xwin, Gdk.Display.get_default()));
-		}
-
-		private unowned Wnck.Window? c_find_managed_window(ulong xwin,
-														  Gdk.Display d) {
-			return(null);
 		}
 
 		private void clean_up() {

@@ -30,12 +30,6 @@ namespace AllTray {
 								   "want to dock.");
 			this.vbox.pack_start(_lblPrompt, false, true, 0);
 			show_all();
-
-			this.destroy += on_destroy;
-		}
-
-		private void on_destroy() {
-			Gtk.main_quit();
 		}
 	}
 }

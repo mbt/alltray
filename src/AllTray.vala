@@ -25,6 +25,9 @@ namespace AllTray {
 		private static Program _instance;
 
 		public static Wnck.Screen WnckScreen;
+		public static List<Wnck.Application> WnckEarlyApps;
+
+		private PromptDialog _pd;
 
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
 			{ "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
@@ -149,21 +152,43 @@ namespace AllTray {
 				}
 			}
 
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"Starting GTK Main Loop");
 			Gtk.main();
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"Left GTK Main Loop");
 			return(0);
 		}
 
-		private void delete_dialog(Gtk.Dialog d, int unused) {
-			d.destroy();
+		private bool delete_pd_window() {
+			_pd.destroy();
+			Debug.Notification.emit(Debug.Subsystem.Misc,
+									Debug.Level.Information,
+									"delete_pd_window()");
+			return(false);
+		}
+
+		private void get_app_early(Wnck.Screen scr, Wnck.Application app) {
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Adding app (pid %d) to list of recv'd apps",
+							  app.get_pid());
+
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg.str);
+			WnckEarlyApps.append(app);
 		}
 
 		private void prompt_and_attach() {
-			PromptDialog pd = new PromptDialog();
+			_pd = new PromptDialog();
 			bool answer_received = false;
 
-			pd.response += delete_dialog;
+			WnckEarlyApps = new List<Wnck.Application>();
+			WnckScreen.application_opened += get_app_early;
 
-			pd.show_all();
+			_pd.show_all();
 
 			// Setup and invoke a Gtk.main() that just waits for the user's
 			// response.  A new Gtk.main() will be called later that will
@@ -171,10 +196,16 @@ namespace AllTray {
 			Idle.add(AttachHelper.get_target_window);
 			Gtk.main();
 
+			Idle.add(delete_pd_window);
+			WnckScreen.application_opened -= get_app_early;
+
 			if(AttachHelper.success == false) {
 				stderr.printf("Failed to get a window; exiting.\n");
 				StdC.exit(1);
 			}
+
+			_pid = AttachHelper.target_process;
+			attach_to_pid(_pid);
 		}
 
 		/*
@@ -239,7 +270,7 @@ namespace AllTray {
 
 			foreach(string arg in args) {
 				StringBuilder sb = new StringBuilder();
-				sb.append_printf("Processing arg %s", arg);
+				sb.append_printf("Evaluating %s", arg);
 				Debug.Notification.emit(Debug.Subsystem.CommandLine,
 										Debug.Level.Information,
 										sb.str);
@@ -248,7 +279,7 @@ namespace AllTray {
 				   !arg.contains("internal-fake-process")) continue;
 				Debug.Notification.emit(Debug.Subsystem.CommandLine,
 										Debug.Level.Information,
-										"Passed continue");
+										"Actually processing arg");
 
 				retval[curItem++] = arg;
 			}

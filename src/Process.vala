@@ -67,6 +67,9 @@ namespace AllTray {
 		}
 
 		private void run_fake(int pid) throws ProcessError {
+			Debug.Notification.emit(Debug.Subsystem.Process,
+									Debug.Level.Information,
+									"run_fake()");
 			_running = true;
 			_child = (Pid)pid;
 
@@ -75,6 +78,13 @@ namespace AllTray {
 															  "PID does not "+
 															  "exist.");
 			}
+
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Process %d now attached.",
+							  (int)_child);
+			Debug.Notification.emit(Debug.Subsystem.Process,
+									Debug.Level.Information,
+									msg.str);
 
 			Timeout.add(50, fake_child_monitor);
 			_app = new AllTray.Application(this);

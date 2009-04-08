@@ -49,7 +49,6 @@ alltray_find_managed_window(Window window, GdkDisplay *gdk_display) {
   return(retval);
 }
 
-// Same as last function.
 static gboolean
 wm_state_set (Window window)
 {

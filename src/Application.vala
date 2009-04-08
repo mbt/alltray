@@ -26,6 +26,9 @@ namespace AllTray {
 
 		public Application(Process p) {
 			_process = p;
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									"Hey hey, creating a new Application");
 
 			/*
 			 * Register interest in learning of new applications on
@@ -35,6 +38,13 @@ namespace AllTray {
 			 */
 			Program.WnckScreen.application_opened += maybe_setup;
 			Program.WnckScreen.application_closed += bye_wnck_app;
+
+			// If we got early notifications, let's work through them.
+			if(Program.WnckEarlyApps != null) {
+				foreach(Wnck.Application app in Program.WnckEarlyApps) {
+					maybe_setup(Program.WnckScreen, app);
+				}
+			}
 		}
 
 		private void bye_wnck_app(Wnck.Screen scr, Wnck.Application app) {
