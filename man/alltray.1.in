@@ -129,6 +129,12 @@ method is being worked on to reliably work around this problem.
 Should you find software like this, please do not hesitate to report
 it as a bug in AllTray.
 
+There are issues with interaction between AllTray and KDE in general.
+Trying to use AllTray on KDE is not recommended at this stage unless
+you are a developer and may be able to contribute to AllTray's ability
+to work on KDE.  At present, the cause of these interaction issues is
+unknown.
+
 There are likely undiscovered bugs.  If you should find one, please
 report it at https://launchpad.net/alltray/+filebug.
 \#
