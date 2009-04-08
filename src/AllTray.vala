@@ -26,9 +26,10 @@ namespace AllTray {
 			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
 			  "Enable debugging messages", null },
 			{ "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
-			  "Display AllTray version info", null },
+			  "Display AllTray version info and exit", null },
 			{ "extended-version", 'V', 0, GLib.OptionArg.NONE,
-			  ref _display_extended_ver, "Display extended version info",
+			  ref _display_extended_ver,
+			  "Display extended version info and exit",
 			  null },
 			{ null }
 		};
@@ -97,6 +98,7 @@ namespace AllTray {
 				Native.StdC.Stdlib.exit(0);
 			}
 
+			display_version();
 			if(_cl_debug) Debug.Notification.init();
 
 			// Strip "--" out of the command line arguments
@@ -150,7 +152,7 @@ namespace AllTray {
 			stdout.printf("Copyright (c) %s Michael B. Trausch "+
 						  "<mike@trausch.us>\n", Build.ALLTRAY_COPYRIGHT_YEARS);
 			stdout.printf("Licensed under the GNU GPL v3.0 as published by "+
-						  "the Free Software Foundation.\n");
+						  "the Free Software Foundation.\n\n");
 		}
 
 		private void display_extended_version() {
