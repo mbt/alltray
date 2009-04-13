@@ -100,17 +100,28 @@ namespace AllTray {
 
 			Gtk.MenuItem mnuToggle =
 				new Gtk.MenuItem.with_label("Toggle Visibility");
-
+			Gtk.MenuItem mnuUndock =
+				new Gtk.MenuItem.with_label("Undock");
 			Gtk.MenuItem mnuSeparator0 =
 				new Gtk.SeparatorMenuItem();
+			Gtk.MenuItem mnuAbout =
+				new Gtk.MenuItem.with_label("About AllTray");
 
 			// Append, wire and show the menu items.
 			appMenu.append(mnuToggle);
 			mnuToggle.activate += on_menu_toggle_activate;
 			mnuToggle.show();
 
+			appMenu.append(mnuUndock);
+			mnuUndock.activate += on_menu_undock;
+			mnuUndock.show();
+
 			appMenu.append(mnuSeparator0);
 			mnuSeparator0.show();
+
+			appMenu.append(mnuAbout);
+			mnuAbout.activate += on_menu_about;
+			mnuAbout.show();
 
 			appMenu.popup(null, null, null, button, activate_time);
 		}
@@ -156,11 +167,6 @@ namespace AllTray {
 		private void on_icon_click(LocalGtk.StatusIcon icon) {
 			if(icon.blinking == true) icon.blinking = false;
 			toggle_visibility();
-		}
-
-		private void on_menu_toggle_activate(Gtk.MenuItem item) {
-			if(_appIcon.blinking == true) _appIcon.blinking = false;
-			toggle_visibility();			
 		}
 
 		/*
@@ -251,6 +257,30 @@ namespace AllTray {
 										Debug.Level.Information,
 										msg.str);
 			}
+		}
+
+		/**********************************************************
+		 * Context menu handlers.
+		 **********************************************************/
+		private void on_menu_toggle_activate(Gtk.MenuItem item) {
+			if(_appIcon.blinking == true) _appIcon.blinking = false;
+			toggle_visibility();			
+		}
+
+		private void on_menu_about() {
+			// Display an about dialog
+			Gtk.AboutDialog about = new Gtk.AboutDialog();
+			about.program_name = "AllTray";
+			about.version = Build.PACKAGE_VERSION;
+			about.website = "http://alltray.trausch.us/";
+			about.copyright = "Copyright © "+Build.ALLTRAY_COPYRIGHT_YEARS;
+			about.comments = "Dock applications in the system tray.";
+
+			about.show_all();
+		}
+
+		private void on_menu_undock() {
+			Posix.exit(0);
 		}
 	}
 }
