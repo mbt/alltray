@@ -85,10 +85,34 @@ namespace AllTray {
 
 			if(_appIcon == null) create_icon();
 			_appIcon.visible = true;
+			_appIcon.popup_menu += display_menu;
 
 			// Force an update to catch circumstances where the app
 			// disappears and reappears (e.g., The GIMP).
 			update_icon_image(_wnckApp);
+		}
+
+		private void display_menu(uint button, uint activate_time) {
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									"Requesting menu!");
+			Gtk.Menu appMenu = new Gtk.Menu();
+
+			Gtk.MenuItem mnuToggle =
+				new Gtk.MenuItem.with_label("Toggle Visibility");
+
+			Gtk.MenuItem mnuSeparator0 =
+				new Gtk.SeparatorMenuItem();
+
+			// Append, wire and show the menu items.
+			appMenu.append(mnuToggle);
+			mnuToggle.activate += on_menu_toggle_activate;
+			mnuToggle.show();
+
+			appMenu.append(mnuSeparator0);
+			mnuSeparator0.show();
+
+			appMenu.popup(null, null, null, button, activate_time);
 		}
 
 		private void maybe_update_window_count(Wnck.Screen scr,
@@ -132,6 +156,11 @@ namespace AllTray {
 		private void on_icon_click(LocalGtk.StatusIcon icon) {
 			if(icon.blinking == true) icon.blinking = false;
 			toggle_visibility();
+		}
+
+		private void on_menu_toggle_activate(Gtk.MenuItem item) {
+			if(_appIcon.blinking == true) _appIcon.blinking = false;
+			toggle_visibility();			
 		}
 
 		/*
