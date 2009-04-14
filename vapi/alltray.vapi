@@ -6,6 +6,7 @@
 namespace AllTray.Build {
 	public const string PACKAGE_VERSION;
 	public const string ALLTRAY_COPYRIGHT_YEARS;
+	public const string ALLTRAY_LICENSE;
 
 	public const string ALLTRAY_BZR_BUILD;
 	public const string ALLTRAY_BZR_BRANCH;

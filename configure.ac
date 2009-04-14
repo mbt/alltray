@@ -69,6 +69,8 @@ if test -d .bzr; then
       "$BZR_REV_ID", [Revision ID we are built from])
 fi
 
+AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,",\\",g')", [The GNU GPL License Text])
+
 # Configuration wrap-up.
 AC_CONFIG_FILES([README
         Makefile
@@ -77,7 +79,6 @@ AC_CONFIG_FILES([README
         src/Makefile
 	vapi/Makefile
         man/alltray.1])
-
 AC_OUTPUT
 
 # Configuration results report

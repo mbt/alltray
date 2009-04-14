@@ -323,6 +323,7 @@ namespace AllTray {
 			about.website = "http://alltray.trausch.us/";
 			about.copyright = "Copyright © "+Build.ALLTRAY_COPYRIGHT_YEARS;
 			about.comments = "Dock applications in the system tray.";
+			about.license = Build.ALLTRAY_LICENSE;
 
 			about.response += dialog_destroy;
 
