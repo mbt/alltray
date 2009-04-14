@@ -107,9 +107,11 @@ namespace AllTray {
 			Gtk.MenuItem mnuAbout =
 				new Gtk.MenuItem.with_label("About AllTray");
 
+			Gtk.Menu windowList = create_window_list_menu();
+			mnuToggle.set_submenu(windowList);
+
 			// Append, wire and show the menu items.
 			appMenu.append(mnuToggle);
-			mnuToggle.activate += on_menu_toggle_activate;
 			mnuToggle.show();
 
 			appMenu.append(mnuUndock);
@@ -124,6 +126,36 @@ namespace AllTray {
 			mnuAbout.show();
 
 			appMenu.popup(null, null, null, button, activate_time);
+		}
+
+		private Gtk.Menu create_window_list_menu() {
+			List<Gtk.MenuItem> windowItems = new List<Gtk.MenuItem>();
+			Gtk.Menu retval = new Gtk.Menu();
+
+			Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label("All");
+			Gtk.MenuItem mnuSep0 = new Gtk.SeparatorMenuItem();
+
+			retval.append(mnuAllWindows);
+			mnuAllWindows.activate += on_menu_toggle_app;
+			mnuAllWindows.show();
+
+			retval.append(mnuSep0);
+			mnuSep0.show();
+
+			foreach(Wnck.Window w in _windows) {
+				Gtk.MenuItem item = new Gtk.MenuItem.with_label(w.get_name());
+				item.set_data("target_window", w);
+				item.activate += (item) => {
+					Wnck.Window win =
+						(Wnck.Window)item.get_data("target_window");
+					toggle_window_visibility(win);
+				};
+
+				retval.append(item);
+				item.show();
+			}
+
+			return(retval);
 		}
 
 		private void maybe_update_window_count(Wnck.Screen scr,
@@ -232,37 +264,53 @@ namespace AllTray {
 		private void toggle_visibility() {
 			_appVisible = !_appVisible;
 
-			StringBuilder msg = new StringBuilder();
-
 			foreach(Wnck.Window w in _windows) {
-				msg.truncate(0);
-				msg.append_printf("Setting window 0x%08lx visibility to %s",
-								  w.get_xid(), _appVisible.to_string());
-
-				if(_appVisible) {
-					TimeVal tv = TimeVal();
-					tv.get_current_time();
-
-					w.unminimize((uint32)tv.tv_sec);
-					w.set_skip_tasklist(false);
-
-					w.state_changed -= maintain_hiddenness;
-				} else {
-					w.minimize();
-					w.set_skip_tasklist(true);
-
-					w.state_changed += maintain_hiddenness;
-				}
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										msg.str);
+				set_visibility_for_window(w, _appVisible);
 			}
+		}
+
+		private void toggle_window_visibility(Wnck.Window w) {
+			Wnck.WindowState ws = w.get_state();
+
+			if(((ws & Wnck.WindowState.MINIMIZED) != 0) &&
+			   ((ws & Wnck.WindowState.SKIP_TASKLIST) != 0)) {
+				set_visibility_for_window(w, true);
+			} else {
+				set_visibility_for_window(w, false);
+			}
+		}
+
+		private void set_visibility_for_window(Wnck.Window w, bool visible) {
+			TimeVal tv = TimeVal();
+			tv.get_current_time();
+
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Setting window 0x%08lx visibility to %s",
+							  w.get_xid(), _appVisible.to_string());
+
+			if(visible) {
+				w.unminimize((uint32)tv.tv_sec);
+				w.set_skip_tasklist(false);
+				w.state_changed -= maintain_hiddenness;
+			} else {
+				w.minimize();
+				w.set_skip_tasklist(true);
+				w.state_changed += maintain_hiddenness;
+			}
+
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg.str);
+		}
+
+		private void dialog_destroy(Gtk.AboutDialog which, int resp_id) {
+			which.destroy();
 		}
 
 		/**********************************************************
 		 * Context menu handlers.
 		 **********************************************************/
-		private void on_menu_toggle_activate(Gtk.MenuItem item) {
+		private void on_menu_toggle_app(Gtk.MenuItem item) {
 			if(_appIcon.blinking == true) _appIcon.blinking = false;
 			toggle_visibility();			
 		}
@@ -275,6 +323,8 @@ namespace AllTray {
 			about.website = "http://alltray.trausch.us/";
 			about.copyright = "Copyright © "+Build.ALLTRAY_COPYRIGHT_YEARS;
 			about.comments = "Dock applications in the system tray.";
+
+			about.response += dialog_destroy;
 
 			about.show_all();
 		}
