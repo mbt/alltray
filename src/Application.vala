@@ -105,7 +105,7 @@ namespace AllTray {
 			Gtk.MenuItem mnuSeparator0 =
 				new Gtk.SeparatorMenuItem();
 			Gtk.MenuItem mnuAbout =
-				new Gtk.MenuItem.with_label("About AllTray");
+				new Gtk.MenuItem.with_label("About AllTray…");
 
 			Gtk.Menu windowList = create_window_list_menu();
 			mnuToggle.set_submenu(windowList);
