@@ -16,7 +16,8 @@ namespace AllTray.Debug {
 		Misc = 0x20,
 		Bug = 0x40,
 		Application = 0x80,
-		AttachHelper = 0x100
+		AttachHelper = 0x100,
+		Signal = 0x200
 	}
 
 	public enum Level {
@@ -66,6 +67,9 @@ namespace AllTray.Debug {
 					case "APP":
 						_subsys |= Subsystem.Application;
 						break;
+					case "SIG":
+						_subsys |= Subsystem.Signal;
+						break;
 					case "ALL":
 						_subsys |= (Subsystem.CommandLine |
 									Subsystem.Display |
@@ -75,7 +79,8 @@ namespace AllTray.Debug {
 									Subsystem.Misc |
 									Subsystem.Bug |
 									Subsystem.Application |
-									Subsystem.AttachHelper);
+									Subsystem.AttachHelper |
+									Subsystem.Signal);
 						break;
 					default:
 						GLib.warning("Unrecognized value '%s' in ALLTRAY_DEBUG",
@@ -155,6 +160,10 @@ namespace AllTray.Debug {
 
 			case Subsystem.Bug:
 				retval = "BUG";
+				break;
+
+			case Subsystem.Signal:
+				retval = "SIG";
 				break;
 
 			default:
