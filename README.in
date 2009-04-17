@@ -13,4 +13,18 @@ Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
   Please send bug reports to:
     @PACKAGE_BUGREPORT@
 
-  Thanks!
+Quick Introduction
+==================
+
+  AllTray is used for docking application software---such as Evolution,
+  your Web browser or terminal emulation software---into your system tray/
+  notification area.  This makes it possible to keep your desktop
+  uncluttered when the software you are using needs to continue running,
+  but you don't want to continue to see the window(s) in your taskbar or
+  window list.
+
+  Do note that at this time, there are issues with KDE 4.x and AllTray
+  interacting with each other; windows do not properly become totally
+  hidden in this environment, and that means that things act a bit
+  strange currently.  Using AllTray with KDE 4.x is not (yet) recommended.
+  KDE is aware of the issue and working to find a solution to the problem.
