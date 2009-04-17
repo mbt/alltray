@@ -326,18 +326,22 @@ namespace AllTray {
 		}
 
 		private static void sighandler(int caught_signal) {
-			if(caught_signal == StdC.Signal.SIGHUP) {
-				Debug.Notification.emit(Debug.Subsystem.Signal,
-										Debug.Level.Information,
-										"I would undock.");
+			if(caught_signal == StdC.Signal.SIGHUP ||
+			   caught_signal == StdC.Signal.SIGINT ||
+			   caught_signal == StdC.Signal.SIGTERM) {
+				foreach(Process p in _instance._plist) {
+					p.visible = true;
+				}
+
+				Gtk.main_quit();
 			} else if(caught_signal == StdC.Signal.SIGTERM) {
-				Debug.Notification.emit(Debug.Subsystem.Signal,
-										Debug.Level.Information,
-										"I would kill my children and die.");
-			} else if(caught_signal == StdC.Signal.SIGINT) {
-				Debug.Notification.emit(Debug.Subsystem.Signal,
-										Debug.Level.Information,
-										"I would undock.");
+				foreach(Process p in _instance._plist) {
+					StdC.Signal.send((int)p.get_pid(), caught_signal);
+				}
+
+				// Quit anyway, in case they don't respond (then the user can
+				// worry about killing them).
+				Gtk.main_quit();
 			} else {
 				StringBuilder msg = new StringBuilder();
 				msg.append_printf("Caught unwired signal %d", caught_signal);

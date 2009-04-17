@@ -52,5 +52,7 @@ namespace Native.StdC {
 		[CCode(cname = "signal")]
 		public static SignalHandler set_new_handler(int sig,
 													SignalHandler handler);
+		[CCode(cname = "kill")]
+		public static int send(int pid, int sig);
 	}
 }

@@ -24,6 +24,18 @@ namespace AllTray {
 			}
 		}
 
+		public bool visible {
+			get {
+				return(_appVisible);
+			}
+
+			set {
+				if(_appVisible != value) {
+					toggle_visibility();
+				}
+			}
+		}
+
 		public Application(Process p) {
 			_process = p;
 			Debug.Notification.emit(Debug.Subsystem.Application,

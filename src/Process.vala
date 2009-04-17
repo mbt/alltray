@@ -14,7 +14,6 @@ namespace AllTray {
 
 	public class Process : GLib.Object {
 		private Pid _child;
-		private bool _visible;
 		private bool _running;
 		private string[] _argv;
 		private AllTray.Application _app;
@@ -27,9 +26,18 @@ namespace AllTray {
 			}
 		}
 
+		public bool visible {
+			get {
+				return(_app.visible);
+			}
+
+			set {
+				_app.visible = value;
+			}
+		}
+
 		public Process(string[] argv) {
 			_argv = argv;
-			_visible = true;
 		}
 
 		// Property for Pid not (yet) possible due to Vala bug.
