@@ -154,13 +154,7 @@ namespace AllTray {
 				}
 			}
 
-			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information,
-									"Starting GTK Main Loop");
 			Gtk.main();
-			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information,
-									"Left GTK Main Loop");
 			return(0);
 		}
 
@@ -326,25 +320,32 @@ namespace AllTray {
 		}
 
 		private void install_signal_handlers() {
-			// For the moment, we _DO NOT_ use these.  We will soon.
-			return;
-
-			/*
 			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR1, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGUSR2, sighandler);
 			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
-			*/
 		}
 
-		/*
 		private static void sighandler(int caught_signal) {
-			Debug.Notification.emit(Debug.Subsystem.Misc,
-									Debug.Level.Information, "Caught signal: "+
-									caught_signal.to_string());
+			if(caught_signal == StdC.Signal.SIGHUP) {
+				Debug.Notification.emit(Debug.Subsystem.Signal,
+										Debug.Level.Information,
+										"I would undock.");
+			} else if(caught_signal == StdC.Signal.SIGTERM) {
+				Debug.Notification.emit(Debug.Subsystem.Signal,
+										Debug.Level.Information,
+										"I would kill my children and die.");
+			} else if(caught_signal == StdC.Signal.SIGINT) {
+				Debug.Notification.emit(Debug.Subsystem.Signal,
+										Debug.Level.Information,
+										"I would undock.");
+			} else {
+				StringBuilder msg = new StringBuilder();
+				msg.append_printf("Caught unwired signal %d", caught_signal);
+				Debug.Notification.emit(Debug.Subsystem.Signal,
+										Debug.Level.Information,
+										msg.str);
+			}
 		}
-		*/
 
 		private void display_help() {
 			stderr.printf(opt_ctx.get_help(true, null));
