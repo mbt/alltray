@@ -24,7 +24,7 @@ EXTRA_DIST = $(alltray_VALASOURCES) \
 	x11_glue.h
 
 VALA_FLAGS = --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
-	--pkg gtk+-2.0 --pkg libx11 --pkg libwnck-1.0 --pkg x11_glue \
+	--pkg gtk+-2.0 --pkg x11 --pkg libwnck-1.0 --pkg x11_glue \
 	--pkg alltray --pkg posix
 
 $(alltray_SOURCES): $(alltray_VALASOURCES)

@@ -59,15 +59,16 @@ namespace AllTray {
 			Gdk.flush();
 		}
 
-		private Gdk.FilterReturn target_filter(Gdk.XEvent xev, Gdk.Event ev) {
-			unowned Native.XLib.XEvent real_xev = (Native.XLib.XEvent)xev;
+		private Gdk.FilterReturn target_filter(Gdk.XEvent xev,
+											   Gdk.Event ev) {
+			unowned X.Event real_xev = (X.Event)xev;
 
 			switch(real_xev.type) {
-			case Native.XLib.ButtonPress:
+			case X.EventType.ButtonPress:
 				handle_button_press_event(ref real_xev.xkey);
 				clean_up();
 				return(Gdk.FilterReturn.REMOVE);
-			case Gdk.EventType.KEY_PRESS:
+			case X.EventType.KeyPress:
 				// all are abort keys currently.
 				clean_up();
 				return(Gdk.FilterReturn.REMOVE);
@@ -78,8 +79,9 @@ namespace AllTray {
 			return(Gdk.FilterReturn.CONTINUE);
 		}
 
-		private void handle_button_press_event(ref Native.XLib.XKeyEvent ev) {
-			if(ev.subwindow == Native.XLib.None) return;
+		private void handle_button_press_event(ref X.KeyEvent ev) {
+			// 0 == None
+			if(ev.subwindow == 0) return;
 
 			ulong xwin = ev.subwindow;
 			success = true;
