@@ -22,13 +22,15 @@ alltray_find_managed_window(Window window, GdkDisplay *gdk_display) {
   WnckWindow *retval;
   guint nkids;
   int result;
+  Display *x11_display = NULL;
 
   if(wm_state_set(window)) {
     return(wnck_window_get(window));
   }
 
   gdk_error_trap_push();
-  result = XQueryTree(gdk_display, window, &root, &parent, &kids, &nkids);
+  x11_display = gdk_x11_display_get_xdisplay(gdk_display);
+  result = XQueryTree(x11_display, window, &root, &parent, &kids, &nkids);
   if(gdk_error_trap_pop() || !result) {
     return NULL;
   }
