@@ -253,14 +253,27 @@ namespace AllTray {
 				pid.to_string()
 			};
 
-			spawn_new_process();
+			try {
+				spawn_new_process();
+			} catch(AllTrayError e) {
+				// Shouldn't happen.
+			}
 		}
 
 		private void spawn_new_process() throws AllTrayError {
 			string[] a = get_command_line(_cleanArgs);
 			Process p = new Process(a);
 			p.process_died += cleanup_for_process;
-			p.run();
+			try {
+				p.run();
+			} catch(ProcessError e) {
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Error,
+										"Whoops.  Not running?");
+				StringBuilder msg = new StringBuilder();
+				msg.append_printf("Failed to start process: %s", e.message);
+				throw new AllTrayError.FAILED(msg.str);
+			}
 			
 			if(!p.running) {
 				Debug.Notification.emit(Debug.Subsystem.Process,
