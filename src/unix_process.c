@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <config.h>
-#include "unix_process.h"
+#include <unix_process.h>
 
 static void unsupported_operating_system(void);
 static char *get_nth_token(FILE *from, int which, char delim);
@@ -58,6 +58,7 @@ get_nth_token(FILE *src, int which_token, char delim) {
   int really_which_token = which_token - 1;
 
   tmpbuf = (char *)malloc(1024 * sizeof(char));
+  tmpbuf = memset(tmpbuf, 0, 1024);
   fseek(src, 0, SEEK_SET);
 
   while((!feof(src)) && (cur_tok <= really_which_token)) {
@@ -76,6 +77,7 @@ get_nth_token(FILE *src, int which_token, char delim) {
   }
 
   retval = (char *)malloc(strlen(tmpbuf));
+  retval = memset(retval, 0, strlen(tmpbuf));
   strcpy(retval, tmpbuf);
 
   free(tmpbuf);

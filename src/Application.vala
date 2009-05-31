@@ -78,21 +78,34 @@ namespace AllTray {
 			int app_pid = app.get_pid();
 			int desired_pid = (int)_process.get_pid();
 
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Checking if we are interested in PID %d",
+							  app_pid);
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg.str);
+
 			// First, see if we're interested in the app itself.
 			retval = (app_pid == desired_pid);
 
 			// If no, see if we are interested in the app's parent.
 			if(!retval) {
-				ProcessInfo p = new ProcessInfo(app_pid);
-				retval = (p.ppid == desired_pid);
+				ProcessInfo? p = new ProcessInfo(app_pid);
+				if(p != null) {
+					retval = (p.ppid == desired_pid);
 
-				StringBuilder sb = new StringBuilder();
-				sb.append_printf("ProcessInfo: pid = %d, ppid = %d, "+
-								 "name = '%s'",
-								 p.pid, p.ppid, p.name);
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										sb.str);
+					msg.truncate(0);
+					msg.append_printf("ProcessInfo: pid = %d, ppid = %d, "+
+									  "name = '%s'",
+									  p.pid, p.ppid, p.name);
+					Debug.Notification.emit(Debug.Subsystem.Application,
+											Debug.Level.Information,
+											msg.str);
+				} else {
+					Debug.Notification.emit(Debug.Subsystem.Application,
+											Debug.Level.Information,
+											"ProcessInfo was NULL!");
+				}
 			}
 
 			// XXX: Add any new detection schemes just above this

@@ -71,6 +71,11 @@ fi
 
 AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,",\\",g')", [The GNU GPL License Text])
 
+# Add checks for operating systems here.
+if test "$(uname -s)" = "Linux";  then
+   AC_DEFINE_UNQUOTED(LINUX, 1, [Linux operating system])
+fi
+
 # Configuration wrap-up.
 AC_CONFIG_FILES([README
         Makefile
