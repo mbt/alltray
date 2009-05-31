@@ -1,10 +1,13 @@
 Requirements and Depenedencies
 ==============================
 
-  * Vala >= 0.7.3 to build from the bzr branch which does not have the
-    .c files already generated.  One patch to 0.7.3 is needed, no
-    patches should be required for 0.7.4.  See
-    utils/vala-patches/0.7.3 for the patch necessary against 0.7.3.
+  * Vala > 0.7.3 (from git master on May 31, 2009, git commit
+    7f2fe1b2, at the earliest) to build from the bzr branch which does
+    not have the .c files already generated.
+
+    Optionally, you can use Vala 0.7.3, with the patch provided in
+    Vala's git commit 7f2fe1b2.  You can not use Vala 0.7.2 or earlier
+    to build this version of AllTray.
 
   * Currently in order to operate correctly, AllTray pretty much
     requires that it not be used on KDE, and that it not be used to

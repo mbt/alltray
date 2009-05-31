@@ -5,8 +5,12 @@ THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
 USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
 FUNCTIONALITY IS CURRENTLY PRESENT.
 
-  * Now requires Vala > 0.7.0 to build properly.  Vala 0.7.1 (or
-    current Vala "master") will work.
+  * Requires Vala > 0.7.3 (from git master on May 31, 2009, git commit
+    7f2fe1b2, at the earliest) to build from the bzr branch which does
+    not have the .c files already generated.  If you are building from
+    a release tarball, you do not need Vala installed on your system
+    unless you modify the *.vala source files (and then you will need
+    Vala to regenerate the *.c files).  See REQUIREMENTS for more info.
 
   * AllTray can now attach to processes again.  This is done
     differently than in the old releases (0.69, 0.70 and prior) of
@@ -18,6 +22,12 @@ FUNCTIONALITY IS CURRENTLY PRESENT.
     application’s process ID) to attach to an application by is
     process ID number.  This functionality should work on all systems
     which properly implement POSIX.
+
+  * AllTray still does not intercept the “close” button to dock
+    individual windows back to the tray.  This is planned for
+    0.7.4dev.
+
+  * Bugs fixed:  315707, 356516, 382083, 368274.
 
 News for 0.7.2dev
 =================
