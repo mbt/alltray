@@ -67,6 +67,12 @@ if test -d .bzr; then
       "$BZR_BRANCH_NAME", [Branch this was built from])
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVID,
       "$BZR_REV_ID", [Revision ID we are built from])
+else
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BUILD, "FALSE", [TRUE if built from branch])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BRANCH,
+      "$BZR_BRANCH_NAME", [Branch this was built from])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVID,
+      "$BZR_REV_ID", [Revision ID we are built from])
 fi
 
 AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,",\\",g')", [The GNU GPL License Text])
@@ -82,6 +88,7 @@ AC_CONFIG_FILES([README
         images/Makefile
         man/Makefile
         src/Makefile
+	src/unix_process/Makefile
 	vapi/Makefile
         man/alltray.1])
 AC_OUTPUT

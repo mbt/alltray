@@ -1,5 +1,7 @@
 # Automake file for AllTray
 
+SUBDIRS = unix_process
+
 bin_PROGRAMS = alltray
 AM_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
 	-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DG_DISABLE_DEPRECATED \
@@ -14,7 +16,6 @@ alltray_VALASOURCES = AllTray.vala \
 	PromptDialog.vala
 
 MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
-	$(alltray_VALASOURCES:.vala=.h) \
 	alltray.stamp
 
 BUILT_SOURCES = alltray.stamp
@@ -24,7 +25,6 @@ alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	unix_process.c
 
 EXTRA_DIST = $(alltray_VALASOURCES) \
-	$(alltray_VALASOURCES:.vala=.h) \
 	x11_glue.h \
 	unix_process.h \
 	alltray.stamp

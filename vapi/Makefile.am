@@ -1,1 +1,1 @@
-EXTRA_DIST=alltray.vapi stdc.vapi x11_glue.vapi
+EXTRA_DIST=alltray.vapi unix_process.vapi x11_glue.vapi
