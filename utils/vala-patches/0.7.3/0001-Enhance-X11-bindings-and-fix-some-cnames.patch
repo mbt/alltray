@@ -1,18 +1,19 @@
-From 8fc9626a13da0ac80f39039a877a3e626d88c35c Mon Sep 17 00:00:00 2001
+From 422f788fa199e8b86dd437a016381a7d3aa2b2b9 Mon Sep 17 00:00:00 2001
 From: Michael B. Trausch <mike@trausch.us>
-Date: Fri, 29 May 2009 22:47:57 -0400
-Subject: [PATCH] Fix X11 bindings and provide enhancements to them
+Date: Sun, 31 May 2009 14:38:50 -0400
+Subject: [PATCH] Enhance X11 bindings and fix some cnames
 
-This commit provides more complete Xlib bindings and fixes the X.Event
-binding so that it yields a pointer in generated C code.
+This patch fixes cnames for the X11 bindings and provides bindings for
+new methods which came from my original bindings that I wrote for
+AllTray earlier this year.
 
 Signed-off-by: Michael B. Trausch <mike@trausch.us>
 ---
- vapi/x11.vapi |  225 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 221 insertions(+), 4 deletions(-)
+ vapi/x11.vapi |  236 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 233 insertions(+), 3 deletions(-)
 
 diff --git a/vapi/x11.vapi b/vapi/x11.vapi
-index de67932..8c57d1a 100644
+index b7944f3..7f73d9c 100644
 --- a/vapi/x11.vapi
 +++ b/vapi/x11.vapi
 @@ -22,87 +22,202 @@
@@ -274,25 +275,167 @@ index de67932..8c57d1a 100644
  	}
  
  	[CCode (cprefix = "GrabMode")]
-@@ -301,9 +448,16 @@ namespace X {
- 		MappingNotify
+@@ -302,6 +449,7 @@ namespace X {
  	}
  
-+	/*
-+	 * This is actually a union in the header, but events are typically passed
-+	 * as pointers, so we use it as a compact class.  The other events can be
-+	 * pass-by-value types, but this one should always be handled with a pointer
-+	 * in C code, and thus be pass-by-reference.
-+	 */
  	// union
-+	[Compact]
- 	[CCode (cname = "XEvent")]
--	public struct Event {
-+	public class Event {
++	[CCode (cname = "XEvent")]
+ 	public struct Event {
  		public int type;
  		public AnyEvent xany;
- 		public KeyEvent xkey;
-@@ -636,6 +790,69 @@ namespace X {
+@@ -325,6 +473,7 @@ namespace X {
+ 		public ClientMessageEvent xclient;
+ 	}
+ 
++	[CCode (cname = "XAnyEvent")]
+ 	public struct AnyEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -333,6 +482,7 @@ namespace X {
+ 		public Window window;
+ 	}
+ 
++	[CCode (cname = "XKeyEvent")]
+ 	public struct KeyEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -351,6 +501,7 @@ namespace X {
+ 		public bool same_screen;
+ 	}
+ 
++	[CCode (cname = "XButtonEvent")]
+ 	public struct ButtonEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -368,6 +519,7 @@ namespace X {
+ 		public bool same_screen;
+ 	}
+ 
++	[CCode (cname = "XMotionEvent")]
+ 	public struct MotionEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -385,6 +537,7 @@ namespace X {
+ 		public bool same_screen;
+ 	}
+ 
++	[CCode (cname = "XCrossingEvent")]
+ 	public struct CrossingEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -405,6 +558,7 @@ namespace X {
+ 		public uint state;
+ 	}
+ 
++	[CCode (cname = "XCreateWindowEvent")]
+ 	public struct CreateWindowEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -420,6 +574,7 @@ namespace X {
+ 		public bool override_redirect;
+ 	}
+ 
++	[CCode (cname = "XDestroyWindowEvent")]
+ 	public struct DestroyWindowEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -429,6 +584,7 @@ namespace X {
+ 		public Window window;
+ 	}
+ 
++	[CCode (cname = "XUnmapEvent")]
+ 	public struct UnmapEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -439,6 +595,7 @@ namespace X {
+ 		public bool from_configure;
+ 	}
+ 
++	[CCode (cname = "XMapEvent")]
+ 	public struct MapEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -449,6 +606,7 @@ namespace X {
+ 		public bool override_redirect;
+ 	}
+ 
++	[CCode (cname = "XMapRequestEvent")]
+ 	public struct MapRequestEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -458,6 +616,7 @@ namespace X {
+ 		public Window window;
+ 	}
+ 
++	[CCode (cname = "XReparentEvent")]
+ 	public struct ReparentEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -471,6 +630,7 @@ namespace X {
+ 		public bool override_redirect;
+ 	}
+ 
++	[CCode (cname = "XConfigureEvent")]
+ 	public struct ConfigureEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -487,6 +647,7 @@ namespace X {
+ 		public bool override_redirect;
+ 	}
+ 
++	[CCode (cname = "XGravityEvent")]
+ 	public struct GravityEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -498,6 +659,7 @@ namespace X {
+ 		public int y;
+ 	}
+ 
++	[CCode (cname = "XConfigureRequestEvent")]
+ 	public struct ConfigureRequestEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -515,6 +677,7 @@ namespace X {
+ 		public ulong value_mask;
+ 	}
+ 
++	[CCode (cname = "XCirculateEvent")]
+ 	public struct CirculateEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -525,6 +688,7 @@ namespace X {
+ 		public int place;
+ 	}
+ 
++	[CCode (cname = "XCirculateRequestEvent")]
+ 	public struct CirculateRequestEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -535,6 +699,7 @@ namespace X {
+ 		public int place;
+ 	}
+ 
++	[CCode (cname = "XPropertyEvent")]
+ 	public struct PropertyEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -546,6 +711,7 @@ namespace X {
+ 		public int state;
+ 	}
+ 
++	[CCode (cname = "XSelectionEvent")]
+ 	public struct SelectionEvent {
+ 		public int type;
+ 		public ulong serial;
+@@ -558,6 +724,7 @@ namespace X {
+ 		public ulong time;
+ 	}
+ 
++	[CCode (cname = "XClientMessageEvent")]
+ 	public struct ClientMessageEvent {
+ 		public int type;
+ 		public ulong serial;	/* # of last request processed by server */
+@@ -616,6 +783,69 @@ namespace X {
  		public Window root;
  		public int width;
  		public int height;

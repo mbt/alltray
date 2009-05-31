@@ -61,11 +61,11 @@ namespace AllTray {
 
 		private Gdk.FilterReturn target_filter(Gdk.XEvent xev,
 											   Gdk.Event ev) {
-			unowned X.Event real_xev = (X.Event)xev;
+			unowned X.Event* real_xev = (X.Event*)(&xev);
 
-			switch(real_xev.type) {
+			switch(real_xev->type) {
 			case X.EventType.ButtonPress:
-				handle_button_press_event(ref real_xev.xkey);
+				handle_button_press_event(ref real_xev->xkey);
 				clean_up();
 				return(Gdk.FilterReturn.REMOVE);
 			case X.EventType.KeyPress:
