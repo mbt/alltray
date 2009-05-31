@@ -160,7 +160,7 @@ namespace AllTray {
 
 		private void display_version() {
 			if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
-				stdout.printf("AllTray %s+, from bzr branch %s,\n  rev-id %s\n",
+				stdout.printf("AllTray %s, from bzr branch %s,\n  rev-id %s\n",
 							  Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
 							  Build.ALLTRAY_BZR_REVID);
 			} else {
