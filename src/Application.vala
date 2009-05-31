@@ -223,7 +223,7 @@ namespace AllTray {
 		}
 
 		private void create_icon() {
-			_appIcon = new LocalGtk.StatusIcon.from_pixbuf(_wnckApp.get_icon());
+			_appIcon = new LocalGtk.StatusIcon.from_pixbuf(_wnckApp.get_mini_icon());
 
 			_appIcon.set_tooltip(_wnckApp.get_name());
 
