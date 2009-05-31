@@ -14,7 +14,10 @@ alltray_VALASOURCES = AllTray.vala \
 	PromptDialog.vala
 
 MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
-	$(alltray_VALASOURCES:.vala=.h)
+	$(alltray_VALASOURCES:.vala=.h) \
+	alltray.stamp
+
+BUILT_SOURCES = alltray.stamp
 
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c \
@@ -22,12 +25,15 @@ alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 
 EXTRA_DIST = $(alltray_VALASOURCES) \
 	$(alltray_VALASOURCES:.vala=.h) \
-	x11_glue.h
-	unix_process.h
+	x11_glue.h \
+	unix_process.h \
+	alltray.stamp
 
 VALA_FLAGS = --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
 	--pkg gtk+-2.0 --pkg x11 --pkg libwnck-1.0 --pkg x11_glue \
 	--pkg alltray --pkg posix --pkg unix_process
 
-$(alltray_SOURCES): $(alltray_VALASOURCES)
-	$(VALAC) -C --vapidir $(srcdir)/../vapi $(VALA_FLAGS) $^
+alltray.stamp: $(alltray_VALASOURCES)
+	$(VALAC) -C --vapidir $(srcdir)/../vapi $(VALA_FLAGS) \
+	$(alltray_VALASOURCES)
+	touch $@
