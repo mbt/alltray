@@ -340,9 +340,13 @@ namespace AllTray {
 							  w.get_xid(), _appVisible.to_string());
 
 			if(visible) {
+				w.state_changed -= maintain_hiddenness;
 				w.unminimize((uint32)tv.tv_sec);
 				w.set_skip_tasklist(false);
-				w.state_changed -= maintain_hiddenness;
+
+				Wnck.Workspace ws = w.get_workspace();
+				ws.activate((uint32)tv.tv_sec);
+				w.activate((uint32)tv.tv_sec);
 			} else {
 				w.minimize();
 				w.set_skip_tasklist(true);
