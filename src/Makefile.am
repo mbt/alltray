@@ -17,7 +17,8 @@ MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
 	$(alltray_VALASOURCES:.vala=.h)
 
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
-	x11_glue.c
+	x11_glue.c \
+	unix_process.c
 
 EXTRA_DIST = $(alltray_VALASOURCES) \
 	$(alltray_VALASOURCES:.vala=.h) \
