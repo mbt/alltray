@@ -29,8 +29,8 @@ EXTRA_DIST = $(alltray_VALASOURCES) \
 	unix_process.h \
 	alltray.stamp
 
-VALA_FLAGS = --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg stdc \
-	--pkg gtk+-2.0 --pkg x11 --pkg libwnck-1.0 --pkg x11_glue \
+VALA_FLAGS = --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg x11 \
+	--pkg gtk+-2.0 --pkg libwnck-1.0 --pkg x11_glue \
 	--pkg alltray --pkg posix --pkg unix_process
 
 alltray.stamp: $(alltray_VALASOURCES)

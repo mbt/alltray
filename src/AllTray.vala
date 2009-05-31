@@ -3,7 +3,6 @@
  * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
  */
 using GLib;
-using Native;
 
 namespace AllTray {
 	public errordomain AllTrayError {
@@ -87,7 +86,7 @@ namespace AllTray {
 				} catch(OptionError e) {
 					stderr.printf("error: env flag parsing failed (%s)\n",
 								  e.message);
-					StdC.exit(1);
+					Posix.exit(1);
 				}
 			}
 
@@ -96,17 +95,17 @@ namespace AllTray {
 			} catch(OptionError e) {
 				stderr.printf("error: command line parsing failed (%s)\n",
 							  e.message);
-				StdC.exit(1);
+				Posix.exit(1);
 			}
 
 			if(_display_ver && !_display_extended_ver) {
 				display_version();
-				StdC.exit(0);
+				Posix.exit(0);
 			}
 
 			if(_display_extended_ver) {
 				display_extended_version();
-				StdC.exit(0);
+				Posix.exit(0);
 			}
 
 			display_version();
@@ -232,7 +231,7 @@ namespace AllTray {
 
 			if(AttachHelper.success == false) {
 				stderr.printf("Failed to get a window; exiting.\n");
-				StdC.exit(1);
+				Posix.exit(1);
 			}
 
 			_pid = AttachHelper.target_process;
@@ -332,23 +331,22 @@ namespace AllTray {
 		}
 
 		private void install_signal_handlers() {
-			StdC.Signal.set_new_handler(StdC.Signal.SIGHUP, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGTERM, sighandler);
-			StdC.Signal.set_new_handler(StdC.Signal.SIGINT, sighandler);
+			Posix.signal(Posix.SIGHUP, sighandler);
+			Posix.signal(Posix.SIGTERM, sighandler);
+			Posix.signal(Posix.SIGINT, sighandler);
 		}
 
 		private static void sighandler(int caught_signal) {
-			if(caught_signal == StdC.Signal.SIGHUP ||
-			   caught_signal == StdC.Signal.SIGINT ||
-			   caught_signal == StdC.Signal.SIGTERM) {
+			if(caught_signal == Posix.SIGHUP ||
+			   caught_signal == Posix.SIGINT ||
+			   caught_signal == Posix.SIGTERM) {
 				foreach(Process p in _instance._plist) {
 					p.visible = true;
 				}
-
-				Gtk.main_quit();
-			} else if(caught_signal == StdC.Signal.SIGTERM) {
+			} else if(caught_signal == Posix.SIGTERM) {
 				foreach(Process p in _instance._plist) {
-					StdC.Signal.send((int)p.get_pid(), caught_signal);
+					// Hate the name, should be send_signal not kill.
+					Posix.kill((int)p.get_pid(), caught_signal);
 				}
 
 				// Quit anyway, in case they don't respond (then the user can
@@ -365,7 +363,7 @@ namespace AllTray {
 
 		private void display_help() {
 			stderr.printf(opt_ctx.get_help(true, null));
-			StdC.exit(1);
+			Posix.exit(1);
 		}
 	}
 }
