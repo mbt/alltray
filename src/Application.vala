@@ -73,19 +73,45 @@ namespace AllTray {
 			}
 		}
 
-		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
-			StringBuilder msg = new StringBuilder();
-			msg.append_printf("maybe_setup called: %d == %d? %s",
-							  app.get_pid(), (int)_process.get_pid(),
-							  (app.get_pid() ==
-							   (int)_process.get_pid()).to_string());
+		private bool are_we_interested(Wnck.Application app) {
+			bool retval = false;
+			int app_pid = app.get_pid();
+			int desired_pid = (int)_process.get_pid();
 
+			// First, see if we're interested in the app itself.
+			retval = (app_pid == desired_pid);
+
+			// If no, see if we are interested in the app's parent.
+			if(!retval) {
+				ProcessInfo p = new ProcessInfo(app_pid);
+				retval = (p.ppid == desired_pid);
+
+				StringBuilder sb = new StringBuilder();
+				sb.append_printf("ProcessInfo: pid = %d, ppid = %d, "+
+								 "name = '%s'",
+								 p.pid, p.ppid, p.name);
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										sb.str);
+			}
+
+			// XXX: Add any new detection schemes just above this
+			// comment.
+			return(retval);
+		}
+
+		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
+			bool interested = are_we_interested(app);
+			StringBuilder msg = new StringBuilder();
+			msg.append_printf("Are we interested in pid %d? %s",
+							  app.get_pid(), interested.to_string());
 			Debug.Notification.emit(Debug.Subsystem.Application,
 									Debug.Level.Information,
 									msg.str);
+			if(!interested) return;
 
-			if(app.get_pid() != (int)_process.get_pid()) return;
-
+			// If we make it here, we were interested in the process
+			// and are about to handle it.
 			scr.application_opened -= maybe_setup;
 
 			_wnckApp = app;
