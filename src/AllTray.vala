@@ -215,7 +215,6 @@ namespace AllTray {
 
 		private void prompt_and_attach() {
 			_pd = new PromptDialog();
-			bool answer_received = false;
 
 			WnckEarlyApps = new List<Wnck.Application>();
 			WnckScreen.application_opened += get_app_early;

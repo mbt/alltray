@@ -9,13 +9,6 @@ using Gtk;
 namespace AllTray {
 	public class PromptDialog : Gtk.Dialog {
 		private Label _lblPrompt;
-		private int _windowPid;
-
-		public int window_pid {
-			get {
-				return(0);
-			}
-		}
 
 		public PromptDialog() {
 			this.title = "Select an Application";

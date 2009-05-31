@@ -180,7 +180,6 @@ namespace AllTray {
 		}
 
 		private Gtk.Menu create_window_list_menu() {
-			List<Gtk.MenuItem> windowItems = new List<Gtk.MenuItem>();
 			Gtk.Menu retval = new Gtk.Menu();
 
 			Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label("All");
