@@ -61,6 +61,7 @@ namespace AllTray {
 
 		private Gdk.FilterReturn target_filter(Gdk.XEvent xev,
 											   Gdk.Event ev) {
+			// Thanks to Jürg Billeter for helping to get this right.
 			unowned X.Event* real_xev = (X.Event*)(&xev);
 
 			switch(real_xev->type) {
