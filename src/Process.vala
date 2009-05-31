@@ -67,8 +67,8 @@ namespace AllTray {
 										Debug.Level.Information,
 										msg.str);
 			} catch(SpawnError e) {
-				throw new ProcessError.SPAWN_FAILED(e.message);
 				_running = false;
+				throw new ProcessError.SPAWN_FAILED(e.message);
 			}
 
 			_app = new AllTray.Application(this);
