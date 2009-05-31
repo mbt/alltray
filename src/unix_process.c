@@ -15,6 +15,9 @@
  * adding new implementations for different systems.
  */
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <config.h>
 #include "unix_process.h"
 
 static void unsupported_operating_system(void);

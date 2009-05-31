@@ -1,15 +1,15 @@
-using Posix;
-
-[CCode(cheader_filename = "unix_process.h")]
+[CCode(cprefix = "", lower_case_prefix = "", 
+	   cheader_filename = "unix_process.h")]
 namespace AllTray {
 	[Compact]
-	[CCode(cname = "process_info_t", free_func = "free")]
+	[CCode(cprefix = "", lower_case_prefix = "", cname = "process_info_t",
+		   free_func = "free", cheader_filename = "unix_process.h")]
 	public class ProcessInfo {
-		public pid_t pid;
-		public pid_t ppid;
+		public Posix.pid_t pid;
+		public Posix.pid_t ppid;
 		public string name;
 
 		[CCode(cname = "get_process_info")]
-		public ProcessInfo(pid_t pid);
+		public ProcessInfo(Posix.pid_t pid);
 	}
 }
