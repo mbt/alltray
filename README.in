@@ -10,6 +10,9 @@ Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
   For information on this release, known issues, quirks, etc., please
   read the NEWS file.
 
+  For information on operating system support, please look below
+  (after the “Quick Introduction” section).
+
   Please send bug reports to:
     @PACKAGE_BUGREPORT@
 
@@ -28,3 +31,37 @@ Quick Introduction
   hidden in this environment, and that means that things act a bit
   strange currently.  Using AllTray with KDE 4.x is not (yet) recommended.
   KDE is aware of the issue and working to find a solution to the problem.
+
+Operating System Support
+========================
+
+  Currently, AllTray is only officially supported on GNU/Linux
+  systems.  There is some support (possibly, maybe) for FreeBSD, but I
+  can't seem to test it because the X server under FreeBSD keeps dying
+  on me.  I'd like to also support:
+
+   * NetBSD,
+   * OpenBSD, and
+   * OpenSolaris
+
+  At the very least.  I don't have access to any proprietary UNIX
+  systems with X on them to see if it works (or if I can make it work)
+  on them, so volunteers would be greatly appreciated for any other
+  systems.
+
+  If you have have the time, and you have a system that AllTray can be
+  made to run on (e.g., a POSIX or UNIX-like or UNIX system with the X
+  Window System and a compliant window manager and system tray
+  implementation, such as GNOME), you can help by looking at the
+  unix_process code and creating an implementation for your platform
+  and adding some code to configure.ac to support detection of that
+  platform, so the proper code is compiled in at build-time for that
+  system when configured on that system.
+
+  Before you start work, please file a bug on Launchpad for that
+  system and assign it to yourself, so that it's known that you're
+  working on that functionality.  When you've completed it, please
+  upload a branch back up to bzr and propose that it be merged in with
+  AllTray's trunk branch.
+
+  At that point, it will be reviewed and (likely) merged.
