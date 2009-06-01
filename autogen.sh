@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/sh
 #
 # Generate the build system for AllTray.
 #
