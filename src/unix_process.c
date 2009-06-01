@@ -27,11 +27,19 @@ static char *get_nth_token(FILE *from, int which, char delim);
 #include "unix_process/linux_process_info.c"
 #endif /* LINUX */
 
+#ifdef FREEBSD
+#include "unix_process/freebsd_process_info.c"
+#endif /* FREEBSD */
+
 process_info_t *
 get_process_info(pid_t pid) {
   #ifdef LINUX
   return(linux_get_process_info(pid));
   #endif /* LINUX */
+
+  #ifdef FREEBSD
+  return(freebsd_get_process_info(pid));
+  #endif /* FREEBSD */
 
   unsupported_operating_system();
 }
@@ -50,36 +58,3 @@ unsupported_operating_system() {
   abort();
 }
 
-static char *
-get_nth_token(FILE *src, int which_token, char delim) {
-  char *retval = NULL;
-  char *tmpbuf = NULL;
-  int cur_tok = 0;
-  int really_which_token = which_token - 1;
-
-  tmpbuf = (char *)malloc(1024 * sizeof(char));
-  tmpbuf = memset(tmpbuf, 0, 1024);
-  fseek(src, 0, SEEK_SET);
-
-  while((!feof(src)) && (cur_tok <= really_which_token)) {
-    char c = fgetc(src);
-
-    if(c == delim) {
-      cur_tok++;
-      continue;
-    }
-
-    if(cur_tok < really_which_token) continue;
-
-    // If we're here, we have the token we're interested in and need to get
-    // the characters from it.
-    strncat(tmpbuf, &c, 1);
-  }
-
-  retval = (char *)malloc(strlen(tmpbuf));
-  retval = memset(retval, 0, strlen(tmpbuf));
-  strcpy(retval, tmpbuf);
-
-  free(tmpbuf);
-  return(retval);
-}
