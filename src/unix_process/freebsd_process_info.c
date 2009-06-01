@@ -6,7 +6,7 @@
  *
  * Note: to use this, -lkvm must be added to the cc command line.
  */
-#include <fnctl.h>
+#include <fcntl.h>
 #include <kvm.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>

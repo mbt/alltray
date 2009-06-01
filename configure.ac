@@ -41,8 +41,7 @@ AC_SUBST(pkglib)
 AC_SUBST(VALAC)
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
-AC_DEFINE_UNQUOTED(ALLTRAY_C_COMPILER, "$(${CC} --version|head -1)",
-  [Compiler])
+AC_DEFINE_UNQUOTED(ALLTRAY_C_COMPILER, "$(${CC} --version|head -1)", [Compiler])
 AC_DEFINE_UNQUOTED(ALLTRAY_VALA_COMPILER, "$($VALAC --version)", [Vala ver])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS, "$(uname -s)",
   [Build OS Kernel and Name])
@@ -82,6 +81,7 @@ if test "$(uname -s)" = "Linux";  then
     AC_DEFINE_UNQUOTED(LINUX, 1, [Linux operating system])
 else if test "$(uname -s)" = "FreeBSD"; then
     AC_DEFINE_UNQUOTED(FREEBSD, 1, [FreeBSD operating system])
+    PLATFORM_LIBS="-lkvm"
 else
     printf "I don't recognize the operating system you are running.\n"
     printf "Please file a bug report and include the output from this\n"
@@ -89,6 +89,9 @@ else
     printf "OS Info: %s\n" "$(uname -a)"
     exit 1
 fi
+fi
+
+AC_SUBST(PLATFORM_LIBS)
 
 # Configuration wrap-up.
 AC_CONFIG_FILES([README
