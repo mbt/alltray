@@ -85,8 +85,6 @@ else
     printf "Please file a bug report and include the output from this\n"
     printf "configure run.\n\n"
     printf "OS Info: %s\n" "$(uname -a)"
-    printf "Uptime:  %s\n" "$(uptime)"
-    printf "User:    %s\n" "$(logname)"
     exit 1
 fi
 
