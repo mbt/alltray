@@ -101,6 +101,8 @@ AC_CONFIG_FILES([README
         src/Makefile
 	src/unix_process/Makefile
 	vapi/Makefile
+	vapi/packages/Makefile
+	vapi/packages/libgtop-2.0/Makefile
         man/alltray.1])
 AC_OUTPUT
 
