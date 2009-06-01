@@ -79,7 +79,15 @@ AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,
 
 # Add checks for operating systems here.
 if test "$(uname -s)" = "Linux";  then
-   AC_DEFINE_UNQUOTED(LINUX, 1, [Linux operating system])
+    AC_DEFINE_UNQUOTED(LINUX, 1, [Linux operating system])
+else
+    printf "I don't recognize the operating system you are running.\n"
+    printf "Please file a bug report and include the output from this\n"
+    printf "configure run.\n\n"
+    printf "OS Info: %s\n" "$(uname -a)"
+    printf "Uptime:  %s\n" "$(uptime)"
+    printf "User:    %s\n" "$(logname)"
+    exit 1
 fi
 
 # Configuration wrap-up.
