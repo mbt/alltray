@@ -306,8 +306,6 @@ namespace AllTray {
 		}
 
 		private string[] get_command_line(string[] args) {
-			stderr.printf("In get_command_line()\n");
-			stderr.flush();
 			int curItem = 0;
 			string[] retval = new string[args.length];
 
