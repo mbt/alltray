@@ -285,12 +285,7 @@ namespace AllTray {
 		}
 
 		private void toggle_window_visibility(Wnck.Window w) {
-			if(_windowVisibilityInfo[w.get_xid()] == null) {
-				_windowVisibilityInfo[w.get_xid()] = true;
-			}
-
-			_windowVisibilityInfo[w.get_xid()] = 
-			  !_windowVisibilityInfo[w.get_xid()];
+			
 
 			if(_windowVisibilityInfo[w.get_xid()] == true) {
 				set_visibility_for_window(w, true);
