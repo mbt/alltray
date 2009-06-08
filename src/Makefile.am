@@ -5,17 +5,15 @@ SUBDIRS = unix_process
 bin_PROGRAMS = alltray
 AM_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
 	-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DG_DISABLE_DEPRECATED \
-	-DG_DISABLE_SINGLE_INCLUDES @GEE_CFLAGS@
-alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@ \
-	@GEE_LIBS@ @PLATFORM_LIBS@
+	-DG_DISABLE_SINGLE_INCLUDES
+alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@ @PLATFORM_LIBS@
 
 alltray_VALASOURCES = AllTray.vala \
 	Application.vala \
 	AttachHelper.vala \
 	Debug.vala \
 	Process.vala \
-	PromptDialog.vala \
-	TrayMenu.vala
+	PromptDialog.vala
 
 MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
 	alltray.stamp
@@ -33,8 +31,7 @@ EXTRA_DIST = $(alltray_VALASOURCES) \
 
 VALA_FLAGS = --pkg gdk-2.0 --pkg gdk-x11-2.0 --pkg x11 \
 	--pkg gtk+-2.0 --pkg libwnck-1.0 --pkg x11_glue \
-	--pkg alltray --pkg posix --pkg unix_process \
-	--pkg gee-1.0
+	--pkg alltray --pkg posix --pkg unix_process
 
 alltray.stamp: $(alltray_VALASOURCES)
 	$(VALAC) -C --vapidir $(srcdir)/../vapi $(VALA_FLAGS) \
