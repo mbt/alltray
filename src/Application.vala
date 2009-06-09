@@ -90,26 +90,10 @@ namespace AllTray {
 
 			// If no, see if we are interested in the app's parent.
 			if(!retval) {
-				UnixProcessInfo p = new UnixProcessInfo(app_pid);
-				if(p != null) {
-					retval = (p.ppid == desired_pid);
-
-					msg.truncate(0);
-					msg.append_printf("ProcessInfo: pid = %d, ppid = %d, "+
-									  "name = '%s'",
-									  p.pid, p.ppid, p.name);
-					Debug.Notification.emit(Debug.Subsystem.Application,
-											Debug.Level.Information,
-											msg.str);
-				} else {
-					Debug.Notification.emit(Debug.Subsystem.Application,
-											Debug.Level.Information,
-											"ProcessInfo was NULL!");
-				}
+				int ppid = get_ppid_for(app_pid);
+				if(ppid == desired_pid) retval = true;
 			}
 
-			// XXX: Add any new detection schemes just above this
-			// comment.
 			return(retval);
 		}
 
