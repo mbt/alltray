@@ -1,1 +1,0 @@
-SUBDIRS=libgtop-2.0
