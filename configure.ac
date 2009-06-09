@@ -27,6 +27,7 @@ AC_PROG_INSTALL
 PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
 PKG_CHECK_MODULES(GLIB, glib-2.0,,AC_MSG_ERROR([glib-2.0 is required]))
 PKG_CHECK_MODULES(GOBJECT, gobject-2.0,,AC_MSG_ERROR([gobject-2.0 is required]))
+PKG_CHECK_MODULES(GTOP, libgtop-2.0,,AC_MSG_ERROR([libgtop-2.0 is required]))
 PKG_CHECK_MODULES(WNCK, libwnck-1.0,,AC_MSG_ERROR([libwnck-1.0 is required]))
 
 AC_SUBST(X11_CFLAGS)
@@ -37,6 +38,8 @@ AC_SUBST(GOBJECT_CFLAGS)
 AC_SUBST(GOBJECT_LIBS)
 AC_SUBST(WNCK_CFLAGS)
 AC_SUBST(WNCK_LIBS)
+AC_SUBST(GTOP_CFLAGS)
+AC_SUBST(GTOP_LIBS)
 AC_SUBST(pkglib)
 AC_SUBST(VALAC)
 
@@ -99,7 +102,6 @@ AC_CONFIG_FILES([README
         images/Makefile
         man/Makefile
         src/Makefile
-	src/unix_process/Makefile
 	vapi/Makefile
 	vapi/packages/Makefile
 	vapi/packages/libgtop-2.0/Makefile

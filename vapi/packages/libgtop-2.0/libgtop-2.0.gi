@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <api version="1.0">
-	<namespace name="GTop">
+	<namespace name="Glibtop">
 		<struct name="glibtop">
 			<method name="call_l" symbol="glibtop_call_l">
 				<return-type type="void*"/>

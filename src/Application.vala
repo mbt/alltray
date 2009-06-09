@@ -90,7 +90,7 @@ namespace AllTray {
 
 			// If no, see if we are interested in the app's parent.
 			if(!retval) {
-				ProcessInfo? p = new ProcessInfo(app_pid);
+				UnixProcessInfo p = new UnixProcessInfo(app_pid);
 				if(p != null) {
 					retval = (p.ppid == desired_pid);
 
