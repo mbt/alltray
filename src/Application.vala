@@ -14,7 +14,6 @@ namespace AllTray {
 		private unowned List<Wnck.Window> _windows;
 		private Wnck.Application? _wnckApp;
 		private AllTray.LocalGtk.StatusIcon _appIcon;
-		// private Sexy.Tooltip _appIconTooltip;
 		private Process _process;
 		private bool _appVisible;
 
