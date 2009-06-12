@@ -16,6 +16,7 @@ namespace AllTray {
 		private AllTray.LocalGtk.StatusIcon _appIcon;
 		private Process _process;
 		private bool _appVisible;
+		private bool _caughtWindow;
 
 		public Wnck.Application wnck_app {
 			get {
@@ -32,6 +33,15 @@ namespace AllTray {
 				if(_appVisible != value) {
 					toggle_visibility();
 				}
+			}
+		}
+
+		public bool caught_window {
+			get { return(_caughtWindow); }
+			set {
+				if(_caughtWindow) return;
+				if(value == false) return;
+				_caughtWindow = value;
 			}
 		}
 
@@ -72,42 +82,80 @@ namespace AllTray {
 			}
 		}
 
-		private bool are_we_interested(Wnck.Application app) {
+		private bool are_we_interested(int pid) {
 			bool retval = false;
-			int app_pid = app.get_pid();
+			int app_pid = pid;
+			int app_ppid = get_ppid_for(app_pid);
+			int app_pgid = Posix.getpgid(app_pid);
 			int desired_pid = (int)_process.get_pid();
+			int desired_pgid = (int)Program.pgid;
 
-			StringBuilder msg = new StringBuilder();
-			msg.append_printf("Checking if we are interested in PID %d",
-							  app_pid);
-			Debug.Notification.emit(Debug.Subsystem.Application,
-									Debug.Level.Information,
-									msg.str);
+			// Bail on invalid value, some apps are odd and buggy.
+			if(app_pid == 0) {
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										"Whoa, got pid 0.");
+				return(false);
+			}
 
-			// First, see if we're interested in the app itself.
-			retval = (app_pid == desired_pid);
+			if(app_pgid == desired_pgid) {
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										"pid %d, pgid %d is ours".printf(app_pid, app_pgid));
+				retval = true;
+			} else if(app_pid == desired_pid) {
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										"pid %d is ours".printf(app_pid));
+				retval = true;
+			} else if(app_ppid == desired_pid) {
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										"pid %d (ppid %d) is ours".printf(app_pid, app_ppid));
+				retval = true;
+			}
 
-			// If no, see if we are interested in the app's parent.
 			if(!retval) {
-				int ppid = get_ppid_for(app_pid);
-				if(ppid == desired_pid) retval = true;
+				StringBuilder msg = new StringBuilder();
+
+				msg.append_printf("pid %d is not ours.\n  Want pid = %d, "+
+								  "ppid = %d, or pgid = %d, have pid = "+
+								  "%d, ppid = %d, pgid = "+
+								  "%d", app_pid, desired_pid, desired_pid,
+								  desired_pgid, app_pid, app_ppid, app_pgid);
+				Debug.Notification.emit(Debug.Subsystem.Application,
+										Debug.Level.Information,
+										msg.str);
+			} else {
+				if(app_pid != desired_pid) {
+					_process.run_kinda_fake(app_pid);
+				}
 			}
 
 			return(retval);
 		}
 
-		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
-			bool interested = are_we_interested(app);
-			StringBuilder msg = new StringBuilder();
-			msg.append_printf("Are we interested in pid %d? %s",
-							  app.get_pid(), interested.to_string());
-			Debug.Notification.emit(Debug.Subsystem.Application,
-									Debug.Level.Information,
-									msg.str);
+		public void maybe_setup_for_pid(Wnck.Application app, int pid) {
+			bool interested = _caughtWindow = are_we_interested(pid);
 			if(!interested) return;
 
-			// If we make it here, we were interested in the process
-			// and are about to handle it.
+			do_setup(Program.WnckScreen, app, pid);
+		}
+
+		private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
+			bool interested = _caughtWindow = are_we_interested(app.get_pid());
+
+			if(!interested) {
+				return;
+			} else if(interested && _process.timer_running) {
+				// Prevent AllTray from blowing itself up when an app shows up
+				GLib.Source.remove(_process.timer_event_source);
+			}
+
+			do_setup(scr, app, app.get_pid());
+		}
+
+		private void do_setup(Wnck.Screen scr, Wnck.Application app, int pid) {
 			scr.application_opened -= maybe_setup;
 
 			_wnckApp = app;

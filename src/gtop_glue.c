@@ -9,6 +9,7 @@
 #include <glib.h>
 #include <glibtop.h>
 #include <glibtop/procuid.h>
+#include <glibtop/proclist.h>
 
 int
 alltray_get_ppid_for(int pid) {
@@ -20,4 +21,19 @@ alltray_get_ppid_for(int pid) {
   free(buffer);
 
   return(retval);
+}
+
+void
+alltray_get_processes_in_pgrp(int pgrp, int **procs, int *procs_len) {
+  pid_t *retval = NULL;
+  gint64 wanted_pgid = (gint64)pgrp;
+
+  glibtop_proclist *proclist_info =
+    (glibtop_proclist *)g_malloc0(sizeof(glibtop_proclist));
+
+  retval = glibtop_get_proclist(proclist_info, GLIBTOP_KERN_PROC_PGRP, wanted_pgid);
+  *procs_len = proclist_info->number;
+  free(proclist_info);
+
+  *procs = retval;
 }

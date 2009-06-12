@@ -113,7 +113,7 @@ namespace AllTray.Debug {
 
 			string lvl_str = lvl_to_string(lvl);
 			string subsys_str = subsys_to_string(subsys);
-			stderr.printf("[%s] %s/%s: %s\n", 
+			stdout.printf("[%s] %s/%s: %s\n", 
 						  cur_time, lvl_str, subsys_str, msg);
 
 			if(lvl == Level.Fatal) {

@@ -15,6 +15,8 @@ namespace AllTray {
 	public class Process : GLib.Object {
 		private Pid _child;
 		private bool _running;
+		private bool _timerRunning;
+		private uint _timerEventSource;
 		private string[] _argv;
 		private AllTray.Application _app;
 
@@ -36,7 +38,24 @@ namespace AllTray {
 			}
 		}
 
+		public bool timer_running {
+			get {
+				return(_timerRunning);
+			}
+		}
+
+		public uint timer_event_source {
+			get { 
+				return(_timerEventSource);
+			}
+		}
+
 		public Process(string[] argv) {
+			_child = (Pid)0;
+			_running = false;
+			_timerRunning = false;
+			_timerEventSource = 0;
+			_app = null;
 			_argv = argv;
 		}
 
@@ -74,6 +93,10 @@ namespace AllTray {
 			_app = new AllTray.Application(this);
 		}
 
+		public void run_kinda_fake(int pid) throws ProcessError {
+			run_fake(pid);
+		}
+
 		private void run_fake(int pid) throws ProcessError {
 			Debug.Notification.emit(Debug.Subsystem.Process,
 									Debug.Level.Information,
@@ -95,7 +118,9 @@ namespace AllTray {
 									msg.str);
 
 			Timeout.add(50, fake_child_monitor);
-			_app = new AllTray.Application(this);
+			if(_app == null) {
+				_app = new AllTray.Application(this);
+			}
 		}
 
 		private bool fake_child_monitor() {
@@ -136,17 +161,95 @@ namespace AllTray {
 			return(false);
 		}
 
+		/*
+		 * We try to work around some strange situations that come up
+		 * here.  We hope to catch applications that we spawn, but die
+		 * before their children actually display a window (e.g.,
+		 * shell scripts starting the real application).
+		 *
+		 * If we fail to detect certain situations, that is a bug in
+		 * AllTray which needs reporting for sure.  Maybe the upstream
+		 * of the other project would like to be made aware of the
+		 * problem, too, so that they can fix its startup process to
+		 * play nicely with us if it's _really_ strange.
+		 */
 		public void child_died() {
 			_running = false;
-			StringBuilder msg = new StringBuilder();
 
-			msg.append_printf("Child process %d (%s) died.",
-							  (int)_child, _argv[0]);
+			if(_app.caught_window) {
+				// Got a window in the process' lifetime, assume that was
+				// correct and go ahead and die.
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Information,
+										"Child %d died okay".printf((int)_child));
+				process_died(this);
+			} else {
+				/*
+				 * If we haven't caught a window, it's likely that the process
+				 * we started actually was a script or something, kicking off
+				 * the real process.  We'll wait and see.
+				 */
+				Debug.Notification.emit(Debug.Subsystem.Process,
+										Debug.Level.Information,
+										"Child %d died with nothing!".printf((int)_child));
 
-			Debug.Notification.emit(Debug.Subsystem.Process,
-									Debug.Level.Information,
-									msg.str);
-			process_died(this);
+				_timerRunning = true;
+
+				// XXX:  This value may need to be tweaked.  Only a default should
+				// be hard-coded, really.
+				_timerEventSource = 
+					GLib.Timeout.add_seconds(3, die_if_not_unset);
+			}
+		}
+
+		/*
+		 * Aggressively to find a process that fits.
+		 *
+		 * This appears to be required to actually catch KDE apps, who set their
+		 * PID on the window, but Wnck doesn't see the PID for the application.
+		 *
+		 * Odd.
+		 */
+		private bool really_try_hard() {
+			int[] procs;
+			get_pids_in_pgid((int)Program.pgid, out procs);
+			if(procs.length == 0) return(false);
+
+			foreach(int proc in procs) {
+				if(proc != Posix.getpid()) {
+					foreach(Wnck.Window w in
+							(List<Wnck.Window>)Program.WnckScreen.get_windows()) {
+						if(w.get_pid() == proc) {
+							stdout.printf("Calling maybe setup\n");
+							_app.maybe_setup_for_pid(w.get_application(),
+													 w.get_pid());
+							return(true);
+						}
+					}
+				}
+			}
+
+			GLib.error("Should never reach here.");
+			return(false);
+		}
+
+		/*
+		 * If we're called and we still have nothing, then we give up
+		 * and fire the process_died signal.
+		 *
+		 * The way this actually works is we're called after 30
+		 * seconds.  If we pick up a window before that 30-second
+		 * window is up, the timer that calls this function must be
+		 * deactivated so we don't accidentally die after picking up
+		 * the application.
+		 */
+		private bool die_if_not_unset() {
+			if(really_try_hard() == false) {
+				process_died(this);
+			}
+
+			// Either way, never call us again.
+			return(false);
 		}
 	}
 }

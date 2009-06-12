@@ -6,6 +6,7 @@ using GLib;
 
 namespace AllTray {
 	public errordomain AllTrayError {
+		SET_PGID_FAILED,
 		FAILED
 	}
 
@@ -25,6 +26,7 @@ namespace AllTray {
 
 		public static Wnck.Screen WnckScreen;
 		public static List<Wnck.Application> WnckEarlyApps;
+		public static Pid pgid;
 
 		private PromptDialog _pd;
 
@@ -127,10 +129,39 @@ namespace AllTray {
 			return(args);
 		}
 
+		private void maybe_set_pgid() {
+			Pid cur_pgid = (Pid)Posix.getpgrp();
+			Pid needed_pgid = (Pid)Posix.getpid();
+
+			if(cur_pgid != needed_pgid) {
+				int status = Posix.setpgid(0, 0);
+				if(status == -1)
+					throw new AllTrayError.SET_PGID_FAILED("set pgid failed");
+
+				Program.pgid = (Pid)Posix.getpgrp();
+			} else {
+				// We're already the same, so it's all good.
+				Program.pgid = cur_pgid;
+				return;
+			}
+
+
+
+			/*
+			 * If we're here, then we do not have the correct pgid,
+			 * and we cannot set the pgid.  This should *not* happen,
+			 * so we throw a fatal error here if it does, which should
+			 * be reported to be investigated if it does happen.
+			 */
+			GLib.error("Cannot set PGID.  Cannot continue.");
+			Posix.abort(); // Meta: we actually don't execute this line.
+		}
+
 		public int run() {
 			_plist = new List<Process>();
 
 			Wnck.set_client_type(Wnck.ClientType.PAGER);
+			maybe_set_pgid();
 			install_signal_handlers();
 
 			WnckScreen = Wnck.Screen.get_default();
@@ -298,7 +329,7 @@ namespace AllTray {
 			_plist.remove(p);
 
 			if(_plist.length() == 0) {
-				Debug.Notification.emit(Debug.Subsystem.Process,
+				Debug.Notification.emit(Debug.Subsystem.Main,
 										Debug.Level.Information,
 										"No more children. Dying.");
 				Gtk.main_quit();
