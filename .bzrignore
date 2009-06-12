@@ -1,9 +1,3 @@
-Makefile.in
-data/Makefile.in
-images/Makefile.in
-lib/Makefile.in
-man/Makefile.in
-src/Makefile.in
 missing
 ltmain.sh
 install-sh
@@ -20,3 +14,16 @@ src/Application.[ch]
 src/Debug.[ch]
 src/Process.[ch]
 src/TrayIcon.[ch]
+src/AttachHelper.[ch]
+src/PromptDialog.[ch]
+src/alltray.stamp
+Makefile
+Makefile.in
+README
+config.h
+config.log
+config.status
+stamp-h1
+man/alltray.1
+man/*.ps
+src/.deps
