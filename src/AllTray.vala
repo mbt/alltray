@@ -148,13 +148,12 @@ namespace AllTray {
 					throw new AllTrayError.SET_PGID_FAILED("set pgid failed");
 
 				Program.pgid = (Pid)Posix.getpgrp();
+				return;
 			} else {
 				// We're already the same, so it's all good.
 				Program.pgid = cur_pgid;
 				return;
 			}
-
-
 
 			/*
 			 * If we're here, then we do not have the correct pgid,
