@@ -1,5 +1,31 @@
 2009-06-12  Michael B. Trausch  <mike@trausch.us>
 
+	* Makefile.am:
+	* configure.ac:
+	* utils/build-release.sh:
+
+	Build data and fix configure when valac is not installed
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/build-release.sh:
+
+	Make build-release script to make releasing a tad easier.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Fix stupid would-be brown paper bag bug.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* ChangeLog:
+
+	Updated ChangeLog
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
 	* utils/release-changelog.sh:
 
 	Added script to update ChangeLog for releases.
