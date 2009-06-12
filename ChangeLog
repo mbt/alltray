@@ -1,3 +1,789 @@
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/release-changelog.sh:
+
+	Added script to update ChangeLog for releases.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Updated ignore file.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix redundant function invocation
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+
+	Updated NEWS file.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Oops, do bump properly this time.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Tailor ignore file to make bzr quieter.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* data/Makefile.am:
+	* data/alltray.desktop:
+	* data/alltray.desktop.in:
+
+	Generate .desktop file to include version, modify text.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Version bump.  Prepping for 0.7.3dev release.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+	* src/AllTray.vala:
+	* src/Debug.vala:
+
+	Add -L option, update man page.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Debug.vala:
+	* src/Process.vala:
+	* src/gtop_glue.c:
+	* vapi/gtop_glue.vapi:
+
+	Make AllTray work for applications that are grandchildren.
+	
+	Thanks to Ville Laurikari for giving a great bit of guidance in trying
+	to figure out how to make this work!  Fixes LP #357468.
+
+2009-06-11  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Remove useless ancient line.
+
+2009-06-11  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Debug.vala:
+
+	Add “main” to debug system options.
+
+2009-06-10  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AttachHelper.vala:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+
+	Fix "no newline at end of file".
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	... and remove unused AC_SUBST var.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/gtop_glue.c:
+	* src/gtop_glue.h:
+	* vapi/gtop_glue.vapi:
+
+	Add the files I forgot to merge.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/gtop_glue.c:
+	* src/gtop_glue.h:
+	* vapi/gtop_glue.vapi:
+
+	GRR.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	fix configure.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/unix_process:
+	* src/unix_process.c:
+	* src/unix_process.h:
+	* src/unix_process/Makefile.am:
+	* src/unix_process/freebsd_process_info.c:
+	* src/unix_process/linux_process_info.c:
+	* vapi/libgtop-2.0.vapi:
+	* vapi/packages:
+	* vapi/packages/Makefile.am:
+	* vapi/packages/libgtop-2.0:
+	* vapi/packages/libgtop-2.0/Makefile.am:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.files:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.gi:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.namespace:
+	* vapi/unix_process.vapi:
+	* configure.ac:
+	* src/Application.vala:
+	* src/Makefile.am:
+	* vapi/Makefile.am:
+
+	Merge the 'use-gtop' tree.  We do it the quick-n-dirty way.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/UnixProcessInfo.vala:
+	* vapi/libgtop-2.0.vapi:
+	* vapi/packages:
+	* vapi/packages/Makefile.am:
+	* vapi/packages/libgtop-2.0:
+	* vapi/packages/libgtop-2.0/Makefile.am:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.files:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.gi:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.metadata:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.namespace:
+	* src/Application.vala:
+	* src/Makefile.am:
+	* vapi/Makefile.am:
+
+	Subprocess support.
+	
+	This enables AllTray to support processes spawned from a shell script
+	(in other words, we can attach to grandchildren now, instead of just
+	our children).
+	
+	This doesn't work for OpenOffice.org, because while it is our
+	grandchild when it starts, the child dies before the grandchild's
+	window appears, and so OOo winds up with a ppid of 1, which defeats us
+	trying to attach to it.  The workaround is to use attach mode to
+	attach to it once it's already running.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/UnixProcessInfo.vala:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.metadata:
+	* configure.ac:
+	* src/Application.vala:
+	* src/Makefile.am:
+	* vapi/libgtop-2.0.vapi:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.gi:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.namespace:
+
+	It still is not working.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/unix_process.vapi:
+
+	Remove VAPI for old unix_process code.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/unix_process:
+	* src/unix_process.c:
+	* src/unix_process.h:
+	* src/unix_process/Makefile.am:
+	* src/unix_process/freebsd_process_info.c:
+	* src/unix_process/linux_process_info.c:
+
+	Removed unix_process code.
+
+2009-06-09  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	formatting
+
+2009-06-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/TrayMenu.vala:
+	* configure.ac:
+	* src/Application.vala:
+	* src/Makefile.am:
+
+	Revert changes from refactor attempt, need to do it later.
+
+2009-06-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Oops, file was not saved.
+
+2009-06-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/TrayMenu.vala:
+	* configure.ac:
+	* src/Application.vala:
+	* src/Makefile.am:
+
+	Moving context menu to its own class, has some issues currently.
+
+2009-06-06  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	drop unneeded stderr msg
+
+2009-06-01  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/libgtop-2.0.vapi:
+	* vapi/packages:
+	* vapi/packages/Makefile.am:
+	* vapi/packages/libgtop-2.0:
+	* vapi/packages/libgtop-2.0/Makefile.am:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.files:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.gi:
+	* vapi/packages/libgtop-2.0/libgtop-2.0.namespace:
+	* configure.ac:
+	* vapi/Makefile.am:
+
+	Added preliminary bindings for libgtop. Tweaking may be necessary.
+
+2009-06-01  Michael B. Trausch  <mike@trausch.us>
+
+	* README.in:
+
+	Updated README document to indicate OS support issues.
+	
+	Need to possibly think about another way of doing this, or seeing if a relatively
+	simple cross-platform library can be found that is not heavier than AllTray itself.
+
+2009-06-01  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/Makefile.am:
+	* src/unix_process/freebsd_process_info.c:
+
+	Fix some brain-deadness
+
+2009-06-01  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/unix_process.c:
+	* src/unix_process/linux_process_info.c:
+
+	Refactored linux file and added support for FreeBSD
+
+2009-06-01  Michael B. Trausch  <mike@trausch.us>
+
+	* src/unix_process/freebsd_process_info.c:
+	* src/unix_process/Makefile.am:
+
+	Added FreeBSD process info getter
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Remove non-needed and sometimes inaccurate info
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* autogen.sh:
+
+	Fix autogen to run on more systems.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Fail early on systems we cannot/do not yet support.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/unix_process/Makefile.am:
+	* NEWS:
+	* configure.ac:
+	* src/Makefile.am:
+	* vapi/Makefile.am:
+
+	Fix up autotools and fix building from non-versioned directory tree.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/stdc.vapi:
+	* src/AllTray.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+
+	Moved to Vala Posix API for signals and exit/abort calls.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+	* REQUIREMENTS:
+
+	Updated docs on Vala requirements, since the patch we wrote to make
+	AllTray build on Vala has been integrated into their DVCS master tree.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/vala-patches:
+	* utils/vala-patches/0.7.3:
+	* utils/vala-patches/0.7.3/0001-Enhance-X11-bindings-and-fix-some-cnames.patch:
+
+	Removed vala patch, since it's in Vala's git repo now.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	Fix the build system to make it more efficient.
+	
+	This change uses the SOURCES_BUILT variable which is special to
+	automake to process the Vala files differently and more efficiently.
+	Things should only be rebuilt when needed now, and Vala sources will
+	only be built once instead of some strange arbitrary number of times
+	by make.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Eliminate all Vala warnings -- yay, clean build!
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/PromptDialog.vala:
+
+	Fix Vala compile warnings, clean up a bit.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AttachHelper.vala:
+
+	Thanks to Jürg Billeter for the help!
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/vala-patches/0.7.3/0001-Enhance-X11-bindings-and-fix-some-cnames.patch:
+	* utils/vala-patches/0.7.3/0001-x11.vapi-fixes-for-C-code-generation-of-types.patch:
+	* utils/vala-patches/0.7.3/0002-Fix-Gdk.XEvent-GDK-binding.patch:
+	* utils/vala-patches/0.7.3/0003-Fix-X11-bindings-and-provide-enhancements-to-them.patch:
+	* REQUIREMENTS:
+	* src/AttachHelper.vala:
+
+	Fix to build with a more lightly-patched Vala 0.7.3 release
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	When bringing a window back up, switch back to its workspace;
+	doing the inverse does not seem very possible.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Use mini_icon instead of icon
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Fix typo
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/Application.vala:
+	* src/unix_process.c:
+	* src/unix_process/linux_process_info.c:
+
+	Enabled Linux-specific PPID/name retrieval code.
+	
+	When starting up, we have to sometimes look for processes that we did
+	not expect to have to look for and get information on their process
+	ID, parent process ID, and program name.
+	
+	The code that permits this to happen is enabled now, and used by
+	Application.vala.  This has the unfortunate effect of increasing our
+	dependency set over and above POSIX a little bit, and this is not good
+	because we lose portability.  As soon as possible, implementations to
+	do what we're doing for Linux need to be done for other UNIX-like
+	systems that AllTray can reasonably run on (e.g., systems that GNOME
+	runs on), such as FreeBSD, NetBSD, OpenBSD, OpenSolaris...
+	
+	MonoDevelop can now be run under AllTray.  Unfortunately, it doesn't
+	seem that way for OpenOffice.org, though there may be a way to handle
+	that situation (where the shell script dies before the program
+	actually opens any windows, is what it looks like).
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+	* src/unix_process.c:
+	* vapi/unix_process.vapi:
+
+	It builds, it builds!
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Process.vala:
+
+	Fix compiler warning (unreachable code). My stupid mistake.
+
+2009-05-31  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/unix_process.vapi:
+	* src/Application.vala:
+	* src/Makefile.am:
+
+	Tie-in the process helper.
+	
+	This hooks in the unix_process code as the ProcessInfo object in
+	AllTray, which can get process information on known platforms.
+
+2009-05-30  Michael B. Trausch  <mike@trausch.us>
+
+	* src/unix_process:
+	* src/unix_process.c:
+	* src/unix_process.h:
+	* src/unix_process/linux_process_info.c:
+	* src/Makefile.am:
+
+	Added files to handle getting process information.
+	
+	This patch provides the code to get process information for arbitrary
+	processes on various UNIX and UNIX-like systems.  For the moment, only
+	the GNU/Linux operating system is actually supported, and this code
+	has not yet been wired into Application.vala for use.
+	
+	I don't have any other UNIX or UNIX-like systems to implement this on,
+	so implementations for FreeBSD, NetBSD, OpenBSD, OpenSolaris, and your
+	favorite UNIX or UNIX-like system near you are appreciated.
+
+2009-05-30  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS again to document the (possible)
+	requirement for patching Vala.
+
+2009-05-30  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/vala-patches:
+	* utils/vala-patches/0.7.3:
+	* utils/vala-patches/0.7.3/0001-x11.vapi-fixes-for-C-code-generation-of-types.patch:
+	* utils/vala-patches/0.7.3/0002-Fix-Gdk.XEvent-GDK-binding.patch:
+	* utils/vala-patches/0.7.3/0003-Fix-X11-bindings-and-provide-enhancements-to-them.patch:
+
+	Commit local changes to Vala so that it can be built on Vala 0.7.3
+
+2009-05-29  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Bumped Vala requirement
+
+2009-05-29  Michael B. Trausch  <mike@trausch.us>
+
+	* src/x11_glue.c:
+
+	Compiler warnings are your FWIEND. Always listen to them.
+
+2009-05-29  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/libx11.vapi:
+
+	Removed built-in libx11.vapi, in favor of Vala-provided api instead
+
+2009-05-29  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AttachHelper.vala:
+	* src/Makefile.am:
+
+	Change to using Vala 0.7.3-provided X11 bindings
+
+2009-04-17  Michael B. Trausch  <mike@trausch.us>
+
+	* README.in:
+
+	Put some notes in README
+
+2009-04-17  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Process.vala:
+	* vapi/stdc.vapi:
+
+	Complete signal handling to end cleanly and not leave apps unreachable.
+
+2009-04-17  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Debug.vala:
+
+	Added signal debug
+
+2009-04-17  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	initial sighandlers
+
+2009-04-14  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Indicate the dialog is a dialog
+
+2009-04-14  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/Application.vala:
+	* vapi/alltray.vapi:
+
+	Include GPLv3 in About dialog
+
+2009-04-14  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Add individual window toggling
+
+2009-04-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Added more useful menu items
+
+2009-04-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Add basic right-click menu support for icon; incomplete yet.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Version gets “+” designator between releases
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+
+	Added notes re: KDE to the man page.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+	* src/AttachHelper.vala:
+	* src/PromptDialog.vala:
+	* NEWS:
+	* README.in:
+	* configure.ac:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+	* src/Process.vala:
+	* src/x11_glue.c:
+	* src/x11_glue.h:
+	* vapi/alltray.vapi:
+	* vapi/libx11.vapi:
+	* vapi/stdc.vapi:
+	* vapi/x11_glue.vapi:
+
+	Merge add-attach-mode branch
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/AttachHelper.vala:
+	* src/Debug.vala:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+	* src/x11_glue.c:
+	* vapi/x11_glue.vapi:
+
+	Finish attach-mode support.  To attach AllTray to a running
+	process by clicking on one of its windows, say "alltray -a";
+	to attach AllTray to a running process by stating which process
+	(by PID), say "alltray -p XXX", where XXX is the process ID.
+	
+	See the man page for info.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	attach-to-process (-p, --process) now works; applications
+	such as Thunderbird can be started by doing:
+	
+	thunderbird & sleep 5; alltray --process $(pgrep thunderbird-bin)
+	
+	Also, this means that AllTray can attach to a process given
+	its PID, so long as it obeys the specs.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/x11_glue.c:
+
+	Fix build errors now that we're not using C99 support,
+	and fix call to alltray_find_managed_window due to
+	the signature changing.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+	* NEWS:
+
+	Note new Vala build-time requirement (only necessary if
+	building from a bzr tree; tarballs will have the *.c
+	files pre-generated).
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+	* vapi/alltray.vapi:
+
+	Add local Gtk.StatusIcon bindings and use them instead
+	of Vala 0.7.0+'s bindings, which remove compatibility with
+	GTK+ versions < 2.16.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Fix error when building with Vala 0.7.0
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/Makefile.am:
+	* src/Process.vala:
+	* src/x11_glue.c:
+
+	Update for troubleshooting, drop C99 requirement
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AttachHelper.vala:
+	* src/PromptDialog.vala:
+	* src/AllTray.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+	* src/Process.vala:
+	* src/x11_glue.c:
+	* src/x11_glue.h:
+	* vapi/libx11.vapi:
+	* vapi/stdc.vapi:
+	* vapi/x11_glue.vapi:
+
+	Adding attach-mode, but having trouble.  Committing a partial
+	change anyway and taking a break to come back and see what may
+	be wrong.
+
+2009-04-08  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Makefile.am:
+
+	Disable depreciated things, and minor text corrections
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix multiple windows
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+
+	Updates to man page for current (soon-to-be-committed)
+	change in trunk
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* utils/clean-tree.sh:
+
+	Enable -y on utils/clean-tree.sh, makes me happier
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/AllTray.vala:
+
+	Fix configure flag output.
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/AllTray.vala:
+	* vapi/alltray.vapi:
+
+	Enable -V (--extended-version) CLI option to be useful,
+	and quashed many warnings.
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Add support for making windows (like FF 3.5) stay hidden when
+	they attempt to come back (such as when you click on a URL in
+	another application).  Instead, blink the tray icon, indicating
+	that the browser wants the user's attention.
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	subtle fixes for the GIMP
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* ChangeLog:
+	* src/Application.vala:
+
+	Handle application going away and coming back, as well
+	as provide useful info in the tray icon tooltip. libwnck
+	is a strange, strange thing...
+
+2009-04-07  Michael B. Trausch  <mike@trausch.us>
+
+	* src/TrayIcon.vala:
+	* ChangeLog:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Makefile.am:
+	* src/Process.vala:
+
+	Refactoring and robustness improvements, now uses more
+	signals and less polling.  Moved StatusIcon handling into
+	the Application class since it makes more sense there.
+
+2009-04-06  Michael B. Trausch  <mike@trausch.us>
+
+	* doc/crash-help.txt:
+
+	Add info on recovering lost windows from crashes.
+
+2009-04-06  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+
+	Actually release 0.7.2dev
+
 2009-04-07  Michael B. Trausch  <mike@trausch.us>
 
 	* src/TrayIcon.vala: Removed.
