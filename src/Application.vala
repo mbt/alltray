@@ -247,7 +247,7 @@ namespace AllTray {
 			string plural = (wincount != 1 ? "s" : "");
 
 			sb.append_printf("%s - %d window%s", _wnckApp.get_name(),
-							 _wnckApp.get_n_windows(), plural);
+							 wincount, plural);
 			
 			_appIcon.set_tooltip(sb.str);
 		}
