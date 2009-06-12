@@ -6,7 +6,7 @@
 #
 
 # Initialize autoconf
-AC_INIT([AllTray], [0.7.3], [https://launchpad.net/alltray/+filebug])
+AC_INIT([AllTray], [0.7.3dev], [https://launchpad.net/alltray/+filebug])
 
 # Initialize automake
 AM_INIT_AUTOMAKE(foreign check-news -Wall)
