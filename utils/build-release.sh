@@ -1,8 +1,15 @@
 #!/bin/bash
 
 if [ -x ./autogen.sh ]; then
-    ./autogen.sh CFLAGS="-Wall -Wextra -g0 -O3"
+    utils/clean-tree.sh
+    ./autogen.sh CFLAGS="-Wall -ggdb -Os"
+
     make all
+
+    objcopy --only-keep-debug src/alltray src/alltray.dbg
+    objcopy --strip-debug src/alltray
+    objcopy --add-gnu-debuglink=src/alltray.dbg src/alltray
+
     make dist
     mv alltray-*.tar.gz ..
 else

@@ -45,7 +45,13 @@ AC_SUBST(VALAC)
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
 AC_DEFINE_UNQUOTED(ALLTRAY_C_COMPILER, "$(${CC} --version|head -1)", [Compiler])
-AC_DEFINE_UNQUOTED(ALLTRAY_VALA_COMPILER, "$($VALAC --version)", [Vala ver])
+
+if test -f $VALAC -a -x $VALAC; then
+ AC_DEFINE_UNQUOTED(ALLTRAY_VALA_COMPILER, "$($VALAC --version)", [Vala ver])
+else
+ AC_DEFINE_UNQUOTED(ALLTRAY_VALA_COMPILER, "Not installed", [Vala ver])
+fi
+
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS, "$(uname -s)",
   [Build OS Kernel and Name])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_REL, "$(uname -r)", [Build OS Release])
@@ -84,6 +90,7 @@ AC_CONFIG_FILES([README
         Makefile
         images/Makefile
 	data/alltray.desktop
+	data/Makefile
         man/Makefile
         src/Makefile
 	vapi/Makefile
@@ -94,7 +101,13 @@ AC_OUTPUT
 printf "\nConfiguration results (%s %s)\n\n" "$PACKAGE_NAME" "$PACKAGE_VERSION"
 
 printf "C Compiler:\t%s\n" "$CC"
-printf "Vala Compiler:\t%s\n" "$(valac --version)"
+
+if [[ -f $VALAC -a -x $VALAC ]]; then
+  printf "Vala Compiler:\t%s\n" "$(${VALAC} --version)"
+else
+  printf "Vala Compiler:\tNot installed.\n"
+fi
+
 printf "%s version:\t%s\n" "$CC" "$(${CC} --version|head -1)"
 printf "C Flags:\t%s\n" "$CFLAGS"
 printf "Install path:\t%s\n" "$prefix"
