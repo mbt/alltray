@@ -361,7 +361,8 @@ namespace AllTray {
 			}
 		}
 
-		private void set_visibility_for_window(Wnck.Window w, bool visible) {
+		private void set_visibility_for_window(Wnck.Window w,
+											   bool set_visible) {
 			TimeVal tv = TimeVal();
 			tv.get_current_time();
 
@@ -369,17 +370,17 @@ namespace AllTray {
 			msg.append_printf("Setting window 0x%08lx visibility to %s",
 							  w.get_xid(), _appVisible.to_string());
 
-			if(visible) {
+			if(set_visible) {
 				w.state_changed -= maintain_hiddenness;
-				w.unminimize((uint32)tv.tv_sec);
 				w.set_skip_tasklist(false);
+				w.unminimize((uint32)tv.tv_sec);
 
 				Wnck.Workspace ws = w.get_workspace();
 				ws.activate((uint32)tv.tv_sec);
 				w.activate((uint32)tv.tv_sec);
 			} else {
-				w.minimize();
 				w.set_skip_tasklist(true);
+				w.minimize();
 				w.state_changed += maintain_hiddenness;
 			}
 
