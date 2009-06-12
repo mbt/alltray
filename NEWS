@@ -1,5 +1,5 @@
-News for 0.7.2dev+
-==================
+News for 0.7.3dev
+=================
 
 THIS IS A DEVELOPMENT SHAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
 USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
@@ -27,7 +27,11 @@ FUNCTIONALITY IS CURRENTLY PRESENT.
     individual windows back to the tray.  This is planned for
     0.7.4dev.
 
-  * Bugs fixed:  315707, 356516, 382083, 368274.
+  * Bugs fixed:  315707, 356516, 357468, 368274, 382083, 382548,
+    probably more that I forgot to explicitly mark as being fixed
+    in this cycle, but have been fixed in Launchpad.  In particular,
+    AllTray can now dock OpenOffice.org and KDE application software
+    again.
 
 News for 0.7.2dev
 =================
