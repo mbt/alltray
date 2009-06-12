@@ -83,6 +83,7 @@ AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,
 AC_CONFIG_FILES([README
         Makefile
         images/Makefile
+	data/alltray.desktop
         man/Makefile
         src/Makefile
 	vapi/Makefile

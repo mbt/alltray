@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=AllTray
-GenericName=AllTray
-Comment=Dock everything
+Name=AllTray @PACKAGE_VERSION@
+GenericName=AllTray @PACKAGE_VERSION@
+Comment=Dock everything to the system tray/notification area.
 Exec=alltray
 Icon=alltray.png
 Terminal=false
