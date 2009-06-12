@@ -46,20 +46,27 @@ Attaches to an already-running application.  If \-\-process is not
 specified, AllTray will prompt the user to click on a window for the
 application the user would like to dock.
 .IP "\-L, \-\-list\-debug\-opts"
-Lists the debug \(lqflags\(rq that AllTray supports.  The items in this list
-are allowed values in an environment variable named \fBALLTRAY_DEBUG\fR;
-see the \fBENVIRONMENT VARIABLES\fR section for more information.
+Lists the debug \(lqflags\(rq that AllTray supports.  The items in
+this list are allowed values in an environment variable named
+\fBALLTRAY_DEBUG\fR; see the \fBENVIRONMENT VARIABLES\fR section for
+more information.  \fIThis option is hidden from the \-\-help output,
+but it can be used.\fR
 .IP "\-D, \-\-debug"
-Enable the debug message printing mechanism of AllTray.  Note that this
-requires also setting the environment variable \fBALLTRAY_DEBUG\fR, to
-get any debug output; see the \fBENVIRONMENT VARIABLES\fR section below.
+Enable the debug message printing mechanism of AllTray.  Note that
+this requires also setting the environment variable
+\fBALLTRAY_DEBUG\fR, to get any debug output; see the \fBENVIRONMENT
+VARIABLES\fR section below.  \fIThis option is hidden from the
+\-\-help output, but it can be used.\fR
 .IP "\-p, \-\-process=PID"
 Specifies the process ID of the application to attach to; implies
 \-\-attach.
 .IP "\-v, \-\-version"
-Show the program version, copyright, and license.
+Show the program version, copyright, and license, then exit.  If the
+build of AllTray was built from a development tree, some information
+on the exact revision it was built from will also appear.
 .IP "\-V, \-\-extended-version"
-Show the program version, copyright, license, and build information.
+Show the program version, copyright, license, and build information,
+then exit.
 \#
 .SH ENVIRONMENT VARIABLES
 \#
@@ -97,13 +104,16 @@ ALLTRAY_DEBUG="ALL" alltray \-D evolution
 .IP "Client command line arguments example"
 alltray \-\- xterm \-geometry 132x40
 \#
-.IP "Autostart example"
-alltray \-\-wait\-for\-wm \-\-wait\-for\-systray evolution
-\#
 .SH DIAGNOSTICS
 \#
-AllTray doesn't (yet) emit very helpful diagnostic information on
-failure.  This will be remedied prior to the 0.8.0 release.
+AllTray will exit with return code 1 and an error message if it is
+unable to execute the specified program.
+
+If there is a problem getting AllTray working and it doesn't seem to be
+giving an error, please run AllTray as in the debugging example, above,
+and read the output of that.  It may give vital clues as to what is
+wrong.  Almost certainly always if you do this, you'll want to also
+file a bug report.
 \#
 .SH REQUIREMENTS
 \#
@@ -111,29 +121,20 @@ AllTray requires a window manager which implements the EWMH
 specification (and thus by definition the ICCCM specification).  It also
 requires another process which fills the role of the system tray, as
 specified in the System Tray Specification.
+
+At the time of this writing, KDE 4.x does \fInot\fR fulfill the
+requirements; it does not permit AllTray to do its job and hide the
+application from the user and put it into the system tray (the window
+will still be in the window list).  The KDE project is aware of the
+issue.
 \#
 .SH BUGS
 \#
 Session management support needs to be implemented.  If you rely on
 session management support for your application software, you may
 encounter surprising results when combining that software with AllTray
-at present.
-
-Some programs at present cannot be started under AllTray, but they
-should be ablle to be attached to after they are running.  Any program
-that creates windows with a PID other than what g_spawn_async()
-receives as a return value (including OpenOffice.org, Mono programs,
-and virtually programs started from a shell script which in turn
-handles the real program invocation) is affected by this bug.  A
-method is being worked on to reliably work around this problem.
-Should you find software like this, please do not hesitate to report
-it as a bug in AllTray.
-
-There are issues with interaction between AllTray and KDE in general.
-Trying to use AllTray on KDE is not recommended at this stage unless
-you are a developer and may be able to contribute to AllTray's ability
-to work on KDE.  At present, the cause of these interaction issues is
-unknown.
+at present.  This is planned to be fixed sometime after the 0.8.0
+release.
 
 There are likely undiscovered bugs.  If you should find one, please
 report it at https://launchpad.net/alltray/+filebug.
@@ -149,17 +150,35 @@ complete re-write of the AllTray code.  This release,
 \#
 Copyright \(co 2009 Michael B. Trausch <mike@trausch.us>
 
-AllTray is licensed under the terms of the GNU GPL Version 3 license,
-as published by the Free Software Foundation.  For the full-text of
-the license, see the license as published on the GNU web site.
+AllTray's source code, this manual page, and .desktop files are
+licensed under the terms of the GNU GPL Version 3 license, as
+published by the Free Software Foundation.  For the full-text of the
+license, see the license as published on the GNU web site.  Some
+portions of the software are licensed under the GNU LGPL Version 3,
+permitting their re-use with slightly less strict terms.  The images
+distributed with AllTray are licensed under the Creative Commons
+Attribution-Noncommercial 3.0 (CC-BY-NC 3.0) license.
 
-The license should also be available on your computer.  In the source
-distribution for AllTray, it is the file \(lqCOPYING\(rq.
+You should have received the license texts with this source distribution,
+however if you did not, the license texts are available on the Internet;
+see the \fBLINKS\fR section below.
+
+If there is a need to use AllTray outside of these licensing terms,
+contact the author for information.
 \#
 .SH LINKS
 \#
 The GNU GPL Version 3.0 is available on the Internet at
 http://www.gnu.org/licenses/gpl-3.0.html
+
+The GNU LGPL Version 3.0 is available on the Internet at
+http://www.gnu.org/licenses/lgpl-3.0.html
+
+The Creative Commons Attribution-Noncommercial 3.0 license is available
+on the Internet at http://creativecommons.org/licenses/by-nc-nd/3.0/us/
+
+AllTray's web site and wiki is available on the Internet at
+https://alltray.trausch.us/
 
 AllTray's project page is available on the Internet at
 https://launchpad.net/alltray

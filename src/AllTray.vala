@@ -20,6 +20,7 @@ namespace AllTray {
 		private static int _pid;
 
 		private static bool _cl_debug;
+		private static bool _cl_dopts;
 		private static bool _display_ver;
 		private static bool _display_extended_ver;
 		private static Program _instance;
@@ -33,8 +34,11 @@ namespace AllTray {
 		private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
 			{ "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
 			  "Attach to a running program", null },
-			{ "debug", 'D', 0, GLib.OptionArg.NONE, ref _cl_debug,
-			  "Enable debugging messages", null },
+			{ "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
+			  ref _cl_debug, "Enable debugging messages", null },
+			{ "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
+			  GLib.OptionArg.NONE, ref _cl_dopts,
+			  "Show types of debugging messages", null },
 			{ "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
 			  "Attach to already-running application",
 			  "PID" },
@@ -107,6 +111,11 @@ namespace AllTray {
 
 			if(_display_extended_ver) {
 				display_extended_version();
+				Posix.exit(0);
+			}
+
+			if(_cl_dopts) {
+				Debug.Notification.display_debug_list();
 				Posix.exit(0);
 			}
 

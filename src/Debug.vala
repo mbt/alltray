@@ -18,7 +18,12 @@ namespace AllTray.Debug {
 		Application = 0x80,
 		AttachHelper = 0x100,
 		Signal = 0x200,
-		Main = 0x400
+		Main = 0x400,
+
+		All = Subsystem.CommandLine | Subsystem.Display | Subsystem.TrayIcon |
+			Subsystem.WindowManager | Subsystem.Process | Subsystem.Misc |
+			Subsystem.Bug | Subsystem.Application | Subsystem.AttachHelper |
+			Subsystem.Signal | Subsystem.Main
 	}
 
 	public enum Level {
@@ -28,9 +33,40 @@ namespace AllTray.Debug {
 		Fatal
 	}
 
+	private struct DebugDescription {
+		public Subsystem subsys;
+		public string name;
+		public string description;
+	}
+
 	public static class Notification {
 		private static Subsystem _subsys = Subsystem.None;
 		private static bool _enabled = false;
+
+		private const DebugDescription[] _debugOptions = {
+			{ Subsystem.CommandLine, "CL", "command line parsing" },
+			{ Subsystem.Display, "DISPLAY", "X11 display" },
+			{ Subsystem.TrayIcon, "TRAY", "System Tray Icon" },
+			{ Subsystem.WindowManager, "WM", "Window Manager" },
+			{ Subsystem.Process, "PROCESS", "Process information" },
+			{ Subsystem.Misc, "MISC", "Misc messages" },
+			{ Subsystem.Bug, "BUG", "Something happened that shouldn't have" },
+			{ Subsystem.Application, "APP", "Applications" },
+			{ Subsystem.AttachHelper, "AH", "AttachHelper class messages" },
+			{ Subsystem.Signal, "SIG", "Signal debugging messages" },
+			{ Subsystem.Main, "MAIN", "Entrypoint, preinit, etc." },
+			{ Subsystem.All, "ALL", "All messages" }
+		};
+
+		public static void display_debug_list() {
+			stdout.printf("%-16s%s\n", "String", "Messages are for");
+			stdout.printf("======================================"+
+						  "======================================\n");
+
+			foreach(DebugDescription dd in _debugOptions) {
+				stdout.printf("%-16s%s\n", dd.name, dd.description);
+			}
+		}
 
 		public static void init() {
 			_enabled = true;
