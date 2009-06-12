@@ -27,3 +27,5 @@ stamp-h1
 man/alltray.1
 man/*.ps
 src/.deps
+data/alltray.desktop
+autom4te.cache
