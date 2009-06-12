@@ -31,7 +31,8 @@ alltray_get_processes_in_pgrp(int pgrp, int **procs, int *procs_len) {
   glibtop_proclist *proclist_info =
     (glibtop_proclist *)g_malloc0(sizeof(glibtop_proclist));
 
-  retval = glibtop_get_proclist(proclist_info, GLIBTOP_KERN_PROC_PGRP, wanted_pgid);
+  retval = glibtop_get_proclist(proclist_info, GLIBTOP_KERN_PROC_PGRP,
+				wanted_pgid);
   *procs_len = proclist_info->number;
   free(proclist_info);
 
