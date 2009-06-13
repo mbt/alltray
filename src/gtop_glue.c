@@ -10,6 +10,7 @@
 #include <glibtop.h>
 #include <glibtop/procuid.h>
 #include <glibtop/proclist.h>
+#include <glibtop/procstate.h>
 
 int
 alltray_get_ppid_for(int pid) {
@@ -37,4 +38,23 @@ alltray_get_processes_in_pgrp(int pgrp, int **procs, int *procs_len) {
   free(proclist_info);
 
   *procs = retval;
+}
+
+/*
+ * Return a newly-allocated string that contains the name of the
+ * process for the given PID.  This means that the caller owns the
+ * variable.
+ */
+char *
+alltray_get_process_name(int pid) {
+  char *retval = NULL;
+  glibtop_proc_state *glbuf = NULL;
+
+  glbuf = (glibtop_proc_state *)g_malloc0(sizeof(glibtop_proc_state));
+  glibtop_get_proc_state(glbuf, pid);
+
+  retval = g_strndup(glbuf->cmd, 40);
+  free(glbuf);
+
+  return(retval);
 }

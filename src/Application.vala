@@ -89,40 +89,31 @@ namespace AllTray {
 			int app_pgid = Posix.getpgid(app_pid);
 			int desired_pid = (int)_process.get_pid();
 			int desired_pgid = (int)Program.pgid;
+			string proc_name = get_process_name_for(pid);
 
 			// Bail on invalid value, some apps are odd and buggy.
 			if(app_pid == 0) {
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										"Whoa, got pid 0.");
+				GLib.warning("Got PID 0; some application is buggy!");
 				return(false);
 			}
 
 			if(app_pgid == desired_pgid) {
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										"pid %d, pgid %d is ours".printf(app_pid, app_pgid));
 				retval = true;
 			} else if(app_pid == desired_pid) {
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										"pid %d is ours".printf(app_pid));
 				retval = true;
 			} else if(app_ppid == desired_pid) {
-				Debug.Notification.emit(Debug.Subsystem.Application,
-										Debug.Level.Information,
-										"pid %d (ppid %d) is ours".printf(app_pid, app_ppid));
 				retval = true;
 			}
 
 			if(!retval) {
 				StringBuilder msg = new StringBuilder();
 
-				msg.append_printf("pid %d is not ours.\n  Want pid = %d, "+
+				msg.append_printf("pid %d (%s) is not ours.\n  Want pid = %d, "+
 								  "ppid = %d, or pgid = %d, have pid = "+
 								  "%d, ppid = %d, pgid = "+
-								  "%d", app_pid, desired_pid, desired_pid,
-								  desired_pgid, app_pid, app_ppid, app_pgid);
+								  "%d", app_pid, proc_name, desired_pid,
+								  desired_pid, desired_pgid, app_pid, app_ppid,
+								  app_pgid);
 				Debug.Notification.emit(Debug.Subsystem.Application,
 										Debug.Level.Information,
 										msg.str);

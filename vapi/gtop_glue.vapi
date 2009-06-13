@@ -5,4 +5,7 @@ namespace AllTray {
 
 	[CCode(cname = "alltray_get_processes_in_pgrp")]
 	public void get_pids_in_pgid(int pgid, out int[] procs);
+
+	[CCode(cname = "alltray_get_process_name")]
+	public string get_process_name_for(int pid);
 }

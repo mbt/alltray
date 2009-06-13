@@ -8,5 +8,7 @@
 #define __gtop_glue_h_included__
 
 int alltray_get_ppid_for(int pid);
+void alltray_get_processes_in_pgrp(int pgrp, int **procs, int *procs_len);
+char *alltray_get_process_name(int pid);
 
 #endif /* __gtop_glue_h_included__ */
