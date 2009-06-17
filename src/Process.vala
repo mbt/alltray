@@ -229,7 +229,20 @@ namespace AllTray {
 				}
 			}
 
-			GLib.error("Should never reach here.");
+			stderr.printf(
+"""
+AllTray was unable to attach to any applications, and AllTray's child
+has died.
+
+This problem can be caused by application software that:
+  * is not compliant with the ICCCM and EWMH specs, and/or
+  * backgrounds itself and leaves the AllTray process group.
+
+xeyes is one application that is known to do this; there are certainly
+others.  Please file a bug report at http://launchpad.net/alltray/+filebug
+indicating the program you received this error message with.
+""");
+			Posix.exit(10);
 			return(false);
 		}
 
