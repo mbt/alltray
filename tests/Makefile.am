@@ -22,7 +22,8 @@ GtkIconChange_SOURCES = $(GtkIconChange_VALASOURCES:.vala=.c)
 
 EXTRA_DIST = $(GtkDemandsAttention_VALASOURCES) \
 	$(GtkIconChange_VALASOURCES) \
-	$(BUILT_SOURCES)
+	$(BUILT_SOURCES) \
+	1.png 2.png
 
 VALA_FLAGS = --pkg gtk+-2.0 --pkg posix
 
