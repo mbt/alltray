@@ -16,7 +16,7 @@ src/Process.[ch]
 src/TrayIcon.[ch]
 src/AttachHelper.[ch]
 src/PromptDialog.[ch]
-src/alltray.stamp
+*.stamp
 Makefile
 Makefile.in
 README
@@ -26,6 +26,9 @@ config.status
 stamp-h1
 man/alltray.1
 man/*.ps
-src/.deps
+.deps
 data/alltray.desktop
 autom4te.cache
+tests/*.c
+tests/GtkDemandsAttention
+tests/GtkIconChange
