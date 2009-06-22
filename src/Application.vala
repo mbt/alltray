@@ -17,6 +17,7 @@ namespace AllTray {
 		private Process _process;
 		private bool _appVisible;
 		private bool _caughtWindow;
+		private bool _usingWindowIcon;
 
 		public Wnck.Application wnck_app {
 			get {
@@ -162,7 +163,11 @@ namespace AllTray {
 
 			// Force an update to catch circumstances where the app
 			// disappears and reappears (e.g., The GIMP).
-			update_icon_image(_wnckApp);
+			if(_usingWindowIcon) {
+				update_icon_win_image(_windows.first().data);
+			} else {
+				update_icon_app_image(_wnckApp);
+			}
 		}
 
 		private void display_menu(uint button, uint activate_time) {
@@ -243,18 +248,67 @@ namespace AllTray {
 			_appIcon.set_tooltip(sb.str);
 		}
 
+		/*
+		 * This tries to create an icon for the application.  First, we
+		 * see if the application has an icon (don't know *precisely* what
+		 * this means from Wnck's perspective... clarification would be
+		 * useful, as I don't have time to look at their source ATM).  If
+		 * the application does not have an icon, then we look to see if
+		 * the window does.
+		 *
+		 * If not, then we just use a fallback.
+		 *
+		 * Note that this only selects the first window it finds.  There
+		 * may be a better way to do this; time will tell.
+		 */
 		private void create_icon() {
-			_appIcon = new LocalGtk.StatusIcon.from_pixbuf(_wnckApp.get_mini_icon());
+			_windows = _wnckApp.get_windows();
+			Wnck.Window firstWindow = _windows.first().data;
+			_usingWindowIcon = false;
+			bool fallback = _wnckApp.get_icon_is_fallback();
+
+			if(fallback) {
+				_appIcon = new LocalGtk.StatusIcon.
+					from_pixbuf(firstWindow.get_mini_icon());
+				firstWindow.icon_changed += update_icon_win_image;
+				_usingWindowIcon = true;
+			} else {
+				_appIcon = new LocalGtk.StatusIcon.
+					from_pixbuf(_wnckApp.get_mini_icon());
+				_wnckApp.icon_changed += update_icon_app_image;
+			}
 
 			_appIcon.set_tooltip(_wnckApp.get_name());
-
 			_appIcon.activate += on_icon_click;
-			_wnckApp.icon_changed += update_icon_image;
 			_wnckApp.name_changed += update_icon_name;
+
+			string msg = "";
+			if(_usingWindowIcon) {
+				msg = "Using Window Icon (fallback was %s)".
+					printf(fallback.to_string());
+			} else {
+				msg = "Using App Icon (fallback was %s)".
+					printf(fallback.to_string());
+			}
+
+			Debug.Notification.emit(Debug.Subsystem.Application,
+									Debug.Level.Information,
+									msg);
 		}
 
-		private void update_icon_image(Wnck.Application app) {
+		private void update_icon_app_image(Wnck.Application app) {
 			unowned Gdk.Pixbuf new_icon = app.get_icon();
+
+			_appIcon.set_from_pixbuf(new_icon);
+
+			if(new_icon == null) {
+				_appIcon.visible = false;
+				return;
+			}
+		}
+
+		private void update_icon_win_image(Wnck.Window win) {
+			unowned Gdk.Pixbuf new_icon = win.get_mini_icon();
 
 			_appIcon.set_from_pixbuf(new_icon);
 
