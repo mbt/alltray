@@ -98,7 +98,7 @@ namespace AllTray {
 				return(false);
 			}
 
-			if(app_pgid == desired_pgid) {
+			if((app_pgid == desired_pgid) && (app_pgid != app_pid)) {
 				retval = true;
 			} else if(app_pid == desired_pid) {
 				retval = true;
