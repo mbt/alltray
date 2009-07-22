@@ -32,3 +32,6 @@ autom4te.cache
 tests/*.c
 tests/GtkDemandsAttention
 tests/GtkIconChange
+*.gcov
+*.gcda
+*.gcno
