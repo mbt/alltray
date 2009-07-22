@@ -341,10 +341,14 @@ namespace AllTray {
 				     Wnck.WindowState new_state) {
       if(_appVisible) return;
 
-      debug_msg("*** WINDOW CHANGED BITMASK");
-      debug_display_windowstate(changed_bits);
-      debug_msg("*** WINDOW NEW STATE");
-      debug_display_windowstate(new_state);
+
+      string ch_bitmask =
+        "New Bitmask: %s".printf(get_new_windowstate(changed_bits));
+      string ch_new_state =
+        "New State: %s".printf(get_new_windowstate(new_state));
+
+      debug_msg(ch_bitmask);
+      debug_msg(ch_new_state);
 
       if((new_state & Wnck.WindowState.MINIMIZED) == 0) {
 	win.minimize();
@@ -358,7 +362,7 @@ namespace AllTray {
 			      str);
     }
 
-    private void debug_display_windowstate(Wnck.WindowState state) {
+    private string get_new_windowstate(Wnck.WindowState state) {
       StringBuilder sb = new StringBuilder();
 
       if((state & Wnck.WindowState.MINIMIZED) != 0)
@@ -389,7 +393,7 @@ namespace AllTray {
 	sb.append("BELOW | ");
 
       sb.truncate(sb.len - 3);
-      debug_msg(sb.str);
+      return(sb.str);
     }
 
     private void toggle_visibility() {
@@ -423,6 +427,7 @@ namespace AllTray {
       if(set_visible) {
 	w.state_changed -= maintain_hiddenness;
 	w.set_skip_tasklist(false);
+	w.set_skip_pager(false);
 	w.unminimize((uint32)tv.tv_sec);
 
 	Wnck.Workspace ws = w.get_workspace();
@@ -430,6 +435,7 @@ namespace AllTray {
 	w.activate((uint32)tv.tv_sec);
       } else {
 	w.set_skip_tasklist(true);
+	w.set_skip_pager(true);
 	w.minimize();
 	w.state_changed += maintain_hiddenness;
       }
