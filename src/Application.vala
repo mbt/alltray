@@ -83,7 +83,7 @@ namespace AllTray {
       }
     }
 
-    private bool are_we_interested(int pid) {
+    private bool are_we_interested(int pid) requires (pid != 0) {
       bool retval = false;
       int app_pid = pid;
       int app_ppid = get_ppid_for(app_pid);
@@ -91,12 +91,6 @@ namespace AllTray {
       int desired_pid = (int)_process.get_pid();
       int desired_pgid = (int)Program.pgid;
       string proc_name = get_process_name_for(pid);
-
-      // Bail on invalid value, some apps are odd and buggy.
-      if(app_pid == 0) {
-	GLib.warning("Got PID 0; some application is buggy!");
-	return(false);
-      }
 
       if((app_pgid == desired_pgid) && (app_pgid != app_pid)) {
 	retval = true;
@@ -128,10 +122,14 @@ namespace AllTray {
     }
 
     public void maybe_setup_for_pid(Wnck.Application app, int pid) {
-      bool interested = _caughtWindow = are_we_interested(pid);
-      if(!interested) return;
+      if(pid == 0) {
+	warning("Application %s needs fixed, reports PID 0.", app.get_name());
+      } else {
+	bool interested = _caughtWindow = are_we_interested(pid);
+	if(!interested) return;
 
-      do_setup(Program.WnckScreen, app, pid);
+	do_setup(Program.WnckScreen, app, pid);
+      }
     }
 
     private void maybe_setup(Wnck.Screen scr, Wnck.Application app) {
@@ -404,6 +402,11 @@ namespace AllTray {
       }
     }
 
+    private void show_all_windows() {
+      _appVisible = false;
+      toggle_visibility();
+    }
+
     private void toggle_window_visibility(Wnck.Window w) {
       Wnck.WindowState ws = w.get_state();
 
@@ -473,6 +476,7 @@ namespace AllTray {
     }
 
     private void on_menu_undock() {
+      show_all_windows();
       Posix.exit(0);
     }
   }
