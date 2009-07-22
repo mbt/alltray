@@ -341,10 +341,14 @@ namespace AllTray {
 				     Wnck.WindowState new_state) {
       if(_appVisible) return;
 
-      debug_msg("*** WINDOW CHANGED BITMASK");
-      debug_display_windowstate(changed_bits);
-      debug_msg("*** WINDOW NEW STATE");
-      debug_display_windowstate(new_state);
+
+      string ch_bitmask =
+        "New Bitmask: %s".printf(get_new_windowstate(changed_bits));
+      string ch_new_state =
+        "New State: %s".printf(get_new_windowstate(new_state));
+
+      debug_msg(ch_bitmask);
+      debug_msg(ch_new_state);
 
       if((new_state & Wnck.WindowState.MINIMIZED) == 0) {
 	win.minimize();
@@ -358,33 +362,38 @@ namespace AllTray {
 			      str);
     }
 
-    private void debug_display_windowstate(Wnck.WindowState state) {
+    private string get_new_windowstate(Wnck.WindowState state) {
+      StringBuilder sb = new StringBuilder();
+
       if((state & Wnck.WindowState.MINIMIZED) != 0)
-	debug_msg("MINIMIZED");
+	sb.append("MINIMIZED | ");
       if((state & Wnck.WindowState.MAXIMIZED_HORIZONTALLY) != 0)
-	debug_msg("MAXIMIZED_HORIZONTALLY");
+	sb.append("MAXIMIZED_HORIZONTALLY | ");
       if((state & Wnck.WindowState.MAXIMIZED_VERTICALLY) != 0)
-	debug_msg("MAXIMIZED_VERTICALLY");
+	sb.append("MAXIMIZED_VERTICALLY | ");
       if((state & Wnck.WindowState.SHADED) != 0)
-	debug_msg("SHADED");
+	sb.append("SHADED | ");
       if((state & Wnck.WindowState.SKIP_PAGER) != 0)
-	debug_msg("SKIP_PAGER");
+	sb.append("SKIP_PAGER | ");
       if((state & Wnck.WindowState.SKIP_TASKLIST) != 0)
-	debug_msg("SKIP_TASKLIST");
+	sb.append("SKIP_TASKLIST | ");
       if((state & Wnck.WindowState.STICKY) != 0)
-	debug_msg("STICKY");
+	sb.append("STICKY | ");
       if((state & Wnck.WindowState.HIDDEN) != 0)
-	debug_msg("HIDDEN");
+	sb.append("HIDDEN | ");
       if((state & Wnck.WindowState.FULLSCREEN) != 0)
-	debug_msg("FULLSCREEN");
+	sb.append("FULLSCREEN | ");
       if((state & Wnck.WindowState.DEMANDS_ATTENTION) != 0)
-	debug_msg("DEMANDS_ATTENTION");
+	sb.append("DEMANDS_ATTENTION | ");
       if((state & Wnck.WindowState.URGENT) != 0)
-	debug_msg("URGENT");
+	sb.append("URGENT | ");
       if((state & Wnck.WindowState.ABOVE) != 0)
-	debug_msg("ABOVE");
+	sb.append("ABOVE | ");
       if((state & Wnck.WindowState.BELOW) != 0)
-	debug_msg("BELOW");
+	sb.append("BELOW | ");
+
+      sb.truncate(sb.len - 3);
+      return(sb.str);
     }
 
     private void toggle_visibility() {
@@ -418,6 +427,7 @@ namespace AllTray {
       if(set_visible) {
 	w.state_changed -= maintain_hiddenness;
 	w.set_skip_tasklist(false);
+	w.set_skip_pager(false);
 	w.unminimize((uint32)tv.tv_sec);
 
 	Wnck.Workspace ws = w.get_workspace();
@@ -425,6 +435,7 @@ namespace AllTray {
 	w.activate((uint32)tv.tv_sec);
       } else {
 	w.set_skip_tasklist(true);
+	w.set_skip_pager(true);
 	w.minimize();
 	w.state_changed += maintain_hiddenness;
       }
