@@ -1,12 +1,7 @@
 Requirements and Depenedencies
 ==============================
 
-  * Vala > 0.7.3 (from git master on June 25, 2009, git commit
-    359e4816, at the earliest) to build from the bzr branch which does
-    not have the .c files already generated.
-
-    Optionally, you can use Vala 0.7.3, with the patch provided in
-    Vala's git commit 359e4816.
+  * Vala 0.7.4
 
   * Required libraries:
     - gtk 2.12 or better, glib and gobject
