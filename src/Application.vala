@@ -464,7 +464,18 @@ namespace AllTray {
       // Display an about dialog
       Gtk.AboutDialog about = new Gtk.AboutDialog();
       about.program_name = "AllTray";
-      about.version = Build.PACKAGE_VERSION;
+
+      if((Build.PACKAGE_VERSION.chr(-1, '+') != null) &&
+	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
+	about.version = "%s\nBranch: %s, r%s\n%s".
+	  printf(Build.PACKAGE_VERSION,
+		 Build.ALLTRAY_BZR_BRANCH,
+		 Build.ALLTRAY_BZR_REVISION,
+		 Build.ALLTRAY_BZR_REVID);
+      } else {
+	about.version = Build.PACKAGE_VERSION;
+      }
+
       about.website = "http://alltray.trausch.us/";
       about.copyright = "Copyright © "+Build.ALLTRAY_COPYRIGHT_YEARS;
       about.comments = "Dock applications in the system tray.";

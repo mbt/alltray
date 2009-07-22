@@ -62,7 +62,7 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_VER, "$(uname -v)",
   [Build OS Version])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_OS_HOST, "$(hostname -f)",
   [Build OS hostname])
-AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)", 
+AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)",
   [Build Date (UTC)])
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
   "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
@@ -72,18 +72,23 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COPYRIGHT_YEARS, "2009", [Copyright years])
 if test -d .bzr; then
     BZR_BRANCH_NAME="$(bzr version-info|grep ^branch-nick|cut -f2 -d' ')"
     BZR_REV_ID="$(bzr version-info|grep ^revision-id|cut -f2 -d' ')"
+    BZR_REVISION="$(bzr version-info|grep ^revno|cut -f2 -d' ')"
 
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BUILD, "TRUE", [Set if built from bzr tree])
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BRANCH,
       "$BZR_BRANCH_NAME", [Branch this was built from])
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVID,
       "$BZR_REV_ID", [Revision ID we are built from])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVISION,
+      "$BZR_REVISION", [Revision number we are built from])
 else
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BUILD, "FALSE", [TRUE if built from branch])
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_BRANCH,
       "$BZR_BRANCH_NAME", [Branch this was built from])
     AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVID,
       "$BZR_REV_ID", [Revision ID we are built from])
+    AC_DEFINE_UNQUOTED(ALLTRAY_BZR_REVISION,
+      "BZR_REVISION", [Revision number we are built from])
 fi
 
 AC_DEFINE_UNQUOTED(ALLTRAY_LICENSE, "$(cat COPYING|tr '\n' '|'|sed 's,|,\\n,g;s,",\\",g')", [The GNU GPL License Text])
