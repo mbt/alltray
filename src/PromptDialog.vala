@@ -11,7 +11,7 @@ namespace AllTray {
     private Label _lblPrompt;
 
     public PromptDialog() {
-      this.title = "Select an Application";
+      this.title = _("Select an Application");
       this.has_separator = false;
       this.border_width = 5;
       //set_default_size(250, 50);

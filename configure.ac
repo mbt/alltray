@@ -100,6 +100,7 @@ AC_CONFIG_FILES([README
 	data/alltray.desktop
 	data/Makefile
         man/Makefile
+	po/Makefile.in
         src/Makefile
 	vapi/Makefile
 	tests/Makefile
