@@ -44,22 +44,22 @@ namespace AllTray.Debug {
     private static bool _enabled = false;
 
     private const DebugDescription[] _debugOptions = {
-      { Subsystem.CommandLine, "CL", "command line parsing" },
-      { Subsystem.Display, "DISPLAY", "X11 display" },
-      { Subsystem.TrayIcon, "TRAY", "System Tray Icon" },
-      { Subsystem.WindowManager, "WM", "Window Manager" },
-      { Subsystem.Process, "PROCESS", "Process information" },
-      { Subsystem.Misc, "MISC", "Misc messages" },
-      { Subsystem.Bug, "BUG", "Something happened that shouldn't have" },
-      { Subsystem.Application, "APP", "Applications" },
-      { Subsystem.AttachHelper, "AH", "AttachHelper class messages" },
-      { Subsystem.Signal, "SIG", "Signal debugging messages" },
-      { Subsystem.Main, "MAIN", "Entrypoint, preinit, etc." },
-      { Subsystem.All, "ALL", "All messages" }
+      { Subsystem.CommandLine, "CL", _("command line parsing") },
+      { Subsystem.Display, "DISPLAY", _("X11 display") },
+      { Subsystem.TrayIcon, "TRAY", _("System Tray Icon") },
+      { Subsystem.WindowManager, "WM", _("Window Manager") },
+      { Subsystem.Process, "PROCESS", _("Process information"_) },
+      { Subsystem.Misc, "MISC", _("Misc messages") },
+      { Subsystem.Bug, "BUG", _("Internal error detail") },
+      { Subsystem.Application, "APP", _("Applications") },
+      { Subsystem.AttachHelper, "AH", _("AttachHelper class messages") },
+      { Subsystem.Signal, "SIG", _("Signal debugging messages") },
+      { Subsystem.Main, "MAIN", _("Entrypoint, preinit, etc.") },
+      { Subsystem.All, "ALL", _("All messages") }
     };
 
     public static void display_debug_list() {
-      stdout.printf("%-16s%s\n", "String", "Messages are for");
+      stdout.printf("%-16s%s\n", _("String"), _("Messages are for"));
       stdout.printf("======================================"+
 		    "======================================\n");
 
@@ -124,17 +124,17 @@ namespace AllTray.Debug {
 			Subsystem.Main);
 	    break;
 	  default:
-	    GLib.warning("Unrecognized value '%s' in ALLTRAY_DEBUG",
+	    GLib.warning(_("Unrecognized value '%s' in ALLTRAY_DEBUG"),
 			 tmpSubsys);
 	    break;
 	  }
 	}
 
 	emit(Subsystem.Misc, Level.Information,
-	     "Debugging subsystem setup complete.");
+	     _("Debugging subsystem setup complete."));
       } else if((enabled_subsystems == null) ||
 		(enabled_subsystems == "")) {
-	GLib.warning("ALLTRAY_DEBUG not set!");
+	GLib.warning(_("ALLTRAY_DEBUG not set!"));
       }
     }
 
@@ -154,7 +154,7 @@ namespace AllTray.Debug {
 
       if(lvl == Level.Fatal) {
 	emit(subsys, Level.Information,
-	     "Exiting: encountered fatal error.");
+	     _("Exiting: encountered fatal error."));
 	Posix.abort();
       }
     }
@@ -212,7 +212,7 @@ namespace AllTray.Debug {
 	break;
 
       default:
-	GLib.error("BUG: Reached default, should not be possible.");
+	GLib.error(_("BUG: Reached default, should not be possible."));
 	break;
       }
 
@@ -240,7 +240,7 @@ namespace AllTray.Debug {
 	break;
 
       default:
-	GLib.error("BUG: Reached default, should not be possible.");
+	GLib.error(_("BUG: Reached default, should not be possible."));
 	break;
       }
 

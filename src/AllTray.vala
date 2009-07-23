@@ -33,20 +33,20 @@ namespace AllTray {
 
     private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
       { "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
-	"Attach to a running program", null },
+	_("Attach to a running program"), null },
       { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
-	ref _cl_debug, "Enable debugging messages", null },
+	ref _cl_debug, _("Enable debugging messages"), null },
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
 	GLib.OptionArg.NONE, ref _cl_dopts,
-	"Show types of debugging messages", null },
+	_("Show types of debugging messages"), null },
       { "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
-	"Attach to already-running application",
+	_("Attach to already-running application"),
 	"PID" },
       { "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
-	"Display AllTray version info and exit", null },
+	_("Display AllTray version info and exit"), null },
       { "extended-version", 'V', 0, GLib.OptionArg.NONE,
 	ref _display_extended_ver,
-	"Display extended version info and exit",
+	_("Display extended version info and exit"),
 	null },
       { null }
     };
@@ -64,7 +64,7 @@ namespace AllTray {
 
       Debug.Notification.emit(Debug.Subsystem.CommandLine,
 			      Debug.Level.Information,
-			      "Command line options parsed.");
+			      _("Command line options parsed."));
     }
 
     public string[] command_line_init(ref string[] args) {
@@ -82,7 +82,7 @@ namespace AllTray {
 	env_args = sb.str.split(" ");
       }
 
-      opt_ctx = new GLib.OptionContext("- Dock software to the systray");
+      opt_ctx = new GLib.OptionContext(_("- Dock software to the systray"));
       opt_ctx.add_main_entries(this._acceptedCmdLineOptions, null);
       opt_ctx.add_group(Gtk.get_option_group(true));
 
@@ -90,7 +90,7 @@ namespace AllTray {
 	try {
 	  opt_ctx.parse(ref env_args);
 	} catch(OptionError e) {
-	  stderr.printf("error: env flag parsing failed (%s)\n",
+	  stderr.printf(_("error: env flag parsing failed (%s)\n"),
 			e.message);
 	  Posix.exit(1);
 	}
@@ -99,7 +99,7 @@ namespace AllTray {
       try {
 	opt_ctx.parse(ref args);
       } catch(OptionError e) {
-	stderr.printf("error: command line parsing failed (%s)\n",
+	stderr.printf(_("error: command line parsing failed (%s)\n"),
 		      e.message);
 	Posix.exit(1);
       }
@@ -161,7 +161,7 @@ namespace AllTray {
        * so we throw a fatal error here if it does, which should
        * be reported to be investigated if it does happen.
        */
-      GLib.error("Cannot set PGID.  Cannot continue.");
+      GLib.error(_("Cannot set PGID.  Cannot continue."));
       Posix.abort(); // Meta: we actually don't execute this line.
     }
 
@@ -198,7 +198,7 @@ namespace AllTray {
 
     private void display_version() {
       if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
-	stdout.printf("AllTray %s, from bzr branch %s rev %s,\n  rev-id %s\n",
+	stdout.printf(_("AllTray %s, from bzr branch %s rev %s,\n rev-id %s\n"),
 		      Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
 		      Build.ALLTRAY_BZR_REVISION, Build.ALLTRAY_BZR_REVID);
       } else {
@@ -206,28 +206,28 @@ namespace AllTray {
 		      Build.PACKAGE_VERSION);
       }
 
-      stdout.printf("Copyright (c) %s Michael B. Trausch "+
-		    "<mike@trausch.us>\n", Build.ALLTRAY_COPYRIGHT_YEARS);
-      stdout.printf("Licensed under the GNU GPL v3.0 as published by "+
-		    "the Free Software Foundation.\n\n");
+      stdout.printf(_("Copyright (c) %s Michael B. Trausch "+
+		      "<mike@trausch.us>\n"), Build.ALLTRAY_COPYRIGHT_YEARS);
+      stdout.printf(_("Licensed under the GNU GPL v3.0 as published by "+
+		      "the Free Software Foundation.\n\n"));
     }
 
     private void display_extended_version() {
       display_version();
 
-      stdout.printf("Configured %s on %s %s\n",
+      stdout.printf(_("Configured %s on %s %s\n"),
 		    Build.ALLTRAY_COMPILE_BUILD_DATE,
 		    Build.ALLTRAY_COMPILE_OS,
 		    Build.ALLTRAY_COMPILE_OS_REL);
 
-      stdout.printf("Compilers: %s and %s\n",
+      stdout.printf(_("Compilers: %s and %s\n"),
 		    Build.ALLTRAY_VALA_COMPILER,
 		    Build.ALLTRAY_C_COMPILER);
 
       if(Build.ALLTRAY_CONFIGURE_FLAGS == "") {
-	stdout.printf("Configure was run without flags\n");
+	stdout.printf(_("Configure was run without flags\n"));
       } else {
-	stdout.printf("Configure flags: %s\n",
+	stdout.printf(_("Configure flags: %s\n"),
 		      Build.ALLTRAY_CONFIGURE_FLAGS);
       }
     }
@@ -242,7 +242,7 @@ namespace AllTray {
 
     private void get_app_early(Wnck.Screen scr, Wnck.Application app) {
       StringBuilder msg = new StringBuilder();
-      msg.append_printf("Adding app (pid %d) to list of recv'd apps",
+      msg.append_printf(_("Adding app (pid %d) to list of recv'd apps"),
 			app.get_pid());
 
       Debug.Notification.emit(Debug.Subsystem.Application,
@@ -269,7 +269,7 @@ namespace AllTray {
       WnckScreen.application_opened -= get_app_early;
 
       if(AttachHelper.success == false) {
-	stderr.printf("Failed to get a window; exiting.\n");
+	stderr.printf(_("Failed to get a window; exiting.\n"));
 	Posix.exit(1);
       }
 
@@ -307,17 +307,17 @@ namespace AllTray {
       } catch(ProcessError e) {
 	Debug.Notification.emit(Debug.Subsystem.Process,
 				Debug.Level.Error,
-				"Whoops.  Not running?");
+				_("Oops.  Not running?"));
 	StringBuilder msg = new StringBuilder();
-	msg.append_printf("Failed to start process: %s", e.message);
+	msg.append_printf(_("Failed to start process: %s"), e.message);
 	throw new AllTrayError.FAILED(msg.str);
       }
 
       if(!p.running) {
 	Debug.Notification.emit(Debug.Subsystem.Process,
 				Debug.Level.Error,
-				"Whoops.  Not running?");
-	throw new AllTrayError.FAILED("Failed to start process");
+				_("Oops.  Not running?"));
+	throw new AllTrayError.FAILED(_("Failed to start process"));
       }
 
       _plist.append(p);
@@ -333,13 +333,13 @@ namespace AllTray {
     private void cleanup_for_process(Process p) {
       Debug.Notification.emit(Debug.Subsystem.Process,
 			      Debug.Level.Information,
-			      "Cleaning up for child...");
+			      _("Cleaning up for child..."));
       _plist.remove(p);
 
       if(_plist.length() == 0) {
 	Debug.Notification.emit(Debug.Subsystem.Main,
 				Debug.Level.Information,
-				"No more children. Dying.");
+				_("No more children. Dying."));
 	Gtk.main_quit();
       }
     }
@@ -350,7 +350,7 @@ namespace AllTray {
 
       foreach(string arg in args) {
 	StringBuilder sb = new StringBuilder();
-	sb.append_printf("Evaluating %s", arg);
+	sb.append_printf(_("Evaluating %s"), arg);
 	Debug.Notification.emit(Debug.Subsystem.CommandLine,
 				Debug.Level.Information,
 				sb.str);
@@ -359,7 +359,7 @@ namespace AllTray {
 	   !arg.contains("internal-fake-process")) continue;
 	Debug.Notification.emit(Debug.Subsystem.CommandLine,
 				Debug.Level.Information,
-				"Actually processing arg");
+				_("Actually processing arg"));
 
 	retval[curItem++] = arg;
       }
@@ -391,7 +391,7 @@ namespace AllTray {
 	Gtk.main_quit();
       } else {
 	StringBuilder msg = new StringBuilder();
-	msg.append_printf("Caught unwired signal %d", caught_signal);
+	msg.append_printf(_("Caught unwired signal %d"), caught_signal);
 	Debug.Notification.emit(Debug.Subsystem.Signal,
 				Debug.Level.Information,
 				msg.str);
