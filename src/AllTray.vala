@@ -322,12 +322,12 @@ namespace AllTray {
     }
 
     public static int main(string[] args) {
-      Program atray = new Program(ref args);
-      Program._instance = atray;
-
       Intl.bindtextdomain(Build.GETTEXT_PACKAGE, Build.LOCALE_DIR);
       Intl.textdomain(Build.GETTEXT_PACKAGE);
       Environment.set_application_name(Build.GETTEXT_PACKAGE);
+
+      Program atray = new Program(ref args);
+      Program._instance = atray;
 
       return(atray.run());
     }
