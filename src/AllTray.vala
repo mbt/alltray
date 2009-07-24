@@ -33,20 +33,20 @@ namespace AllTray {
 
     private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
       { "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
-	_("Attach to a running program"), null },
+	"Attach to a running program", null },
       { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
-	ref _cl_debug, _("Enable debugging messages"), null },
+	ref _cl_debug, "Enable debugging messages", null },
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
 	GLib.OptionArg.NONE, ref _cl_dopts,
-	_("Show types of debugging messages"), null },
+	"Show types of debugging messages", null },
       { "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
-	_("Attach to already-running application"),
+	"Attach to already-running application",
 	"PID" },
       { "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
-	_("Display AllTray version info and exit"), null },
+	"Display AllTray version info and exit", null },
       { "extended-version", 'V', 0, GLib.OptionArg.NONE,
 	ref _display_extended_ver,
-	_("Display extended version info and exit"),
+	"Display extended version info and exit",
 	null },
       { null }
     };
