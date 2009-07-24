@@ -99,6 +99,7 @@ AC_CONFIG_FILES([README
         images/Makefile
 	data/alltray.desktop
 	data/Makefile
+	intl/Makefile
         man/Makefile
 	po/Makefile.in
         src/Makefile
