@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray 0.7.3dev+\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-24 03:44-0400\n"
+"POT-Creation-Date: 2009-07-24 03:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,66 +46,66 @@ msgstr ""
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
 msgstr ""
 
-#: src/AllTray.vala:211
+#: src/AllTray.vala:210
 msgid ""
 "Licensed under the GNU GPL v3.0 as published by the Free Software "
 "Foundation.\n"
 "\n"
 msgstr ""
 
-#: src/AllTray.vala:218
+#: src/AllTray.vala:216
 msgid "Configured %s on %s %s\n"
 msgstr ""
 
-#: src/AllTray.vala:223
+#: src/AllTray.vala:221
 msgid "Compilers: %s and %s\n"
 msgstr ""
 
-#: src/AllTray.vala:228
+#: src/AllTray.vala:226
 msgid "Configure was run without flags\n"
 msgstr ""
 
-#: src/AllTray.vala:230
+#: src/AllTray.vala:228
 msgid "Configure flags: %s\n"
 msgstr ""
 
-#: src/AllTray.vala:245
+#: src/AllTray.vala:243
 msgid "Adding app (pid %d) to list of recv'd apps"
 msgstr ""
 
-#: src/AllTray.vala:272
+#: src/AllTray.vala:270
 msgid "Failed to get a window; exiting.\n"
 msgstr ""
 
-#: src/AllTray.vala:310 src/AllTray.vala:319
+#: src/AllTray.vala:308 src/AllTray.vala:317
 msgid "Oops.  Not running?"
 msgstr ""
 
-#: src/AllTray.vala:312
+#: src/AllTray.vala:310
 msgid "Failed to start process: %s"
 msgstr ""
 
-#: src/AllTray.vala:320
+#: src/AllTray.vala:318
 msgid "Failed to start process"
 msgstr ""
 
-#: src/AllTray.vala:336
+#: src/AllTray.vala:334
 msgid "Cleaning up for child..."
 msgstr ""
 
-#: src/AllTray.vala:342
+#: src/AllTray.vala:340
 msgid "No more children. Dying."
 msgstr ""
 
-#: src/AllTray.vala:353
+#: src/AllTray.vala:351
 msgid "Evaluating %s"
 msgstr ""
 
-#: src/AllTray.vala:362
+#: src/AllTray.vala:360
 msgid "Actually processing arg"
 msgstr ""
 
-#: src/AllTray.vala:394
+#: src/AllTray.vala:392
 msgid "Caught unwired signal %d"
 msgstr ""
 
@@ -284,19 +284,19 @@ msgstr ""
 msgid "The provided PID does not exist."
 msgstr ""
 
-#: src/Process.vala:134
+#: src/Process.vala:132
 msgid "Attached process %d has died."
 msgstr ""
 
-#: src/Process.vala:184
+#: src/Process.vala:182
 msgid "Child %d died okay"
 msgstr ""
 
-#: src/Process.vala:194
+#: src/Process.vala:192
 msgid "Child %d died with nothing!"
 msgstr ""
 
-#: src/Process.vala:234
+#: src/Process.vala:232
 msgid ""
 "AllTray was unable to attach to any applications, and AllTray's child\n"
 "has died.\n"
