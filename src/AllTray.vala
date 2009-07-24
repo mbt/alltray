@@ -325,6 +325,10 @@ namespace AllTray {
       Program atray = new Program(ref args);
       Program._instance = atray;
 
+      Intl.bindtextdomain(Build.GETTEXT_PACKAGE, Build.LOCALE_DIR);
+      Intl.textdomain(Build.GETTEXT_PACKAGE);
+      Environment.set_application_name(Build.GETTEXT_PACKAGE);
+
       return(atray.run());
     }
 

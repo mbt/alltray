@@ -4,7 +4,12 @@
 [CCode(cheader_filename = "config.h",
        cprefix="", lower_case_cprefix = "")]
 namespace AllTray.Build {
+  public const string PACKAGE;
   public const string PACKAGE_VERSION;
+
+  public const string GETTEXT_PACKAGE;
+  public const string LOCALE_DIR;
+
   public const string ALLTRAY_COPYRIGHT_YEARS;
   public const string ALLTRAY_LICENSE;
 
