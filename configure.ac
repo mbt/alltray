@@ -19,6 +19,8 @@ AC_CONFIG_SRCDIR([src/AllTray.vala])
 
 # Check for programs necessary to build and install AllTray.
 AC_PROG_CC
+AC_GNU_SOURCE
+AM_GNU_GETTEXT
 AC_PROG_SED
 AC_PATH_PROG(VALAC, valac, valac)
 AC_PROG_INSTALL
@@ -45,6 +47,9 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(pkglib)
 AC_SUBST(VALAC)
+
+GETTEXT_PACKAGE=${PACKAGE}
+AC_DEFINE(GETTEXT_PACKAGE, "${GETTEXT_PACKAGE}", [GETTEXT_PACKAGE])
 
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_FLAGS, "${CFLAGS}", [CFLAGS])
 AC_DEFINE_UNQUOTED(ALLTRAY_C_COMPILER, "$(${CC} --version|head -1)", [Compiler])
@@ -99,7 +104,9 @@ AC_CONFIG_FILES([README
         images/Makefile
 	data/alltray.desktop
 	data/Makefile
+	intl/Makefile
         man/Makefile
+	po/Makefile.in
         src/Makefile
 	vapi/Makefile
 	tests/Makefile

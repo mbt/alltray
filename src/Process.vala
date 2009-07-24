@@ -80,7 +80,7 @@ namespace AllTray {
 	_running = true;
 	ChildWatch.add(_child, child_died);
 	StringBuilder msg = new StringBuilder();
-	msg.append_printf("Child process %d (%s) now running.",
+	msg.append_printf(_("Child process %d (%s) now running."),
 			  (int)_child, _argv[0]);
 	Debug.Notification.emit(Debug.Subsystem.Process,
 				Debug.Level.Information,
@@ -105,9 +105,7 @@ namespace AllTray {
       _child = (Pid)pid;
 
       if(!process_num_is_alive(pid)) {
-	throw new ProcessError.PROCESS_DOES_NOT_EXIST("The provided "+
-						      "PID does not "+
-						      "exist.");
+	throw new ProcessError.PROCESS_DOES_NOT_EXIST(_("The provided PID does not exist."));
       }
 
       StringBuilder msg = new StringBuilder();
@@ -131,7 +129,7 @@ namespace AllTray {
       _running = false;
 
       StringBuilder msg = new StringBuilder();
-      msg.append_printf("Attached process %d has died.",
+      msg.append_printf(_("Attached process %d has died."),
 			(int)_child);
       Debug.Notification.emit(Debug.Subsystem.Process,
 			      Debug.Level.Information,
@@ -181,7 +179,7 @@ namespace AllTray {
 	// correct and go ahead and die.
 	Debug.Notification.emit(Debug.Subsystem.Process,
 				Debug.Level.Information,
-				"Child %d died okay".printf((int)_child));
+				_("Child %d died okay").printf((int)_child));
 	process_died(this);
       } else {
 	/*
@@ -191,7 +189,8 @@ namespace AllTray {
 	 */
 	Debug.Notification.emit(Debug.Subsystem.Process,
 				Debug.Level.Information,
-				"Child %d died with nothing!".printf((int)_child));
+				_("Child %d died with nothing!")
+				  .printf((int)_child));
 
 	_timerRunning = true;
 
@@ -220,7 +219,6 @@ namespace AllTray {
 	  foreach(Wnck.Window w in
 		  (List<Wnck.Window>)Program.WnckScreen.get_windows()) {
 	    if(w.get_pid() == proc) {
-	      stdout.printf("Calling maybe setup\n");
 	      _app.maybe_setup_for_pid(w.get_application(),
 				       w.get_pid());
 	      return(true);
@@ -229,19 +227,9 @@ namespace AllTray {
 	}
       }
 
+      // I _hate_ this... is there a way to avoid doing this?
       stderr.printf(
-	"""
-AllTray was unable to attach to any applications, and AllTray's child
-has died.
-
-This problem can be caused by application software that:
-  * is not compliant with the ICCCM and EWMH specs, and/or
-  * backgrounds itself and leaves the AllTray process group.
-
-xeyes is one application that is known to do this; there are certainly
-others.  Please file a bug report at http://launchpad.net/alltray/+filebug
-indicating the program you received this error message with.
-""");
+	_("AllTray was unable to attach to any applications, and AllTray's child\nhas died.\n\nThis problem can be caused by application software that:\n  * is not compliant with the ICCCM and EWMH specs,\n  * backgrounds itself and leaves the AllTray process group, or\n  * unexpectedly died an early death and did not actually start\n\nIf the problem is one of the first two problems, please report a bug\nin AllTray and it will be investigated and reported to the correct\nproject, if necessary.  If the problem is the third one, then you will\nneed to fix whatever went wrong and try again.\n"));
       Posix.exit(10);
       return(false);
     }

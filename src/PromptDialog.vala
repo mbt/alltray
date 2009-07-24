@@ -11,7 +11,7 @@ namespace AllTray {
     private Label _lblPrompt;
 
     public PromptDialog() {
-      this.title = "Select an Application";
+      this.title = _("Select an Application");
       this.has_separator = false;
       this.border_width = 5;
       //set_default_size(250, 50);
@@ -19,11 +19,8 @@ namespace AllTray {
     }
 
     private void create_widgets() {
-      string labelText = "Click on a window of the software you wish to dock."+
-	"\n\n"+
-	"Note: do not click on the window border itself. Click inside the\n"+
-	"window; particularly on Compiz, clicking on the title bar or the\n"+
-	"other sides of the window border DOES NOT WORK.";
+      string labelText
+        = _("Click on a window of the software you wish to dock.\n\nNote: do not click on the window border itself. Click inside\nthe window; particularly on Compiz, clicking on the title bar\nor the other sides of the window border DOES NOT WORK.");
 
       _lblPrompt = new Label(labelText);
       this.vbox.pack_start(_lblPrompt, false, true, 0);

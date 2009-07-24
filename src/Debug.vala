@@ -50,7 +50,7 @@ namespace AllTray.Debug {
       { Subsystem.WindowManager, "WM", "Window Manager" },
       { Subsystem.Process, "PROCESS", "Process information" },
       { Subsystem.Misc, "MISC", "Misc messages" },
-      { Subsystem.Bug, "BUG", "Something happened that shouldn't have" },
+      { Subsystem.Bug, "BUG", "Internal error detail" },
       { Subsystem.Application, "APP", "Applications" },
       { Subsystem.AttachHelper, "AH", "AttachHelper class messages" },
       { Subsystem.Signal, "SIG", "Signal debugging messages" },
@@ -59,7 +59,7 @@ namespace AllTray.Debug {
     };
 
     public static void display_debug_list() {
-      stdout.printf("%-16s%s\n", "String", "Messages are for");
+      stdout.printf("%-16s%s\n", _("String"), _("Messages are for"));
       stdout.printf("======================================"+
 		    "======================================\n");
 
@@ -124,17 +124,17 @@ namespace AllTray.Debug {
 			Subsystem.Main);
 	    break;
 	  default:
-	    GLib.warning("Unrecognized value '%s' in ALLTRAY_DEBUG",
+	    GLib.warning(_("Unrecognized value '%s' in ALLTRAY_DEBUG"),
 			 tmpSubsys);
 	    break;
 	  }
 	}
 
 	emit(Subsystem.Misc, Level.Information,
-	     "Debugging subsystem setup complete.");
+	     _("Debugging subsystem setup complete."));
       } else if((enabled_subsystems == null) ||
 		(enabled_subsystems == "")) {
-	GLib.warning("ALLTRAY_DEBUG not set!");
+	GLib.warning(_("ALLTRAY_DEBUG not set!"));
       }
     }
 
@@ -154,7 +154,7 @@ namespace AllTray.Debug {
 
       if(lvl == Level.Fatal) {
 	emit(subsys, Level.Information,
-	     "Exiting: encountered fatal error.");
+	     _("Exiting: encountered fatal error."));
 	Posix.abort();
       }
     }
@@ -212,7 +212,7 @@ namespace AllTray.Debug {
 	break;
 
       default:
-	GLib.error("BUG: Reached default, should not be possible.");
+	GLib.error(_("BUG: Reached default, should not be possible."));
 	break;
       }
 
@@ -240,7 +240,7 @@ namespace AllTray.Debug {
 	break;
 
       default:
-	GLib.error("BUG: Reached default, should not be possible.");
+	GLib.error(_("BUG: Reached default, should not be possible."));
 	break;
       }
 

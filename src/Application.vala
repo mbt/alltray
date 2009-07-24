@@ -50,7 +50,7 @@ namespace AllTray {
       _process = p;
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
-			      "Hey hey, creating a new Application");
+			      _("Creating a new Application"));
 
       /*
        * Register interest in learning of new applications on
@@ -73,8 +73,7 @@ namespace AllTray {
       if(app == _wnckApp) {
 	Debug.Notification.emit(Debug.Subsystem.Application,
 				Debug.Level.Information,
-				"WHOA - The app went away‽  "+
-				"Looking for it to come back...");
+				_("WHOA - The app went away?! Looking for it to come back..."));
 
 	scr.window_opened -= maybe_update_window_count;
 	scr.window_closed -= maybe_update_window_count;
@@ -103,12 +102,7 @@ namespace AllTray {
       if(!retval) {
 	StringBuilder msg = new StringBuilder();
 
-	msg.append_printf("pid %d (%s) is not ours.\n  Want pid = %d, "+
-			  "ppid = %d, or pgid = %d, have pid = "+
-			  "%d, ppid = %d, pgid = "+
-			  "%d", app_pid, proc_name, desired_pid,
-			  desired_pid, desired_pgid, app_pid, app_ppid,
-			  app_pgid);
+	msg.append_printf(_("pid %d (%s) is not ours."), app_pid, proc_name);
 	Debug.Notification.emit(Debug.Subsystem.Application,
 				Debug.Level.Information,
 				msg.str);
@@ -123,7 +117,8 @@ namespace AllTray {
 
     public void maybe_setup_for_pid(Wnck.Application app, int pid) {
       if(pid == 0) {
-	warning("Application %s needs fixed, reports PID 0.", app.get_name());
+	warning(_("Application %s needs fixed, reports PID 0."),
+		app.get_name());
       } else {
 	bool interested = _caughtWindow = are_we_interested(pid);
 	if(!interested) return;
@@ -171,17 +166,17 @@ namespace AllTray {
     private void display_menu(uint button, uint activate_time) {
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
-			      "Requesting menu!");
+			      _("Requesting menu!"));
       Gtk.Menu appMenu = new Gtk.Menu();
 
       Gtk.MenuItem mnuToggle =
-        new Gtk.MenuItem.with_label("Toggle Visibility");
+        new Gtk.MenuItem.with_label(_("Toggle Visibility"));
       Gtk.MenuItem mnuUndock =
-        new Gtk.MenuItem.with_label("Undock");
+        new Gtk.MenuItem.with_label(_("Undock"));
       Gtk.MenuItem mnuSeparator0 =
         new Gtk.SeparatorMenuItem();
       Gtk.MenuItem mnuAbout =
-        new Gtk.MenuItem.with_label("About AllTray…");
+        new Gtk.MenuItem.with_label(_("About AllTray..."));
 
       Gtk.Menu windowList = create_window_list_menu();
       mnuToggle.set_submenu(windowList);
@@ -207,7 +202,7 @@ namespace AllTray {
     private Gtk.Menu create_window_list_menu() {
       Gtk.Menu retval = new Gtk.Menu();
 
-      Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label("All");
+      Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label(_("All"));
       Gtk.MenuItem mnuSep0 = new Gtk.SeparatorMenuItem();
 
       retval.append(mnuAllWindows);
@@ -240,7 +235,7 @@ namespace AllTray {
       int wincount = _wnckApp.get_n_windows();
       string plural = (wincount != 1 ? "s" : "");
 
-      sb.append_printf("%s - %d window%s", _wnckApp.get_name(),
+      sb.append_printf(_("%s - %d window%s"), _wnckApp.get_name(),
 		       wincount, plural);
 
       _appIcon.set_tooltip(sb.str);
@@ -282,10 +277,10 @@ namespace AllTray {
 
       string msg = "";
       if(_usingWindowIcon) {
-	msg = "Using Window Icon (fallback was %s)".
+	msg = _("Using Window Icon (fallback was %s)").
 	printf(fallback.to_string());
       } else {
-	msg = "Using App Icon (fallback was %s)".
+	msg = _("Using App Icon (fallback was %s)").
 	printf(fallback.to_string());
       }
 
@@ -341,9 +336,9 @@ namespace AllTray {
 
 
       string ch_bitmask =
-        "New Bitmask: %s".printf(get_new_windowstate(changed_bits));
+        _("New Bitmask: %s").printf(get_new_windowstate(changed_bits));
       string ch_new_state =
-        "New State: %s".printf(get_new_windowstate(new_state));
+        _("New State: %s").printf(get_new_windowstate(new_state));
 
       debug_msg(ch_bitmask);
       debug_msg(ch_new_state);
@@ -364,31 +359,31 @@ namespace AllTray {
       StringBuilder sb = new StringBuilder();
 
       if((state & Wnck.WindowState.MINIMIZED) != 0)
-	sb.append("MINIMIZED | ");
+	sb.append(_("MINIMIZED | "));
       if((state & Wnck.WindowState.MAXIMIZED_HORIZONTALLY) != 0)
-	sb.append("MAXIMIZED_HORIZONTALLY | ");
+	sb.append(_("MAXIMIZED_HORIZONTALLY | "));
       if((state & Wnck.WindowState.MAXIMIZED_VERTICALLY) != 0)
-	sb.append("MAXIMIZED_VERTICALLY | ");
+	sb.append(_("MAXIMIZED_VERTICALLY | "));
       if((state & Wnck.WindowState.SHADED) != 0)
-	sb.append("SHADED | ");
+	sb.append(_("SHADED | "));
       if((state & Wnck.WindowState.SKIP_PAGER) != 0)
-	sb.append("SKIP_PAGER | ");
+	sb.append(_("SKIP_PAGER | "));
       if((state & Wnck.WindowState.SKIP_TASKLIST) != 0)
-	sb.append("SKIP_TASKLIST | ");
+	sb.append(_("SKIP_TASKLIST | "));
       if((state & Wnck.WindowState.STICKY) != 0)
-	sb.append("STICKY | ");
+	sb.append(_("STICKY | "));
       if((state & Wnck.WindowState.HIDDEN) != 0)
-	sb.append("HIDDEN | ");
+	sb.append(_("HIDDEN | "));
       if((state & Wnck.WindowState.FULLSCREEN) != 0)
-	sb.append("FULLSCREEN | ");
+	sb.append(_("FULLSCREEN | "));
       if((state & Wnck.WindowState.DEMANDS_ATTENTION) != 0)
-	sb.append("DEMANDS_ATTENTION | ");
+	sb.append(_("DEMANDS_ATTENTION | "));
       if((state & Wnck.WindowState.URGENT) != 0)
-	sb.append("URGENT | ");
+	sb.append(_("URGENT | "));
       if((state & Wnck.WindowState.ABOVE) != 0)
-	sb.append("ABOVE | ");
+	sb.append(_("ABOVE | "));
       if((state & Wnck.WindowState.BELOW) != 0)
-	sb.append("BELOW | ");
+	sb.append(_("BELOW | "));
 
       sb.truncate(sb.len - 3);
       return(sb.str);
@@ -424,7 +419,7 @@ namespace AllTray {
       tv.get_current_time();
 
       StringBuilder msg = new StringBuilder();
-      msg.append_printf("Setting window 0x%08lx visibility to %s",
+      msg.append_printf(_("Setting window 0x%08lx visibility to %s"),
 			w.get_xid(), _appVisible.to_string());
 
       if(set_visible) {
@@ -467,7 +462,7 @@ namespace AllTray {
 
       if((Build.PACKAGE_VERSION.chr(-1, '+') != null) &&
 	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
-	about.version = "%s\nBranch: %s, r%s\n%s".
+	about.version = _("%s\nBranch: %s, r%s\n%s").
 	  printf(Build.PACKAGE_VERSION,
 		 Build.ALLTRAY_BZR_BRANCH,
 		 Build.ALLTRAY_BZR_REVISION,
@@ -477,8 +472,9 @@ namespace AllTray {
       }
 
       about.website = "http://alltray.trausch.us/";
-      about.copyright = "Copyright © "+Build.ALLTRAY_COPYRIGHT_YEARS;
-      about.comments = "Dock applications in the system tray.";
+      about.copyright = _("Copyright (c) %s")
+        .printf(Build.ALLTRAY_COPYRIGHT_YEARS);
+      about.comments = _("Dock applications in the system tray.");
       about.license = Build.ALLTRAY_LICENSE;
 
       about.response += dialog_destroy;

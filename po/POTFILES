@@ -1,0 +1,6 @@
+     ../src/AllTray.vala \
+     ../src/Application.vala \
+     ../src/AttachHelper.vala \
+     ../src/Debug.vala \
+     ../src/Process.vala \
+     ../src/PromptDialog.vala

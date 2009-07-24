@@ -3,9 +3,7 @@ ltmain.sh
 install-sh
 depcomp
 configure
-config.sub
 config.h.in
-config.guess
 aclocal.m4
 doc/src-docs
 alltray
