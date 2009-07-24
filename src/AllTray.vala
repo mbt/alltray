@@ -206,10 +206,8 @@ namespace AllTray {
 		      Build.PACKAGE_VERSION);
       }
 
-      stdout.printf(_("Copyright (c) %s Michael B. Trausch "+
-		      "<mike@trausch.us>\n"), Build.ALLTRAY_COPYRIGHT_YEARS);
-      stdout.printf(_("Licensed under the GNU GPL v3.0 as published by "+
-		      "the Free Software Foundation.\n\n"));
+      stdout.printf(_("Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"), Build.ALLTRAY_COPYRIGHT_YEARS);
+      stdout.printf(_("Licensed under the GNU GPL v3.0 as published by the Free Software Foundation.\n\n"));
     }
 
     private void display_extended_version() {

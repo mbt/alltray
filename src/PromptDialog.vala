@@ -20,11 +20,7 @@ namespace AllTray {
 
     private void create_widgets() {
       string labelText
-        = _("Click on a window of the software you wish to dock."+
-	    "\n\n"+
-	    "Note: do not click on the window border itself. Click inside\n"+
-	    "the window; particularly on Compiz, clicking on the title bar\n"+
-	    "or the other sides of the window border DOES NOT WORK.");
+        = _("Click on a window of the software you wish to dock.\n\nNote: do not click on the window border itself. Click inside\nthe window; particularly on Compiz, clicking on the title bar\nor the other sides of the window border DOES NOT WORK.");
 
       _lblPrompt = new Label(labelText);
       this.vbox.pack_start(_lblPrompt, false, true, 0);

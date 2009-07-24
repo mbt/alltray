@@ -73,8 +73,7 @@ namespace AllTray {
       if(app == _wnckApp) {
 	Debug.Notification.emit(Debug.Subsystem.Application,
 				Debug.Level.Information,
-				_("WHOA - The app went away‽  "+
-				  "Looking for it to come back..."));
+				_("WHOA - The app went away?! Looking for it to come back..."));
 
 	scr.window_opened -= maybe_update_window_count;
 	scr.window_closed -= maybe_update_window_count;
@@ -103,12 +102,7 @@ namespace AllTray {
       if(!retval) {
 	StringBuilder msg = new StringBuilder();
 
-	msg.append_printf(_("pid %d (%s) is not ours.\n  Want pid = %d, "+
-			    "ppid = %d, or pgid = %d, have pid = "+
-			    "%d, ppid = %d, pgid = "+
-			    "%d"), app_pid, proc_name, desired_pid,
-			  desired_pid, desired_pgid, app_pid, app_ppid,
-			  app_pgid);
+	msg.append_printf(_("pid %d (%s) is not ours."), app_pid, proc_name);
 	Debug.Notification.emit(Debug.Subsystem.Application,
 				Debug.Level.Information,
 				msg.str);
@@ -182,7 +176,7 @@ namespace AllTray {
       Gtk.MenuItem mnuSeparator0 =
         new Gtk.SeparatorMenuItem();
       Gtk.MenuItem mnuAbout =
-        new Gtk.MenuItem.with_label(_("About AllTray…"));
+        new Gtk.MenuItem.with_label(_("About AllTray..."));
 
       Gtk.Menu windowList = create_window_list_menu();
       mnuToggle.set_submenu(windowList);
@@ -478,7 +472,7 @@ namespace AllTray {
       }
 
       about.website = "http://alltray.trausch.us/";
-      about.copyright = _("Copyright © %s")
+      about.copyright = _("Copyright (c) %s")
         .printf(Build.ALLTRAY_COPYRIGHT_YEARS);
       about.comments = _("Dock applications in the system tray.");
       about.license = Build.ALLTRAY_LICENSE;

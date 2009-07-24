@@ -105,9 +105,7 @@ namespace AllTray {
       _child = (Pid)pid;
 
       if(!process_num_is_alive(pid)) {
-	throw new ProcessError.PROCESS_DOES_NOT_EXIST(_("The provided "+
-							"PID does not "+
-							"exist."));
+	throw new ProcessError.PROCESS_DOES_NOT_EXIST(_("The provided PID does not exist."));
       }
 
       StringBuilder msg = new StringBuilder();
@@ -229,21 +227,9 @@ namespace AllTray {
 	}
       }
 
+      // I _hate_ this... is there a way to avoid doing this?
       stderr.printf(
-	_("""
-AllTray was unable to attach to any applications, and AllTray's child
-has died.
-
-This problem can be caused by application software that:
-  * is not compliant with the ICCCM and EWMH specs,
-  * backgrounds itself and leaves the AllTray process group, or
-  * unexpectedly died an early death and did not actually start
-
-If the problem is one of the first two problems, please report a bug
-in AllTray and it will be investigated and reported to the correct
-project, if necessary.  If the problem is the third one, then you will
-need to fix whatever went wrong and try again.
-"""));
+	_("AllTray was unable to attach to any applications, and AllTray's child\nhas died.\n\nThis problem can be caused by application software that:\n  * is not compliant with the ICCCM and EWMH specs,\n  * backgrounds itself and leaves the AllTray process group, or\n  * unexpectedly died an early death and did not actually start\n\nIf the problem is one of the first two problems, please report a bug\nin AllTray and it will be investigated and reported to the correct\nproject, if necessary.  If the problem is the third one, then you will\nneed to fix whatever went wrong and try again.\n"));
       Posix.exit(10);
       return(false);
     }
