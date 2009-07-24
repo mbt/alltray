@@ -33,3 +33,5 @@ tests/GtkIconChange
 *.gcov
 *.gcda
 *.gcno
+*.gmo
+stamp-po
