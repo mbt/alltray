@@ -1,7 +1,34 @@
 News for 0.7.3dev+
 ==================
 
-Nothing yet.  Just making automake happy.
+THIS IS A DEVELOPMENT SNAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+  * AllTray has gained the -H (--hide) command line option.  This
+    command line option tells AllTray that you want to hide the
+    application after spawning it or attaching to it.  This was
+    default behavior for 0.70 and prior and did not exist at all in
+    0.7.0dev through 0.7.3dev releases.
+
+  * i18n support has been added to AllTray; it is now translatable.
+    If you would like to contribute translations, you can do so at
+    https://translations.launchpad.net/alltray -- all you need is an
+    account at Launchpad and knowledge of English and the language you
+    are translating into.
+
+  * A number of bugs (both within Launchpad and not) have been fixed
+    since 0.7.3dev.  AllTray should now work on more window managers,
+    and more consistently and correctly.  There are known issues with
+    e17 at this point in time.
+
+  * If rebuilding Vala files, Vala 0.7.4 is required.  Vala 0.7.4 is
+    _NOT_ required to simply build from the source tarball; it is only
+    required if you want to develop for AllTray or build from the bzr
+    branch, really.
+
+  * For other current build-time and run-time requirements, please see
+    the REQUIREMENTS file.
 
 News for 0.7.3dev
 =================
