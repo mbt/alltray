@@ -1,12 +1,31 @@
 Requirements and Depenedencies
 ==============================
 
-  * Vala 0.7.4
+For Release Builds
+------------------
+
+Release builds are tarball releases, which contain a ./configure script.
 
   * Required libraries:
     - gtk 2.12 or better, glib and gobject
     - libwnck
     - libgtop
+
+For Development Builds
+----------------------
+
+Development builds are branches from bzr, which do not have a
+./configure script and have more requirements to build.
+
+  * Vala 0.7.4
+
+  * Autotools stack.  The author uses GNU autoconf 2.62 and automake
+    1.11; you may be able to use other versions, but as always, YMMV.
+    If you have trouble building AllTray correctly, please be sure to
+    be using at least these versions.
+
+Runtime requirements
+--------------------
 
   * An EWMH and ICCCM compliant desktop environment and software.  If
     AllTray is deficient in implementing these standards in any way,
