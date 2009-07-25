@@ -18,6 +18,7 @@ namespace AllTray {
     private bool _appVisible;
     private bool _caughtWindow;
     private bool _usingWindowIcon;
+    private Queue<Wnck.Window> _window_enforce_minimize_queue;
 
     public Wnck.Application wnck_app {
       get {
@@ -48,6 +49,8 @@ namespace AllTray {
 
     public Application(Process p) {
       _process = p;
+      _window_enforce_minimize_queue = new Queue<Wnck.Window>();
+
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
 			      _("Creating a new Application"));
@@ -334,7 +337,6 @@ namespace AllTray {
 				     Wnck.WindowState new_state) {
       if(_appVisible) return;
 
-
       string ch_bitmask =
         _("New Bitmask: %s").printf(get_new_windowstate(changed_bits));
       string ch_new_state =
@@ -423,6 +425,9 @@ namespace AllTray {
 			w.get_xid(), _appVisible.to_string());
 
       if(set_visible) {
+	// Forcibly empty the queue (prevent a race).
+	_window_enforce_minimize_queue.clear();
+
 	w.state_changed -= maintain_hiddenness;
 	w.set_skip_tasklist(false);
 	w.set_skip_pager(false);
@@ -435,12 +440,28 @@ namespace AllTray {
 	w.set_skip_tasklist(true);
 	w.set_skip_pager(true);
 	w.minimize();
-	w.state_changed += maintain_hiddenness;
+
+	_window_enforce_minimize_queue.push_head(w);
+	Timeout.add(150, set_maintain_hiddenness);
       }
 
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
 			      msg.str);
+    }
+
+    private bool set_maintain_hiddenness() {
+      Wnck.Window? w;
+
+      while((w = _window_enforce_minimize_queue.pop_tail()) != null) {
+	w.state_changed += maintain_hiddenness;
+      }
+
+      /*
+       * Only call us again if the queue has had things pop up in
+       * it that we didn't handle this time.
+       */
+      return(_window_enforce_minimize_queue.length == 0);
     }
 
     private void dialog_destroy(Gtk.AboutDialog which, int resp_id) {
