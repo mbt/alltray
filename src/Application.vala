@@ -164,6 +164,10 @@ namespace AllTray {
       } else {
 	update_icon_app_image(_wnckApp);
       }
+
+      if(Program._initially_hide == true) {
+	hide_all_windows();
+      }
     }
 
     private void display_menu(uint button, uint activate_time) {
@@ -405,6 +409,11 @@ namespace AllTray {
 
     private void show_all_windows() {
       _appVisible = false;
+      toggle_visibility();
+    }
+
+    private void hide_all_windows() {
+      _appVisible = true;
       toggle_visibility();
     }
 

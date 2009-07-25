@@ -25,6 +25,8 @@ namespace AllTray {
     private static bool _display_extended_ver;
     private static Program _instance;
 
+    // Needs to be accessible from AllTray.Application.
+    public static bool _initially_hide;
     public static Wnck.Screen WnckScreen;
     public static List<Wnck.Application> WnckEarlyApps;
     public static Pid pgid;
@@ -39,6 +41,8 @@ namespace AllTray {
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
 	GLib.OptionArg.NONE, ref _cl_dopts,
 	"Show types of debugging messages", null },
+      { "hide", 'H', 0, GLib.OptionArg.NONE, ref _initially_hide,
+	"Initially hide on spawn/attach", null },
       { "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
 	"Attach to already-running application",
 	"PID" },
