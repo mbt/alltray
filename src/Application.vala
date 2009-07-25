@@ -338,14 +338,18 @@ namespace AllTray {
       if(_appVisible) return;
 
       string ch_bitmask =
-        _("New Bitmask: %s").printf(get_new_windowstate(changed_bits));
+        _("New Bitmask: %s").printf(get_win_state(changed_bits));
       string ch_new_state =
-        _("New State: %s").printf(get_new_windowstate(new_state));
+        _("New State: %s").printf(get_win_state(new_state));
 
       debug_msg(ch_bitmask);
       debug_msg(ch_new_state);
 
-      if((new_state & Wnck.WindowState.MINIMIZED) == 0) {
+      if((new_state & Wnck.WindowState.MINIMIZED) == 0 &&
+	 (changed_bits & Wnck.WindowState.MINIMIZED) ==
+	 Wnck.WindowState.MINIMIZED) {
+	debug_msg(_("Blinking, window state is: %s")
+		  .printf(get_win_state(new_state)));
 	win.minimize();
 	_appIcon.blinking = true;
       }
@@ -357,7 +361,7 @@ namespace AllTray {
 			      str);
     }
 
-    private string get_new_windowstate(Wnck.WindowState state) {
+    private string get_win_state(Wnck.WindowState state) {
       StringBuilder sb = new StringBuilder();
 
       if((state & Wnck.WindowState.MINIMIZED) != 0)
