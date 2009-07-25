@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray 0.7.3dev+\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-24 03:49-0400\n"
+"POT-Creation-Date: 2009-07-25 07:00-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,150 +89,154 @@ msgstr ""
 msgid "Failed to start process"
 msgstr ""
 
-#: src/AllTray.vala:334
+#: src/AllTray.vala:338
 msgid "Cleaning up for child..."
 msgstr ""
 
-#: src/AllTray.vala:340
+#: src/AllTray.vala:344
 msgid "No more children. Dying."
 msgstr ""
 
-#: src/AllTray.vala:351
+#: src/AllTray.vala:355
 msgid "Evaluating %s"
 msgstr ""
 
-#: src/AllTray.vala:360
+#: src/AllTray.vala:364
 msgid "Actually processing arg"
 msgstr ""
 
-#: src/AllTray.vala:392
+#: src/AllTray.vala:396
 msgid "Caught unwired signal %d"
 msgstr ""
 
-#: src/Application.vala:53
+#: src/Application.vala:56
 msgid "Creating a new Application"
 msgstr ""
 
-#: src/Application.vala:76
+#: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
 msgstr ""
 
-#: src/Application.vala:105
+#: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
 msgstr ""
 
-#: src/Application.vala:120
+#: src/Application.vala:123
 msgid "Application %s needs fixed, reports PID 0."
 msgstr ""
 
-#: src/Application.vala:169
+#: src/Application.vala:172
 msgid "Requesting menu!"
 msgstr ""
 
-#: src/Application.vala:173
+#: src/Application.vala:176
 msgid "Toggle Visibility"
 msgstr ""
 
-#: src/Application.vala:175
+#: src/Application.vala:178
 msgid "Undock"
 msgstr ""
 
-#: src/Application.vala:179
+#: src/Application.vala:182
 msgid "About AllTray..."
 msgstr ""
 
-#: src/Application.vala:205
+#: src/Application.vala:208
 msgid "All"
 msgstr ""
 
-#: src/Application.vala:238
+#: src/Application.vala:241
 msgid "%s - %d window%s"
 msgstr ""
 
-#: src/Application.vala:280
+#: src/Application.vala:283
 msgid "Using Window Icon (fallback was %s)"
 msgstr ""
 
-#: src/Application.vala:283
+#: src/Application.vala:286
 msgid "Using App Icon (fallback was %s)"
 msgstr ""
 
-#: src/Application.vala:339
+#: src/Application.vala:341
 msgid "New Bitmask: %s"
 msgstr ""
 
-#: src/Application.vala:341
+#: src/Application.vala:343
 msgid "New State: %s"
 msgstr ""
 
-#: src/Application.vala:362
-msgid "MINIMIZED | "
-msgstr ""
-
-#: src/Application.vala:364
-msgid "MAXIMIZED_HORIZONTALLY | "
-msgstr ""
-
-#: src/Application.vala:366
-msgid "MAXIMIZED_VERTICALLY | "
+#: src/Application.vala:351
+msgid "Blinking, window state is: %s"
 msgstr ""
 
 #: src/Application.vala:368
-msgid "SHADED | "
+msgid "MINIMIZED | "
 msgstr ""
 
 #: src/Application.vala:370
-msgid "SKIP_PAGER | "
+msgid "MAXIMIZED_HORIZONTALLY | "
 msgstr ""
 
 #: src/Application.vala:372
-msgid "SKIP_TASKLIST | "
+msgid "MAXIMIZED_VERTICALLY | "
 msgstr ""
 
 #: src/Application.vala:374
-msgid "STICKY | "
+msgid "SHADED | "
 msgstr ""
 
 #: src/Application.vala:376
-msgid "HIDDEN | "
+msgid "SKIP_PAGER | "
 msgstr ""
 
 #: src/Application.vala:378
-msgid "FULLSCREEN | "
+msgid "SKIP_TASKLIST | "
 msgstr ""
 
 #: src/Application.vala:380
-msgid "DEMANDS_ATTENTION | "
+msgid "STICKY | "
 msgstr ""
 
 #: src/Application.vala:382
-msgid "URGENT | "
+msgid "HIDDEN | "
 msgstr ""
 
 #: src/Application.vala:384
-msgid "ABOVE | "
+msgid "FULLSCREEN | "
 msgstr ""
 
 #: src/Application.vala:386
+msgid "DEMANDS_ATTENTION | "
+msgstr ""
+
+#: src/Application.vala:388
+msgid "URGENT | "
+msgstr ""
+
+#: src/Application.vala:390
+msgid "ABOVE | "
+msgstr ""
+
+#: src/Application.vala:392
 msgid "BELOW | "
 msgstr ""
 
-#: src/Application.vala:422
+#: src/Application.vala:428
 msgid "Setting window 0x%08lx visibility to %s"
 msgstr ""
 
-#: src/Application.vala:465
+#: src/Application.vala:490
 msgid ""
 "%s\n"
 "Branch: %s, r%s\n"
 "%s"
 msgstr ""
 
-#: src/Application.vala:475
+#: src/Application.vala:500
 msgid "Copyright (c) %s"
 msgstr ""
 
-#: src/Application.vala:477
+#: src/Application.vala:502
 msgid "Dock applications in the system tray."
 msgstr ""
 
