@@ -4,6 +4,7 @@
  * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
+using AllTray.Private.GLib;
 
 namespace AllTray {
   public errordomain ApplicationError {
@@ -242,8 +243,9 @@ namespace AllTray {
       int wincount = _wnckApp.get_n_windows();
       string plural = (wincount != 1 ? "s" : "");
 
-      sb.append_printf(_("%s - %d window%s"), _wnckApp.get_name(),
-		       wincount, plural);
+      sb.append_printf(ngettext("%s - %d window",
+				"%s - %d windows",
+				wincount), _wnckApp.get_name(), wincount);
 
       _appIcon.set_tooltip(sb.str);
     }
