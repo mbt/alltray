@@ -17,7 +17,11 @@ For Development Builds
 Development builds are branches from bzr, which do not have a
 ./configure script and have more requirements to build.
 
-  * Vala 0.7.4
+  * Vala 0.7.4.  If using a later version of Vala, the
+    Application.vala file may fail to build correctly if the patch in
+    http://bugzilla.gnome.org/show_bug.cgi?id=589735 has been applied
+    to the git tree; if so, remove "using AllTray.Private.GLib;" from
+    the top of the file and then it will build.
 
   * Autotools stack.  The author uses GNU autoconf 2.62 and automake
     1.11; you may be able to use other versions, but as always, YMMV.
