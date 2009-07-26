@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-25 23:57-0400\n"
+"POT-Creation-Date: 2009-07-26 01:45-0400\n"
 "PO-Revision-Date: 2009-07-25 09:40+0000\n"
 "Last-Translator: Michael B. Trausch <mbt@zest.trausch.us>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -16,6 +16,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-07-25 13:36+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+
+#: src/AllTray.vala:38
+msgid "Attach to a running program"
+msgstr ""
+
+#: src/AllTray.vala:40
+msgid "Enable debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:43
+msgid "Show types of debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:45
+msgid "Initially hide on spawn/attach"
+msgstr ""
+
+#: src/AllTray.vala:47
+msgid "Attach to already-running application"
+msgstr ""
+
+#: src/AllTray.vala:50
+msgid "Display AllTray version info and exit"
+msgstr ""
+
+#: src/AllTray.vala:53
+msgid "Display extended version info and exit"
+msgstr ""
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
@@ -259,6 +287,55 @@ msgstr ""
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
+msgstr ""
+
+#: src/Debug.vala:47
+#, fuzzy
+msgid "command line parsing"
+msgstr "Opciones de línea de órdenes analizados."
+
+#: src/Debug.vala:48
+msgid "X11 display"
+msgstr ""
+
+#: src/Debug.vala:49
+msgid "System Tray Icon"
+msgstr ""
+
+#: src/Debug.vala:50
+msgid "Window Manager"
+msgstr ""
+
+#: src/Debug.vala:51
+msgid "Process information"
+msgstr ""
+
+#: src/Debug.vala:52
+msgid "Misc messages"
+msgstr ""
+
+#: src/Debug.vala:53
+msgid "Internal error detail"
+msgstr ""
+
+#: src/Debug.vala:54
+msgid "Applications"
+msgstr ""
+
+#: src/Debug.vala:55
+msgid "AttachHelper class messages"
+msgstr ""
+
+#: src/Debug.vala:56
+msgid "Signal debugging messages"
+msgstr ""
+
+#: src/Debug.vala:57
+msgid "Entrypoint, preinit, etc."
+msgstr ""
+
+#: src/Debug.vala:58
+msgid "All debug messages"
 msgstr ""
 
 #: src/Debug.vala:62

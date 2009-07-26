@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray 0.7.3dev+\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-25 23:57-0400\n"
+"POT-Creation-Date: 2009-07-26 01:45-0400\n"
 "PO-Revision-Date: 2009-07-24 04:19-0400\n"
 "Last-Translator: Michael B. Trausch <mike@trausch.us>\n"
 "Language-Team: English\n"
@@ -15,6 +15,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/AllTray.vala:38
+msgid "Attach to a running program"
+msgstr ""
+
+#: src/AllTray.vala:40
+msgid "Enable debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:43
+msgid "Show types of debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:45
+msgid "Initially hide on spawn/attach"
+msgstr ""
+
+#: src/AllTray.vala:47
+msgid "Attach to already-running application"
+msgstr ""
+
+#: src/AllTray.vala:50
+msgid "Display AllTray version info and exit"
+msgstr ""
+
+#: src/AllTray.vala:53
+msgid "Display extended version info and exit"
+msgstr ""
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
@@ -262,6 +290,56 @@ msgstr "Got window 0x%08lx"
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
 msgstr "Window 0x%08lx pid = %d"
+
+#: src/Debug.vala:47
+#, fuzzy
+msgid "command line parsing"
+msgstr "Command line options parsed."
+
+#: src/Debug.vala:48
+msgid "X11 display"
+msgstr ""
+
+#: src/Debug.vala:49
+msgid "System Tray Icon"
+msgstr ""
+
+#: src/Debug.vala:50
+msgid "Window Manager"
+msgstr ""
+
+#: src/Debug.vala:51
+msgid "Process information"
+msgstr ""
+
+#: src/Debug.vala:52
+msgid "Misc messages"
+msgstr ""
+
+#: src/Debug.vala:53
+msgid "Internal error detail"
+msgstr ""
+
+#: src/Debug.vala:54
+#, fuzzy
+msgid "Applications"
+msgstr "Select an Application"
+
+#: src/Debug.vala:55
+msgid "AttachHelper class messages"
+msgstr ""
+
+#: src/Debug.vala:56
+msgid "Signal debugging messages"
+msgstr ""
+
+#: src/Debug.vala:57
+msgid "Entrypoint, preinit, etc."
+msgstr ""
+
+#: src/Debug.vala:58
+msgid "All debug messages"
+msgstr ""
 
 #: src/Debug.vala:62
 msgid "String"
