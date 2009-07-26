@@ -64,7 +64,7 @@ namespace AllTray.Debug {
 		    "======================================\n");
 
       foreach(DebugDescription dd in _debugOptions) {
-	stdout.printf("%-16s%s\n", dd.name, dd.description);
+	stdout.printf("%-16s%s\n", dd.name, _(dd.description));
       }
     }
 
