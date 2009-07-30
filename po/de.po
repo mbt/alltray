@@ -8,13 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-07-26 01:45-0400\n"
-"PO-Revision-Date: 2009-07-25 12:00+0000\n"
+"PO-Revision-Date: 2009-07-25 14:27+0000\n"
 "Last-Translator: Grzegorz Dąbrowski <grzegorzdabrowski@poczta.fm>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-07-25 13:36+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2009-07-30 03:31+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -180,11 +181,10 @@ msgid "All"
 msgstr "Alle(s)"
 
 #: src/Application.vala:246
-#, fuzzy
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
-msgstr[0] "%s - %d Fenster%s"
-msgstr[1] "%s - %d Fenster%s"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Application.vala:289
 msgid "Using Window Icon (fallback was %s)"
@@ -293,9 +293,8 @@ msgid "Window 0x%08lx pid = %d"
 msgstr "Fenster 0x%08lx pid = %d"
 
 #: src/Debug.vala:47
-#, fuzzy
 msgid "command line parsing"
-msgstr "Comandozeilen-Optionen werden analysiert."
+msgstr ""
 
 #: src/Debug.vala:48
 msgid "X11 display"
@@ -322,9 +321,8 @@ msgid "Internal error detail"
 msgstr ""
 
 #: src/Debug.vala:54
-#, fuzzy
 msgid "Applications"
-msgstr "Anwendung auswählen"
+msgstr ""
 
 #: src/Debug.vala:55
 msgid "AttachHelper class messages"
