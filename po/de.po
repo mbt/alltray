@@ -1,0 +1,438 @@
+# German translation for alltray
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the alltray package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: alltray\n"
+"Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
+"POT-Creation-Date: 2009-07-26 01:45-0400\n"
+"PO-Revision-Date: 2009-07-25 14:27+0000\n"
+"Last-Translator: Grzegorz Dąbrowski <grzegorzdabrowski@poczta.fm>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2009-07-30 03:31+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: src/AllTray.vala:38
+msgid "Attach to a running program"
+msgstr ""
+
+#: src/AllTray.vala:40
+msgid "Enable debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:43
+msgid "Show types of debugging messages"
+msgstr ""
+
+#: src/AllTray.vala:45
+msgid "Initially hide on spawn/attach"
+msgstr ""
+
+#: src/AllTray.vala:47
+msgid "Attach to already-running application"
+msgstr ""
+
+#: src/AllTray.vala:50
+msgid "Display AllTray version info and exit"
+msgstr ""
+
+#: src/AllTray.vala:53
+msgid "Display extended version info and exit"
+msgstr ""
+
+#: src/AllTray.vala:71
+msgid "Command line options parsed."
+msgstr "Comandozeilen-Optionen werden analysiert."
+
+#: src/AllTray.vala:89
+msgid "- Dock software to the systray"
+msgstr "docke Software in Systray"
+
+#: src/AllTray.vala:97
+msgid "error: env flag parsing failed (%s)\n"
+msgstr "Fehler: env flag Analyse fehlgeschlagen (%s)\n"
+
+#: src/AllTray.vala:106
+msgid "error: command line parsing failed (%s)\n"
+msgstr "Fehler: Comandozeilen-Analyse fehlgeschlagen (%s)\n"
+
+#: src/AllTray.vala:168
+msgid "Cannot set PGID.  Cannot continue."
+msgstr "Kann PGID nicht setzten. Kann nich fortfahren."
+
+#: src/AllTray.vala:205
+msgid ""
+"AllTray %s, from bzr branch %s rev %s,\n"
+" rev-id %s\n"
+msgstr ""
+"AllTray %s, aus bzr branch %s rev %s,\n"
+" rev-id %s\n"
+
+#: src/AllTray.vala:213
+msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
+msgstr "Copyright © %s Michael B. Trausch <mike@trausch.us>\n"
+
+#: src/AllTray.vala:214
+msgid ""
+"Licensed under the GNU GPL v3.0 as published by the Free Software "
+"Foundation.\n"
+"\n"
+msgstr ""
+"Lizensiert unter der GNU GPL v3.0 wie publiziert durch die Free Software "
+"Foundation.\n"
+"\n"
+
+#: src/AllTray.vala:220
+msgid "Configured %s on %s %s\n"
+msgstr "Konfiguriert %s auf %s %s\n"
+
+#: src/AllTray.vala:225
+msgid "Compilers: %s and %s\n"
+msgstr "Übersetzer: %s und %s\n"
+
+#: src/AllTray.vala:230
+msgid "Configure was run without flags\n"
+msgstr "Configure lief ohne flags\n"
+
+#: src/AllTray.vala:232
+msgid "Configure flags: %s\n"
+msgstr "Configure flags: %s\n"
+
+#: src/AllTray.vala:247
+msgid "Adding app (pid %d) to list of recv'd apps"
+msgstr "Füge App (pid %d) zur Liste der empfangenen Apps."
+
+#: src/AllTray.vala:274
+msgid "Failed to get a window; exiting.\n"
+msgstr "Fehler ein Fenster zu bekommen; Verlasse.\n"
+
+#: src/AllTray.vala:312 src/AllTray.vala:321
+msgid "Oops.  Not running?"
+msgstr "Hopplala! Läuft's nicht?"
+
+#: src/AllTray.vala:314
+msgid "Failed to start process: %s"
+msgstr "Fehler beim Prozessstart: %s"
+
+#: src/AllTray.vala:322
+msgid "Failed to start process"
+msgstr "Fehler beim Prozessstart"
+
+#: src/AllTray.vala:342
+msgid "Cleaning up for child..."
+msgstr "Räume für Kindprozess auf..."
+
+#: src/AllTray.vala:348
+msgid "No more children. Dying."
+msgstr "Keine Kindprozesse mehr. Sterbe."
+
+#: src/AllTray.vala:359
+msgid "Evaluating %s"
+msgstr "Evaluiere %s"
+
+#: src/AllTray.vala:368
+msgid "Actually processing arg"
+msgstr "Verarbeite zur Zeit arg"
+
+#: src/AllTray.vala:400
+msgid "Caught unwired signal %d"
+msgstr "Fing Kabelloses signal %d"
+
+#: src/Application.vala:57
+msgid "Creating a new Application"
+msgstr "Erzeuge eine neue Anwendung"
+
+#: src/Application.vala:80
+msgid "WHOA - The app went away?! Looking for it to come back..."
+msgstr "WHOA - Das App ist weg‽ Schaue, dass es wieder kommt…"
+
+#: src/Application.vala:109
+msgid "pid %d (%s) is not ours."
+msgstr "pid %d (%s) gehört nicht uns."
+
+#: src/Application.vala:124
+msgid "Application %s needs fixed, reports PID 0."
+msgstr "Anwendung %s braucht eine Repartur, meldet PID 0."
+
+#: src/Application.vala:177
+msgid "Requesting menu!"
+msgstr "Fordere Menü an!"
+
+#: src/Application.vala:181
+msgid "Toggle Visibility"
+msgstr "Sichbarkeit EIN/AUS"
+
+#: src/Application.vala:183
+msgid "Undock"
+msgstr "Abdocken"
+
+#: src/Application.vala:187
+msgid "About AllTray..."
+msgstr "Über AllTray…"
+
+#: src/Application.vala:213
+msgid "All"
+msgstr "Alle(s)"
+
+#: src/Application.vala:246
+msgid "%s - %d window"
+msgid_plural "%s - %d windows"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Application.vala:289
+msgid "Using Window Icon (fallback was %s)"
+msgstr "Benutze Fenster-Icon (Sicherung war %s)"
+
+#: src/Application.vala:292
+msgid "Using App Icon (fallback was %s)"
+msgstr "Benutze Anwendungs-Icon (Sicherung war %s)"
+
+#: src/Application.vala:347
+msgid "New Bitmask: %s"
+msgstr "Neue Bitmaske: %s"
+
+#: src/Application.vala:349
+msgid "New State: %s"
+msgstr "Neuer Status: %s"
+
+#: src/Application.vala:357
+msgid "Blinking, window state is: %s"
+msgstr ""
+
+#: src/Application.vala:374
+msgid "MINIMIZED | "
+msgstr "MINIMIERT | "
+
+#: src/Application.vala:376
+msgid "MAXIMIZED_HORIZONTALLY | "
+msgstr "MAXIMIERT_HORIZONTAL | "
+
+#: src/Application.vala:378
+msgid "MAXIMIZED_VERTICALLY | "
+msgstr "MAXIMIERT_VERTIKAL | "
+
+#: src/Application.vala:380
+msgid "SHADED | "
+msgstr "SCHATTIERT | "
+
+#: src/Application.vala:382
+msgid "SKIP_PAGER | "
+msgstr "ÜBERSPRINGE_PAGER | "
+
+#: src/Application.vala:384
+msgid "SKIP_TASKLIST | "
+msgstr "ÜBERSPRINGE_TASKLISTE | "
+
+#: src/Application.vala:386
+msgid "STICKY | "
+msgstr "WICHTIG | "
+
+#: src/Application.vala:388
+msgid "HIDDEN | "
+msgstr "VERSTECKT | "
+
+#: src/Application.vala:390
+msgid "FULLSCREEN | "
+msgstr "VOLLBILD | "
+
+#: src/Application.vala:392
+msgid "DEMANDS_ATTENTION | "
+msgstr "BENÖTIGT_AUFMERKSAMKEIT | "
+
+#: src/Application.vala:394
+msgid "URGENT | "
+msgstr "DRINGEND | "
+
+#: src/Application.vala:396
+msgid "ABOVE | "
+msgstr "ÜBER | "
+
+#: src/Application.vala:398
+msgid "BELOW | "
+msgstr "UNTER | "
+
+#: src/Application.vala:439
+msgid "Setting window 0x%08lx visibility to %s"
+msgstr "Setze Fenster 0x%08lx Sichtbarkeit auf %s"
+
+#: src/Application.vala:501
+msgid ""
+"%s\n"
+"Branch: %s, r%s\n"
+"%s"
+msgstr ""
+"%s\n"
+"Branch: %s, r%s\n"
+"%s"
+
+#: src/Application.vala:511
+msgid "Copyright (c) %s"
+msgstr "Copyright © %s"
+
+#: src/Application.vala:513
+msgid "Dock applications in the system tray."
+msgstr "Docke Anwendungen in das System-Panel."
+
+#: src/AttachHelper.vala:47 src/AttachHelper.vala:54
+msgid "Pointer grab failed"
+msgstr "Zeiger Erfassung fehlgeschlagen"
+
+#: src/AttachHelper.vala:93
+msgid "Got window 0x%08lx"
+msgstr "Erhielt Fenster 0x%08lx"
+
+#: src/AttachHelper.vala:100
+msgid "Window 0x%08lx pid = %d"
+msgstr "Fenster 0x%08lx pid = %d"
+
+#: src/Debug.vala:47
+msgid "command line parsing"
+msgstr ""
+
+#: src/Debug.vala:48
+msgid "X11 display"
+msgstr ""
+
+#: src/Debug.vala:49
+msgid "System Tray Icon"
+msgstr ""
+
+#: src/Debug.vala:50
+msgid "Window Manager"
+msgstr ""
+
+#: src/Debug.vala:51
+msgid "Process information"
+msgstr ""
+
+#: src/Debug.vala:52
+msgid "Misc messages"
+msgstr ""
+
+#: src/Debug.vala:53
+msgid "Internal error detail"
+msgstr ""
+
+#: src/Debug.vala:54
+msgid "Applications"
+msgstr ""
+
+#: src/Debug.vala:55
+msgid "AttachHelper class messages"
+msgstr ""
+
+#: src/Debug.vala:56
+msgid "Signal debugging messages"
+msgstr ""
+
+#: src/Debug.vala:57
+msgid "Entrypoint, preinit, etc."
+msgstr ""
+
+#: src/Debug.vala:58
+msgid "All debug messages"
+msgstr ""
+
+#: src/Debug.vala:62
+msgid "String"
+msgstr "Zeichenkette (String)"
+
+#: src/Debug.vala:62
+msgid "Messages are for"
+msgstr "Nachrichten sind für"
+
+#: src/Debug.vala:127
+msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
+msgstr "Unerkannter Wert '%s' in ALLTRAY_DEBUG"
+
+#: src/Debug.vala:134
+msgid "Debugging subsystem setup complete."
+msgstr "Debugging Untersystem setup komplett."
+
+#: src/Debug.vala:137
+msgid "ALLTRAY_DEBUG not set!"
+msgstr "ALLTRAY_DEBUG nicht gesetzt!"
+
+#: src/Debug.vala:157
+msgid "Exiting: encountered fatal error."
+msgstr "Verlasse: auf fatalen Fehler gestoßen."
+
+#: src/Debug.vala:215 src/Debug.vala:243
+msgid "BUG: Reached default, should not be possible."
+msgstr "BUG: Erreicht Vorgabe, sollte nicht möglich sein."
+
+#: src/Process.vala:83
+msgid "Child process %d (%s) now running."
+msgstr "Kindprozess %d (%s) läuft nicht."
+
+#: src/Process.vala:108
+msgid "The provided PID does not exist."
+msgstr "Die angegebene PID existiert nicht."
+
+#: src/Process.vala:132
+msgid "Attached process %d has died."
+msgstr "Angehängter Prozess %d istt gestorben."
+
+#: src/Process.vala:182
+msgid "Child %d died okay"
+msgstr "Kindprozess %d sauber gestorben"
+
+#: src/Process.vala:192
+msgid "Child %d died with nothing!"
+msgstr "Kindprozess %d starb ohne Rückmeldung!"
+
+#: src/Process.vala:232
+msgid ""
+"AllTray was unable to attach to any applications, and AllTray's child\n"
+"has died.\n"
+"\n"
+"This problem can be caused by application software that:\n"
+"  * is not compliant with the ICCCM and EWMH specs,\n"
+"  * backgrounds itself and leaves the AllTray process group, or\n"
+"  * unexpectedly died an early death and did not actually start\n"
+"\n"
+"If the problem is one of the first two problems, please report a bug\n"
+"in AllTray and it will be investigated and reported to the correct\n"
+"project, if necessary.  If the problem is the third one, then you will\n"
+"need to fix whatever went wrong and try again.\n"
+msgstr ""
+"AllTray war es nicht möglich eine Anwendung anzuhängen, und AllTrays "
+"Kindprozess\n"
+"ist gestorben.\n"
+"\n"
+"Dieses Problem kann durch Anwendungen verursacht werden die:\n"
+"  * nicht kompatiebel zu den ICCCM und EWMH Spezificationen ist\n"
+"  * sich selbst in den Hintergrund begibt und die AllTray Prozess Gruppe "
+"verlässt, oder\n"
+"  * unerwartet einen frühen Tod stirbt und nicht wirklich startet\n"
+"\n"
+"Wenn das Problem eines der ersten beiden ist, bitte einen Bug-Report\n"
+"in AllTray erstellen, es wird dann untersucht und dem richtigen\n"
+"Projekt gemeldet, falls die Notwendigkeit besteht. Wenn es das dritte "
+"Problem ist, dann musst Du\n"
+"reparieren, was falsch lief und es erneut versuchen.\n"
+
+#: src/PromptDialog.vala:14
+msgid "Select an Application"
+msgstr "Anwendung auswählen"
+
+#: src/PromptDialog.vala:23
+msgid ""
+"Click on a window of the software you wish to dock.\n"
+"\n"
+"Note: do not click on the window border itself. Click inside\n"
+"the window; particularly on Compiz, clicking on the title bar\n"
+"or the other sides of the window border DOES NOT WORK."
+msgstr ""
+"Klicke auf ein Fenster der Software die du docken möchtest.\n"
+"\n"
+"Notiz: Klicke nicht auf den Fensterrahmen. Klicke in das Innere\n"
+"des Fensters; Besonders mit Compiz wird Klicken in die Titelleiste\n"
+"oder die anderen Rahmenseiten NICHT FUNKTIONIEREN."
