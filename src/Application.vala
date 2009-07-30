@@ -4,6 +4,7 @@
  * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
+using AllTray.Private.GLib;
 
 namespace AllTray {
   public errordomain ApplicationError {
@@ -18,6 +19,7 @@ namespace AllTray {
     private bool _appVisible;
     private bool _caughtWindow;
     private bool _usingWindowIcon;
+    private Queue<Wnck.Window> _window_enforce_minimize_queue;
 
     public Wnck.Application wnck_app {
       get {
@@ -48,6 +50,8 @@ namespace AllTray {
 
     public Application(Process p) {
       _process = p;
+      _window_enforce_minimize_queue = new Queue<Wnck.Window>();
+
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
 			      _("Creating a new Application"));
@@ -161,6 +165,10 @@ namespace AllTray {
       } else {
 	update_icon_app_image(_wnckApp);
       }
+
+      if(Program._initially_hide == true) {
+	hide_all_windows();
+      }
     }
 
     private void display_menu(uint button, uint activate_time) {
@@ -235,8 +243,9 @@ namespace AllTray {
       int wincount = _wnckApp.get_n_windows();
       string plural = (wincount != 1 ? "s" : "");
 
-      sb.append_printf(_("%s - %d window%s"), _wnckApp.get_name(),
-		       wincount, plural);
+      sb.append_printf(ngettext("%s - %d window",
+				"%s - %d windows",
+				wincount), _wnckApp.get_name(), wincount);
 
       _appIcon.set_tooltip(sb.str);
     }
@@ -334,16 +343,19 @@ namespace AllTray {
 				     Wnck.WindowState new_state) {
       if(_appVisible) return;
 
-
       string ch_bitmask =
-        _("New Bitmask: %s").printf(get_new_windowstate(changed_bits));
+        _("New Bitmask: %s").printf(get_win_state(changed_bits));
       string ch_new_state =
-        _("New State: %s").printf(get_new_windowstate(new_state));
+        _("New State: %s").printf(get_win_state(new_state));
 
       debug_msg(ch_bitmask);
       debug_msg(ch_new_state);
 
-      if((new_state & Wnck.WindowState.MINIMIZED) == 0) {
+      if((new_state & Wnck.WindowState.MINIMIZED) == 0 &&
+	 (changed_bits & Wnck.WindowState.MINIMIZED) ==
+	 Wnck.WindowState.MINIMIZED) {
+	debug_msg(_("Blinking, window state is: %s")
+		  .printf(get_win_state(new_state)));
 	win.minimize();
 	_appIcon.blinking = true;
       }
@@ -355,7 +367,7 @@ namespace AllTray {
 			      str);
     }
 
-    private string get_new_windowstate(Wnck.WindowState state) {
+    private string get_win_state(Wnck.WindowState state) {
       StringBuilder sb = new StringBuilder();
 
       if((state & Wnck.WindowState.MINIMIZED) != 0)
@@ -402,6 +414,11 @@ namespace AllTray {
       toggle_visibility();
     }
 
+    private void hide_all_windows() {
+      _appVisible = true;
+      toggle_visibility();
+    }
+
     private void toggle_window_visibility(Wnck.Window w) {
       Wnck.WindowState ws = w.get_state();
 
@@ -423,6 +440,9 @@ namespace AllTray {
 			w.get_xid(), _appVisible.to_string());
 
       if(set_visible) {
+	// Forcibly empty the queue (prevent a race).
+	_window_enforce_minimize_queue.clear();
+
 	w.state_changed -= maintain_hiddenness;
 	w.set_skip_tasklist(false);
 	w.set_skip_pager(false);
@@ -435,12 +455,28 @@ namespace AllTray {
 	w.set_skip_tasklist(true);
 	w.set_skip_pager(true);
 	w.minimize();
-	w.state_changed += maintain_hiddenness;
+
+	_window_enforce_minimize_queue.push_head(w);
+	Timeout.add(150, set_maintain_hiddenness);
       }
 
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
 			      msg.str);
+    }
+
+    private bool set_maintain_hiddenness() {
+      Wnck.Window? w;
+
+      while((w = _window_enforce_minimize_queue.pop_tail()) != null) {
+	w.state_changed += maintain_hiddenness;
+      }
+
+      /*
+       * Only call us again if the queue has had things pop up in
+       * it that we didn't handle this time.
+       */
+      return(_window_enforce_minimize_queue.length == 0);
     }
 
     private void dialog_destroy(Gtk.AboutDialog which, int resp_id) {

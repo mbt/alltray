@@ -25,6 +25,8 @@ namespace AllTray {
     private static bool _display_extended_ver;
     private static Program _instance;
 
+    // Needs to be accessible from AllTray.Application.
+    public static bool _initially_hide;
     public static Wnck.Screen WnckScreen;
     public static List<Wnck.Application> WnckEarlyApps;
     public static Pid pgid;
@@ -33,20 +35,22 @@ namespace AllTray {
 
     private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
       { "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
-	"Attach to a running program", null },
+	N_("Attach to a running program"), null },
       { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
-	ref _cl_debug, "Enable debugging messages", null },
+	ref _cl_debug, N_("Enable debugging messages"), null },
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
 	GLib.OptionArg.NONE, ref _cl_dopts,
-	"Show types of debugging messages", null },
+	N_("Show types of debugging messages"), null },
+      { "hide", 'H', 0, GLib.OptionArg.NONE, ref _initially_hide,
+	N_("Initially hide on spawn/attach"), null },
       { "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
-	"Attach to already-running application",
+	N_("Attach to already-running application"),
 	"PID" },
       { "version", 'v', 0, GLib.OptionArg.NONE, ref _display_ver,
-	"Display AllTray version info and exit", null },
+	N_("Display AllTray version info and exit"), null },
       { "extended-version", 'V', 0, GLib.OptionArg.NONE,
 	ref _display_extended_ver,
-	"Display extended version info and exit",
+	N_("Display extended version info and exit"),
 	null },
       { null }
     };

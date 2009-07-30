@@ -44,18 +44,18 @@ namespace AllTray.Debug {
     private static bool _enabled = false;
 
     private const DebugDescription[] _debugOptions = {
-      { Subsystem.CommandLine, "CL", "command line parsing" },
-      { Subsystem.Display, "DISPLAY", "X11 display" },
-      { Subsystem.TrayIcon, "TRAY", "System Tray Icon" },
-      { Subsystem.WindowManager, "WM", "Window Manager" },
-      { Subsystem.Process, "PROCESS", "Process information" },
-      { Subsystem.Misc, "MISC", "Misc messages" },
-      { Subsystem.Bug, "BUG", "Internal error detail" },
-      { Subsystem.Application, "APP", "Applications" },
-      { Subsystem.AttachHelper, "AH", "AttachHelper class messages" },
-      { Subsystem.Signal, "SIG", "Signal debugging messages" },
-      { Subsystem.Main, "MAIN", "Entrypoint, preinit, etc." },
-      { Subsystem.All, "ALL", "All messages" }
+      { Subsystem.CommandLine, "CL", N_("command line parsing") },
+      { Subsystem.Display, "DISPLAY", N_("X11 display") },
+      { Subsystem.TrayIcon, "TRAY", N_("System Tray Icon") },
+      { Subsystem.WindowManager, "WM", N_("Window Manager") },
+      { Subsystem.Process, "PROCESS", N_("Process information") },
+      { Subsystem.Misc, "MISC", N_("Misc messages") },
+      { Subsystem.Bug, "BUG", N_("Internal error detail") },
+      { Subsystem.Application, "APP", N_("Applications") },
+      { Subsystem.AttachHelper, "AH", N_("AttachHelper class messages") },
+      { Subsystem.Signal, "SIG", N_("Signal debugging messages") },
+      { Subsystem.Main, "MAIN", N_("Entrypoint, preinit, etc.") },
+      { Subsystem.All, "ALL", N_("All debug messages") }
     };
 
     public static void display_debug_list() {
@@ -64,7 +64,7 @@ namespace AllTray.Debug {
 		    "======================================\n");
 
       foreach(DebugDescription dd in _debugOptions) {
-	stdout.printf("%-16s%s\n", dd.name, dd.description);
+	stdout.printf("%-16s%s\n", dd.name, _(dd.description));
       }
     }
 
