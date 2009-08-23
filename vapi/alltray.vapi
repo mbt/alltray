@@ -32,12 +32,6 @@ namespace AllTray.Build {
   public const string ALLTRAY_CONFIGURE_FLAGS;
 }
 
-[CCode(cprefix = "", lower_case_cprefix = "")]
-namespace AllTray.Private.GLib {
-  [CCode(cheader_filename = "glib.h,glib/gi18n-lib.h")]
-  public static weak string ngettext(string sing, string plural, int count);
-}
-
 [CCode(cprefix="Gtk", lower_case_cprefix="gtk_")]
 namespace AllTray.LocalGtk {
   [CCode (cheader_filename = "gtk/gtk.h")]
