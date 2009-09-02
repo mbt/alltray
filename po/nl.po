@@ -1,4 +1,4 @@
-# Russian translation for alltray
+# Dutch translation for alltray
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the alltray package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -8,70 +8,71 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-07-26 01:45-0400\n"
-"PO-Revision-Date: 2009-08-10 23:59+0000\n"
-"Last-Translator: Dmitry Korzhenevsky <Lynx@programist.Ru>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"PO-Revision-Date: 2009-08-30 10:52+0000\n"
+"Last-Translator: cumulus007 <cumulus0007@gmail.com>\n"
+"Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2009-09-02 09:43+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
 msgid "Attach to a running program"
-msgstr ""
+msgstr "Aan een draaiend programma vastmaken"
 
 #: src/AllTray.vala:40
 msgid "Enable debugging messages"
-msgstr "Включить отладочные сообщения"
+msgstr "Debugberichten inschakelen"
 
 #: src/AllTray.vala:43
 msgid "Show types of debugging messages"
-msgstr "Показать типы отладочных сообщений"
+msgstr "Types debugberichten weergeven"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
-msgstr ""
+msgstr "Initieel verbergen tijdens starten/vastmaken"
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
-msgstr ""
+msgstr "Vastmaken aan een reeds draaiend programma"
 
 #: src/AllTray.vala:50
 msgid "Display AllTray version info and exit"
-msgstr "Вывести информацию о версии и выйти"
+msgstr "Versieinfo van AllTray tonen en afsluiten"
 
 #: src/AllTray.vala:53
 msgid "Display extended version info and exit"
-msgstr "Вывести расширенную информацию о версии и выйти"
+msgstr "Uitgebreide versieinfo tonen en afsluiten"
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
-msgstr "Параметры командной строки разобраны"
+msgstr "Opdrachtregelopties ontleed."
 
 #: src/AllTray.vala:89
 msgid "- Dock software to the systray"
-msgstr "- Поместить программу в системный лоток"
+msgstr "- Software in systeemvak plaatsen"
 
 #: src/AllTray.vala:97
 msgid "error: env flag parsing failed (%s)\n"
-msgstr ""
+msgstr "fout: ontleden van env-vlag mislukt (%s)\n"
 
 #: src/AllTray.vala:106
 msgid "error: command line parsing failed (%s)\n"
-msgstr "ошибка: разбор командной строки невозможен (%s)\n"
+msgstr ""
 
 #: src/AllTray.vala:168
 msgid "Cannot set PGID.  Cannot continue."
-msgstr "Невозможно установить PGID. Продолжение невозможно."
+msgstr "Kan PGID niet versturen. Kan niet doorgaan."
 
 #: src/AllTray.vala:205
 msgid ""
 "AllTray %s, from bzr branch %s rev %s,\n"
 " rev-id %s\n"
 msgstr ""
+"AllTray %s, van bzr-branche %s rev %s,\n"
+" rev-id %s\n"
 
 #: src/AllTray.vala:213
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
@@ -83,54 +84,57 @@ msgid ""
 "Foundation.\n"
 "\n"
 msgstr ""
+"Gelicenseerd onder de GNU GPL v3.0 zoals gepubliceerd door de Free Software "
+"Foundation.\n"
+"\n"
 
 #: src/AllTray.vala:220
 msgid "Configured %s on %s %s\n"
-msgstr ""
+msgstr "%s geconfigureerd op %s %s\n"
 
 #: src/AllTray.vala:225
 msgid "Compilers: %s and %s\n"
-msgstr ""
+msgstr "Compilers: %s en %s\n"
 
 #: src/AllTray.vala:230
 msgid "Configure was run without flags\n"
-msgstr ""
+msgstr "Configure werd uitgevoerd zonder vlaggen\n"
 
 #: src/AllTray.vala:232
 msgid "Configure flags: %s\n"
-msgstr ""
+msgstr "Configure-vlaggen: %s\n"
 
 #: src/AllTray.vala:247
 msgid "Adding app (pid %d) to list of recv'd apps"
-msgstr "Добавление приложения (pid %d) в список принятых приложений"
+msgstr "Programma toevoegen (pid %s) aan lijst van ontvangen programma's"
 
 #: src/AllTray.vala:274
 msgid "Failed to get a window; exiting.\n"
-msgstr ""
+msgstr "Venster verkrijgen mislukt; afsluiten.\n"
 
 #: src/AllTray.vala:312 src/AllTray.vala:321
 msgid "Oops.  Not running?"
-msgstr "Ой. Не запущено?"
+msgstr "Oeps. Niet gestart?"
 
 #: src/AllTray.vala:314
 msgid "Failed to start process: %s"
-msgstr "Невозможно запустить процесс: %s"
+msgstr "Proces starten mislukt: %s"
 
 #: src/AllTray.vala:322
 msgid "Failed to start process"
-msgstr "Невозможно запустить процесс"
+msgstr "Proces starten mislukt"
 
 #: src/AllTray.vala:342
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Opruimen voor dochter..."
 
 #: src/AllTray.vala:348
 msgid "No more children. Dying."
-msgstr ""
+msgstr "Geen dochters meer. Afsluiten."
 
 #: src/AllTray.vala:359
 msgid "Evaluating %s"
-msgstr ""
+msgstr "%s evalueren"
 
 #: src/AllTray.vala:368
 msgid "Actually processing arg"
@@ -142,7 +146,7 @@ msgstr ""
 
 #: src/Application.vala:57
 msgid "Creating a new Application"
-msgstr "Создание нового приложения"
+msgstr ""
 
 #: src/Application.vala:80
 msgid "WHOA - The app went away?! Looking for it to come back..."
