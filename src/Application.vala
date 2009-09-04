@@ -4,7 +4,6 @@
  * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
-using AllTray.Private.GLib;
 
 namespace AllTray {
   public errordomain ApplicationError {
