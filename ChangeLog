@@ -1,3 +1,1336 @@
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* Makefile.am:
+	* NEWS:
+	* configure.ac:
+	* man/alltray.1.in:
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Merge 0.7.4dev release branch
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	What I just did in the last commit, part 2.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* Makefile.am:
+
+	Remove tests from SUBDIRS
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* Makefile.am:
+
+	Add HACKING to EXTRA_DIST.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+
+	Update man page.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+
+	Fix de.po, mark a translation there as fuzzy.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Import latest translations from Launchpad.
+
+2009-09-03  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Version bump in preparation for release.
+
+2009-09-04  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+
+	Update NEWS for 0.7.4dev
+
+2009-09-02  Michael B. Trausch  <mike@trausch.us>
+
+	* po/nl.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Translations refresh from LP Translations.
+
+2009-09-02  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-09-01  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-31  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-30  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/nl.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-29  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-28  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-27  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-26  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-25  Michael B. Trausch  <mike@trausch.us>
+
+	* po/ru.po:
+	* po/sv.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Merge from lp:~mtrausch/alltray/launchpad-translations
+
+2009-08-25  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-24  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-23  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-22  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-21  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-20  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-19  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-18  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-17  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-16  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-15  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-14  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-13  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-12  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-11  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/ru.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-10  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-09  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-08  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-07  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-06  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-05  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/sv.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-04  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/sv.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-03  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-02  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-08-01  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-07-31  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-07-30  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+	* po/de.po:
+	* po/en_US.po:
+	* po/it.po:
+	* NEWS:
+	* REQUIREMENTS:
+	* man/alltray.1.in:
+	* po/LINGUAS:
+	* po/Makevars:
+	* po/alltray.pot:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Debug.vala:
+	* vapi/alltray.vapi:
+
+	Merge trunk back here.
+
+2009-08-23  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+	* src/Application.vala:
+	* vapi/alltray.vapi:
+
+	Requires Vala 0.7.5, remove AllTray.Private.GLib.
+
+2009-07-30  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+
+	Update Translations
+
+2009-07-30  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/tr.po:
+
+	Commit new LP Translations
+
+2009-07-30  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+
+	Remove translations
+
+2009-07-26  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Debug.vala:
+
+	Actually use the new translatable strings if possible.
+
+2009-07-26  Michael B. Trausch  <mike@trausch.us>
+
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* src/AllTray.vala:
+	* src/Debug.vala:
+
+	Add more translatable messages using N_() in places that use contants.
+
+2009-07-26  Michael B. Trausch  <mike@trausch.us>
+
+	* vapi/alltray.vapi:
+
+	Fix typo.
+
+2009-07-26  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS
+
+2009-07-26  Michael B. Trausch  <mike@trausch.us>
+
+	* po/Makevars:
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+	* src/Application.vala:
+	* vapi/alltray.vapi:
+
+	Correct defect: Use ngettext for pluralized strings.
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+
+	Updated NEWS to bring it current.
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+	* src/AllTray.vala:
+	* src/Application.vala:
+
+	Support -H (--hide) to hide windows on spawn/attach.
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* po/en_GB.po:
+	* po/es.po:
+	* po/pl.po:
+	* po/LINGUAS:
+	* po/de.po:
+	* po/it.po:
+
+	Added/refreshed translations from LP
+	
+	New: en_GB, es (partial), pl
+	Updated: de, it
+	
+	Thanks to David Raker (es) and Grzegorz Dąbrowski (Polish), Erica
+	Rosalle (en_GB) and everyone else!
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_US.po:
+	* po/it.po:
+
+	Update pot and *.po files to reflect string changes.
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Only blink when the MINIMIZED flag was one that changed.
+
+2009-07-25  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix race condition causing unnecessary blinking under Metacity.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Initialize the translation subsystem before displaying any output.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	... and do not define it here
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	Fix translation, needed the directory.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/de.po:
+	* po/it.po:
+	* po/LINGUAS:
+
+	Added German and Italian translations.
+	
+	Thanks to midnightflash and Luca Cappelletti from Launchpad for the
+	translations!
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Added more ignore rules
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* data/alltray.desktop.in:
+	* src/AllTray.vala:
+	* vapi/alltray.vapi:
+
+	Fix alltray launcher
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/LINGUAS:
+
+	Add to LINGUAS
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/en_US.po:
+
+	Added UTF-8 en_US “translation”.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* ABOUT-NLS:
+	* config.guess:
+	* config.rpath:
+	* config.sub:
+	* gettext.h:
+	* intl:
+	* intl/ChangeLog:
+	* intl/Makefile.in:
+	* intl/VERSION:
+	* intl/bindtextdom.c:
+	* intl/config.charset:
+	* intl/dcgettext.c:
+	* intl/dcigettext.c:
+	* intl/dcngettext.c:
+	* intl/dgettext.c:
+	* intl/dngettext.c:
+	* intl/eval-plural.h:
+	* intl/explodename.c:
+	* intl/export.h:
+	* intl/finddomain.c:
+	* intl/gettext.c:
+	* intl/gettextP.h:
+	* intl/gmo.h:
+	* intl/hash-string.c:
+	* intl/hash-string.h:
+	* intl/intl-compat.c:
+	* intl/intl-exports.c:
+	* intl/l10nflist.c:
+	* intl/langprefs.c:
+	* intl/libgnuintl.h.in:
+	* intl/libintl.rc:
+	* intl/loadinfo.h:
+	* intl/loadmsgcat.c:
+	* intl/localcharset.c:
+	* intl/localcharset.h:
+	* intl/locale.alias:
+	* intl/localealias.c:
+	* intl/localename.c:
+	* intl/lock.c:
+	* intl/lock.h:
+	* intl/log.c:
+	* intl/ngettext.c:
+	* intl/os2compat.c:
+	* intl/os2compat.h:
+	* intl/osdep.c:
+	* intl/plural-exp.c:
+	* intl/plural-exp.h:
+	* intl/plural.c:
+	* intl/plural.y:
+	* intl/printf-args.c:
+	* intl/printf-args.h:
+	* intl/printf-parse.c:
+	* intl/printf-parse.h:
+	* intl/printf.c:
+	* intl/ref-add.sin:
+	* intl/ref-del.sin:
+	* intl/relocatable.c:
+	* intl/relocatable.h:
+	* intl/textdomain.c:
+	* intl/tsearch.c:
+	* intl/tsearch.h:
+	* intl/vasnprintf.c:
+	* intl/vasnprintf.h:
+	* intl/vasnwprintf.h:
+	* intl/version.c:
+	* intl/wprintf-parse.h:
+	* intl/xsize.h:
+	* m4:
+	* m4/codeset.m4:
+	* m4/gettext.m4:
+	* m4/glibc2.m4:
+	* m4/glibc21.m4:
+	* m4/iconv.m4:
+	* m4/intdiv0.m4:
+	* m4/intl.m4:
+	* m4/intldir.m4:
+	* m4/intlmacosx.m4:
+	* m4/intmax.m4:
+	* m4/inttypes-pri.m4:
+	* m4/inttypes_h.m4:
+	* m4/lcmessage.m4:
+	* m4/lib-ld.m4:
+	* m4/lib-link.m4:
+	* m4/lib-prefix.m4:
+	* m4/lock.m4:
+	* m4/longlong.m4:
+	* m4/nls.m4:
+	* m4/po.m4:
+	* m4/printf-posix.m4:
+	* m4/progtest.m4:
+	* m4/size_max.m4:
+	* m4/stdint_h.m4:
+	* m4/uintmax_t.m4:
+	* m4/visibility.m4:
+	* m4/wchar_t.m4:
+	* m4/wint_t.m4:
+	* m4/xsize.m4:
+	* po:
+	* po/LINGUAS:
+	* po/Makefile.in.in:
+	* po/Makevars:
+	* po/Makevars.template:
+	* po/POTFILES:
+	* po/POTFILES.in:
+	* po/Rules-quot:
+	* po/alltray.pot:
+	* po/boldquot.sed:
+	* po/en@boldquot.header:
+	* po/en@quot.header:
+	* po/insert-header.sin:
+	* po/quot.sed:
+	* po/remove-potcdate.sin:
+	* .bzrignore:
+	* Makefile.am:
+	* configure.ac:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/AttachHelper.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+
+	Merge first attempt at i18n for the application.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/LINGUAS:
+	* po/alltray.pot:
+
+	Remove LINGUAS content
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/Makevars:
+	* po/alltray.pot:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+
+	Various updates in formatting required by gettext. Ugh.
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/POTFILES:
+	* po/alltray.pot:
+	* po/LINGUAS:
+	* po/Makevars:
+
+	add more i18n files
+
+2009-07-24  Michael B. Trausch  <mike@trausch.us>
+
+	* po/LINGUAS:
+	* config.guess:
+	* config.sub:
+	* configure.ac:
+	* po/POTFILES.in:
+	* src/AllTray.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+
+	update
+
+2009-07-23  Michael B. Trausch  <mike@trausch.us>
+
+	* intl/Makefile.in:
+
+	Add makefile. oops.
+
+2009-07-23  Michael B. Trausch  <mike@trausch.us>
+
+	* intl:
+	* intl/ChangeLog:
+	* intl/VERSION:
+	* intl/bindtextdom.c:
+	* intl/config.charset:
+	* intl/dcgettext.c:
+	* intl/dcigettext.c:
+	* intl/dcngettext.c:
+	* intl/dgettext.c:
+	* intl/dngettext.c:
+	* intl/eval-plural.h:
+	* intl/explodename.c:
+	* intl/export.h:
+	* intl/finddomain.c:
+	* intl/gettext.c:
+	* intl/gettextP.h:
+	* intl/gmo.h:
+	* intl/hash-string.c:
+	* intl/hash-string.h:
+	* intl/intl-compat.c:
+	* intl/intl-exports.c:
+	* intl/l10nflist.c:
+	* intl/langprefs.c:
+	* intl/libgnuintl.h.in:
+	* intl/libintl.rc:
+	* intl/loadinfo.h:
+	* intl/loadmsgcat.c:
+	* intl/localcharset.c:
+	* intl/localcharset.h:
+	* intl/locale.alias:
+	* intl/localealias.c:
+	* intl/localename.c:
+	* intl/lock.c:
+	* intl/lock.h:
+	* intl/log.c:
+	* intl/ngettext.c:
+	* intl/os2compat.c:
+	* intl/os2compat.h:
+	* intl/osdep.c:
+	* intl/plural-exp.c:
+	* intl/plural-exp.h:
+	* intl/plural.c:
+	* intl/plural.y:
+	* intl/printf-args.c:
+	* intl/printf-args.h:
+	* intl/printf-parse.c:
+	* intl/printf-parse.h:
+	* intl/printf.c:
+	* intl/ref-add.sin:
+	* intl/ref-del.sin:
+	* intl/relocatable.c:
+	* intl/relocatable.h:
+	* intl/textdomain.c:
+	* intl/tsearch.c:
+	* intl/tsearch.h:
+	* intl/vasnprintf.c:
+	* intl/vasnprintf.h:
+	* intl/vasnwprintf.h:
+	* intl/version.c:
+	* intl/wprintf-parse.h:
+	* intl/xsize.h:
+	* m4/codeset.m4:
+	* m4/glibc2.m4:
+	* m4/glibc21.m4:
+	* m4/intdiv0.m4:
+	* m4/intl.m4:
+	* m4/intldir.m4:
+	* m4/intlmacosx.m4:
+	* m4/intmax.m4:
+	* m4/inttypes-pri.m4:
+	* m4/inttypes_h.m4:
+	* m4/lcmessage.m4:
+	* m4/lock.m4:
+	* m4/longlong.m4:
+	* m4/printf-posix.m4:
+	* m4/size_max.m4:
+	* m4/stdint_h.m4:
+	* m4/uintmax_t.m4:
+	* m4/visibility.m4:
+	* m4/wchar_t.m4:
+	* m4/wint_t.m4:
+	* m4/xsize.m4:
+	* Makefile.am:
+	* configure.ac:
+	* src/gettext.h:
+	* gettext.h:
+
+	Add gettext-0.17 for building w/ i18n on systems w/o it.
+
+2009-07-23  Michael B. Trausch  <mike@trausch.us>
+
+	* po/Makevars:
+
+	Add makevars
+
+2009-07-23  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/AttachHelper.vala:
+	* src/Debug.vala:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+
+	Changes for i18n
+
+2009-07-23  Michael B. Trausch  <mike@trausch.us>
+
+	* ABOUT-NLS:
+	* config.guess:
+	* config.rpath:
+	* config.sub:
+	* m4:
+	* m4/gettext.m4:
+	* m4/iconv.m4:
+	* m4/lib-ld.m4:
+	* m4/lib-link.m4:
+	* m4/lib-prefix.m4:
+	* m4/nls.m4:
+	* m4/po.m4:
+	* m4/progtest.m4:
+	* po:
+	* po/Makefile.in.in:
+	* po/Makevars.template:
+	* po/POTFILES.in:
+	* po/Rules-quot:
+	* po/boldquot.sed:
+	* po/en@boldquot.header:
+	* po/en@quot.header:
+	* po/insert-header.sin:
+	* po/quot.sed:
+	* po/remove-potcdate.sin:
+	* src/gettext.h:
+	* .bzrignore:
+	* Makefile.am:
+	* configure.ac:
+	* src/PromptDialog.vala:
+
+	Initial addition of i18n stuff.
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+
+	Enhance --version output, also.
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+	* src/Application.vala:
+	* vapi/alltray.vapi:
+
+	Enhance the About dialog to produce more info.
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Report buggy applications and show all windows before undocking.
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Merge e16-and-e17 branch; still don't work due to bugs in enlightenment
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	More cleanups on debug output, set SKIP_PAGER
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix debug output to not spam so much.
+
+2009-07-22  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Updated .bzrignore to ignore gcov data
+
+2009-07-15  Michael B. Trausch  <mike@trausch.us>
+
+	* src/PromptDialog.vala:
+
+	More clearly state what to do when issuing prompt.
+
+2009-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* Makefile.am:
+
+	Include REQUIREMENTS file
+
+2009-07-06  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/AttachHelper.vala:
+	* src/Debug.vala:
+	* src/Process.vala:
+	* src/PromptDialog.vala:
+
+	Fix indentation and trailing whitespace issues; indents more like c-mode now, which is what I wanted in the first place.
+
+2009-07-06  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix check that catches AllTray in -a mode.
+
+2009-07-06  Michael B. Trausch  <mike@trausch.us>
+
+	* images/bg.png:
+
+	Add bg used on identi.ca group
+
+2009-06-25  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS for accuracy.
+
+2009-06-22  Michael B. Trausch  <mike@trausch.us>
+
+	* tests:
+	* tests/1.png:
+	* tests/2.png:
+	* tests/GtkDemandsAttention.vala:
+	* tests/GtkIconChange.vala:
+	* tests/Makefile.am:
+	* .bzrignore:
+	* Makefile.am:
+	* NEWS:
+	* configure.ac:
+	* src/Application.vala:
+
+	Code is in AllTray, needs a bugfix to wnck to be enabled.
+
+2009-06-20  Michael B. Trausch  <mike@trausch.us>
+
+	* tests/Makefile.am:
+
+	Add pngs to extra-dist
+
+2009-06-20  Michael B. Trausch  <mike@trausch.us>
+
+	* Makefile.am:
+	* NEWS:
+
+	Add tests to subdir
+
+2009-06-20  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+	* src/Application.vala:
+
+	This does not work for some reason
+
+2009-06-18  Michael B. Trausch  <mike@trausch.us>
+
+	* tests/Makefile.am:
+
+	Add makefile.am
+
+2009-06-18  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Add GTK to configure checks (oops!) and add tests dir.
+
+2009-06-18  Michael B. Trausch  <mike@trausch.us>
+
+	* tests:
+	* tests/1.png:
+	* tests/2.png:
+	* tests/GtkDemandsAttention.vala:
+	* tests/GtkIconChange.vala:
+
+	Added functional tests
+
+2009-06-17  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Process.vala:
+
+	Report error condition clearly so that it can be understood; exit() instead
+	of abort(), since no core file is necessary or useful in this case.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+	* src/gtop_glue.c:
+	* src/gtop_glue.h:
+	* vapi/gtop_glue.vapi:
+
+	Add support for getting the name of a process.
+	
+	This is required for the implementation of bug 382347.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/gtop_glue.c:
+
+	formatting
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix working under OpenBox; it depends on setting hints in a specific order.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Bump version post-release to indicate that future changes are not the 0.7.3dev release.
+
+2009-06-12  Michael B. Trausch  <mike@trausch.us>
+
+	* ChangeLog:
+
+	Updated changelog (again)
+
 2009-06-12  Michael B. Trausch  <mike@trausch.us>
 
 	* Makefile.am:
