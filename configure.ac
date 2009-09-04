@@ -109,7 +109,6 @@ AC_CONFIG_FILES([README
 	po/Makefile.in
         src/Makefile
 	vapi/Makefile
-	tests/Makefile
         man/alltray.1])
 AC_OUTPUT
 
