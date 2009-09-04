@@ -127,19 +127,25 @@ specification (and thus by definition the ICCCM specification).  It also
 requires another process which fills the role of the system tray, as
 specified in the System Tray Specification.
 
-At the time of this writing, KDE 4.x does \fInot\fR fulfill the
-requirements; it does not permit AllTray to do its job and hide the
-application from the user and put it into the system tray (the window
-will still be in the window list).  The KDE project is aware of the
-issue.
+Some window manager/desktop environment combinations may not honor all
+of AllTray's requests.  If you find such a combination, please file a
+bug report against AllTray so that it may be investigated.  If it is a
+problem in AllTray (or AllTray can somehow work around it without
+introducing other problems), the bug report will be fixed.  If the bug
+is discovered to be in the desktop environment or window manager, a
+bug will be filed against the appropriate project, if possible.
 \#
 .SH BUGS
 \#
-Session management support needs to be implemented.  If you rely on
-session management support for your application software, you may
-encounter surprising results when combining that software with AllTray
-at present.  This is planned to be fixed sometime after the 0.8.0
-release.
+This release does \fBNOT\fR include close-to-tray support.  Please see
+http://alltray.trausch.us/wiki/Close_To_Tray for information.
+
+AllTray currently does not work well for users who utilize session
+management in their desktop environment or window manager software.
+This issue is known.  There is no fix available at this time; session
+management awareness is planned for the AllTray 1.0 release
+(it will be implemented first in 0.9.x, and it may be backported to
+AllTray 0.8.x if such backporting is feasible).
 
 There are likely undiscovered bugs.  If you should find one, please
 report it at https://launchpad.net/alltray/+filebug.
