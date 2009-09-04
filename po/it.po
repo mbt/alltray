@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-04 01:00-0400\n"
-"PO-Revision-Date: 2009-09-02 19:09+0000\n"
+"PO-Revision-Date: 2009-09-04 06:22+0000\n"
 "Last-Translator: Michael B. Trausch <mbt@zest.trausch.us>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-09-03 10:26+0000\n"
+"X-Launchpad-Export-Date: 2009-09-04 10:23+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -355,7 +355,8 @@ msgstr "Valore '%s' non riconosciuto in ALLTRAY_DEBUG"
 
 #: src/Debug.vala:134
 msgid "Debugging subsystem setup complete."
-msgstr "Configurazione del sottosistema di rintracciamento errori completato."
+msgstr ""
+"Configurazione del sottosistema di rintracciamento errori completato."
 
 #: src/Debug.vala:137
 msgid "ALLTRAY_DEBUG not set!"
