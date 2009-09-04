@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-26 01:45-0400\n"
+"POT-Creation-Date: 2009-09-04 01:00-0400\n"
 "PO-Revision-Date: 2009-07-30 17:09+0000\n"
 "Last-Translator: Michael B. Trausch <mbt@zest.trausch.us>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
@@ -144,125 +144,125 @@ msgstr "Actually processing arg"
 msgid "Caught unwired signal %d"
 msgstr "Caught unwired signal %d"
 
-#: src/Application.vala:57
+#: src/Application.vala:56
 msgid "Creating a new Application"
 msgstr "Creating a new Application"
 
-#: src/Application.vala:80
+#: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
 msgstr "WHOA - The app went away?! Looking for it to come back..."
 
-#: src/Application.vala:109
+#: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
 msgstr "pid %d (%s) is not ours."
 
-#: src/Application.vala:124
+#: src/Application.vala:123
 msgid "Application %s needs fixed, reports PID 0."
 msgstr "Application %s needs fixed, reports PID 0."
 
-#: src/Application.vala:177
+#: src/Application.vala:176
 msgid "Requesting menu!"
 msgstr "Requesting menu!"
 
-#: src/Application.vala:181
+#: src/Application.vala:180
 msgid "Toggle Visibility"
 msgstr "Toggle Visibility"
 
-#: src/Application.vala:183
+#: src/Application.vala:182
 msgid "Undock"
 msgstr "Undock"
 
-#: src/Application.vala:187
+#: src/Application.vala:186
 msgid "About AllTray..."
 msgstr "About AllTray..."
 
-#: src/Application.vala:213
+#: src/Application.vala:212
 msgid "All"
 msgstr "All"
 
-#: src/Application.vala:246
+#: src/Application.vala:245
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
 msgstr[0] "%s - %d window"
 msgstr[1] "%s - %d windows"
 
-#: src/Application.vala:289
+#: src/Application.vala:288
 msgid "Using Window Icon (fallback was %s)"
 msgstr "Using Window Icon (fallback was %s)"
 
-#: src/Application.vala:292
+#: src/Application.vala:291
 msgid "Using App Icon (fallback was %s)"
 msgstr "Using App Icon (fallback was %s)"
 
-#: src/Application.vala:347
+#: src/Application.vala:346
 msgid "New Bitmask: %s"
 msgstr "New Bitmask: %s"
 
-#: src/Application.vala:349
+#: src/Application.vala:348
 msgid "New State: %s"
 msgstr "New State: %s"
 
-#: src/Application.vala:357
+#: src/Application.vala:356
 msgid "Blinking, window state is: %s"
 msgstr "Blinking, window state is: %s"
 
-#: src/Application.vala:374
+#: src/Application.vala:373
 msgid "MINIMIZED | "
 msgstr "MINIMIZED | "
 
-#: src/Application.vala:376
+#: src/Application.vala:375
 msgid "MAXIMIZED_HORIZONTALLY | "
 msgstr "MAXIMIZED_HORIZONTALLY | "
 
-#: src/Application.vala:378
+#: src/Application.vala:377
 msgid "MAXIMIZED_VERTICALLY | "
 msgstr "MAXIMIZED_VERTICALLY | "
 
-#: src/Application.vala:380
+#: src/Application.vala:379
 msgid "SHADED | "
 msgstr "SHADED | "
 
-#: src/Application.vala:382
+#: src/Application.vala:381
 msgid "SKIP_PAGER | "
 msgstr "SKIP_PAGER | "
 
-#: src/Application.vala:384
+#: src/Application.vala:383
 msgid "SKIP_TASKLIST | "
 msgstr "SKIP_TASKLIST | "
 
-#: src/Application.vala:386
+#: src/Application.vala:385
 msgid "STICKY | "
 msgstr "STICKY | "
 
-#: src/Application.vala:388
+#: src/Application.vala:387
 msgid "HIDDEN | "
 msgstr "HIDDEN | "
 
-#: src/Application.vala:390
+#: src/Application.vala:389
 msgid "FULLSCREEN | "
 msgstr "FULLSCREEN | "
 
-#: src/Application.vala:392
+#: src/Application.vala:391
 msgid "DEMANDS_ATTENTION | "
 msgstr "DEMANDS_ATTENTION | "
 
-#: src/Application.vala:394
+#: src/Application.vala:393
 msgid "URGENT | "
 msgstr "URGENT | "
 
-#: src/Application.vala:396
+#: src/Application.vala:395
 msgid "ABOVE | "
 msgstr "ABOVE | "
 
-#: src/Application.vala:398
+#: src/Application.vala:397
 msgid "BELOW | "
 msgstr "BELOW | "
 
-#: src/Application.vala:439
+#: src/Application.vala:438
 msgid "Setting window 0x%08lx visibility to %s"
 msgstr "Setting window 0x%08lx visibility to %s"
 
-#: src/Application.vala:501
+#: src/Application.vala:500
 msgid ""
 "%s\n"
 "Branch: %s, r%s\n"
@@ -272,11 +272,11 @@ msgstr ""
 "Branch: %s, r%s\n"
 "%s"
 
-#: src/Application.vala:511
+#: src/Application.vala:510
 msgid "Copyright (c) %s"
 msgstr "Copyright (c) %s"
 
-#: src/Application.vala:513
+#: src/Application.vala:512
 msgid "Dock applications in the system tray."
 msgstr "Dock applications in the system tray."
 
