@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2009-07-26 01:45-0400\n"
-"PO-Revision-Date: 2009-08-07 14:07+0000\n"
+"POT-Creation-Date: 2009-09-04 01:00-0400\n"
+"PO-Revision-Date: 2009-09-04 01:03-0400\n"
 "Last-Translator: midnightflash <midnightflash@gmx.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-09-02 09:43+0000\n"
+"X-Launchpad-Export-Date: 2009-09-03 10:26+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -144,124 +144,126 @@ msgstr "Verarbeite zur Zeit arg"
 msgid "Caught unwired signal %d"
 msgstr "Fing Kabelloses signal %d"
 
-#: src/Application.vala:57
+#: src/Application.vala:56
 msgid "Creating a new Application"
 msgstr "Erzeuge eine neue Anwendung"
 
-#: src/Application.vala:80
+#: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
 msgstr "WHOA - Das App ist weg‽ Schaue, dass es wieder kommt…"
 
-#: src/Application.vala:109
+#: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
 msgstr "pid %d (%s) gehört nicht uns."
 
-#: src/Application.vala:124
+#: src/Application.vala:123
 msgid "Application %s needs fixed, reports PID 0."
 msgstr "Anwendung %s braucht eine Repartur, meldet PID 0."
 
-#: src/Application.vala:177
+#: src/Application.vala:176
 msgid "Requesting menu!"
 msgstr "Fordere Menü an!"
 
-#: src/Application.vala:181
+#: src/Application.vala:180
 msgid "Toggle Visibility"
 msgstr "Sichbarkeit EIN/AUS"
 
-#: src/Application.vala:183
+#: src/Application.vala:182
 msgid "Undock"
 msgstr "Abdocken"
 
-#: src/Application.vala:187
+#: src/Application.vala:186
 msgid "About AllTray..."
 msgstr "Über AllTray…"
 
-#: src/Application.vala:213
+#: src/Application.vala:212
 msgid "All"
 msgstr "Alle(s)"
 
-#: src/Application.vala:246
+#: src/Application.vala:245
+#, fuzzy
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
 msgstr[0] "%s - %d Fenster"
+msgstr[1] "%s - %d Fenster"
 
-#: src/Application.vala:289
+#: src/Application.vala:288
 msgid "Using Window Icon (fallback was %s)"
 msgstr "Benutze Fenster-Icon (Sicherung war %s)"
 
-#: src/Application.vala:292
+#: src/Application.vala:291
 msgid "Using App Icon (fallback was %s)"
 msgstr "Benutze Anwendungs-Icon (Sicherung war %s)"
 
-#: src/Application.vala:347
+#: src/Application.vala:346
 msgid "New Bitmask: %s"
 msgstr "Neue Bitmaske: %s"
 
-#: src/Application.vala:349
+#: src/Application.vala:348
 msgid "New State: %s"
 msgstr "Neuer Status: %s"
 
-#: src/Application.vala:357
+#: src/Application.vala:356
 msgid "Blinking, window state is: %s"
 msgstr "Blinken, Fenster status ist: %s"
 
-#: src/Application.vala:374
+#: src/Application.vala:373
 msgid "MINIMIZED | "
 msgstr "MINIMIERT | "
 
-#: src/Application.vala:376
+#: src/Application.vala:375
 msgid "MAXIMIZED_HORIZONTALLY | "
 msgstr "MAXIMIERT_HORIZONTAL | "
 
-#: src/Application.vala:378
+#: src/Application.vala:377
 msgid "MAXIMIZED_VERTICALLY | "
 msgstr "MAXIMIERT_VERTIKAL | "
 
-#: src/Application.vala:380
+#: src/Application.vala:379
 msgid "SHADED | "
 msgstr "SCHATTIERT | "
 
-#: src/Application.vala:382
+#: src/Application.vala:381
 msgid "SKIP_PAGER | "
 msgstr "ÜBERSPRINGE_PAGER | "
 
-#: src/Application.vala:384
+#: src/Application.vala:383
 msgid "SKIP_TASKLIST | "
 msgstr "ÜBERSPRINGE_TASKLISTE | "
 
-#: src/Application.vala:386
+#: src/Application.vala:385
 msgid "STICKY | "
 msgstr "WICHTIG | "
 
-#: src/Application.vala:388
+#: src/Application.vala:387
 msgid "HIDDEN | "
 msgstr "VERSTECKT | "
 
-#: src/Application.vala:390
+#: src/Application.vala:389
 msgid "FULLSCREEN | "
 msgstr "VOLLBILD | "
 
-#: src/Application.vala:392
+#: src/Application.vala:391
 msgid "DEMANDS_ATTENTION | "
 msgstr "BENÖTIGT_AUFMERKSAMKEIT | "
 
-#: src/Application.vala:394
+#: src/Application.vala:393
 msgid "URGENT | "
 msgstr "DRINGEND | "
 
-#: src/Application.vala:396
+#: src/Application.vala:395
 msgid "ABOVE | "
 msgstr "ÜBER | "
 
-#: src/Application.vala:398
+#: src/Application.vala:397
 msgid "BELOW | "
 msgstr "UNTER | "
 
-#: src/Application.vala:439
+#: src/Application.vala:438
 msgid "Setting window 0x%08lx visibility to %s"
 msgstr "Setze Fenster 0x%08lx Sichtbarkeit auf %s"
 
-#: src/Application.vala:501
+#: src/Application.vala:500
 msgid ""
 "%s\n"
 "Branch: %s, r%s\n"
@@ -271,11 +273,11 @@ msgstr ""
 "Branch: %s, r%s\n"
 "%s"
 
-#: src/Application.vala:511
+#: src/Application.vala:510
 msgid "Copyright (c) %s"
 msgstr "Copyright © %s"
 
-#: src/Application.vala:513
+#: src/Application.vala:512
 msgid "Dock applications in the system tray."
 msgstr "Docke Anwendungen in das System-Panel."
 

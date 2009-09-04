@@ -1,5 +1,5 @@
-News for 0.7.3dev+
-==================
+News for 0.7.4dev
+=================
 
 THIS IS A DEVELOPMENT SNAPSHOT!  IT IS NOT INTENDED TO BE GENERALLY
 USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
@@ -15,17 +15,26 @@ FUNCTIONALITY IS CURRENTLY PRESENT.
     If you would like to contribute translations, you can do so at
     https://translations.launchpad.net/alltray -- all you need is an
     account at Launchpad and knowledge of English and the language you
-    are translating into.
+    are translating into.  It is already able to speak (at least in
+    part) several different languages.
 
   * A number of bugs (both within Launchpad and not) have been fixed
     since 0.7.3dev.  AllTray should now work on more window managers,
-    and more consistently and correctly.  There are known issues with
-    e17 at this point in time.
+    and more consistently and correctly.  There may be issues with
+    more esoteric window managers and/or window managers that I have
+    never heard of or installed.  Please file bugs if any are found.
 
-  * If rebuilding Vala files, Vala 0.7.4 is required.  Vala 0.7.4 is
-    _NOT_ required to simply build from the source tarball; it is only
-    required if you want to develop for AllTray or build from the bzr
-    branch, really.
+  * This release does NOT have support for close-to-tray.  I am sorry.
+    I have been trying to figure out how to implement that in a clean,
+    consistent manner that will “just work” with all known
+    standards-compliant window managers and desktop environments and
+    various combinations thereof, or at the very least, all of those
+    that I can readily test with.
+
+    I would very gladly accept help on this.  It needs to be
+    implemented in a very low-level (X11) way.  Look at
+    http://alltray.trausch.us/wiki/Close_To_Tray for what it needs to
+    do, if you are interested in helping.
 
   * For other current build-time and run-time requirements, please see
     the REQUIREMENTS file.

@@ -6,7 +6,7 @@
 #
 
 # Initialize autoconf
-AC_INIT([AllTray], [0.7.3dev+], [https://launchpad.net/alltray/+filebug])
+AC_INIT([AllTray], [0.7.4dev], [https://launchpad.net/alltray/+filebug])
 
 # Initialize automake
 AM_INIT_AUTOMAKE(foreign check-news -Wall)
@@ -109,7 +109,6 @@ AC_CONFIG_FILES([README
 	po/Makefile.in
         src/Makefile
 	vapi/Makefile
-	tests/Makefile
         man/alltray.1])
 AC_OUTPUT
 
