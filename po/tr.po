@@ -8,27 +8,27 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-04 01:00-0400\n"
-"PO-Revision-Date: 2009-09-02 19:09+0000\n"
-"Last-Translator: Tufan <kupelitufan@gmail.com>\n"
+"PO-Revision-Date: 2009-09-04 14:44+0000\n"
+"Last-Translator: mehmet nur olcay <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2009-09-04 10:23+0000\n"
+"X-Launchpad-Export-Date: 2009-09-05 11:10+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
 msgid "Attach to a running program"
-msgstr ""
+msgstr "Çalışan programa ekle"
 
 #: src/AllTray.vala:40
 msgid "Enable debugging messages"
-msgstr ""
+msgstr "Debug mesajlarını göster"
 
 #: src/AllTray.vala:43
 msgid "Show types of debugging messages"
-msgstr ""
+msgstr "Debug mesajı tiplerini göster"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
@@ -40,19 +40,19 @@ msgstr "Halen çalışan programa ekle"
 
 #: src/AllTray.vala:50
 msgid "Display AllTray version info and exit"
-msgstr ""
+msgstr "AllTray versiyon bilgisini göster ve Çık"
 
 #: src/AllTray.vala:53
 msgid "Display extended version info and exit"
-msgstr ""
+msgstr "Ayrıntılı versiyon bilgisini göster ve Çık"
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
-msgstr ""
+msgstr "Command line opsiyonları ayıklandı"
 
 #: src/AllTray.vala:89
 msgid "- Dock software to the systray"
-msgstr ""
+msgstr "Programı sistem tepsisine indir"
 
 #: src/AllTray.vala:97
 msgid "error: env flag parsing failed (%s)\n"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: src/AllTray.vala:168
 msgid "Cannot set PGID.  Cannot continue."
-msgstr ""
+msgstr "PGID değeri ayarlanamadı. Devam Edilemez"
 
 #: src/AllTray.vala:205
 msgid ""
@@ -74,7 +74,7 @@ msgstr ""
 
 #: src/AllTray.vala:213
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
-msgstr ""
+msgstr "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
 
 #: src/AllTray.vala:214
 msgid ""
@@ -82,10 +82,12 @@ msgid ""
 "Foundation.\n"
 "\n"
 msgstr ""
+"GNU GPL v3.0 lisansı ile lisanslanmış ve yasalarla korunmaktadır\n"
+"\n"
 
 #: src/AllTray.vala:220
 msgid "Configured %s on %s %s\n"
-msgstr ""
+msgstr "Ayarlanan %s on %s %s\n"
 
 #: src/AllTray.vala:225
 msgid "Compilers: %s and %s\n"
@@ -97,7 +99,7 @@ msgstr ""
 
 #: src/AllTray.vala:232
 msgid "Configure flags: %s\n"
-msgstr ""
+msgstr "Ayarlanan bayraklar : %s\n"
 
 #: src/AllTray.vala:247
 msgid "Adding app (pid %d) to list of recv'd apps"
@@ -109,7 +111,7 @@ msgstr ""
 
 #: src/AllTray.vala:312 src/AllTray.vala:321
 msgid "Oops.  Not running?"
-msgstr ""
+msgstr "Oops.  Çalışmıyor?"
 
 #: src/AllTray.vala:314
 msgid "Failed to start process: %s"
@@ -121,11 +123,11 @@ msgstr "İşlemi Başlatırken hata oldu"
 
 #: src/AllTray.vala:342
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Alt süreçler temizleniyor..."
 
 #: src/AllTray.vala:348
 msgid "No more children. Dying."
-msgstr ""
+msgstr "Başka alt süreç yok. Kapatılıyor."
 
 #: src/AllTray.vala:359
 msgid "Evaluating %s"
@@ -169,7 +171,7 @@ msgstr "Ayır"
 
 #: src/Application.vala:186
 msgid "About AllTray..."
-msgstr ""
+msgstr "AllTray Hakkında..."
 
 #: src/Application.vala:212
 msgid "All"
@@ -270,7 +272,7 @@ msgstr ""
 
 #: src/Application.vala:512
 msgid "Dock applications in the system tray."
-msgstr ""
+msgstr "Uygulamayı sistem tepsisine ekle"
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
@@ -306,7 +308,7 @@ msgstr ""
 
 #: src/Debug.vala:52
 msgid "Misc messages"
-msgstr ""
+msgstr "Çeşitli mesajlar"
 
 #: src/Debug.vala:53
 msgid "Internal error detail"
