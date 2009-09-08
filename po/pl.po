@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-04 01:00-0400\n"
-"PO-Revision-Date: 2009-07-30 17:09+0000\n"
+"PO-Revision-Date: 2009-09-07 16:01+0000\n"
 "Last-Translator: Grzegorz Dąbrowski <grzegorzdabrowski@poczta.fm>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2009-09-07 10:39+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 10:33+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -180,7 +180,7 @@ msgstr "O AllTray..."
 
 #: src/Application.vala:212
 msgid "All"
-msgstr "Wszystko"
+msgstr "Wszystkie"
 
 #: src/Application.vala:245
 msgid "%s - %d window"
@@ -281,7 +281,7 @@ msgstr "Copyright © %s"
 
 #: src/Application.vala:512
 msgid "Dock applications in the system tray."
-msgstr "Dokowanie aplikacji w obszarze powiadamiania."
+msgstr "Dokowanie programów w obszarze powiadamiania."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
