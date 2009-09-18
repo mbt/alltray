@@ -1,0 +1,19 @@
+This package was debianized by Carlos C Soto <csoto@sia-solutions.com>
+on Mon, 14 Aug 2006 02:11:07 -0500.  Packaging updated for new AllTray
+by Michael B. Trausch <mike@trausch.us>.
+
+It was downloaded from: https://launchpad.net/alltray
+
+Author: Michael B. Trausch <mike@trausch.us>
+Copyright: 2009 Michael B. Trausch <mike@trausch.us>
+
+License: GNU GPL v3 as published by the Free Software Foundation.
+
+On Debian systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL-3'.
+
+-------------------------------------------------------------------------------
+
+The Debian packaging is (C) 2006, Carlos C Soto <csoto@sia-solutions.com>
+and is licensed under the GPL, see above.
+
