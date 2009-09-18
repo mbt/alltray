@@ -1,3 +1,33 @@
+alltray (0.7.4dev-trunk0.8.04) hardy; urgency=low
+
+  * AutoPPA build
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:23:27 +0000
+
+alltray (0.7.4dev-trunk0.8.04) hardy; urgency=low
+
+  * AutoPPA build
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:21:33 +0000
+
+alltray (0.7.4dev-trunk0.8.04) hardy; urgency=low
+
+  * AutoPPA
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:20:32 +0000
+
+alltray (0.7.4dev-trunk0.8.04) hardy; urgency=low
+
+  * Trying to use AutoPPA
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:18:56 +0000
+
+alltray (0.7.4dev-trunk0.8.04) hardy; urgency=low
+
+  * Uploading trunk to PPA using AutoPPA.
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:18:22 +0000
+
 alltray (1:0.7.4dev~ppa0) karmic; urgency=low
 
   * New upstream release
