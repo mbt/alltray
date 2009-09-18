@@ -1,3 +1,9 @@
+alltray (0.7.4dev-trunk0.9.04) jaunty; urgency=low
+
+  * AutoPPA build
+
+ -- Michael B. Trausch <mike@trausch.us>  Fri, 18 Sep 2009 19:23:44 +0000
+
 alltray (0.7.4dev-trunk0.8.10) intrepid; urgency=low
 
   * AutoPPA build
