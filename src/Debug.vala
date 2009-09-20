@@ -34,7 +34,6 @@ namespace AllTray.Debug {
   }
 
   private struct DebugDescription {
-    public Subsystem subsys;
     public string name;
     public string description;
   }
@@ -43,19 +42,23 @@ namespace AllTray.Debug {
     private static Subsystem _subsys = Subsystem.None;
     private static bool _enabled = false;
 
+    /*
+     * This triggers a GCC warning later; omitting the const, though,
+     * will cause valac to crash with a segmentation fault.
+     */ 
     private const DebugDescription[] _debugOptions = {
-      { Subsystem.CommandLine, "CL", N_("command line parsing") },
-      { Subsystem.Display, "DISPLAY", N_("X11 display") },
-      { Subsystem.TrayIcon, "TRAY", N_("System Tray Icon") },
-      { Subsystem.WindowManager, "WM", N_("Window Manager") },
-      { Subsystem.Process, "PROCESS", N_("Process information") },
-      { Subsystem.Misc, "MISC", N_("Misc messages") },
-      { Subsystem.Bug, "BUG", N_("Internal error detail") },
-      { Subsystem.Application, "APP", N_("Applications") },
-      { Subsystem.AttachHelper, "AH", N_("AttachHelper class messages") },
-      { Subsystem.Signal, "SIG", N_("Signal debugging messages") },
-      { Subsystem.Main, "MAIN", N_("Entrypoint, preinit, etc.") },
-      { Subsystem.All, "ALL", N_("All debug messages") }
+      { "CL", N_("command line parsing") },
+      { "DISPLAY", N_("X11 display") },
+      { "TRAY", N_("System Tray Icon") },
+      { "WM", N_("Window Manager") },
+      { "PROCESS", N_("Process information") },
+      { "MISC", N_("Misc messages") },
+      { "BUG", N_("Internal error detail") },
+      { "APP", N_("Applications") },
+      { "AH", N_("AttachHelper class messages") },
+      { "SIG", N_("Signal debugging messages") },
+      { "MAIN", N_("Entrypoint, preinit, etc.") },
+      { "ALL", N_("All debug messages") }
     };
 
     public static void display_debug_list() {
