@@ -122,9 +122,9 @@ get_window_leader(Display *d, Window w) {
       retval = *((unsigned long *)prop_ret);
       return(retval);
     }
-  } else {
-    return(0);
   }
+
+  return(0);
 }
 
 static gulong
