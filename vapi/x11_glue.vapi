@@ -1,4 +1,3 @@
-[CCode(cheader_filename = "x11_glue.h")]
 namespace AllTray {
   [CCode(cname = "alltray_get_x11_window_from_pid",
 	 cheader_filename = "x11_glue.h")]
