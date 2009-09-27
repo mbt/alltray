@@ -17,7 +17,7 @@ For Development Builds
 Development builds are branches from bzr, which do not have a
 ./configure script and have more requirements to build.
 
-  * Vala 0.7.5.
+  * Vala 0.7.6, though Vala 0.7.7 is recommended.
 
   * Autotools stack.  The author uses GNU autoconf 2.62 and automake
     1.11; you may be able to use other versions, but as always, YMMV.
