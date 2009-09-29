@@ -3,7 +3,7 @@
 # Generate the build system for AllTray.
 #
 
-if [ "$1" == "--no-configure" ]; then
+if [ "$1" = "--no-configure" ]; then
     autoreconf --force --install
 else
     printf "I will run ./configure after generating it and pass it all options\n"
