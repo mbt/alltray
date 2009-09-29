@@ -1,3 +1,9 @@
+alltray (1:0.7.4dev.200909291200-ppa0.9.04) jaunty; urgency=low
+
+  * Fix the AutoPPA build (I hope).
+
+ -- Michael B. Trausch <mike@trausch.us>  Tue, 29 Sep 2009 18:40:16 +0000
+
 alltray (1:0.7.4dev.200909291200-ppa0.8.10) intrepid; urgency=low
 
   * Fix the AutoPPA build (I hope).
