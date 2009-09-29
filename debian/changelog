@@ -1,3 +1,9 @@
+alltray (0.7.4dev.200909291200-ppa0.8.04) hardy; urgency=low
+
+  * AutoPPA snapshot build
+
+ -- Michael B. Trausch <mike@trausch.us>  Tue, 29 Sep 2009 18:32:47 +0000
+
 alltray (1:0.7.4dev~ppa0) karmic; urgency=low
 
   * New upstream release
