@@ -433,3 +433,6 @@ msgstr ""
 "Note: do not click on the window border itself. Click inside\n"
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
+
+#~ msgid "Cannot set PGID.  Cannot continue."
+#~ msgstr "Cannot set PGID.  Cannot continue."

@@ -111,7 +111,11 @@ namespace AllTray {
 				msg.str);
       } else {
 	if(app_pid != desired_pid) {
-	  _process.run_kinda_fake(app_pid);
+	  try {
+	    _process.run_kinda_fake(app_pid);
+	  } catch(ProcessError pe) {
+	    critical("error: %s", pe.message);
+	  }
 	}
       }
 
@@ -240,8 +244,6 @@ namespace AllTray {
       StringBuilder sb = new StringBuilder();
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
-      string plural = (wincount != 1 ? "s" : "");
-
       sb.append_printf(ngettext("%s - %d window",
 				"%s - %d windows",
 				wincount), _wnckApp.get_name(), wincount);

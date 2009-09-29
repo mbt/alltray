@@ -148,8 +148,10 @@ namespace AllTray {
 
       if(cur_pgid != needed_pgid) {
 	int status = Posix.setpgid(0, 0);
-	if(status == -1)
-	  throw new AllTrayError.SET_PGID_FAILED("set pgid failed");
+	if(status == -1) {
+	  warning(_("set pgid failed; alltray may behave strangely."));
+	  return;
+	}
 
 	Program.pgid = (Pid)Posix.getpgrp();
 	return;
@@ -158,15 +160,6 @@ namespace AllTray {
 	Program.pgid = cur_pgid;
 	return;
       }
-
-      /*
-       * If we're here, then we do not have the correct pgid,
-       * and we cannot set the pgid.  This should *not* happen,
-       * so we throw a fatal error here if it does, which should
-       * be reported to be investigated if it does happen.
-       */
-      GLib.error(_("Cannot set PGID.  Cannot continue."));
-      Posix.abort(); // Meta: we actually don't execute this line.
     }
 
     public int run() {
