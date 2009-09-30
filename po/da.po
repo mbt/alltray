@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-09-20 04:38+0000\n"
+"PO-Revision-Date: 2009-09-29 07:12+0000\n"
 "Last-Translator: Aputsiaq Janussen <aj@isit.gl>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-09-23 11:08+0000\n"
+"X-Launchpad-Export-Date: 2009-09-30 06:45+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -60,21 +60,23 @@ msgstr "fejl: miljø flag analyse fejlede (%s)\n"
 
 #: src/AllTray.vala:106
 msgid "error: command line parsing failed (%s)\n"
-msgstr ""
+msgstr "fejl: kommandolinje fortolkning fejlede (%s)\n"
 
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
-msgstr ""
+msgstr "indstilling af pgid fejlde; alltray kan opføre sig besynderligt."
 
 #: src/AllTray.vala:198
 msgid ""
 "AllTray %s, from bzr branch %s rev %s,\n"
 " rev-id %s\n"
 msgstr ""
+"AllTray %s, fra bzr gren %s rev %s,\n"
+" rev-id %s\n"
 
 #: src/AllTray.vala:206
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
-msgstr ""
+msgstr "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
 
 #: src/AllTray.vala:207
 msgid ""
@@ -82,180 +84,183 @@ msgid ""
 "Foundation.\n"
 "\n"
 msgstr ""
+"Licenseret under GNU GPL v3.0 som offentliggjort af Free Software "
+"Foundation.\n"
+"\n"
 
 #: src/AllTray.vala:213
 msgid "Configured %s on %s %s\n"
-msgstr ""
+msgstr "Konfigureret %s på %s %s\n"
 
 #: src/AllTray.vala:218
 msgid "Compilers: %s and %s\n"
-msgstr ""
+msgstr "Kompilere: %s og %s\n"
 
 #: src/AllTray.vala:223
 msgid "Configure was run without flags\n"
-msgstr ""
+msgstr "Konfigurering blev kørt uden flag\n"
 
 #: src/AllTray.vala:225
 msgid "Configure flags: %s\n"
-msgstr ""
+msgstr "Konfigureringsflag: %s\n"
 
 #: src/AllTray.vala:240
 msgid "Adding app (pid %d) to list of recv'd apps"
-msgstr ""
+msgstr "Føjer prog (pid %d) til liste af modt. prog"
 
 #: src/AllTray.vala:267
 msgid "Failed to get a window; exiting.\n"
-msgstr ""
+msgstr "Mislykkedes i at få et vindue; afslutter.\n"
 
 #: src/AllTray.vala:305 src/AllTray.vala:314
 msgid "Oops.  Not running?"
-msgstr ""
+msgstr "Uups. Kører ikke?"
 
 #: src/AllTray.vala:307
 msgid "Failed to start process: %s"
-msgstr ""
+msgstr "Mislykkedes i at starte proces: %s"
 
 #: src/AllTray.vala:315
 msgid "Failed to start process"
-msgstr ""
+msgstr "Mislykkedes i at starte proces"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Ryder op efter arving..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
-msgstr ""
+msgstr "Ikke flere arvinger. Dør."
 
 #: src/AllTray.vala:352
 msgid "Evaluating %s"
-msgstr ""
+msgstr "Evaluerer %s"
 
 #: src/AllTray.vala:361
 msgid "Actually processing arg"
-msgstr ""
+msgstr "Behandler aktuelt arg"
 
 #: src/AllTray.vala:393
 msgid "Caught unwired signal %d"
-msgstr ""
+msgstr "Fangede ikke-tilsluttet signal %d"
 
 #: src/Application.vala:56
 msgid "Creating a new Application"
-msgstr ""
+msgstr "Opretter nyt Program"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
-msgstr ""
+msgstr "UHA - Programmet forsvandt?! Venter på at det kommer tilbage..."
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
-msgstr ""
+msgstr "pid %d (%s) er ikke vores."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr ""
+msgstr "Program %s behøver rettelse, rapporterer PID 0."
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
-msgstr ""
+msgstr "Anmoder menu!"
 
 #: src/Application.vala:184
 msgid "Toggle Visibility"
-msgstr ""
+msgstr "Skift Synlighed"
 
 #: src/Application.vala:186
 msgid "Undock"
-msgstr ""
+msgstr "Afdok"
 
 #: src/Application.vala:190
 msgid "About AllTray..."
-msgstr ""
+msgstr "Om AllTray..."
 
 #: src/Application.vala:216
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: src/Application.vala:247
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s - %d vindue"
+msgstr[1] "%s - %d vinduer"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
-msgstr ""
+msgstr "Bruger Vinduesikon (erstatning var %s)"
 
 #: src/Application.vala:293
 msgid "Using App Icon (fallback was %s)"
-msgstr ""
+msgstr "Bruger Prog Ikon (erstatning var %s)"
 
 #: src/Application.vala:348
 msgid "New Bitmask: %s"
-msgstr ""
+msgstr "Ny Bitmaske: %s"
 
 #: src/Application.vala:350
 msgid "New State: %s"
-msgstr ""
+msgstr "Ny Tilstand: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
-msgstr ""
+msgstr "Blinker, vinduestilstand er: %s"
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
-msgstr ""
+msgstr "MINIMERET | "
 
 #: src/Application.vala:377
 msgid "MAXIMIZED_HORIZONTALLY | "
-msgstr ""
+msgstr "MAKSIMERET_HORISONTALT | "
 
 #: src/Application.vala:379
 msgid "MAXIMIZED_VERTICALLY | "
-msgstr ""
+msgstr "MAKSIMERET_LODRET | "
 
 #: src/Application.vala:381
 msgid "SHADED | "
-msgstr ""
+msgstr "SKYGGET | "
 
 #: src/Application.vala:383
 msgid "SKIP_PAGER | "
-msgstr ""
+msgstr "SPRINGOVER_SIDESKIFTER | "
 
 #: src/Application.vala:385
 msgid "SKIP_TASKLIST | "
-msgstr ""
+msgstr "SPRINGOVER_OPGAVELISTE | "
 
 #: src/Application.vala:387
 msgid "STICKY | "
-msgstr ""
+msgstr "KLÆBRIG | "
 
 #: src/Application.vala:389
 msgid "HIDDEN | "
-msgstr ""
+msgstr "SKJULT | "
 
 #: src/Application.vala:391
 msgid "FULLSCREEN | "
-msgstr ""
+msgstr "FULDSKÆRM | "
 
 #: src/Application.vala:393
 msgid "DEMANDS_ATTENTION | "
-msgstr ""
+msgstr "KRÆVER_OPMÆRKSOMHED | "
 
 #: src/Application.vala:395
 msgid "URGENT | "
-msgstr ""
+msgstr "HASTER | "
 
 #: src/Application.vala:397
 msgid "ABOVE | "
-msgstr ""
+msgstr "OVENFOR | "
 
 #: src/Application.vala:399
 msgid "BELOW | "
-msgstr ""
+msgstr "NEDENFOR | "
 
 #: src/Application.vala:440
 msgid "Setting window 0x%08lx visibility to %s"
-msgstr ""
+msgstr "Sætter vindue 0x%08lx synlighed til %s"
 
 #: src/Application.vala:502
 msgid ""
@@ -263,122 +268,125 @@ msgid ""
 "Branch: %s, r%s\n"
 "%s"
 msgstr ""
+"%s\n"
+"Gren: %s, r%s\n"
+"%s"
 
 #: src/Application.vala:512
 msgid "Copyright (c) %s"
-msgstr ""
+msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr ""
+msgstr "Dok program i systembakken."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Markør pågribelse fejlede"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
-msgstr ""
+msgstr "Fik vindue 0x%08lx"
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
-msgstr ""
+msgstr "Vindue 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "kommandolinje fortolkning"
 
 #: src/Debug.vala:51
 msgid "X11 display"
-msgstr ""
+msgstr "X11 fremvisning"
 
 #: src/Debug.vala:52
 msgid "System Tray Icon"
-msgstr ""
+msgstr "Systembakke-ikon"
 
 #: src/Debug.vala:53
 msgid "Window Manager"
-msgstr ""
+msgstr "Vindueshåndtering"
 
 #: src/Debug.vala:54
 msgid "Process information"
-msgstr ""
+msgstr "Behandl information"
 
 #: src/Debug.vala:55
 msgid "Misc messages"
-msgstr ""
+msgstr "Forskellige beskeder"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr ""
+msgstr "Interne fejl detaljer"
 
 #: src/Debug.vala:57
 msgid "Applications"
-msgstr ""
+msgstr "Programmer"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
-msgstr ""
+msgstr "AttachHelper klasse beskeder"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr ""
+msgstr "Signal fejlfindingsbeskeder"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "Indgangssted, preinit, etc."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
-msgstr ""
+msgstr "Alle fejlfindingsbeskeder"
 
 #: src/Debug.vala:65
 msgid "String"
-msgstr ""
+msgstr "Streng"
 
 #: src/Debug.vala:65
 msgid "Messages are for"
-msgstr ""
+msgstr "Beskeder er til"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
-msgstr ""
+msgstr "Ikke-genkendelig værdi '%s' i ALLTRAY_DEBUG"
 
 #: src/Debug.vala:137
 msgid "Debugging subsystem setup complete."
-msgstr ""
+msgstr "Fejlfinding af delsystem opsætning fuldført."
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
-msgstr ""
+msgstr "ALLTRAY_DEBUG ikke indstillet!"
 
 #: src/Debug.vala:160
 msgid "Exiting: encountered fatal error."
-msgstr ""
+msgstr "Afslutter: stødte på graverende fejl."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "FEJL: Nåede standard, bør ikke være muligt."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr ""
+msgstr "Proces-arving %d (%s) kører nu."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
-msgstr ""
+msgstr "Den angivne PID eksisterer ikke."
 
 #: src/Process.vala:132
 msgid "Attached process %d has died."
-msgstr ""
+msgstr "Vedhæftede proces %d er død."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr ""
+msgstr "Arving %d døde okay"
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr ""
+msgstr "Arving %d døde uden noget!"
 
 #: src/Process.vala:232
 msgid ""
@@ -395,10 +403,22 @@ msgid ""
 "project, if necessary.  If the problem is the third one, then you will\n"
 "need to fix whatever went wrong and try again.\n"
 msgstr ""
+"AllTray var ikke i stand til at hæfte sig til nogen programmer, og\n"
+"AllTray's arvinger er døde.\n"
+"\n"
+"Dette problem kan være forårsaget af programmer som:\n"
+"  * ikke er efterfølger ICCCM og EWMH specifikationerne,\n"
+"  * sætter sig i baggrunden og forlader AllTray procesgruppe, eller\n"
+"  * uventet dør en tidlig død og faktisk ikke startede\n"
+"\n"
+"Hvis problemet er ét af de første to problemer, rapportér venligst om\n"
+"fejl i AllTray og den vil blive undersøgt og rapporteret til det rigtige\n"
+"projekt, om nødvendigt.  Hvis problemet er den tredje slags, så skal du\n"
+"fixe hvad der end gik galt og forsøge igen.\n"
 
 #: src/PromptDialog.vala:14
 msgid "Select an Application"
-msgstr ""
+msgstr "Vælg et program"
 
 #: src/PromptDialog.vala:23
 msgid ""
@@ -408,3 +428,8 @@ msgid ""
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
 msgstr ""
+"Klik på et vindue for den software du ønsker at dokke.\n"
+"\n"
+"Bemærk:  klik ikke på selve vinduets ramme. Klik inden i\n"
+"vinduet; særligt for Compiz, klik på titelbaren eller i de\n"
+"andre sider af vinduets ramme VIRKER IKKE."
