@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-10-04 13:06+0000\n"
-"Last-Translator: Lukáš Chmela <lukaschmela@gmail.com>\n"
+"PO-Revision-Date: 2010-01-13 20:46+0000\n"
+"Last-Translator: Vladimír \"Thang\" Kincl <Unknown>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2009-10-05 06:45+0000\n"
+"X-Launchpad-Export-Date: 2010-01-14 04:49+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -105,27 +105,27 @@ msgstr ""
 
 #: src/AllTray.vala:267
 msgid "Failed to get a window; exiting.\n"
-msgstr ""
+msgstr "Selhalo při získávání okna; vypínání.\n"
 
 #: src/AllTray.vala:305 src/AllTray.vala:314
 msgid "Oops.  Not running?"
-msgstr ""
+msgstr "Oops. Neběží to?"
 
 #: src/AllTray.vala:307
 msgid "Failed to start process: %s"
-msgstr ""
+msgstr "Selhalo při startu procesu: %s"
 
 #: src/AllTray.vala:315
 msgid "Failed to start process"
-msgstr ""
+msgstr "Selhalo při startu procesu"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Čistí se pro dítě..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
-msgstr ""
+msgstr "Žádné další děti. Umírám."
 
 #: src/AllTray.vala:352
 msgid "Evaluating %s"
@@ -141,7 +141,7 @@ msgstr ""
 
 #: src/Application.vala:56
 msgid "Creating a new Application"
-msgstr ""
+msgstr "Vytvářím novou Aplikaci"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
@@ -161,7 +161,7 @@ msgstr ""
 
 #: src/Application.vala:184
 msgid "Toggle Visibility"
-msgstr ""
+msgstr "Přepnout Viditelnost"
 
 #: src/Application.vala:186
 msgid "Undock"
@@ -169,7 +169,7 @@ msgstr ""
 
 #: src/Application.vala:190
 msgid "About AllTray..."
-msgstr ""
+msgstr "O AllTray..."
 
 #: src/Application.vala:216
 msgid "All"
@@ -339,7 +339,7 @@ msgstr ""
 
 #: src/Debug.vala:65
 msgid "Messages are for"
-msgstr ""
+msgstr "Zprávy jsou pro"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
