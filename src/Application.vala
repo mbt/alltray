@@ -241,14 +241,22 @@ namespace AllTray {
 
     private void maybe_update_window_count(Wnck.Screen scr,
 					   Wnck.Window win) {
-      StringBuilder sb = new StringBuilder();
+      string new_tooltip;
+
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
-      sb.append_printf(ngettext("%s - %d window",
-				"%s - %d windows",
-				wincount), _wnckApp.get_name(), wincount);
 
-      _appIcon.set_tooltip(sb.str);
+      if(wincount == 1) {
+	Wnck.Window first_window = _windows.first();
+	new_tooltip = _("%s - \"%s\"").printf(_wnckApp.get_name(),
+					      first_window.get_name());
+      } else {
+	string app_name = _wnckApp.get_name();
+	new_tooltip = ngettext("%s - %d window", "%s - %d windows",
+			       wincount).printf(app_name, wincount);
+      }
+
+      _appIcon.set_tooltip(new_tooltip);
     }
 
     /*
