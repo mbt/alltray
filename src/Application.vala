@@ -247,7 +247,7 @@ namespace AllTray {
       int wincount = _wnckApp.get_n_windows();
 
       if(wincount == 1) {
-	Wnck.Window first_window = _windows.first();
+	Wnck.Window first_window = _windows.first().data;
 	new_tooltip = _("%s - \"%s\"").printf(_wnckApp.get_name(),
 					      first_window.get_name());
       } else {
