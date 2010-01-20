@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-09-28 10:51+0000\n"
-"Last-Translator: Eugenia Vlasova <jane.vlasova@gmail.com>\n"
+"PO-Revision-Date: 2010-01-19 12:17+0000\n"
+"Last-Translator: discont <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2009-09-30 06:45+0000\n"
+"X-Launchpad-Export-Date: 2010-01-20 04:37+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -33,7 +33,7 @@ msgstr "Показать типы отладочных сообщений"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
-msgstr ""
+msgstr "Изначально скрывать при порождении или присоединении"
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
@@ -57,21 +57,21 @@ msgstr "- Поместить программу в системный лоток
 
 #: src/AllTray.vala:97
 msgid "error: env flag parsing failed (%s)\n"
-msgstr ""
+msgstr "ошибка: разбор флага переменной окружения не удался (%s)\n"
 
 #: src/AllTray.vala:106
 msgid "error: command line parsing failed (%s)\n"
-msgstr "ошибка: разбор командной строки невозможен (%s)\n"
+msgstr "ошибка: разбор командной строки не удался (%s)\n"
 
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
-msgstr ""
+msgstr "ошибка установки pgid; alltray может вести себя странно."
 
 #: src/AllTray.vala:198
 msgid ""
 "AllTray %s, from bzr branch %s rev %s,\n"
 " rev-id %s\n"
-msgstr ""
+msgstr "AllTray %s, из ветки репозитория bzr %s ревизия %s,\n"
 
 #: src/AllTray.vala:206
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
@@ -89,19 +89,19 @@ msgstr ""
 
 #: src/AllTray.vala:213
 msgid "Configured %s on %s %s\n"
-msgstr ""
+msgstr "Сконфигурировано %s  на $s %s\n"
 
 #: src/AllTray.vala:218
 msgid "Compilers: %s and %s\n"
-msgstr ""
+msgstr "Компиляторы: %s и %s\n"
 
 #: src/AllTray.vala:223
 msgid "Configure was run without flags\n"
-msgstr ""
+msgstr "Конфигуратор был запущен без флагов\n"
 
 #: src/AllTray.vala:225
 msgid "Configure flags: %s\n"
-msgstr ""
+msgstr "Флаги конфигурации: %s\n"
 
 #: src/AllTray.vala:240
 msgid "Adding app (pid %d) to list of recv'd apps"
@@ -109,7 +109,7 @@ msgstr "Добавление приложения (pid %d) в список пр�
 
 #: src/AllTray.vala:267
 msgid "Failed to get a window; exiting.\n"
-msgstr ""
+msgstr "Невозможно получить окно. Выполнение прекращено.\n"
 
 #: src/AllTray.vala:305 src/AllTray.vala:314
 msgid "Oops.  Not running?"
@@ -125,15 +125,15 @@ msgstr "Невозможно запустить процесс"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Очистка для дочернего процесса..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
-msgstr ""
+msgstr "Не осталось дочерних процессов. Выходим."
 
 #: src/AllTray.vala:352
 msgid "Evaluating %s"
-msgstr ""
+msgstr "Оценка %s"
 
 #: src/AllTray.vala:361
 msgid "Actually processing arg"
@@ -153,11 +153,11 @@ msgstr ""
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
-msgstr ""
+msgstr "pid %d (%s) нам не принадлежит."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr ""
+msgstr "Приложение %s требует исправления, сообщает PID 0."
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
@@ -165,15 +165,15 @@ msgstr "Запрос меню!"
 
 #: src/Application.vala:184
 msgid "Toggle Visibility"
-msgstr ""
+msgstr "Переключить отображение"
 
 #: src/Application.vala:186
 msgid "Undock"
-msgstr "Отделить"
+msgstr "Отстыковать"
 
 #: src/Application.vala:190
 msgid "About AllTray..."
-msgstr "О AllTray..."
+msgstr "Об AllTray..."
 
 #: src/Application.vala:216
 msgid "All"
@@ -182,8 +182,8 @@ msgstr "Все"
 #: src/Application.vala:247
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s - %d окно"
+msgstr[1] "%s - %d окон"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
@@ -199,7 +199,7 @@ msgstr ""
 
 #: src/Application.vala:350
 msgid "New State: %s"
-msgstr ""
+msgstr "Новое состояние: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
@@ -207,59 +207,59 @@ msgstr ""
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
-msgstr ""
+msgstr "MINIMIZED | "
 
 #: src/Application.vala:377
 msgid "MAXIMIZED_HORIZONTALLY | "
-msgstr ""
+msgstr "MAXIMIZED_HORIZONTALLY | "
 
 #: src/Application.vala:379
 msgid "MAXIMIZED_VERTICALLY | "
-msgstr ""
+msgstr "MAXIMIZED_VERTICALLY | "
 
 #: src/Application.vala:381
 msgid "SHADED | "
-msgstr ""
+msgstr "SHADED | "
 
 #: src/Application.vala:383
 msgid "SKIP_PAGER | "
-msgstr ""
+msgstr "SKIP_PAGER | "
 
 #: src/Application.vala:385
 msgid "SKIP_TASKLIST | "
-msgstr ""
+msgstr "SKIP_TASKLIST | "
 
 #: src/Application.vala:387
 msgid "STICKY | "
-msgstr ""
+msgstr "STICKY | "
 
 #: src/Application.vala:389
 msgid "HIDDEN | "
-msgstr ""
+msgstr "HIDDEN | "
 
 #: src/Application.vala:391
 msgid "FULLSCREEN | "
-msgstr "ПОЛНЫЙ ЭКРАН | "
+msgstr "FULLSCREEN | "
 
 #: src/Application.vala:393
 msgid "DEMANDS_ATTENTION | "
-msgstr ""
+msgstr "DEMANDS_ATTENTION | "
 
 #: src/Application.vala:395
 msgid "URGENT | "
-msgstr "СРОЧНО | "
+msgstr "URGENT | "
 
 #: src/Application.vala:397
 msgid "ABOVE | "
-msgstr "ВЫШЕ | "
+msgstr "ABOVE | "
 
 #: src/Application.vala:399
 msgid "BELOW | "
-msgstr "НИЖЕ | "
+msgstr "BELOW | "
 
 #: src/Application.vala:440
 msgid "Setting window 0x%08lx visibility to %s"
-msgstr ""
+msgstr "Установка значения видимости окна 0x%08lx в %s"
 
 #: src/Application.vala:502
 msgid ""
@@ -267,10 +267,13 @@ msgid ""
 "Branch: %s, r%s\n"
 "%s"
 msgstr ""
+"%s\n"
+"Ветка: %s, r%s\n"
+"%s"
 
 #: src/Application.vala:512
 msgid "Copyright (c) %s"
-msgstr ""
+msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
@@ -278,27 +281,27 @@ msgstr ""
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Не удалось перехватить указатель"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
-msgstr ""
+msgstr "Получено окно 0x%08lx"
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
-msgstr ""
+msgstr "Окно 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "разбор командной строки"
 
 #: src/Debug.vala:51
 msgid "X11 display"
-msgstr ""
+msgstr "X11 display"
 
 #: src/Debug.vala:52
 msgid "System Tray Icon"
-msgstr ""
+msgstr "Значок в системном трее"
 
 #: src/Debug.vala:53
 msgid "Window Manager"
@@ -306,7 +309,7 @@ msgstr "Менеджер Окон"
 
 #: src/Debug.vala:54
 msgid "Process information"
-msgstr ""
+msgstr "Информация о процессе"
 
 #: src/Debug.vala:55
 msgid "Misc messages"
@@ -314,7 +317,7 @@ msgstr "Разные сообщения"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr ""
+msgstr "Внутренняя информация об ошибке"
 
 #: src/Debug.vala:57
 msgid "Applications"
@@ -322,7 +325,7 @@ msgstr "Приложения"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
-msgstr ""
+msgstr "Сообщения класса AttachHelper"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
@@ -330,7 +333,7 @@ msgstr ""
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "Entrypoint, preinit, и т.д."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
@@ -354,11 +357,11 @@ msgstr "Настройка подсистемы отладки завершен�
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
-msgstr ""
+msgstr "ALLTRAY_DEBUG не установлена!"
 
 #: src/Debug.vala:160
 msgid "Exiting: encountered fatal error."
-msgstr ""
+msgstr "Выход: произошла неустранимая ошибка."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
@@ -366,15 +369,15 @@ msgstr ""
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr ""
+msgstr "Дочерний процесс %d (%s) запущен."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
-msgstr ""
+msgstr "Указанный PID не существует."
 
 #: src/Process.vala:132
 msgid "Attached process %d has died."
-msgstr ""
+msgstr "Присоединенный процесс %d завершился."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
@@ -399,6 +402,18 @@ msgid ""
 "project, if necessary.  If the problem is the third one, then you will\n"
 "need to fix whatever went wrong and try again.\n"
 msgstr ""
+"AllTray не смог присоединиться к какому-либо приложению и дочерний процесс "
+"AllTray's завершился.\n"
+"\n"
+"Эта проблема может быть вызвана приложениями, которые:\n"
+"  * не совместимы со спецификациями ICCCM и EWMH,\n"
+"  * сами становятся фоновыми и выходят из группы процессов AllTray или\n"
+"  * завершаются с ошибкой на этапе запуска и не запускаются на самом деле\n"
+"\n"
+"If the problem is one of the first two problems, please report a bug\n"
+"in AllTray and it will be investigated and reported to the correct\n"
+"project, if necessary.  If the problem is the third one, then you will\n"
+"need to fix whatever went wrong and try again.\n"
 
 #: src/PromptDialog.vala:14
 msgid "Select an Application"
@@ -412,6 +427,11 @@ msgid ""
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
 msgstr ""
+"Кликните на окне приложения, которое вы хотите поместить в системный трей.\n"
+"\n"
+"Примечание: Не нажимайте на самой границе окна. Щелкните внутри\n"
+"окна, особенно при использовании Compiz, нажатие на заголовке\n"
+"или другой стороне границы окна НЕ РАБОТАЕТ."
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "Невозможно установить PGID. Продолжение невозможно."
