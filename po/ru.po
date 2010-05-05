@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-01-19 12:17+0000\n"
-"Last-Translator: discont <Unknown>\n"
+"PO-Revision-Date: 2010-05-04 06:54+0000\n"
+"Last-Translator: Чистый <klaider@yandex.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-01-20 04:37+0000\n"
+"X-Launchpad-Export-Date: 2010-05-05 03:49+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -137,7 +137,7 @@ msgstr "Оценка %s"
 
 #: src/AllTray.vala:361
 msgid "Actually processing arg"
-msgstr ""
+msgstr "Текущая обработка аргументов"
 
 #: src/AllTray.vala:393
 msgid "Caught unwired signal %d"
