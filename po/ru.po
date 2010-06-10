@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-05-04 06:54+0000\n"
+"PO-Revision-Date: 2010-06-09 18:05+0000\n"
 "Last-Translator: Чистый <klaider@yandex.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-05-05 03:49+0000\n"
+"X-Launchpad-Export-Date: 2010-06-10 03:39+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -187,7 +187,7 @@ msgstr[1] "%s - %d окон"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
-msgstr ""
+msgstr "Использовать иконку окна (была %s)"
 
 #: src/Application.vala:293
 msgid "Using App Icon (fallback was %s)"
@@ -277,7 +277,7 @@ msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr ""
+msgstr "Размещать приложения в системном трее."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
@@ -381,11 +381,11 @@ msgstr "Присоединенный процесс %d завершился."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr ""
+msgstr "Дочерний процесс %d завершился без ошибок"
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr ""
+msgstr "Дочерний процесс %d завершился без уведомлений!"
 
 #: src/Process.vala:232
 msgid ""
