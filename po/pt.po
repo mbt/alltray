@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-03-21 02:56+0000\n"
-"Last-Translator: irtigor <Unknown>\n"
+"PO-Revision-Date: 2010-06-20 22:07+0000\n"
+"Last-Translator: pcgaldo <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-03-22 04:47+0000\n"
+"X-Launchpad-Export-Date: 2010-06-21 03:43+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -149,15 +149,15 @@ msgstr "A criar uma nova Aplicação"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
-msgstr ""
+msgstr "WHOA - A aplicativo se foi?! Procurando traze-lo de volta..."
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
-msgstr ""
+msgstr "pid %d (%s) não é nosso."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr ""
+msgstr "Aplicação %s precisa de arranjo, reporta PID 0."
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
@@ -187,79 +187,79 @@ msgstr[1] "%s - %d janelas"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
-msgstr ""
+msgstr "Usando icone da janela (queda foi de %s)"
 
 #: src/Application.vala:293
 msgid "Using App Icon (fallback was %s)"
-msgstr ""
+msgstr "Usando icone do aplicativo (queda foi de %s)"
 
 #: src/Application.vala:348
 msgid "New Bitmask: %s"
-msgstr ""
+msgstr "Novo Bitmask: %s"
 
 #: src/Application.vala:350
 msgid "New State: %s"
-msgstr ""
+msgstr "Novo estado: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
-msgstr ""
+msgstr "Piscando, o estado da janela é: %s"
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
-msgstr ""
+msgstr "MINIMIZADO | "
 
 #: src/Application.vala:377
 msgid "MAXIMIZED_HORIZONTALLY | "
-msgstr ""
+msgstr "MAXIMIZADO_HORIZONTALMENTE | "
 
 #: src/Application.vala:379
 msgid "MAXIMIZED_VERTICALLY | "
-msgstr ""
+msgstr "MAXIMIZADO_VERTICAL | "
 
 #: src/Application.vala:381
 msgid "SHADED | "
-msgstr ""
+msgstr "SOMBREADO | "
 
 #: src/Application.vala:383
 msgid "SKIP_PAGER | "
-msgstr ""
+msgstr "IGNORAR_PAGINADOR | "
 
 #: src/Application.vala:385
 msgid "SKIP_TASKLIST | "
-msgstr ""
+msgstr "IGNORAR_LISTA_DE_TAREFAS | "
 
 #: src/Application.vala:387
 msgid "STICKY | "
-msgstr ""
+msgstr "PEGAJOSO | "
 
 #: src/Application.vala:389
 msgid "HIDDEN | "
-msgstr ""
+msgstr "OCULTO | "
 
 #: src/Application.vala:391
 msgid "FULLSCREEN | "
-msgstr ""
+msgstr "ECRÃ_CHEIO | "
 
 #: src/Application.vala:393
 msgid "DEMANDS_ATTENTION | "
-msgstr ""
+msgstr "REQUER_ATENÇÃO | "
 
 #: src/Application.vala:395
 msgid "URGENT | "
-msgstr ""
+msgstr "URGENTE | "
 
 #: src/Application.vala:397
 msgid "ABOVE | "
-msgstr ""
+msgstr "ACIMA | "
 
 #: src/Application.vala:399
 msgid "BELOW | "
-msgstr ""
+msgstr "ABAIXO | "
 
 #: src/Application.vala:440
 msgid "Setting window 0x%08lx visibility to %s"
-msgstr ""
+msgstr "Configurando a visibilidade da janela 0x%08lx a %s"
 
 #: src/Application.vala:502
 msgid ""
@@ -267,30 +267,33 @@ msgid ""
 "Branch: %s, r%s\n"
 "%s"
 msgstr ""
+"%s\n"
+"Galho: %s, r%s\n"
+"%s"
 
 #: src/Application.vala:512
 msgid "Copyright (c) %s"
-msgstr ""
+msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr ""
+msgstr "Minimizar aplicativos na bandeja do sistema."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Falhou a captura do punteiro"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
-msgstr ""
+msgstr "Tomada a janela 0x%08lx"
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
-msgstr ""
+msgstr "Janela 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "análise de linha de comando"
 
 #: src/Debug.vala:51
 msgid "X11 display"
@@ -310,11 +313,11 @@ msgstr "Informações do processo"
 
 #: src/Debug.vala:55
 msgid "Misc messages"
-msgstr ""
+msgstr "Outras mensagens"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr ""
+msgstr "Detalhe de erro interno"
 
 #: src/Debug.vala:57
 msgid "Applications"
@@ -322,19 +325,19 @@ msgstr "Aplicações"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
-msgstr ""
+msgstr "AttachHelper mensagens de classe"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr ""
+msgstr "Mensagens de depuração do sinal"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "Ponto de entrada, preinit, etc."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
-msgstr ""
+msgstr "Todas as mensagens de depuração"
 
 #: src/Debug.vala:65
 msgid "String"
@@ -342,19 +345,19 @@ msgstr "Expressão"
 
 #: src/Debug.vala:65
 msgid "Messages are for"
-msgstr ""
+msgstr "As mensagens são para"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
-msgstr ""
+msgstr "Valor não reconhecido '%s' no ALLTRAY_DEBUG"
 
 #: src/Debug.vala:137
 msgid "Debugging subsystem setup complete."
-msgstr ""
+msgstr "Instalação completa do subsistema de depuração."
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
-msgstr ""
+msgstr "ALLTRAY_DEBUG não existe!"
 
 #: src/Debug.vala:160
 msgid "Exiting: encountered fatal error."
@@ -362,27 +365,27 @@ msgstr "Finalizando: erro fatal encontrado."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "ERRO: chegamos ao predefinido, isso não devera acontecer."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr ""
+msgstr "Sub-processo %d (%s) em execução."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
-msgstr ""
+msgstr "O PID fornecido não existe."
 
 #: src/Process.vala:132
 msgid "Attached process %d has died."
-msgstr ""
+msgstr "O processo adicionado %d morreu."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr ""
+msgstr "O sub-processo %s morreu."
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr ""
+msgstr "O sub-processo %s morreu sem mais!"
 
 #: src/Process.vala:232
 msgid ""
@@ -399,6 +402,18 @@ msgid ""
 "project, if necessary.  If the problem is the third one, then you will\n"
 "need to fix whatever went wrong and try again.\n"
 msgstr ""
+"Alltray não foi quem de ligar nenhuma aplicação, e os sub-processos "
+"morreram.\n"
+"\n"
+"Este problema pode ser devido a uma aplicação que:\n"
+"* não é compatível com as especificações EWMH e ICCCM\n"
+"* ocultou e deixou o grupo de processos Alltray\n"
+"* morreu inesperadamente e não inicia\n"
+"\n"
+"Se o problema é um dos dois primeiros, avise os desenvolvedores, reporte um "
+"erro em Alltray e será investigado e submetido à consideração do "
+"correspondente projecto, se é necessário. Se o problema é o último ponto, "
+"tem que corrigir o que fica mal no programa de destino e tentar de novo.\n"
 
 #: src/PromptDialog.vala:14
 msgid "Select an Application"
@@ -412,3 +427,8 @@ msgid ""
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
 msgstr ""
+"Faça clic numa janela do software que quer minimizar.\n"
+"\n"
+"Nota: não prema na beira da janela. Prema dentro da janela,\n"
+"particularmente em Compiz, premindo na barra de título\n"
+"ou as outras beiras da janela, a minimização não funciona."
