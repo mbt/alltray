@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-06-09 18:05+0000\n"
-"Last-Translator: Чистый <klaider@yandex.ru>\n"
+"PO-Revision-Date: 2010-07-04 13:38+0000\n"
+"Last-Translator: Dmitry Trubin <dtruebin@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-06-10 03:39+0000\n"
+"X-Launchpad-Export-Date: 2010-07-05 03:47+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -141,7 +141,7 @@ msgstr "Текущая обработка аргументов"
 
 #: src/AllTray.vala:393
 msgid "Caught unwired signal %d"
-msgstr ""
+msgstr "Получен беспроводной сигнал %d"
 
 #: src/Application.vala:56
 msgid "Creating a new Application"
@@ -149,7 +149,7 @@ msgstr "Создание нового приложения"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
-msgstr ""
+msgstr "СТОП - приложение куда-то пропало?! Ждем его возвращения..."
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
