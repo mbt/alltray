@@ -228,7 +228,7 @@ namespace AllTray {
 	item.set_data("target_window", w);
 	item.activate += (item) => {
 	  Wnck.Window win =
-	  (Wnck.Window)item.get_data("target_window");
+	  (Wnck.Window)item.get_data<Wnck.Window>("target_window");
 	  toggle_window_visibility(win);
 	};
 
