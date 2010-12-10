@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-10-02 17:29+0000\n"
-"Last-Translator: Sweettuxy <Unknown>\n"
+"PO-Revision-Date: 2010-12-09 18:57+0000\n"
+"Last-Translator: Franco Bianconi <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-10-03 06:47+0000\n"
+"X-Launchpad-Export-Date: 2010-12-10 05:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -65,7 +65,7 @@ msgstr "error: se falló analizar línea de ordenes (%s)\n"
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
 msgstr ""
-"juego pgid fracasado; alltray puede comportarse de una manera extraña."
+"Fallo al establecer pgid; alltray puede comportarse de una manera extraña."
 
 #: src/AllTray.vala:198
 msgid ""
@@ -128,7 +128,7 @@ msgstr "Se falló empezar proceso"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr "Limpiar para niño..."
+msgstr "Limpiando por hijo..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
@@ -152,7 +152,7 @@ msgstr "Creando nueva aplicación"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
-msgstr "WOW- La aplicacion no esta?! busca para regresar pronto"
+msgstr "WOW- La aplicacion se fue?! Esperando que regrese..."
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
@@ -160,7 +160,7 @@ msgstr "el pid %d (%s) no es nuestro."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr "Aplicacion %s necesita fixear, reportes PID 0"
+msgstr "La aplicación %s necesita reparación, reporta PID 0"
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
@@ -190,11 +190,11 @@ msgstr[1] "%s - %d ventanas"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
-msgstr "Usando icono de ventana ( el retraso era %s)"
+msgstr "Usando el icono de la ventana (el de reserva era %s)"
 
 #: src/Application.vala:293
 msgid "Using App Icon (fallback was %s)"
-msgstr "Usando icono de aplicacion ( el retraso era %s)"
+msgstr "Usando icono de aplicación (el de reserva era %s)"
 
 #: src/Application.vala:348
 msgid "New Bitmask: %s"
@@ -280,11 +280,11 @@ msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr "Usos de muelle en la bandeja de sistema."
+msgstr "Anclar aplicaciones a la bandeja de sistema."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr "el indicador fall{o"
+msgstr "Fallo al tomar el puntero"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
@@ -332,7 +332,7 @@ msgstr "AttachHelper mensajes de clase"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr "Señal que elimina fallos de mensajes"
+msgstr "Señal de mensajes de depuración"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
@@ -352,11 +352,11 @@ msgstr "Los mensajes son por"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
-msgstr "Valor no reconocido '%s' in ALLTRAY_DEBUG"
+msgstr "Valor no reconocido '%s' en ALLTRAY_DEBUG"
 
 #: src/Debug.vala:137
 msgid "Debugging subsystem setup complete."
-msgstr "Instalador de eliminación de fallos de subsistema completo."
+msgstr "Instalación del subsistema de depuración completa"
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
@@ -368,11 +368,11 @@ msgstr "Saliendo: ocurrió un error fatal."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr "ERROR: La falta alcanza no es posible"
+msgstr "ERROR: Se alcanzó valor por defecto, no debería ser posible."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr "Proceso infantil %d (%s) ahora ejecutandose."
+msgstr "Proceso hijo %d (%s) ahora ejecutandose."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
@@ -384,11 +384,11 @@ msgstr "El proceso adjunto %d ha muerto."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr "infantil %d muerto bien"
+msgstr "hijo %d ha muerto bien"
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr "infantil %d muerto con nada!"
+msgstr "Hijo %d muerto con nada!"
 
 #: src/Process.vala:232
 msgid ""
@@ -431,10 +431,11 @@ msgid ""
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
 msgstr ""
-"click en la ventana del programa que desee \n"
-"Note: no pulse por el borde de la misma ventana.  click  dentro de la "
-"ventana;  en particular  Compiz, clickeando sobre la barra de título u otros "
-"lados del borde de ventana NO TRABAJA."
+"Haga click en la ventana del programa que desee anclar.\n"
+"\n"
+"Nota: no pulse en el borde de la ventana. Pulse dentro de la ventana;\n"
+"en particular en Compiz, clickeando sobre la barra de título u otro\n"
+"borde de la ventana NO FUNCIONA."
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "No se puede fijar PGID. No se puede continuar."
