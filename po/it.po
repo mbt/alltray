@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-09-01 14:49+0000\n"
-"Last-Translator: jacopo ferrigno <Unknown>\n"
+"PO-Revision-Date: 2011-01-11 11:46+0000\n"
+"Last-Translator: Martino Barbon <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-02 03:56+0000\n"
+"X-Launchpad-Export-Date: 2011-01-12 05:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
@@ -32,7 +32,7 @@ msgstr "Mostra i tipi di messaggi di debug"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
-msgstr ""
+msgstr "Nascondi inizialmente alla generazione/attribuzione"
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
@@ -283,7 +283,7 @@ msgstr "Minimizza l'applicazione nell'icona di notifica"
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Cattura del puntatore fallita"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
@@ -295,7 +295,7 @@ msgstr "Finestra 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "interprete a riga di comando"
 
 #: src/Debug.vala:51
 msgid "X11 display"
@@ -331,11 +331,11 @@ msgstr "Messaggi della classe AttachHelper"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr ""
+msgstr "Messaggi del debug dei segnali"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "Entrypoint, preinit, etc."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
@@ -368,7 +368,7 @@ msgstr "Annullo: errore fatale."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "BUG: Raggiunto default, non dovrebbe essere possibile."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
@@ -442,3 +442,6 @@ msgstr ""
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "Non riesco a settare il  PGID. Non posso continuare."
+
+#~ msgid "%s - %d window%s"
+#~ msgstr "%s - %d finestra%s"
