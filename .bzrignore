@@ -35,3 +35,5 @@ tests/GtkIconChange
 *.gcno
 *.gmo
 stamp-po
+AllTrayCttHelper.c
+alltray-ctt-helper
