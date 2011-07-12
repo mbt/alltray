@@ -21,13 +21,11 @@ alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c \
 	gtop_glue.c
 
-alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@
+alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @XPM_CFLAGS@
 
-alltray_ctt_helper_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@
+alltray_ctt_helper_LDADD = @X11_LIBS@ @XPM_LIBS@
 
-alltray_ctt_helper_VALASOURCES = AllTrayCttHelper.vala
-
-alltray_ctt_helper_SOURCES = $(alltray_ctt_helper_VALASOURCES:.vala=.c)
+alltray_ctt_helper_SOURCES = alltray-ctt-helper.c
 
 BUILT_SOURCES = alltray.stamp
 
@@ -47,6 +45,4 @@ alltray_VALA_FLAGS = --pkg alltray --pkg gdk-2.0 --pkg gdk-x11-2.0 \
 alltray.stamp: $(alltray_VALASOURCES) $(alltray_ctt_helper_VALASOURCES)
 	$(VALAC) -C --vapidir $(srcdir)/../vapi $(alltray_VALA_FLAGS) \
 		$(alltray_VALASOURCES)
-	$(VALAC) -C $(alltray_ctt_helper_VALA_FLAGS) \
-		$(alltray_ctt_helper_VALASOURCES)
 	touch $@
