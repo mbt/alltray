@@ -14,6 +14,19 @@
 #include <X11/extensions/shape.h>
 #include <../images/alltray_ctt.xpm>
 
+static void
+set_ctt_window_shape_and_background(Display *dpy, Window ctt_window,
+				    unsigned long ctt_attribute_mask,
+				    XSetWindowAttributes *ctt_attributes) {
+  Pixmap ctt_xpm, ctt_shape;
+  XpmCreatePixmapFromData(dpy, ctt_window, atcttxpm, &ctt_xpm, &ctt_shape,
+			  NULL /* Attributes; IIRC, we don't need this. */);
+  ctt_attribute_mask |= CWBackPixmap;
+  ctt_attributes->background_pixmap = ctt_xpm;
+  XChangeWindowAttributes(dpy, ctt_window, ctt_attribute_mask, ctt_attributes);
+  XShapeCombineMask(dpy, ctt_window, ShapeBounding, 0, 0, ctt_shape, ShapeSet);
+}
+
 static Window
 create_ctt_window(Display *dpy, Window parent) {
   XWindowAttributes *parent_attributes = NULL;
@@ -23,14 +36,14 @@ create_ctt_window(Display *dpy, Window parent) {
   parent_attributes = calloc(1, sizeof(XWindowAttributes));
   ctt_attributes = calloc(1, sizeof(XSetWindowAttributes));
 
-  Status s = XGetWindowAttributes(dpy, parent, &parent_attributes);
+  Status s = XGetWindowAttributes(dpy, parent, parent_attributes);
   if(s == 0) {
     fprintf(stderr, "The call to XGetWindowAttributes failed!\n");
     return(0);
   }
 
   int ctt_xy_size = 16;
-  int ctt_xpos = parent_attributes.width - ctt_xy_size;
+  int ctt_xpos = parent_attributes->width - ctt_xy_size;
   int ctt_ypos = 0;
   int ctt_border = 0;
   int ctt_depth = CopyFromParent;
@@ -47,19 +60,6 @@ create_ctt_window(Display *dpy, Window parent) {
   set_ctt_window_shape_and_background(dpy, ctt_window, ctt_attribute_mask,
 				      ctt_attributes);
   return(ctt_window);
-}
-
-static void
-set_ctt_window_shape_and_background(Display *dpy, Window ctt_window,
-				    unsigned long ctt_attribute_mask,
-				    XSetWindowAttributes *ctt_attributes) {
-  Pixmap ctt_xpm, ctt_shape;
-  XpmCreatePixmapFromData(dpy, ctt_window, atcttxpm, &ctt_xpm, &ctt_shape,
-			  NULL /* Attributes; IIRC, we don't need this. */);
-  ctt_attribute_mask |= CWBackPixmap;
-  ctt_attributes->background_pixmap = ctt_xpm;
-  XChangeWindowAttributes(dpy, ctt_window, ctt_attribute_mask, ctt_attributes);
-  XShapeCombineMask(dpy, ctt_window, ShapeBounding, 0, 0, ctt_shape, ShapeSet);
 }
 
 /**

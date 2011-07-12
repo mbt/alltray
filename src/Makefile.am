@@ -21,9 +21,9 @@ alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c \
 	gtop_glue.c
 
-alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @XPM_CFLAGS@
+alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @XPM_CFLAGS@ @XEXT_CFLAGS@
 
-alltray_ctt_helper_LDADD = @X11_LIBS@ @XPM_LIBS@
+alltray_ctt_helper_LDADD = @X11_LIBS@ @XPM_LIBS@ @XEXT_LIBS@
 
 alltray_ctt_helper_SOURCES = alltray-ctt-helper.c
 
