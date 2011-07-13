@@ -25,7 +25,7 @@ alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @XPM_CFLAGS@ @XEXT_CFLAGS@
 
 alltray_ctt_helper_LDADD = @X11_LIBS@ @XPM_LIBS@ @XEXT_LIBS@
 
-alltray_ctt_helper_SOURCES = alltray-ctt-helper.c
+alltray_ctt_helper_SOURCES = alltray-ctt-helper.c alltray-ctt-interpreter.c
 
 BUILT_SOURCES = alltray.stamp
 
@@ -36,6 +36,7 @@ MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
 EXTRA_DIST = $(alltray_VALASOURCES) \
 	x11_glue.h \
 	gtop_glue.h \
+	alltray-ctt-interpreter.h \
 	alltray.stamp
 
 alltray_VALA_FLAGS = --pkg alltray --pkg gdk-2.0 --pkg gdk-x11-2.0 \

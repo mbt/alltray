@@ -14,6 +14,7 @@
 #include <X11/extensions/Xext.h>
 #include <X11/extensions/shape.h>
 #include <../images/alltray_ctt.xpm>
+#include <alltray-ctt-interpreter.h>
 
 static void
 set_ctt_window_shape_and_background(Display *dpy, Window ctt_window,
@@ -76,6 +77,7 @@ make_ctt_window(Display *dpy, Window parent) {
 
   // XXX: What's the return value for XSelectInput() mean?
   XSelectInput(dpy, ctt_window, ButtonPressMask | ButtonReleaseMask);
+  XMapRaised(dpy, ctt_window);
 
   return(ctt_window);
 }
@@ -89,12 +91,23 @@ handle_x11_event(Display *dpy) {
 }
 
 static void
-handle_alltray_event() {
+handle_alltray_event(Display *dpy) {
   fprintf(stderr, "STUB: handle_alltray_event\n");
 
   // Stub read: throw the bytes away.
   char *buf = malloc(4096);
+  if(buf == NULL) abort();
+
   ssize_t bytes_read = read(STDIN_FILENO, buf, 4096);
+
+  alltray_ctt_command *cmd = aci_parse_command(buf, bytes_read);
+  if(cmd != NULL) {
+    aci_interpret_command(cmd);
+    printf("ACK - COMMAND PROCESSED\n");
+  } else {
+    printf("NAK - COMMAND NOT PROCESSED\n");
+  }
+
   free(buf);
 }
 
@@ -132,7 +145,7 @@ event_loop(Display *dpy) {
     } else {
       if(FD_ISSET(STDIN_FILENO, &read_list)) {
 	fprintf(stderr, "STDIN was ready.\n");
-	handle_alltray_event();
+	handle_alltray_event(dpy);
       } else if(FD_ISSET(xlib_fileno, &read_list)) {
 	fprintf(stderr, "xlib_fileno was read.\n");
 	handle_x11_event(dpy);
