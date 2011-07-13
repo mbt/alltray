@@ -15,7 +15,8 @@ alltray_VALASOURCES = AllTray.vala \
 	AttachHelper.vala \
 	Debug.vala \
 	Process.vala \
-	PromptDialog.vala
+	PromptDialog.vala \
+	AllTrayCtt.vala
 
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
 	x11_glue.c \
