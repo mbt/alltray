@@ -154,7 +154,7 @@ aci_command_detach(Display *dpy, struct alltray_ctt_command *cmd) {
     detached++;
   }
 
-  printf("ACK - CTT DETACHED %d WINDOWS\n", detached);
+  printf("ACK - CTT DETACHED %d WINDOW(S)\n", detached);
   return(true);
 }
 
