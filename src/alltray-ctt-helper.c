@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 
 #include <X11/Xlib.h>
@@ -79,6 +80,74 @@ make_ctt_window(Display *dpy, Window parent) {
   return(ctt_window);
 }
 
+static void
+handle_x11_event(Display *dpy) {
+  fprintf(stderr, "STUB: handle_x11_event\n");
+  XEvent *event = calloc(1, sizeof(XEvent));
+  XNextEvent(dpy, event);
+  free(event);
+}
+
+static void
+handle_alltray_event() {
+  fprintf(stderr, "STUB: handle_alltray_event\n");
+
+  // Stub read: throw the bytes away.
+  char *buf = malloc(4096);
+  ssize_t bytes_read = read(STDIN_FILENO, buf, 4096);
+  free(buf);
+}
+
+/**
+ * The main event loop for the program.
+ */
+static int
+event_loop(Display *dpy) {
+  fd_set read_list;
+  fd_set err_list;
+
+  while(1) {
+    FD_ZERO(&read_list);
+    FD_ZERO(&err_list);
+    int xlib_fileno = ConnectionNumber(dpy);
+    int master_list[2] = { STDIN_FILENO, xlib_fileno };
+    int i = 0;
+
+    for(i = 0; i < 2; i++) {
+      FD_SET(master_list[i], &read_list);
+      FD_SET(master_list[i], &err_list);
+    }
+
+    // Clear the local Xlib event queue
+    int pending = XPending(dpy);
+    if(pending > 0)
+      for(i = 0; i < pending; i++)
+	handle_x11_event(dpy);
+
+    int status = select(master_list[1] + 1,
+			&read_list, NULL, &err_list, NULL);
+    if(status == -1) {
+      fprintf(stderr, "select() failed (%d): %s\n", errno, strerror(errno));
+      return(1); // XXX: Breaks the infinite loop.
+    } else {
+      if(FD_ISSET(STDIN_FILENO, &read_list)) {
+	fprintf(stderr, "STDIN was ready.\n");
+	handle_alltray_event();
+      } else if(FD_ISSET(xlib_fileno, &read_list)) {
+	fprintf(stderr, "xlib_fileno was read.\n");
+	handle_x11_event(dpy);
+      } else if(FD_ISSET(STDIN_FILENO, &err_list)) {
+	fprintf(stderr, "STDIN has error\n");
+      } else if(FD_ISSET(xlib_fileno, &err_list)) {
+	fprintf(stderr, "xlib_fileno has error\n");
+      } else {
+	fprintf(stderr, "Michael Trausch doesn't understand select().\n");
+	return(-1);
+      }
+    }
+  }
+}
+
 /**
  * Program entry point.
  *
@@ -104,6 +173,5 @@ main(int argc, char *argv[]) {
     exit(1);
   }
 
-  // XXX: At this point we need to enter a loop...
-  return(0);
+  return(event_loop(dpy));
 }
