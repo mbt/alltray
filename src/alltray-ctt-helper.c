@@ -103,7 +103,6 @@ handle_alltray_event(Display *dpy) {
   alltray_ctt_command *cmd = aci_parse_command(buf, bytes_read);
   if(cmd != NULL) {
     aci_interpret_command(cmd);
-    printf("ACK - COMMAND PROCESSED\n");
   } else {
     printf("NAK - COMMAND NOT PROCESSED\n");
   }
@@ -144,10 +143,8 @@ event_loop(Display *dpy) {
       return(1); // XXX: Breaks the infinite loop.
     } else {
       if(FD_ISSET(STDIN_FILENO, &read_list)) {
-	fprintf(stderr, "STDIN was ready.\n");
 	handle_alltray_event(dpy);
       } else if(FD_ISSET(xlib_fileno, &read_list)) {
-	fprintf(stderr, "xlib_fileno was read.\n");
 	handle_x11_event(dpy);
       } else if(FD_ISSET(STDIN_FILENO, &err_list)) {
 	fprintf(stderr, "STDIN has error\n");
