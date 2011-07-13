@@ -25,7 +25,9 @@ alltray_ctt_helper_CFLAGS = @X11_CFLAGS@ @XPM_CFLAGS@ @XEXT_CFLAGS@
 
 alltray_ctt_helper_LDADD = @X11_LIBS@ @XPM_LIBS@ @XEXT_LIBS@
 
-alltray_ctt_helper_SOURCES = alltray-ctt-helper.c alltray-ctt-interpreter.c
+alltray_ctt_helper_SOURCES = alltray-ctt-helper.c \
+	alltray-ctt-interpreter.c \
+	alltray-ctt-windowlist.c
 
 BUILT_SOURCES = alltray.stamp
 

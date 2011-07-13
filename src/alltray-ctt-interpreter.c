@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <X11/Xlib.h>
 #include <alltray-ctt-interpreter.h>
+#include <alltray-ctt-helper.h>
 #include <config.h>
 
 struct alltray_ctt_command {
@@ -121,34 +122,61 @@ aci_command_hello(Display *dpy, struct alltray_ctt_command *cmd) {
 static bool
 aci_command_attach(Display *dpy, struct alltray_ctt_command *cmd) {
   int i = 0;
+  int attached = 0;
   int our_window = 0;
 
   for(i = 1; i < cmd->argc; i++) {
     int parent_window = strtol(cmd->argv[i], NULL, 10);
     our_window = ctt_make_window(dpy, parent_window);
-    alltray_ctt_helper_add_window(dpy, our_window, parent_window);
+    alltray_ctt_windowlist_add(dpy, our_window, parent_window);
+    attached++;
   }
-  printf("ACK - CTT ATTACHED WIN %d\n", our_window);
+
+  printf("ACK - CTT ATTACHED %d WINDOW(S)\n", attached);
 }
 
 static bool
 aci_command_detach(Display *dpy, struct alltray_ctt_command *cmd) {
   int i = 0;
+  int detached = 0;
   int window = 0;
 
   for(i = 1; i < cmd->argc; i++) {
     window = strtol(cmd->argv[i], NULL, 10);
     int ctt_window = alltray_ctt_get_ctt_for_parent(window);
+    if(ctt_window == 0)
+      continue;
+
     XUnmapWindow(dpy, ctt_window);
     XDestroyWindow(dpy, ctt_window);
-    alltray_ctt_helper_del_window(window);
+
+    alltray_ctt_windowlist_del(window);
+    detached++;
   }
-  printf("ACK - CTT DETACHED WIN %d\n", window);
+
+  printf("ACK - CTT DETACHED %d WINDOWS\n", detached);
 }
 
 static bool
 aci_command_status(Display *dpy, struct alltray_ctt_command *cmd) {
-  printf("NAK - %s STUB FUNCTION\n", __func__);
+  int count = ctt_node_count();
+  bool first = false;
+
+  if(count == 0) {
+    printf("ACK - NO WINDOWS MANAGED\n");
+  } else {
+    struct alltray_ctt_window_list_node *cur = ctt_first_node();
+    printf("ACK - ");
+    while(cur != NULL) {
+      if(first == false) printf(" ");
+      printf("%ld", cur->parent);
+      cur = cur->next;
+    }
+
+    printf("\n");
+  }
+
+  return(true);
 }
 
 static bool
