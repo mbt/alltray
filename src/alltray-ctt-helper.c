@@ -46,6 +46,13 @@ ctt_node_create() {
 
 static void
 ctt_node_delete(struct alltray_ctt_window_list_node *node) {
+  if(node->prev == NULL && node->next == NULL) {
+    // This is the only node in the list.  It can simply be freed.
+    free(node);
+    wl_first_node = NULL;
+    return;
+  }
+
   if(node->next != NULL) {
     if(node->prev != NULL) {
       node->prev->next = node->next;
