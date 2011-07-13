@@ -190,17 +190,20 @@ ctt_make_window(Display *dpy, Window parent) {
 
 static void
 handle_x11_event(Display *dpy) {
-  fprintf(stderr, "STUB: handle_x11_event\n");
   XEvent *event = calloc(1, sizeof(XEvent));
   XNextEvent(dpy, event);
+
+  if(event->type == ButtonRelease) {
+    int ctt_window = ((XButtonReleasedEvent *) event)->window;
+    struct alltray_ctt_window_list_node *w = ctt_node_find(ctt_window);
+    printf("CTT %ld\n", w->parent);
+  }
+
   free(event);
 }
 
 static void
 handle_alltray_event(Display *dpy) {
-  fprintf(stderr, "STUB: handle_alltray_event\n");
-
-  // Stub read: throw the bytes away.
   char *buf = malloc(4096);
   if(buf == NULL) abort();
 
