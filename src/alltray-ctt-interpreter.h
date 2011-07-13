@@ -7,6 +7,7 @@
 #define __ALLTRAY_CTT_INTERPRETER_H_INCLUDED__
 
 #include <stdbool.h>
+#include <X11/Xlib.h>
 
 enum ACI_COMMAND {
   ACI_INVALID = 0,
@@ -20,6 +21,6 @@ enum ACI_COMMAND {
 typedef struct alltray_ctt_command alltray_ctt_command;
 
 alltray_ctt_command *aci_parse_command(char *cmdline, int cmdline_len);
-bool aci_interpret_command(alltray_ctt_command *cmd);
+bool aci_interpret_command(Display *dpy, alltray_ctt_command *cmd);
 
 #endif /* __ALLTRAY_CTT_INTERPRETER_H_INCLUDED__ */

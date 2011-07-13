@@ -16,6 +16,105 @@
 #include <../images/alltray_ctt.xpm>
 #include <alltray-ctt-interpreter.h>
 
+struct alltray_ctt_window_list_node {
+  Display *dpy;
+  Window window;
+  Window parent;
+  struct alltray_ctt_window_list_node *next;
+  struct alltray_ctt_window_list_node *prev;
+};
+
+static struct alltray_ctt_window_list_node *wl_first_node = NULL;
+
+static struct alltray_ctt_window_list_node *
+ctt_node_create() {
+  if(wl_first_node == NULL) {
+    wl_first_node = calloc(1, sizeof(struct alltray_ctt_window_list_node));
+    if(wl_first_node == NULL) abort();
+    return(wl_first_node);
+  }
+
+  struct alltray_ctt_window_list_node *prev = NULL;
+  struct alltray_ctt_window_list_node *cur = NULL;
+
+  for(prev = wl_first_node, cur = prev->next; cur != NULL; prev = cur, cur = prev->next);
+  prev->next = calloc(1, sizeof(struct alltray_ctt_window_list_node));
+  if(prev->next == NULL) abort();
+  prev->next->prev = prev;
+  return(prev->next);
+}
+
+static void
+ctt_node_delete(struct alltray_ctt_window_list_node *node) {
+  if(node->next != NULL) {
+    if(node->prev != NULL) {
+      node->prev->next = node->next;
+      node->next->prev = node->prev;
+    } else {
+      // first node.
+      node->next->prev = NULL;
+    }
+
+  } else {
+    // last node.  Might also be the first node.
+    if(node->prev != NULL) {
+      node->prev->next = NULL;
+    }
+  }
+
+  free(node);
+  return;
+}
+
+static struct alltray_ctt_window_list_node *
+ctt_node_find(Window ctt_window_id) {
+  struct alltray_ctt_window_list_node *prev, *cur;
+  prev = NULL;
+  for(cur = wl_first_node; cur != NULL; cur = cur->next)
+    if(cur->window == ctt_window_id) return(cur);
+
+  return(NULL);
+}
+
+static struct alltray_ctt_window_list_node *
+ctt_node_find_by_parent(Window parent_window_id) {
+  struct alltray_ctt_window_list_node *prev, *cur;
+  prev = NULL;
+  for(cur = wl_first_node; cur != NULL; cur = cur->next)
+    if(cur->parent == parent_window_id) return(cur);
+
+  return(NULL);
+}
+
+bool
+alltray_ctt_helper_add_window(Display *dpy, Window ctt_window, Window ctt_parent) {
+  struct alltray_ctt_window_list_node *new_node = ctt_node_create();
+  new_node->dpy = dpy;
+  new_node->window = ctt_window;
+  new_node->parent = ctt_parent;
+}
+
+bool
+alltray_ctt_helper_del_window(Window parent_window) {
+  struct alltray_ctt_window_list_node *node =
+    ctt_node_find_by_parent(parent_window);
+
+  if(node != NULL) {
+    ctt_node_delete(node);
+  }
+}
+
+Window
+alltray_ctt_get_ctt_for_parent(Window parent) {
+  struct alltray_ctt_window_list_node *node =
+    ctt_node_find_by_parent(parent);
+
+  if(node != NULL)
+    return(node->window);
+
+  return(0);
+}
+
 static void
 set_ctt_window_shape_and_background(Display *dpy, Window ctt_window,
 				    unsigned long ctt_attribute_mask,
@@ -71,8 +170,8 @@ create_ctt_window(Display *dpy, Window parent) {
  * is a window) that reacts to the user's click to close the parent to
  * the tray.  Returns the X11 window ID as the result.
  */
-static Window
-make_ctt_window(Display *dpy, Window parent) {
+Window
+ctt_make_window(Display *dpy, Window parent) {
   Window ctt_window = create_ctt_window(dpy, parent);
 
   // XXX: What's the return value for XSelectInput() mean?
@@ -102,7 +201,7 @@ handle_alltray_event(Display *dpy) {
 
   alltray_ctt_command *cmd = aci_parse_command(buf, bytes_read);
   if(cmd != NULL) {
-    aci_interpret_command(cmd);
+    aci_interpret_command(dpy, cmd);
   } else {
     printf("NAK - COMMAND NOT PROCESSED\n");
   }
