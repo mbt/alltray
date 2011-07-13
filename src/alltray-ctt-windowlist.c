@@ -194,7 +194,8 @@ alltray_ctt_windowlist_get_all_parents(int *count, Window **list) {
 
   struct alltray_ctt_windowlist_node *cur = first;
   while(cur != NULL) {
-    *list[i++] = cur->parent;
+    (*list)[i] = cur->parent;
+    i++;
     cur = cur->next;
   }
 
