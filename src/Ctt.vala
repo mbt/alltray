@@ -23,16 +23,16 @@ namespace AllTray {
 				SpawnFlags.DO_NOT_REAP_CHILD);
 
       try {
-	Process.spawn_async_with_pipes(null,
-				       { "alltray-ctt-helper" },
-				       null,
-				       child_flags,
-				       null,
-				       out this._child_pid,
-				       out this._child_stdin_fd,
-				       null,
-				       null);
-      } catch (Process.SpawnError se) {
+	GLib.Process.spawn_async_with_pipes(null,
+					    { "alltray-ctt-helper" },
+					    null,
+					    child_flags,
+					    null,
+					    out this._child_pid,
+					    out this._child_stdin_fd,
+					    null,
+					    null);
+      } catch (SpawnError se) {
 	stderr.printf("Failed to spawn helper process\n");
       }
 
