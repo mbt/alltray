@@ -11,6 +11,7 @@
 #include <X11/Xlib.h>
 #include <alltray-ctt-interpreter.h>
 #include <alltray-ctt-helper.h>
+#include <alltray-ctt-windowlist.h>
 #include <config.h>
 
 struct alltray_ctt_command {
@@ -112,11 +113,13 @@ aci_parse_command(char *cmdline, int cmdline_len) {
 static bool
 aci_command_invalid(Display *dpy, struct alltray_ctt_command *cmd) {
   printf("NAK - INVALID COMMAND: %s\n", cmd->argv[0]);
+  return(true);
 }
 
 static bool
 aci_command_hello(Display *dpy, struct alltray_ctt_command *cmd) {
   printf("ACK - %s CTT HELPER VERSION %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+  return(true);
 }
 
 static bool
@@ -133,6 +136,7 @@ aci_command_attach(Display *dpy, struct alltray_ctt_command *cmd) {
   }
 
   printf("ACK - CTT ATTACHED %d WINDOW(S)\n", attached);
+  return(true);
 }
 
 static bool
@@ -143,37 +147,40 @@ aci_command_detach(Display *dpy, struct alltray_ctt_command *cmd) {
 
   for(i = 1; i < cmd->argc; i++) {
     window = strtol(cmd->argv[i], NULL, 10);
-    int ctt_window = alltray_ctt_get_ctt_for_parent(window);
-    if(ctt_window == 0)
-      continue;
 
-    XUnmapWindow(dpy, ctt_window);
-    XDestroyWindow(dpy, ctt_window);
-
+    ctt_destroy_window(dpy, window);
     alltray_ctt_windowlist_del(window);
+
     detached++;
   }
 
   printf("ACK - CTT DETACHED %d WINDOWS\n", detached);
+  return(true);
 }
 
 static bool
 aci_command_status(Display *dpy, struct alltray_ctt_command *cmd) {
-  int count = ctt_node_count();
-  bool first = false;
+  int count = alltray_ctt_windowlist_len();
 
   if(count == 0) {
     printf("ACK - NO WINDOWS MANAGED\n");
   } else {
-    struct alltray_ctt_window_list_node *cur = ctt_first_node();
-    printf("ACK - ");
-    while(cur != NULL) {
-      if(first == false) printf(" ");
-      printf("%ld", cur->parent);
-      cur = cur->next;
-    }
+    int window_count = 0;
+    Window *window_list = NULL;
+    alltray_ctt_windowlist_get_all_parents(&window_count, &window_list);
+
+    int i = 0;
+    printf("ACK - WINDOW LIST:");
+    for(i = 0; i < window_count; i++)
+      printf(" %ld", window_list[i]);
 
     printf("\n");
+
+    /*
+     * XXX: We didn't (directly) allocate this, but this is the only
+     * reasonable place to free it.
+     */
+    free(window_list);
   }
 
   return(true);

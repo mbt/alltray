@@ -16,6 +16,7 @@
 
 #include <../images/alltray_ctt.xpm>
 #include <alltray-ctt-interpreter.h>
+#include <alltray-ctt-windowlist.h>
 #include <alltray-ctt-helper.h>
 
 static void
@@ -84,6 +85,19 @@ ctt_make_window(Display *dpy, Window parent) {
   return(ctt_window);
 }
 
+/**
+ * Destroy a CTT window.
+ */
+void
+ctt_destroy_window(Display *dpy, Window parent) {
+  int ctt_window = alltray_ctt_windowlist_get_ctt_for_parent(parent);
+
+  if(ctt_window != 0) {
+    XUnmapWindow(dpy, ctt_window);
+    XDestroyWindow(dpy, ctt_window);
+  }
+}
+
 static void
 handle_x11_event(Display *dpy) {
   XEvent *event = calloc(1, sizeof(XEvent));
@@ -91,8 +105,8 @@ handle_x11_event(Display *dpy) {
 
   if(event->type == ButtonRelease) {
     int ctt_window = ((XButtonReleasedEvent *) event)->window;
-    struct alltray_ctt_window_list_node *w = ctt_node_find(ctt_window);
-    printf("CTT %ld\n", w->parent);
+    Window parent = alltray_ctt_windowlist_get_parent_for_ctt(ctt_window);
+    printf("CTT %ld\n", parent);
   }
 
   free(event);

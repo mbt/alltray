@@ -10,4 +10,8 @@ bool alltray_ctt_windowlist_add(Display *dpy, Window ctt, Window parent);
 bool alltray_ctt_windowlist_del(Window parent);
 int alltray_ctt_windowlist_len();
 
+Window alltray_ctt_windowlist_get_ctt_for_parent(Window parent);
+Window alltray_ctt_windowlist_get_parent_for_ctt(Window ctt);
+bool alltray_ctt_windowlist_get_all_parents(int *len, Window **parents);
+
 #endif /* __ALLTRAY_CTT_WINDOWLIST_H_INCLUDED__ */

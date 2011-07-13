@@ -43,6 +43,7 @@ windowlist_node_new(Display *dpy, Window ctt, Window parent) {
 static bool
 windowlist_node_free(struct alltray_ctt_windowlist_node *node) {
   free(node);
+  return(true);
 }
 
 /**
@@ -57,6 +58,24 @@ windowlist_find_by_parent_window(Window parent) {
 
   while(cur != NULL) {
     if(cur->parent == parent) break;
+    cur = cur->next;
+  }
+
+  return(cur);
+}
+
+/**
+ * Finds a node in the list by CTT window ID number.
+ *
+ * Returns NULL if no node with the specified CTT ID number exists.
+ */
+static struct alltray_ctt_windowlist_node *
+windowlist_find_by_ctt_window(Window ctt) {
+  struct alltray_ctt_windowlist_node *retval = NULL;
+  struct alltray_ctt_windowlist_node *cur = first;
+
+  while(cur != NULL) {
+    if(cur->ctt == ctt) break;
     cur = cur->next;
   }
 
@@ -99,6 +118,9 @@ windowlist_remove(struct alltray_ctt_windowlist_node *node) {
 
   if(previous != NULL) previous->next = cur->next;
   if(next != NULL) next->prev = cur->prev;
+
+  // If it is the only node, clear the start-of-list pointer.
+  if((previous == NULL) && (next == NULL)) first = NULL;
 
   return(true);
 }
@@ -144,7 +166,37 @@ alltray_ctt_windowlist_get_ctt_for_parent(Window parent) {
   struct alltray_ctt_windowlist_node *node =
     windowlist_find_by_parent_window(parent);
 
+  if(node != NULL) retval = node->ctt;
+
+  return(retval);
+}
+
+Window
+alltray_ctt_windowlist_get_parent_for_ctt(Window ctt) {
+  Window retval = 0;
+
+  struct alltray_ctt_windowlist_node *node =
+    windowlist_find_by_ctt_window(ctt);
+
   if(node != NULL) retval = node->parent;
 
   return(retval);
+}
+
+bool
+alltray_ctt_windowlist_get_all_parents(int *count, Window **list) {
+  if(*list != NULL) return(false);
+  int i = 0;
+
+  *count = alltray_ctt_windowlist_len();
+  *list = calloc(*count, sizeof(Window));
+  if(*list == NULL) abort();
+
+  struct alltray_ctt_windowlist_node *cur = first;
+  while(cur != NULL) {
+    *list[i++] = cur->parent;
+    cur = cur->next;
+  }
+
+  return(true);
 }

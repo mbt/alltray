@@ -9,5 +9,6 @@
 #include <X11/Xlib.h>
 
 Window ctt_make_window(Display *dpy, Window parent);
+void ctt_destroy_window(Display *dpy, Window parent);
 
 #endif /* __ALLTRAY_CTT_HELPER_H_INCLUDED__ */
