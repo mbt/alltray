@@ -33,19 +33,32 @@ namespace AllTray {
 					    null,
 					    null);
       } catch (SpawnError se) {
-	stderr.printf("Failed to spawn helper process\n");
+	try {
+	  child_flags = (SpawnFlags.DO_NOT_REAP_CHILD);
+	  GLib.Process.spawn_async_with_pipes(null,
+					      { "alltray-ctt-helper" },
+					      null,
+					      child_flags,
+					      null,
+					      out this._child_pid,
+					      out this._child_stdin_fd,
+					      null,
+					      null);
+	} catch(SpawnError se) {
+	  stderr.printf("Failed to spawn helper process\n");
+	}
       }
 
       this._child_stdin = FileStream.fdopen(this._child_stdin_fd, "w");
       ChildWatch.add(this._child_pid, this._helper_died);
     }
 
-    public void attach(long window_id) {
-      this._child_stdin.printf("ATTACH %ld\n", window_id);
+    public void attach(ulong window_id) {
+      this._child_stdin.printf("ATTACH %lu\n", window_id);
     }
 
-    public void detach(long window_id) {
-      this._child_stdin.printf("DETACH %ld\n", window_id);
+    public void detach(ulong window_id) {
+      this._child_stdin.printf("DETACH %lu\n", window_id);
     }
 
     private void _helper_died(Pid p, int return_status) {
