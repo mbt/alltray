@@ -1,4 +1,4 @@
-# Turkish translation for alltray
+# Czech translation for alltray
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the alltray package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -8,27 +8,27 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2010-02-05 16:53+0000\n"
-"Last-Translator: Yiğit Ateş <yigitates52@gmail.com>\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"PO-Revision-Date: 2011-02-14 18:51+0000\n"
+"Last-Translator: Petr R. <ateps.r@gmail.com>\n"
+"Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-02-06 04:53+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2011-02-15 04:40+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 #: src/AllTray.vala:38
 msgid "Attach to a running program"
-msgstr "Çalışan bir uygulamaya ekle"
+msgstr "Připojit ke spuštěnému programu"
 
 #: src/AllTray.vala:40
 msgid "Enable debugging messages"
-msgstr "Hata ayıklama iletilerini etkinleştir"
+msgstr "Povolit ladící informace"
 
 #: src/AllTray.vala:43
 msgid "Show types of debugging messages"
-msgstr "Hata ayıklama iletilerini türlerini göster"
+msgstr "Zobrazit typy ladicích informací"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
@@ -36,23 +36,23 @@ msgstr ""
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
-msgstr "Çalışmakta olan bir programa ekle"
+msgstr "Připojit k běžící aplikaci"
 
 #: src/AllTray.vala:50
 msgid "Display AllTray version info and exit"
-msgstr "AllTray sürüm bilgisini görüntüle ve çık"
+msgstr "Zobrazit AllTray info a skončit"
 
 #: src/AllTray.vala:53
 msgid "Display extended version info and exit"
-msgstr "Ayrıntılı sürüm bilgisini görüntüle ve çık"
+msgstr "Zobrazit rozšířené info a skončit"
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
-msgstr "Komut satırı seçenekleri ayrıştırıldı."
+msgstr "Analyzovány parametry příkazového řádku."
 
 #: src/AllTray.vala:89
 msgid "- Dock software to the systray"
-msgstr "Programı sistem tepsisine indir"
+msgstr "- Skrýt software do oznamovací oblasti"
 
 #: src/AllTray.vala:97
 msgid "error: env flag parsing failed (%s)\n"
@@ -60,7 +60,7 @@ msgstr ""
 
 #: src/AllTray.vala:106
 msgid "error: command line parsing failed (%s)\n"
-msgstr "hata: komut satırı ayrıştırması başarısız oldu (%s)\n"
+msgstr "chyba: analýza příkazového řádku skončila s chybou (%s)\n"
 
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
@@ -71,6 +71,8 @@ msgid ""
 "AllTray %s, from bzr branch %s rev %s,\n"
 " rev-id %s\n"
 msgstr ""
+"AllTray %s, bzr větev %s rev %s,\n"
+" rev-id %s\n"
 
 #: src/AllTray.vala:206
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
@@ -82,24 +84,24 @@ msgid ""
 "Foundation.\n"
 "\n"
 msgstr ""
-"GNU GPL v3.0 lisansı ile lisanslanmış ve yasalarla korunmaktadır\n"
+"Licencováno GNU GPL v3.0 a vydáno Free Software Foundation.\n"
 "\n"
 
 #: src/AllTray.vala:213
 msgid "Configured %s on %s %s\n"
-msgstr "Ayarlanan %s on %s %s\n"
+msgstr "Nastaveno %s na %s %s\n"
 
 #: src/AllTray.vala:218
 msgid "Compilers: %s and %s\n"
-msgstr "Derleyiciler: %s ve %s\n"
+msgstr "Kompilátory: %s a %s\n"
 
 #: src/AllTray.vala:223
 msgid "Configure was run without flags\n"
-msgstr ""
+msgstr "Konfigurace byla spuštěna bez značek:\n"
 
 #: src/AllTray.vala:225
 msgid "Configure flags: %s\n"
-msgstr "Ayarlanan bayraklar : %s\n"
+msgstr "Konfigurační značky: %s\n"
 
 #: src/AllTray.vala:240
 msgid "Adding app (pid %d) to list of recv'd apps"
@@ -107,43 +109,43 @@ msgstr ""
 
 #: src/AllTray.vala:267
 msgid "Failed to get a window; exiting.\n"
-msgstr ""
+msgstr "Selhalo při získávání okna; vypínání.\n"
 
 #: src/AllTray.vala:305 src/AllTray.vala:314
 msgid "Oops.  Not running?"
-msgstr "Oops.  Çalışmıyor?"
+msgstr "Oops. Neběží to?"
 
 #: src/AllTray.vala:307
 msgid "Failed to start process: %s"
-msgstr "İşlemi başlatırken hata oldu: %s"
+msgstr "Selhalo při startu procesu: %s"
 
 #: src/AllTray.vala:315
 msgid "Failed to start process"
-msgstr "İşlemi Başlatırken hata oldu"
+msgstr "Selhalo při startu procesu"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr "Alt süreçler temizleniyor..."
+msgstr "Čistí se pro dítě..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
-msgstr "Başka alt süreç yok. Kapatılıyor."
+msgstr "Žádné další děti. Umírám."
 
 #: src/AllTray.vala:352
 msgid "Evaluating %s"
-msgstr "Hesaplanıyor %s"
+msgstr "Hodnocení %s"
 
 #: src/AllTray.vala:361
 msgid "Actually processing arg"
-msgstr ""
+msgstr "Právě zpracovávám argumenty"
 
 #: src/AllTray.vala:393
 msgid "Caught unwired signal %d"
-msgstr "Kablosuz sinyal yakalandı %d"
+msgstr "Zachycen bezdrátový signál %d"
 
 #: src/Application.vala:56
 msgid "Creating a new Application"
-msgstr "Yeni bir uygulama yaratılıyor."
+msgstr "Vytvářím novou Aplikaci"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
@@ -151,36 +153,38 @@ msgstr ""
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
-msgstr "pid %d (%s) programa ait değil."
+msgstr "pid %d (%s) nám nepatří."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr ""
+msgstr "Aplikace %s potřebuje opravu, zpráva PID 0."
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
-msgstr "Menü isteniyor"
+msgstr "Žádám menu!"
 
 #: src/Application.vala:184
 msgid "Toggle Visibility"
-msgstr "Görünürlüğü Etkinleştir"
+msgstr "Přepnout Viditelnost"
 
 #: src/Application.vala:186
 msgid "Undock"
-msgstr "Ayır"
+msgstr "Uvolnit"
 
 #: src/Application.vala:190
 msgid "About AllTray..."
-msgstr "AllTray Hakkında..."
+msgstr "O AllTray..."
 
 #: src/Application.vala:216
 msgid "All"
-msgstr "Tümü"
+msgstr "Vše"
 
 #: src/Application.vala:247
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
-msgstr[0] "%s - %d pencere"
+msgstr[0] "%s - %d okno"
+msgstr[1] "%s - %d okna"
+msgstr[2] "%s - %d oken"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
@@ -192,51 +196,51 @@ msgstr ""
 
 #: src/Application.vala:348
 msgid "New Bitmask: %s"
-msgstr ""
+msgstr "Nová bitová maska %s"
 
 #: src/Application.vala:350
 msgid "New State: %s"
-msgstr "Yeni Konum: %s"
+msgstr "Nový stav: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
-msgstr ""
+msgstr "Bliká, stav okna je: %s"
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
-msgstr "Küçült | "
+msgstr "MINIMALIZOVÁNY | "
 
 #: src/Application.vala:377
 msgid "MAXIMIZED_HORIZONTALLY | "
-msgstr "YATAYDA_BÜYÜT | "
+msgstr "MAXIMALIZOVÁNY_VODOROVNĚ | "
 
 #: src/Application.vala:379
 msgid "MAXIMIZED_VERTICALLY | "
-msgstr "DİKEYDE_BÜYÜT | "
+msgstr "MAXIMALIZOVÁNY_SVISLE | "
 
 #: src/Application.vala:381
 msgid "SHADED | "
-msgstr ""
+msgstr "SKRYTY | "
 
 #: src/Application.vala:383
 msgid "SKIP_PAGER | "
-msgstr "SAYFALAYICIYI_GEÇ "
+msgstr ""
 
 #: src/Application.vala:385
 msgid "SKIP_TASKLIST | "
-msgstr "GÖREVLİSTESİNİ_GEÇ "
+msgstr ""
 
 #: src/Application.vala:387
 msgid "STICKY | "
-msgstr ""
+msgstr "LEPIVÝ | "
 
 #: src/Application.vala:389
 msgid "HIDDEN | "
-msgstr "GİZLİ | "
+msgstr "SKRYTÝ | "
 
 #: src/Application.vala:391
 msgid "FULLSCREEN | "
-msgstr "TAMEKRAN | "
+msgstr "FULLSCREEN | "
 
 #: src/Application.vala:393
 msgid "DEMANDS_ATTENTION | "
@@ -248,15 +252,15 @@ msgstr ""
 
 #: src/Application.vala:397
 msgid "ABOVE | "
-msgstr ""
+msgstr "NAD | "
 
 #: src/Application.vala:399
 msgid "BELOW | "
-msgstr ""
+msgstr "POD | "
 
 #: src/Application.vala:440
 msgid "Setting window 0x%08lx visibility to %s"
-msgstr ""
+msgstr "Nastavení viditelnosti okna 0x%08lx na %s"
 
 #: src/Application.vala:502
 msgid ""
@@ -267,11 +271,11 @@ msgstr ""
 
 #: src/Application.vala:512
 msgid "Copyright (c) %s"
-msgstr ""
+msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr "Uygulamayı sistem tepsisine ekle"
+msgstr "Zobrazit aplikace v systémovém panelu."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
@@ -283,11 +287,11 @@ msgstr ""
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
-msgstr ""
+msgstr "Pid okna 0x%08lx = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "analýza příkazového řádku"
 
 #: src/Debug.vala:51
 msgid "X11 display"
@@ -295,27 +299,27 @@ msgstr ""
 
 #: src/Debug.vala:52
 msgid "System Tray Icon"
-msgstr "Sistem Tepsisi Simgesi"
+msgstr "Ikonka v systémovém panelu"
 
 #: src/Debug.vala:53
 msgid "Window Manager"
-msgstr "Pencere Yöneticisi"
+msgstr "Správce oken"
 
 #: src/Debug.vala:54
 msgid "Process information"
-msgstr ""
+msgstr "Informace o procesu"
 
 #: src/Debug.vala:55
 msgid "Misc messages"
-msgstr "Çeşitli mesajlar"
+msgstr "Ostatní zprávy"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr "İç hata detayı"
+msgstr "Detail vnitřní chyby"
 
 #: src/Debug.vala:57
 msgid "Applications"
-msgstr "Uygulamalar"
+msgstr "Aplikace"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
@@ -323,7 +327,7 @@ msgstr ""
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr "Debug mesajlarını ilşkile"
+msgstr ""
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
@@ -331,55 +335,55 @@ msgstr ""
 
 #: src/Debug.vala:61
 msgid "All debug messages"
-msgstr "Tüm debug mesajları"
+msgstr "Všechny ladicí zprávy"
 
 #: src/Debug.vala:65
 msgid "String"
-msgstr "Dizgi"
+msgstr "Řetězec"
 
 #: src/Debug.vala:65
 msgid "Messages are for"
-msgstr ""
+msgstr "Zprávy jsou pro"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
-msgstr ""
+msgstr "Nerozpoznaná hodnota '%s' v ALLTRAY_DEBUG"
 
 #: src/Debug.vala:137
 msgid "Debugging subsystem setup complete."
-msgstr ""
+msgstr "Nastavení ladicího subsystému je hotové."
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
-msgstr "ALLTRAY_DEBUG ayarlanmadı!"
+msgstr "Není nastaveno ALLTRAY_DEBUG!"
 
 #: src/Debug.vala:160
 msgid "Exiting: encountered fatal error."
-msgstr ""
+msgstr "Ukončení: zjištěna vážná chyba."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "CHYBA: Toto by nemělo být v defaultu možné."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr "alt uygulama %d (%s) çalışıyor."
+msgstr "Odvozený proces %d (%s) běží."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
-msgstr "Belirlenen PID sistemde yok"
+msgstr "Předpokládané PID neexistuje."
 
 #: src/Process.vala:132
 msgid "Attached process %d has died."
-msgstr "Eklenen uygulama %d öldü."
+msgstr "Připojený proces %d skončil."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr "Çocuk %d öldü OK"
+msgstr "Odvozený proces %d řádně skončil"
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr "Çocuk %d hiçbirşeyle öldü."
+msgstr ""
 
 #: src/Process.vala:232
 msgid ""
@@ -399,7 +403,7 @@ msgstr ""
 
 #: src/PromptDialog.vala:14
 msgid "Select an Application"
-msgstr "Bir Uygulama Seçin"
+msgstr "Vyberte aplikaci"
 
 #: src/PromptDialog.vala:23
 msgid ""

@@ -7,22 +7,31 @@ For Release Builds
 Release builds are tarball releases, which contain a ./configure script.
 
   * Required libraries:
-    - gtk 2.12 or better, glib and gobject
-    - libwnck
-    - libgtop
+    - gtk 2.12 or better, glib and gobject and headers
+    - libwnck and headers
+    - libgtop and headers
+    - libXext and headers
+    - libXpm and headers
 
-For Development Builds
-----------------------
+For Development
+---------------
 
-Development builds are branches from bzr, which do not have a
-./configure script and have more requirements to build.
+For development, you need all of the above things, plus the following:
 
-  * Vala 0.7.6, though Vala 0.7.7 is recommended.
+  * GNU Bazaar 2.0 or later.
 
-  * Autotools stack.  The author uses GNU autoconf 2.62 and automake
-    1.11; you may be able to use other versions, but as always, YMMV.
-    If you have trouble building AllTray correctly, please be sure to
-    be using at least these versions.
+  * The GNU build system utilities (autoconf and automake).  GNU
+    autoconf must be at least 2.62 and GNU automake must be at least
+    1.11.
+
+  * GNU gettext, if you intend on making any modifications to the
+    language files.
+
+  * The Vala compiler, 0.10.x series.  Newer releases won't work
+    unless you're updating AllTray's source code to build with newer
+    versions of Vala.  NOTE: For a release build, you only need Vala
+    if you modify a *.vala file, but for builds from the DVCS system,
+    the Vala files are _not_ precompiled.
 
 Runtime requirements
 --------------------

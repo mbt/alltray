@@ -25,6 +25,9 @@ namespace AllTray {
     private static bool _display_extended_ver;
     private static Program _instance;
 
+    internal static bool _ctt_enabled;
+    internal static Ctt? _ctt_obj;
+
     // Needs to be accessible from AllTray.Application.
     public static bool _initially_hide;
     public static Wnck.Screen WnckScreen;
@@ -33,9 +36,15 @@ namespace AllTray {
 
     private PromptDialog _pd;
 
+    /*
+     * See the man page for information on all of the command line
+     * options and what they do.  Or, of course, read the source. ;-)
+     */
     private const GLib.OptionEntry[] _acceptedCmdLineOptions = {
       { "attach", 'a', 0, GLib.OptionArg.NONE, ref _attach,
 	N_("Attach to a running program"), null },
+      { "enable-ctt", 'C', 0, GLib.OptionArg.NONE,
+	ref _ctt_enabled, N_("Enable Close-To-Tray support"), null },
       { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
 	ref _cl_debug, N_("Enable debugging messages"), null },
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
@@ -65,6 +74,10 @@ namespace AllTray {
       this._args = args;
       Gdk.init(ref _args);
       _cleanArgs = this.command_line_init(ref _args);
+
+      if(this._ctt_enabled == true) {
+	this._ctt_obj = new Ctt();
+      }
 
       Debug.Notification.emit(Debug.Subsystem.CommandLine,
 			      Debug.Level.Information,

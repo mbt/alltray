@@ -18,6 +18,8 @@ namespace AllTray {
     private bool _appVisible;
     private bool _caughtWindow;
     private bool _usingWindowIcon;
+
+    private List<ulong> _attached_xids;
     private Queue<Wnck.Window> _window_enforce_minimize_queue;
 
     public Wnck.Application wnck_app {
@@ -147,12 +149,34 @@ namespace AllTray {
       do_setup(scr, app, app.get_pid());
     }
 
+    private void on_ctt(ulong XID) {
+      // CTT handler.
+      Debug.Notification.emit(Debug.Subsystem.Application,
+			      Debug.Level.Information,
+			      "got a CTT event, XID %lu".printf(XID));
+      foreach(Wnck.Window w in this._windows) {
+	if(w.get_xid() == XID) {
+	  set_visibility_for_window(w, false);
+	  return;
+	}
+      }
+    }
+
     private void do_setup(Wnck.Screen scr, Wnck.Application app, int pid) {
       scr.application_opened -= maybe_setup;
 
       _wnckApp = app;
       _appVisible = true;
       _windows = _wnckApp.get_windows();
+
+      if(Program._ctt_enabled == true) {
+	Program._ctt_obj.activate += this.on_ctt;
+
+	foreach(Wnck.Window w in _windows) {
+	  Program._ctt_obj.attach(w.get_xid());
+	  this._attached_xids.append(w.get_xid());
+	}
+      }
 
       scr.window_opened += maybe_update_window_count;
       scr.window_closed += maybe_update_window_count;
@@ -245,6 +269,22 @@ namespace AllTray {
 
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
+
+      List<ulong> xids_attached = this._attached_xids.copy();
+      foreach(Wnck.Window w in _windows) {
+	if(xids_attached.index(w.get_xid()) > -1) {
+	  xids_attached.remove(w.get_xid());
+	} else {
+	  // This one needs to be attached _to_.
+	  Program._ctt_obj.attach(w.get_xid());
+	  _attached_xids.append(w.get_xid());
+	}
+      }
+
+      // Remaining XIDs may be detached.
+      foreach(ulong xid in xids_attached) {
+	Program._ctt_obj.detach(xid);
+      }
 
       if(wincount == 1) {
 	Wnck.Window first_window = _windows.first().data;
@@ -446,7 +486,7 @@ namespace AllTray {
 
       StringBuilder msg = new StringBuilder();
       msg.append_printf(_("Setting window 0x%08lx visibility to %s"),
-			w.get_xid(), _appVisible.to_string());
+			w.get_xid(), set_visible.to_string());
 
       if(set_visible) {
 	// Forcibly empty the queue (prevent a race).

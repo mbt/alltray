@@ -1,3 +1,600 @@
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	Release 0.7.5dev
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Mark Version 0.7.5dev in configure.ac
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	Include two new .h files in the source distribution.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* po/alltray.pot:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/en_US.po:
+	* po/es.po:
+	* po/it.po:
+	* po/pl.po:
+
+	Updates to translation files for location of translatable strings.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* AUTHORS:
+
+	Update date in authors file.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Version bump.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* REQUIREMENTS:
+
+	Update REQUIREMENTS.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* NEWS:
+
+	Update NEWS.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* images/Makefile.am:
+
+	Include the CTT XPM in the distribution.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* images/alltray_ctt.xpm:
+	* src/Ctt.vala:
+	* src/alltray-ctt-helper.c:
+	* src/alltray-ctt-helper.h:
+	* src/alltray-ctt-interpreter.c:
+	* src/alltray-ctt-interpreter.h:
+	* src/alltray-ctt-windowlist.c:
+	* src/alltray-ctt-windowlist.h:
+	* .bzrignore:
+	* config.guess:
+	* config.sub:
+	* configure.ac:
+	* man/alltray.1.in:
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Debug.vala:
+	* src/Makefile.am:
+	* src/Process.vala:
+
+	Merge 0.7.5/close-to-tray branch.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+
+	Update the man page: Add information for the new release and fix formatting.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+
+	Fix a bug in Application.set_visibility_for_window that was never
+	triggered (as far as I could tell).
+	
+	Also, use set_visibility_for_window() instead of toggle_window_visibility()
+	as that is more correct.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Application.vala:
+	* src/Ctt.vala:
+	* src/Debug.vala:
+	* src/Process.vala:
+	* src/alltray-ctt-helper.c:
+
+	CTT is now working!
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTray.vala:
+	* src/Application.vala:
+	* src/Ctt.vala:
+
+	Install CTT glue.  But it is not quite working yet.  ALMOST!
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+
+	Watch for the destruction of the parent window, and if it is destroyed
+	then remove it from the list of maintained windows.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Update .bzrignore.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* man/alltray.1.in:
+
+	Update the man page.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Ctt.vala:
+
+	Disambiguate the namespace.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+
+	Oops. Actually commit the changes I wanted to commit.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+	* src/AllTrayCtt.vala:
+	* src/Ctt.vala:
+
+	Initial CTT support in the front-end.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-windowlist.c:
+
+	Fix some bloody annoying pointer bug.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-windowlist.c:
+
+	Fix order-of-operations bug that caused a segfault.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-interpreter.c:
+
+	Fix message.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+	* src/alltray-ctt-helper.h:
+	* src/alltray-ctt-interpreter.c:
+	* src/alltray-ctt-windowlist.c:
+	* src/alltray-ctt-windowlist.h:
+
+	Interim commit to show code.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTrayCtt.vala:
+	* src/alltray-ctt-helper.h:
+	* src/alltray-ctt-windowlist.c:
+	* src/alltray-ctt-windowlist.h:
+	* src/Makefile.am:
+	* src/alltray-ctt-helper.c:
+	* src/alltray-ctt-interpreter.c:
+
+	Moved the windowlist code to a cleaner module by itself.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+
+	Fill in the X11 event stub.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+
+	Fix a bug in the linked list handling that caused a segfault.
+
+2011-07-13  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+	* src/alltray-ctt-interpreter.c:
+	* src/alltray-ctt-interpreter.h:
+
+	Flushing out the interpreter.  Still some segfaults to diagnose
+	and repair.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-interpreter.c:
+	* src/alltray-ctt-interpreter.h:
+	* src/alltray-ctt-helper.c:
+
+	Interpreter now functions properly. Stubs need filled in.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+	* src/alltray-ctt-helper.c:
+
+	Wiring is at least part-way done, debugging needed.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/alltray-ctt-helper.c:
+
+	Event loop installed, just need to implement the communication and such.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* src/Makefile.am:
+	* src/alltray-ctt-helper.c:
+
+	Fix build failures for CTT helper module.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Fix warning from autogen.sh process.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* .bzrignore:
+
+	Update .bzrignore.
+
+2011-07-12  Michael B. Trausch  <mike@trausch.us>
+
+	* images/alltray_ctt.xpm:
+	* src/alltray-ctt-helper.c:
+	* src/AllTrayCttHelper.vala:
+	* config.guess:
+	* config.sub:
+	* configure.ac:
+	* src/Makefile.am:
+
+	Pass 2: CTT is a pure-C program.
+
+2011-07-11  Michael B. Trausch  <mike@trausch.us>
+
+	* src/AllTrayCttHelper.vala:
+	* .bzrignore:
+	* src/Makefile.am:
+
+	Create the alltray-ctt-helper binary, which is required because X11
+	only permits a single connection from a single client to the window
+	system.  Additionally, we cannot multiplex (easily) between GDK/GTK+
+	and X11 directly, because that is quite error-prone and not very
+	"future-proof".  Therefore, we are going to use another binary for
+	this.
+	
+	Note that the ctt-helper doesn't do anything yet.
+
+2011-07-14  Michael B. Trausch  <mike@trausch.us>
+
+	* po/ar.po:
+	* po/bg.po:
+	* po/cs.po:
+	* po/gl.po:
+	* po/he.po:
+	* po/hi.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+	* po/uk.po:
+	* po/zh_CN.po:
+	* po/da.po:
+	* po/de.po:
+	* po/en_GB.po:
+	* po/es.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/tr.po:
+
+	Update translations.
+
+2011-05-10  Launchpad Translations on behalf of mtrausch
+
+	* po/uk.po:
+
+	Launchpad automatic translations update.
+
+2011-04-24  Launchpad Translations on behalf of mtrausch
+
+	* po/es.po:
+
+	Launchpad automatic translations update.
+
+2011-02-15  Launchpad Translations on behalf of mtrausch
+
+	* po/cs.po:
+
+	Launchpad automatic translations update.
+
+2011-02-07  Launchpad Translations on behalf of mtrausch
+
+	* po/es.po:
+
+	Launchpad automatic translations update.
+
+2011-01-12  Launchpad Translations on behalf of mtrausch
+
+	* po/it.po:
+
+	Launchpad automatic translations update.
+
+2010-12-19  Launchpad Translations on behalf of mtrausch
+
+	* po/es.po:
+
+	Launchpad automatic translations update.
+
+2010-12-10  Launchpad Translations on behalf of mtrausch
+
+	* po/es.po:
+
+	Launchpad automatic translations update.
+
+2010-11-13  Launchpad Translations on behalf of mtrausch
+
+	* po/pl.po:
+
+	Launchpad automatic translations update.
+
+2010-11-12  Launchpad Translations on behalf of mtrausch
+
+	* po/pl.po:
+
+	Launchpad automatic translations update.
+
+2010-10-09  Launchpad Translations on behalf of mtrausch
+
+	* po/cs.po:
+
+	Launchpad automatic translations update.
+
+2010-10-04  Launchpad Translations on behalf of mtrausch
+
+	* po/cs.po:
+
+	Launchpad automatic translations update.
+
+2010-09-02  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/it.po:
+
+	Launchpad automatic translations update.
+
+2010-07-05  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/ru.po:
+
+	Launchpad automatic translations update.
+
+2010-07-02  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/de.po:
+
+	Launchpad automatic translations update.
+
+2010-06-22  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/gl.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-06-21  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/gl.po:
+	* po/pt.po:
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-06-10  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/ru.po:
+
+	Launchpad automatic translations update.
+
+2010-05-05  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/ru.po:
+
+	Launchpad automatic translations update.
+
+2010-04-15  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-04-14  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-04-13  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/he.po:
+
+	Launchpad automatic translations update.
+
+2010-03-22  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt.po:
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-03-21  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt.po:
+	* po/pt_BR.po:
+
+	Launchpad automatic translations update.
+
+2010-03-19  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt_BR.po:
+	* po/it.po:
+
+	Launchpad automatic translations update.
+
+2010-02-23  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/bg.po:
+
+	Launchpad automatic translations update.
+
+2010-02-06  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2010-01-24  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/en_GB.po:
+
+	Launchpad automatic translations update.
+
+2010-01-20  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt.po:
+	* po/ru.po:
+
+	Launchpad automatic translations update.
+
+2010-01-19  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/pt.po:
+
+	Launchpad automatic translations update.
+
+2010-01-14  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/cs.po:
+
+	Launchpad automatic translations update.
+
+2009-12-31  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-12-30  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-12-25  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/en_GB.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-12-24  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/hi.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-12-20  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/tr.po:
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-12-17  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/ar.po:
+
+	Launchpad automatic translations update.
+
+2009-10-29  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-10-27  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/it.po:
+
+	Launchpad automatic translations update.
+
+2009-10-22  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-10-21  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+
+	Launchpad automatic translations update.
+
+2009-10-17  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/zh_CN.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2009-10-05  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/cs.po:
+
+	Launchpad automatic translations update.
+
+2009-10-03  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/es.po:
+
+	Launchpad automatic translations update.
+
+2009-09-30  Launchpad Code Hosting  <codehost@crowberry>
+
+	* po/da.po:
+	* po/de.po:
+	* po/es.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/it.po:
+	* po/pl.po:
+	* po/ru.po:
+	* po/tr.po:
+
+	Launchpad automatic translations update.
+
+2010-07-29  Michael B. Trausch  <mike@trausch.us>
+
+	* configure.ac:
+
+	Update copyright years.
+
 2009-09-04  Michael B. Trausch  <mike@trausch.us>
 
 	* Makefile.am:
