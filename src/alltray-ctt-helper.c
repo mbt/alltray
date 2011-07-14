@@ -80,6 +80,7 @@ ctt_make_window(Display *dpy, Window parent) {
 
   // XXX: What's the return value for XSelectInput() mean?
   XSelectInput(dpy, ctt_window, ButtonPressMask | ButtonReleaseMask);
+  XSelectInput(dpy, parent, SubstructureNotifyMask);
   XMapRaised(dpy, ctt_window);
 
   return(ctt_window);
@@ -107,6 +108,14 @@ handle_x11_event(Display *dpy) {
     int ctt_window = ((XButtonReleasedEvent *) event)->window;
     Window parent = alltray_ctt_windowlist_get_parent_for_ctt(ctt_window);
     printf("CTT %ld\n", parent);
+  } else if(event->type == DestroyNotify) {
+    // If a parent window dies, remove it from the list of windows!
+    Window w = ((XDestroyWindowEvent *)event)->window;
+
+    if(alltray_ctt_windowlist_get_ctt_for_parent(w) != 0) {
+      alltray_ctt_windowlist_del(w);
+      printf("CTT-DESTROYED %ld\n", w);
+    }
   }
 
   free(event);
