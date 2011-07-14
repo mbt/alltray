@@ -1,9 +1,9 @@
-.TH alltray 1 "July 13, 2011" "Version @PACKAGE_VERSION@" "User Commands"
+.TH alltray 1 "July 14, 2011" "Version @PACKAGE_VERSION@" "User Commands"
 .ds UX U\s-3NIX\s+3
 \#
 .SH NAME
 \#
-alltray \(en Dock any program into the system tray
+alltray \(en Dock any program into the system tray on GTK2-based systems
 \#
 .SH SYNOPSIS
 \#
@@ -59,7 +59,8 @@ the target application's window.  To close the window to the tray,
 click on the miniaturized AllTray icon.  This feature is new, and
 therefore not enabled by default.  (However, if you wish to have it
 enabled always, check out the \fBENVIRONMENT VARIABLES\fR section of
-this man page.)
+this man page.)  \fIAlso, note that CTT support does not yet work with
+GNOME Terminal, see \fBBUGS\fI for more information.\fR
 .IP "\-D, \-\-debug"
 Enable the debug message printing mechanism of AllTray.  Note that
 this requires also setting the environment variable
@@ -110,13 +111,19 @@ command line option can override it, or provide it if unset.
 \#
 Here are some examples of invoking AllTray in various situations:
 .IP "Simple example"
+.ft C
 alltray evolution
+.ft P
 \#
 .IP "Simple debugging example"
+.ft C
 ALLTRAY_DEBUG="ALL" alltray \-D evolution
+.ft P
 \#
 .IP "Client command line arguments example"
+.ft C
 alltray \-\- xterm \-geometry 132x40
+.ft P
 \#
 .SH DIAGNOSTICS
 \#
@@ -128,6 +135,13 @@ giving an error, please run AllTray as in the debugging example, above,
 and read the output of that.  It may give vital clues as to what is
 wrong.  Almost certainly always if you do this, you'll want to also
 file a bug report.
+
+When running AllTray from menus from within a desktop environment, all
+diagnostics will appear in the
+.ft C
+~/.xsession-errors
+.ft P
+file.
 \#
 .SH REQUIREMENTS
 \#
@@ -161,13 +175,34 @@ Launchpad (or comment, if there is already a bug requesting this
 feature) so that I have an idea of what type of priority should be
 assigned to this feature.
 
-AllTray currently does not support systems that do not have GTK 2.x
-installed on them, for example GNOME 3 systems that do not have GTK 2
-libraries available.  This will be fixed in a future release; at the
-present moment in time, the author does not have a GTK3 based system.
+AllTray currently does not support systems that do \fInot\fR have GTK
+2.x installed on them, for example GNOME 3 systems that do not have
+GTK 2 libraries available.  This will be fixed in a future release; at
+the present moment in time, the author does not have a GTK3 based
+system.
+
+On some window managers, when using AllTray in attach mode without
+specifying a process ID, you must click the window itself and not the
+window decoration.  Compiz is one such window manager; there may be
+others.
+
+Close-to-Tray (CTT) support does not work for the GNOME Terminal
+application; when attempting to use CTT support on the GNOME Terminal
+application, the CTT helper process dies with an X \(lqBadMatch\(rq
+error when attempting to use it with GNOME Terminal.  Please do not
+file a bug in such a case: it is already known.  However, \fIif this
+happens with any other software\fR please file a bug report.  You will
+be able to see the X error message text in your
+.ft C
+~/.xsession-errors
+.ft P
+file.
 
 There are likely undiscovered bugs.  If you should find one, please
-report it at https://launchpad.net/alltray/+filebug.
+report it at
+.ft C
+https://launchpad.net/alltray/+filebug
+.ft P
 
 Also, please note: if you are using a distribution-packaged version of
 AllTray, before filing a bug report against AllTray itself,
@@ -204,28 +239,78 @@ see the \fBLINKS\fR section below.
 If there is a need to use AllTray outside of these licensing terms,
 contact the author for information.
 \#
+.SH DEVELOPMENT
+\#
+If you are interested in helping with AllTray's development, you can
+help!  Please email me at <mike@trausch.us>, or find a bug report in
+Launchpad that needs assistance and isn't actively being worked on.
+You can branch the AllTray source code using the command
+.ft C
+bzr branch lp:alltray
+.ft P
+on any system that has the GNU Bazaar software installed.
+
+Please use Launchpad to request that your branch be merged into
+AllTray, or if for some reason you cannot do that (for example, you do
+not have a Launchpad account) then please email a merge directive to
+<mike@trausch.us>.  If you need help with using the GNU Bazaar version
+control system, you can check out the
+.ft C
+#bzr
+.ft P
+channel on the FreeNode IRC
+network.  See also the \fBLINKS\fR section below for a link to the
+\fIBazaar in Five Minutes\fR tutorial.
+\#
 .SH LINKS
 \#
 The GNU GPL Version 3.0 is available on the Internet at
+.ft C
 http://www.gnu.org/licenses/gpl-3.0.html
+.ft P
 
 The GNU LGPL Version 3.0 is available on the Internet at
+.ft C
 http://www.gnu.org/licenses/lgpl-3.0.html
+.ft P
 
 The Creative Commons Attribution-Noncommercial 3.0 license is available
-on the Internet at http://creativecommons.org/licenses/by-nc-nd/3.0/us/
+on the Internet at
+.ft C
+http://creativecommons.org/licenses/by-nc-nd/3.0/us/
+.ft P
 
 AllTray's web site and wiki is available on the Internet at
+.ft C
 http://alltray.trausch.us/
+.ft P
 
 AllTray's project page is available on the Internet at
+.ft C
 https://launchpad.net/alltray
+.ft P
 
 The ICCCM is available on the Internet at
+.ft C
 http://tronche.com/gui/x/icccm/
+.ft P
 
 The EWMH is available on the Internet at
+.ft C
 http://standards.freedesktop.org/wm-spec/wm-spec-latest.html
+.ft P
 
 The System Tray Specification is available on the Internet at
+.ft C
 http://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html
+.ft P
+
+The Ayatana indicators specification is available on the Internet at
+.ft C
+https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators#Typical_usage_.28C_version.29
+.ft P
+
+\fIBazaar in Five Minutes\fR is available on the Internet at
+.ft C
+http://doc.bazaar.canonical.com/latest/en/mini-tutorial/
+.ft P
