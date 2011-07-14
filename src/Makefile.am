@@ -40,6 +40,8 @@ EXTRA_DIST = $(alltray_VALASOURCES) \
 	x11_glue.h \
 	gtop_glue.h \
 	alltray-ctt-interpreter.h \
+	alltray-ctt-helper.h \
+	alltray-ctt-windowlist.h \
 	alltray.stamp
 
 alltray_VALA_FLAGS = --pkg alltray --pkg gdk-2.0 --pkg gdk-x11-2.0 \
