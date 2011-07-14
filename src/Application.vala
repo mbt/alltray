@@ -156,7 +156,8 @@ namespace AllTray {
 			      "got a CTT event, XID %lu".printf(XID));
       foreach(Wnck.Window w in this._windows) {
 	if(w.get_xid() == XID) {
-	  toggle_window_visibility(w);
+	  set_visibility_for_window(w, false);
+	  return;
 	}
       }
     }
@@ -485,7 +486,7 @@ namespace AllTray {
 
       StringBuilder msg = new StringBuilder();
       msg.append_printf(_("Setting window 0x%08lx visibility to %s"),
-			w.get_xid(), _appVisible.to_string());
+			w.get_xid(), set_visible.to_string());
 
       if(set_visible) {
 	// Forcibly empty the queue (prevent a race).
