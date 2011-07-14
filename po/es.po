@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-09-13 21:39+0000\n"
-"Last-Translator: Federico Vera <Unknown>\n"
+"PO-Revision-Date: 2011-04-23 21:55+0000\n"
+"Last-Translator: canica <fernando.mesa@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-09-23 11:08+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-04-24 04:39+0000\n"
+"X-Generator: Launchpad (build 12758)\n"
 
 #: src/AllTray.vala:38
 msgid "Attach to a running program"
@@ -36,7 +36,7 @@ msgstr "Ocultar al generar/adjuntar"
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
-msgstr "Adjuntar a aplicación en ejecución"
+msgstr "Adjuntar a una aplicación en ejecución"
 
 #: src/AllTray.vala:50
 msgid "Display AllTray version info and exit"
@@ -44,7 +44,7 @@ msgstr "Mostrar información de versión de AllTray y salir"
 
 #: src/AllTray.vala:53
 msgid "Display extended version info and exit"
-msgstr "Mostrar información extendida de versión de AllTray y salir"
+msgstr "Mostrar información extendida de versión y salir"
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
@@ -65,6 +65,7 @@ msgstr "error: se falló analizar línea de ordenes (%s)\n"
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
 msgstr ""
+"Fallo al establecer pgid; alltray puede comportarse de una manera extraña."
 
 #: src/AllTray.vala:198
 msgid ""
@@ -84,9 +85,9 @@ msgid ""
 "Foundation.\n"
 "\n"
 msgstr ""
-"Licenciado bajo los términos de la Licencia Pública General GNU versión 3 "
-"(GNU GPL v3.0) publicada \n"
-"    por la Fundación para el Software Libre.\n"
+"Bajo los términos de la Licencia Pública General GNU versión 3 (GNU GPL "
+"v3.0) como aparece publicada \n"
+"    por la Fundación para el Software Libre(FSF).\n"
 "\n"
 
 #: src/AllTray.vala:213
@@ -99,7 +100,7 @@ msgstr "Compiladores: %s y %s\n"
 
 #: src/AllTray.vala:223
 msgid "Configure was run without flags\n"
-msgstr "Configure fue ejecutado sin indicadores\n"
+msgstr "Configuración fué ejecutada sin indicadores\n"
 
 #: src/AllTray.vala:225
 msgid "Configure flags: %s\n"
@@ -127,7 +128,7 @@ msgstr "Se falló empezar proceso"
 
 #: src/AllTray.vala:335
 msgid "Cleaning up for child..."
-msgstr ""
+msgstr "Limpiando por hijo..."
 
 #: src/AllTray.vala:341
 msgid "No more children. Dying."
@@ -139,11 +140,11 @@ msgstr "Evaluando %s"
 
 #: src/AllTray.vala:361
 msgid "Actually processing arg"
-msgstr ""
+msgstr "actualmente procesando arg"
 
 #: src/AllTray.vala:393
 msgid "Caught unwired signal %d"
-msgstr ""
+msgstr "señal inalambrica recibida  %d"
 
 #: src/Application.vala:56
 msgid "Creating a new Application"
@@ -151,7 +152,7 @@ msgstr "Creando nueva aplicación"
 
 #: src/Application.vala:79
 msgid "WHOA - The app went away?! Looking for it to come back..."
-msgstr ""
+msgstr "WOW- La aplicacion se fue?! Esperando que regrese..."
 
 #: src/Application.vala:108
 msgid "pid %d (%s) is not ours."
@@ -159,7 +160,7 @@ msgstr "el pid %d (%s) no es nuestro."
 
 #: src/Application.vala:127
 msgid "Application %s needs fixed, reports PID 0."
-msgstr ""
+msgstr "La aplicación %s necesita reparación, reporta PID 0"
 
 #: src/Application.vala:180
 msgid "Requesting menu!"
@@ -189,11 +190,11 @@ msgstr[1] "%s - %d ventanas"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
-msgstr ""
+msgstr "Usando el icono de la ventana (el de reserva era %s)"
 
 #: src/Application.vala:293
 msgid "Using App Icon (fallback was %s)"
-msgstr ""
+msgstr "Usando icono de aplicación (el de reserva era %s)"
 
 #: src/Application.vala:348
 msgid "New Bitmask: %s"
@@ -205,7 +206,7 @@ msgstr "Nuevo estado: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
-msgstr ""
+msgstr "Parpadeando, el estado de ventana es: %s"
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
@@ -279,15 +280,15 @@ msgstr "Copyright (c) %s"
 
 #: src/Application.vala:514
 msgid "Dock applications in the system tray."
-msgstr ""
+msgstr "Anclar aplicaciones a la bandeja de sistema."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Fallo al tomar el puntero"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
-msgstr ""
+msgstr "Se obtuvo la ventana 0x%08lx"
 
 #: src/AttachHelper.vala:100
 msgid "Window 0x%08lx pid = %d"
@@ -295,11 +296,11 @@ msgstr "Ventana 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "análisis de línea de mando"
 
 #: src/Debug.vala:51
 msgid "X11 display"
-msgstr ""
+msgstr "Pantalla X11"
 
 #: src/Debug.vala:52
 msgid "System Tray Icon"
@@ -319,7 +320,7 @@ msgstr "Mensajes varios"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr ""
+msgstr "Detalle de error interno"
 
 #: src/Debug.vala:57
 msgid "Applications"
@@ -327,15 +328,15 @@ msgstr "Aplicaciones"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
-msgstr ""
+msgstr "AttachHelper mensajes de clase"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr ""
+msgstr "Señal de mensajes de depuración"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "punto de entrada, preinit, etc."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
@@ -347,15 +348,15 @@ msgstr "Cadena"
 
 #: src/Debug.vala:65
 msgid "Messages are for"
-msgstr ""
+msgstr "Los mensajes son por"
 
 #: src/Debug.vala:130
 msgid "Unrecognized value '%s' in ALLTRAY_DEBUG"
-msgstr "Valor no reconocido '%s' in ALLTRAY_DEBUG"
+msgstr "Valor no reconocido '%s' en ALLTRAY_DEBUG"
 
 #: src/Debug.vala:137
 msgid "Debugging subsystem setup complete."
-msgstr ""
+msgstr "Instalación del subsistema de depuración completa"
 
 #: src/Debug.vala:140
 msgid "ALLTRAY_DEBUG not set!"
@@ -367,15 +368,15 @@ msgstr "Saliendo: ocurrió un error fatal."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "ERROR: Se alcanzó valor por defecto, no debería ser posible."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
-msgstr ""
+msgstr "Proceso hijo %d (%s) ahora ejecutandose."
 
 #: src/Process.vala:108
 msgid "The provided PID does not exist."
-msgstr ""
+msgstr "El PID proporcionado no existe."
 
 #: src/Process.vala:132
 msgid "Attached process %d has died."
@@ -383,11 +384,11 @@ msgstr "El proceso adjunto %d ha muerto."
 
 #: src/Process.vala:182
 msgid "Child %d died okay"
-msgstr ""
+msgstr "hijo %d ha muerto bien"
 
 #: src/Process.vala:192
 msgid "Child %d died with nothing!"
-msgstr ""
+msgstr "Hijo %d muerto con nada!"
 
 #: src/Process.vala:232
 msgid ""
@@ -404,6 +405,19 @@ msgid ""
 "project, if necessary.  If the problem is the third one, then you will\n"
 "need to fix whatever went wrong and try again.\n"
 msgstr ""
+"AllTray ha sido incapaz de adjuntarse a cualquier aplicación, y todos\n"
+"los procesos hijos de AllTray han muerto.\n"
+"\n"
+"Este problema puede ser causado por aplicaciones que:\n"
+"  * no cumplen con las especificaciones de ICCCM y EWMH,\n"
+"  * se pasan al fondo a sí mismos y dejan el grupo de proceso de AllTray, o "
+"\n"
+"  * inesperadamente mueren tempranamente y en realidad no empiezan\n"
+"\n"
+"Si el problema es uno de los dos primeros, por favor reporte un error\n"
+"en AllTray y será investigado y reportado al proyecto correcto, si\n"
+"fuera necesario. Si el problema es el tercero, entonces necesitará\n"
+"arreglar lo que ha salido mal e intentar otra vez.\n"
 
 #: src/PromptDialog.vala:14
 msgid "Select an Application"
@@ -417,6 +431,11 @@ msgid ""
 "the window; particularly on Compiz, clicking on the title bar\n"
 "or the other sides of the window border DOES NOT WORK."
 msgstr ""
+"Haga click en la ventana del programa que desee anclar.\n"
+"\n"
+"Nota: no pulse en el borde de la ventana. Pulse dentro de la ventana;\n"
+"en particular en Compiz, clickeando sobre la barra de título u otro\n"
+"borde de la ventana NO FUNCIONA."
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "No se puede fijar PGID. No se puede continuar."

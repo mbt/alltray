@@ -8,47 +8,47 @@ msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
 "POT-Creation-Date: 2009-09-20 00:23-0400\n"
-"PO-Revision-Date: 2009-09-20 05:27+0000\n"
-"Last-Translator: Michael B. Trausch <mbt@zest.trausch.us>\n"
+"PO-Revision-Date: 2011-01-11 11:46+0000\n"
+"Last-Translator: Martino Barbon <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-09-23 11:08+0000\n"
+"X-Launchpad-Export-Date: 2011-01-12 05:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/AllTray.vala:38
 msgid "Attach to a running program"
-msgstr ""
+msgstr "Collega ad un programma in esecuzione"
 
 #: src/AllTray.vala:40
 msgid "Enable debugging messages"
-msgstr ""
+msgstr "Abilita messaggi di debug"
 
 #: src/AllTray.vala:43
 msgid "Show types of debugging messages"
-msgstr ""
+msgstr "Mostra i tipi di messaggi di debug"
 
 #: src/AllTray.vala:45
 msgid "Initially hide on spawn/attach"
-msgstr ""
+msgstr "Nascondi inizialmente alla generazione/attribuzione"
 
 #: src/AllTray.vala:47
 msgid "Attach to already-running application"
-msgstr ""
+msgstr "Collega ad un'applicazione già in esecuzione"
 
 #: src/AllTray.vala:50
 msgid "Display AllTray version info and exit"
-msgstr ""
+msgstr "Mostra le informazioni sulla versione di AllTray ed esci"
 
 #: src/AllTray.vala:53
 msgid "Display extended version info and exit"
-msgstr ""
+msgstr "Mostra le informazioni estese sulla versione di AllTray ed esci"
 
 #: src/AllTray.vala:71
 msgid "Command line options parsed."
-msgstr "Opzioni di linea di comando valutate."
+msgstr "Opzioni di linea di comando elaborate"
 
 #: src/AllTray.vala:89
 msgid "- Dock software to the systray"
@@ -64,7 +64,7 @@ msgstr "errore: valutazione della linea di comando fallita (%s)\n"
 
 #: src/AllTray.vala:152
 msgid "set pgid failed; alltray may behave strangely."
-msgstr ""
+msgstr "set del pgid ;alltray potrebbe funzionare in modo strano"
 
 #: src/AllTray.vala:198
 msgid ""
@@ -118,7 +118,7 @@ msgstr "Oops. Non si sta eseguendo?"
 
 #: src/AllTray.vala:307
 msgid "Failed to start process: %s"
-msgstr ""
+msgstr "Fallito l'avvio del processo: %s"
 
 #: src/AllTray.vala:315
 msgid "Failed to start process"
@@ -184,8 +184,8 @@ msgstr "Tutto"
 #: src/Application.vala:247
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s - %d finestra"
+msgstr[1] "%s - %d finestre"
 
 #: src/Application.vala:290
 msgid "Using Window Icon (fallback was %s)"
@@ -205,7 +205,7 @@ msgstr "Nuovo Stato: %s"
 
 #: src/Application.vala:358
 msgid "Blinking, window state is: %s"
-msgstr ""
+msgstr "Lampeggiando, lo stato della finestra è:%s"
 
 #: src/Application.vala:375
 msgid "MINIMIZED | "
@@ -283,7 +283,7 @@ msgstr "Minimizza l'applicazione nell'icona di notifica"
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
-msgstr ""
+msgstr "Cattura del puntatore fallita"
 
 #: src/AttachHelper.vala:93
 msgid "Got window 0x%08lx"
@@ -295,51 +295,51 @@ msgstr "Finestra 0x%08lx pid = %d"
 
 #: src/Debug.vala:50
 msgid "command line parsing"
-msgstr ""
+msgstr "interprete a riga di comando"
 
 #: src/Debug.vala:51
 msgid "X11 display"
-msgstr ""
+msgstr "X11 display"
 
 #: src/Debug.vala:52
 msgid "System Tray Icon"
-msgstr ""
+msgstr "Icona di notifica"
 
 #: src/Debug.vala:53
 msgid "Window Manager"
-msgstr ""
+msgstr "Window manager"
 
 #: src/Debug.vala:54
 msgid "Process information"
-msgstr ""
+msgstr "Informazioni sul processo"
 
 #: src/Debug.vala:55
 msgid "Misc messages"
-msgstr ""
+msgstr "Messaggi vari"
 
 #: src/Debug.vala:56
 msgid "Internal error detail"
-msgstr ""
+msgstr "Dettagli sul errore interno"
 
 #: src/Debug.vala:57
 msgid "Applications"
-msgstr ""
+msgstr "Applicazioni"
 
 #: src/Debug.vala:58
 msgid "AttachHelper class messages"
-msgstr ""
+msgstr "Messaggi della classe AttachHelper"
 
 #: src/Debug.vala:59
 msgid "Signal debugging messages"
-msgstr ""
+msgstr "Messaggi del debug dei segnali"
 
 #: src/Debug.vala:60
 msgid "Entrypoint, preinit, etc."
-msgstr ""
+msgstr "Entrypoint, preinit, etc."
 
 #: src/Debug.vala:61
 msgid "All debug messages"
-msgstr ""
+msgstr "Tutti i messaggi di debug"
 
 #: src/Debug.vala:65
 msgid "String"
@@ -368,7 +368,7 @@ msgstr "Annullo: errore fatale."
 
 #: src/Debug.vala:218 src/Debug.vala:246
 msgid "BUG: Reached default, should not be possible."
-msgstr ""
+msgstr "BUG: Raggiunto default, non dovrebbe essere possibile."
 
 #: src/Process.vala:83
 msgid "Child process %d (%s) now running."
@@ -442,3 +442,6 @@ msgstr ""
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "Non riesco a settare il  PGID. Non posso continuare."
+
+#~ msgid "%s - %d window%s"
+#~ msgstr "%s - %d finestra%s"
