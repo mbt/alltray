@@ -59,6 +59,13 @@ namespace AllTray {
       _argv = argv;
     }
 
+    /**
+     * CTT event handler.
+     */
+    private void on_ctt(ulong XID) {
+      return;
+    }
+
     // Property for Pid not (yet) possible due to Vala bug.
     public Pid get_pid() {
       return(_child);

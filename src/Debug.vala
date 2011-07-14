@@ -19,11 +19,12 @@ namespace AllTray.Debug {
     AttachHelper = 0x100,
     Signal = 0x200,
     Main = 0x400,
+    Ctt = 0x800,
 
     All = Subsystem.CommandLine | Subsystem.Display | Subsystem.TrayIcon |
     Subsystem.WindowManager | Subsystem.Process | Subsystem.Misc |
     Subsystem.Bug | Subsystem.Application | Subsystem.AttachHelper |
-    Subsystem.Signal | Subsystem.Main
+    Subsystem.Signal | Subsystem.Main | Subsystem.Ctt
   }
 
   public enum Level {
@@ -45,7 +46,7 @@ namespace AllTray.Debug {
     /*
      * This triggers a GCC warning later; omitting the const, though,
      * will cause valac to crash with a segmentation fault.
-     */ 
+     */
     private const DebugDescription[] _debugOptions = {
       { "CL", N_("command line parsing") },
       { "DISPLAY", N_("X11 display") },
@@ -58,6 +59,7 @@ namespace AllTray.Debug {
       { "AH", N_("AttachHelper class messages") },
       { "SIG", N_("Signal debugging messages") },
       { "MAIN", N_("Entrypoint, preinit, etc.") },
+      { "CTT", N_("Close-To-Tray") },
       { "ALL", N_("All debug messages") }
     };
 
@@ -113,6 +115,9 @@ namespace AllTray.Debug {
 	  case "MAIN":
 	    _subsys |= Subsystem.Main;
 	    break;
+	  case "CTT":
+	    _subsys |= Subsystem.Ctt;
+	    break;
 	  case "ALL":
 	    _subsys |= (Subsystem.CommandLine |
 			Subsystem.Display |
@@ -124,7 +129,8 @@ namespace AllTray.Debug {
 			Subsystem.Application |
 			Subsystem.AttachHelper |
 			Subsystem.Signal |
-			Subsystem.Main);
+			Subsystem.Main |
+			Subsystem.Ctt);
 	    break;
 	  default:
 	    GLib.warning(_("Unrecognized value '%s' in ALLTRAY_DEBUG"),
@@ -212,6 +218,10 @@ namespace AllTray.Debug {
 
       case Subsystem.Main:
 	retval = "MAIN";
+	break;
+
+      case Subsystem.Ctt:
+	retval = "CTT";
 	break;
 
       default:

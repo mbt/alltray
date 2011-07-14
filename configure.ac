@@ -19,6 +19,7 @@ AC_CONFIG_SRCDIR([src/AllTray.vala])
 
 # Check for programs necessary to build and install AllTray.
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_GNU_SOURCE
 AM_GNU_GETTEXT
 AC_PROG_SED
@@ -33,8 +34,14 @@ PKG_CHECK_MODULES(GTOP, libgtop-2.0,,AC_MSG_ERROR([libgtop-2.0 is required]))
 PKG_CHECK_MODULES(WNCK, libwnck-1.0,,AC_MSG_ERROR([libwnck-1.0 is required]))
 PKG_CHECK_MODULES(GTK, gtk+-2.0,,AC_MSG_ERROR([gtk+-2.0 is required]))
 
+# XXX: Only required for Close-To-Tray. Should be optional.
+PKG_CHECK_MODULES(XPM, xpm,, AC_MSG_ERROR([xpm is required]))
+PKG_CHECK_MODULES(XEXT, xext,, AC_MSG_ERROR([xext is required]))
+
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
+AC_SUBST(XPM_CFLAGS)
+AC_SUBST(XPM_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 AC_SUBST(GOBJECT_CFLAGS)
@@ -45,6 +52,11 @@ AC_SUBST(WNCK_CFLAGS)
 AC_SUBST(WNCK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
+
+# XXX: Only required for Close-To-Tray. Should be optional.
+AC_SUBST(XEXT_CFLAGS)
+AC_SUBST(XEXT_LIBS)
+
 AC_SUBST(pkglib)
 AC_SUBST(VALAC)
 
