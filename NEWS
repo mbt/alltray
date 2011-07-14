@@ -1,3 +1,46 @@
+News for 0.7.5dev
+=================
+
+THIS IS A DEVELOPMENT RELEASE!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+  * AllTray has some new requirements at build-time and at run-time.
+    Please see the REQUIREMENTS file for more information.
+
+  * AllTray has gained the -C (--enable-ctt) command line option.
+    This command line option tells AllTray to enable Close-to-Tray
+    support.  Currently, Close-to-Tray support is not enabled by
+    default.  CTT support does not yet work with GNOME Terminal.
+
+  * AllTray has a new binary, "alltray-ctt-helper" that is installed
+    with AllTray.  This binary provides the close-to-tray support.  It
+    is a C program that communicates directly with AllTray and the X11
+    window system.
+
+    The alltray-ctt-helper program requires the X11 SHAPE extension to
+    work properly.  This should be pretty universally available, but
+    if you encounter an X11 system that you want to use AllTray's CTT
+    support on that does not have the X11 SHAPE extension, please file
+    a bug on Launchpad.
+
+  * Fixes to the man page have been made.
+
+  * This release does not support hotkeys, but that will be coming in
+    an 0.7.6dev release that should be coming within the next month or
+    two (but please, don't hold your breath: my life is just starting
+    to return to a level of sane that enables me to start working on
+    FOSS again).
+
+  * This release does not support the Ayatana Application Indicators,
+    which is the Ubuntu answer to the "problem" of the system tray.
+    There are two possible fixes for this: either they will fix
+    Ayatana to include System Tray support, or AllTray will gain
+    support for Ayatana in some manner.
+
+  * A few minor bugs in AllTray have been fixed.
+
+
 News for 0.7.4dev
 =================
 
