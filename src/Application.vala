@@ -149,6 +149,18 @@ namespace AllTray {
       do_setup(scr, app, app.get_pid());
     }
 
+    private void on_ctt(ulong XID) {
+      // CTT handler.
+      Debug.Notification.emit(Debug.Subsystem.Application,
+			      Debug.Level.Information,
+			      "got a CTT event, XID %lu".printf(XID));
+      foreach(Wnck.Window w in this._windows) {
+	if(w.get_xid() == XID) {
+	  toggle_window_visibility(w);
+	}
+      }
+    }
+
     private void do_setup(Wnck.Screen scr, Wnck.Application app, int pid) {
       scr.application_opened -= maybe_setup;
 
@@ -156,11 +168,14 @@ namespace AllTray {
       _appVisible = true;
       _windows = _wnckApp.get_windows();
 
-      if(Program._ctt_enabled == true)
+      if(Program._ctt_enabled == true) {
+	Program._ctt_obj.activate += this.on_ctt;
+
 	foreach(Wnck.Window w in _windows) {
 	  Program._ctt_obj.attach(w.get_xid());
 	  this._attached_xids.append(w.get_xid());
 	}
+      }
 
       scr.window_opened += maybe_update_window_count;
       scr.window_closed += maybe_update_window_count;

@@ -127,6 +127,11 @@ handle_alltray_event(Display *dpy) {
   if(buf == NULL) abort();
 
   ssize_t bytes_read = read(STDIN_FILENO, buf, 4096);
+  if(bytes_read == 0) {
+    // EOF.
+    printf("ACK - exiting due to EOF\n");
+    exit(1);
+  }
 
   alltray_ctt_command *cmd = aci_parse_command(buf, bytes_read);
   if(cmd != NULL) {
@@ -211,5 +216,6 @@ main(int argc, char *argv[]) {
     exit(1);
   }
 
+  setvbuf(stdout, NULL, _IONBF, 0);
   return(event_loop(dpy));
 }
