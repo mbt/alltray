@@ -11,6 +11,8 @@ namespace AllTray {
   }
 
   public class Application : GLib.Object {
+    public signal void icon_changed(Gdk.Pixbuf new_icon);
+
     private unowned List<Wnck.Window> _windows;
     private Wnck.Application? _wnckApp;
     private GtkStatusIcon _appIcon;
@@ -187,11 +189,7 @@ namespace AllTray {
 
       // Force an update to catch circumstances where the app
       // disappears and reappears (e.g., The GIMP).
-      if(_usingWindowIcon) {
-	update_icon_win_image(_windows.first().data);
-      } else {
-	update_icon_app_image(_wnckApp);
-      }
+      update_icon();
 
       if(Program._initially_hide == true) {
 	hide_all_windows();
@@ -299,6 +297,18 @@ namespace AllTray {
       _appIcon.set_tooltip(new_tooltip);
     }
 
+    private void update_icon() {
+      Gdk.Pixbuf new_icon;
+
+      if(this._usingWindowIcon == true) {
+	new_icon = this._windows.first().data.get_mini_icon();
+      } else {
+	new_icon = this._wnckApp.get_mini_icon();
+      }
+
+      icon_changed(new_icon);
+    }
+
     /*
      * This tries to create an icon for the application.  First, we
      * see if the application has an icon (don't know *precisely* what
@@ -319,14 +329,14 @@ namespace AllTray {
       bool fallback = _wnckApp.get_icon_is_fallback();
 
       if(fallback) {
-	_appIcon = new GtkStatusIcon(firstWindow.get_mini_icon(),
+	_appIcon = new GtkStatusIcon(this, firstWindow.get_mini_icon(),
 				     _wnckApp.get_name());
-	firstWindow.icon_changed.connect(update_icon_win_image);
+	firstWindow.icon_changed.connect(update_icon);
 	_usingWindowIcon = true;
       } else {
-	_appIcon = new GtkStatusIcon(_wnckApp.get_mini_icon(),
+	_appIcon = new GtkStatusIcon(this, _wnckApp.get_mini_icon(),
 				     _wnckApp.get_name());
-	_wnckApp.icon_changed.connect(update_icon_app_image);
+	_wnckApp.icon_changed.connect(update_icon);
       }
 
       _appIcon.activate += on_icon_click;
@@ -344,28 +354,6 @@ namespace AllTray {
       Debug.Notification.emit(Debug.Subsystem.Application,
 			      Debug.Level.Information,
 			      msg);
-    }
-
-    private void update_icon_app_image(Wnck.Application app) {
-      unowned Gdk.Pixbuf new_icon = app.get_icon();
-
-      _appIcon.set_from_pixbuf(new_icon);
-
-      if(new_icon == null) {
-	_appIcon.visible = false;
-	return;
-      }
-    }
-
-    private void update_icon_win_image(Wnck.Window win) {
-      unowned Gdk.Pixbuf new_icon = win.get_mini_icon();
-
-      _appIcon.set_from_pixbuf(new_icon);
-
-      if(new_icon == null) {
-	_appIcon.visible = false;
-	return;
-      }
     }
 
     private void update_icon_name(Wnck.Application app) {

@@ -14,9 +14,12 @@ namespace AllTray {
   public class GtkStatusIcon : StatusIcon {
     private AllTray.Application _app;
 
-    public GtkStatusIcon(Gdk.Pixbuf pixbuf, string tooltip) {
+    public GtkStatusIcon(Application app, Gdk.Pixbuf pixbuf, string tooltip) {
+      this._app = app;
       this.set_from_pixbuf(pixbuf);
       this.set_tooltip(tooltip);
+
+      this._app.icon_changed.connect(this.set_from_pixbuf);
     }
 
     public void set_tooltip(string tooltip) {
