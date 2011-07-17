@@ -59,8 +59,10 @@ namespace AllTray {
       pm.append(miHideAll); miHideAll.show();
       miHideAll.activate.connect(() => { hide_all(); });
       pm.append(miUndock); miUndock.show();
+      miUndock.activate.connect(() => { show_all(); Posix.exit(0); });
       pm.append(miSep1); miSep1.show();
       pm.append(miAbout); miAbout.show();
+      miAbout.activate.connect(() => { new AllTray.AboutDialog(); });
 
       pm.popup(null, null, null, button, activate_time);
     }

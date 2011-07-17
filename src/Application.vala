@@ -447,49 +447,5 @@ namespace AllTray {
        */
       return(_window_enforce_minimize_queue.length == 0);
     }
-
-    private void dialog_destroy(Gtk.AboutDialog which, int resp_id) {
-      which.destroy();
-    }
-
-    /**********************************************************
-     * Context menu handlers.
-     **********************************************************/
-    private void on_menu_toggle_app(Gtk.MenuItem item) {
-      if(_appIcon.blinking == true) _appIcon.blinking = false;
-      toggle_visibility();
-    }
-
-    private void on_menu_about() {
-      // Display an about dialog
-      Gtk.AboutDialog about = new Gtk.AboutDialog();
-      about.program_name = "AllTray";
-
-      if((Build.PACKAGE_VERSION.chr(-1, '+') != null) &&
-	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
-	about.version = _("%s\nBranch: %s, r%s\n%s").
-	  printf(Build.PACKAGE_VERSION,
-		 Build.ALLTRAY_BZR_BRANCH,
-		 Build.ALLTRAY_BZR_REVISION,
-		 Build.ALLTRAY_BZR_REVID);
-      } else {
-	about.version = Build.PACKAGE_VERSION;
-      }
-
-      about.website = "http://alltray.trausch.us/";
-      about.copyright = _("Copyright (c) %s")
-        .printf(Build.ALLTRAY_COPYRIGHT_YEARS);
-      about.comments = _("Dock applications in the system tray.");
-      about.license = Build.ALLTRAY_LICENSE;
-
-      about.response += dialog_destroy;
-
-      about.show_all();
-    }
-
-    private void on_menu_undock() {
-      show_all_windows();
-      Posix.exit(0);
-    }
   }
 }

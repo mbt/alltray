@@ -10,13 +10,14 @@ alltray_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
 alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@ \
 	@GTOP_LIBS@
 
-alltray_VALASOURCES = AllTray.vala \
+alltray_VALASOURCES = About.vala \
+	AllTray.vala \
 	Application.vala \
 	AttachHelper.vala \
 	Debug.vala \
+	GtkStatusIcon.vala \
 	Process.vala \
 	PromptDialog.vala \
-	GtkStatusIcon.vala \
 	Ctt.vala
 
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
