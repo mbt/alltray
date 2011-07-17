@@ -207,20 +207,22 @@ namespace AllTray {
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
 
-      List<ulong> xids_attached = this._attached_xids.copy();
-      foreach(Wnck.Window w in _windows) {
-	if(xids_attached.index(w.get_xid()) > -1) {
-	  xids_attached.remove(w.get_xid());
-	} else {
-	  // This one needs to be attached _to_.
-	  Program._ctt_obj.attach(w.get_xid());
-	  _attached_xids.append(w.get_xid());
+      if(Program._ctt_enabled == true) {
+	List<ulong> xids_attached = this._attached_xids.copy();
+	foreach(Wnck.Window w in _windows) {
+	  if(xids_attached.index(w.get_xid()) > -1) {
+	    xids_attached.remove(w.get_xid());
+	  } else {
+	    // This one needs to be attached _to_.
+	    Program._ctt_obj.attach(w.get_xid());
+	    _attached_xids.append(w.get_xid());
+	  }
 	}
-      }
 
-      // Remaining XIDs may be detached.
-      foreach(ulong xid in xids_attached) {
-	Program._ctt_obj.detach(xid);
+	// Remaining XIDs may be detached.
+	foreach(ulong xid in xids_attached) {
+	  Program._ctt_obj.detach(xid);
+	}
       }
 
       if(wincount == 1) {
