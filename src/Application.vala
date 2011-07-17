@@ -1,6 +1,6 @@
 /* -*- mode: vala; c-basic-offset: 2; tab-width: 8; -*-
  * Application.vala - Application-based window management for AllTray
- * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
+ * Copyright (c) 2009, 2011 Michael B. Trausch <mike@trausch.us>
  * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
