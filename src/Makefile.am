@@ -16,6 +16,7 @@ alltray_VALASOURCES = AllTray.vala \
 	Debug.vala \
 	Process.vala \
 	PromptDialog.vala \
+	GtkStatusIcon.vala \
 	Ctt.vala
 
 alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \

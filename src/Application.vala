@@ -13,7 +13,7 @@ namespace AllTray {
   public class Application : GLib.Object {
     private unowned List<Wnck.Window> _windows;
     private Wnck.Application? _wnckApp;
-    private AllTray.LocalGtk.StatusIcon _appIcon;
+    private GtkStatusIcon _appIcon;
     private Process _process;
     private bool _appVisible;
     private bool _caughtWindow;
@@ -319,17 +319,16 @@ namespace AllTray {
       bool fallback = _wnckApp.get_icon_is_fallback();
 
       if(fallback) {
-	_appIcon = new LocalGtk.StatusIcon.
-	from_pixbuf(firstWindow.get_mini_icon());
-	firstWindow.icon_changed += update_icon_win_image;
+	_appIcon = new GtkStatusIcon(firstWindow.get_mini_icon(),
+				     _wnckApp.get_name());
+	firstWindow.icon_changed.connect(update_icon_win_image);
 	_usingWindowIcon = true;
       } else {
-	_appIcon = new LocalGtk.StatusIcon.
-	from_pixbuf(_wnckApp.get_mini_icon());
-	_wnckApp.icon_changed += update_icon_app_image;
+	_appIcon = new GtkStatusIcon(_wnckApp.get_mini_icon(),
+				     _wnckApp.get_name());
+	_wnckApp.icon_changed.connect(update_icon_app_image);
       }
 
-      _appIcon.set_tooltip(_wnckApp.get_name());
       _appIcon.activate += on_icon_click;
       _wnckApp.name_changed += update_icon_name;
 
@@ -373,8 +372,8 @@ namespace AllTray {
       _appIcon.set_tooltip(app.get_name());
     }
 
-    private void on_icon_click(LocalGtk.StatusIcon icon) {
-      if(icon.blinking == true) icon.blinking = false;
+    private void on_icon_click() {
+      //if(icon.blinking == true) icon.blinking = false;
       toggle_visibility();
     }
 
