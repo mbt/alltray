@@ -185,7 +185,6 @@ namespace AllTray {
 
       if(_appIcon == null) create_icon();
       _appIcon.visible = true;
-      _appIcon.popup_menu += display_menu;
 
       // Force an update to catch circumstances where the app
       // disappears and reappears (e.g., The GIMP).
