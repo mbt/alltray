@@ -25,6 +25,9 @@ namespace AllTray {
     private static bool _display_extended_ver;
     private static Program _instance;
 
+    private static bool _hotkey_enabled;
+    private static string _hotkey_string;
+
     internal static bool _ctt_enabled;
     internal static Ctt? _ctt_obj;
 
@@ -47,6 +50,8 @@ namespace AllTray {
 	ref _ctt_enabled, N_("Enable Close-To-Tray support"), null },
       { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
 	ref _cl_debug, N_("Enable debugging messages"), null },
+      { "hotkey", 'H', 0, GLib.OptionArg.STRING, ref _hotkey_string,
+	N_("Enable hotkey support"), null },
       { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
 	GLib.OptionArg.NONE, ref _cl_dopts,
 	N_("Show types of debugging messages"), null },
