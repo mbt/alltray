@@ -25,6 +25,8 @@ namespace AllTray {
     private static bool _display_extended_ver;
     private static Program _instance;
 
+    internal static string? _hotkey_string;
+
     internal static bool _ctt_enabled;
     internal static Ctt? _ctt_obj;
 
@@ -52,6 +54,8 @@ namespace AllTray {
 	N_("Show types of debugging messages"), null },
       { "hide", 'H', 0, GLib.OptionArg.NONE, ref _initially_hide,
 	N_("Initially hide on spawn/attach"), null },
+      { "hotkey", 'K', 0, GLib.OptionArg.STRING, ref _hotkey_string,
+	N_("Enable hotkey support"), null },
       { "process", 'p', 0, GLib.OptionArg.INT, ref _pid,
 	N_("Attach to already-running application"),
 	"PID" },

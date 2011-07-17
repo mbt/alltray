@@ -16,6 +16,7 @@ namespace AllTray {
     private unowned List<Wnck.Window> _windows;
     private Wnck.Application? _wnckApp;
     private GtkStatusIcon _appIcon;
+    private Hotkey _hotkey;
     private Process _process;
     private bool _appVisible;
     private bool _caughtWindow;
@@ -166,6 +167,11 @@ namespace AllTray {
 
     private void do_setup(Wnck.Screen scr, Wnck.Application app, int pid) {
       scr.application_opened -= maybe_setup;
+
+      if(Program._hotkey_string != null) {
+	this._hotkey = new Hotkey(this, Program._hotkey_string);
+	this._hotkey.toggle_app_visibility.connect(toggle_visibility);
+      }
 
       _wnckApp = app;
       _appVisible = true;

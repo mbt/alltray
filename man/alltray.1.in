@@ -45,12 +45,6 @@ Show the help (usage) screen.
 Attaches to an already-running application.  If \-\-process is not
 specified, AllTray will prompt the user to click on a window for the
 application the user would like to dock.
-.IP "\-L, \-\-list\-debug\-opts"
-Lists the debug \(lqflags\(rq that AllTray supports.  The items in
-this list are allowed values in an environment variable named
-\fBALLTRAY_DEBUG\fR; see the \fBENVIRONMENT VARIABLES\fR section for
-more information.  \fIThis option is hidden from the \-\-help output,
-but it can be used.\fR
 .IP "\-C, \-\-enable\-ctt"
 Enable the Close-To-Tray support in AllTray.  When Close-To-Tray is
 enabled (it is not enabled by default), a small AllTray icon at an
@@ -72,7 +66,19 @@ Hide the target application when AllTray is started or successfully
 attaches to the application.  This used to be default behavior in
 older versions of AllTray (versions prior to AllTray 0.7.0dev); it is
 no longer the default.
-.IP "\-p, \-\-process=PID"
+.IP "\-K \fBKEY\fR, \-\-hotkey=\fBKEY\fR"
+Enable hotkey support.  Hotkeys are specified as a + separated list of
+modifiers and a single key.  Modifiers are \fIshift\fR, \fIctrl\fR,
+\fIalt\fR, \fIaltgr\fR, or \fIsuper\fR.  An example might be
+\fIctrl+shift+e\fR, for example if you are docking the Evolution
+program.
+.IP "\-L, \-\-list\-debug\-opts"
+Lists the debug \(lqflags\(rq that AllTray supports.  The items in
+this list are allowed values in an environment variable named
+\fBALLTRAY_DEBUG\fR; see the \fBENVIRONMENT VARIABLES\fR section for
+more information.  \fIThis option is hidden from the \-\-help output,
+but it can be used.\fR
+.IP "\-p \fBPID\fR, \-\-process=\fBPID\fR"
 Specifies the process ID of the application to attach to; implies
 \-\-attach.
 .IP "\-v, \-\-version"

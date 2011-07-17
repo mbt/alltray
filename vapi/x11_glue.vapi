@@ -7,3 +7,10 @@ namespace AllTray {
 	 cheader_filename = "x11_glue.h")]
   public unowned Wnck.Window c_find_managed_window(ulong xwin, Gdk.Display d);
 }
+
+[CCode (cprefix = "", lower_case_cprefix = "",
+		cheader_filename = "X11/Xlib.h,X11/Xatom.h,X11/Xutil.h,X11/Xregion.h")]
+namespace MX {
+  [CCode (cname = "XStringToKeysym")]
+  public uint string_to_keysym(string str);
+}
