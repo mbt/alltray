@@ -20,7 +20,7 @@ namespace AllTray {
     }
 
     public void set_tooltip(string tooltip) {
-      base.set_tooltip_markup("<i>AllTray</i> – %s".printf(tooltip));
+      base.set_tooltip_markup("<b>AllTray:</b> %s".printf(tooltip));
     }
   }
 }
