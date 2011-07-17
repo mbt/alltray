@@ -84,7 +84,8 @@ AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE, "$(TZ=UTC date)",
 AC_DEFINE_UNQUOTED(ALLTRAY_COMPILE_BUILD_DATE_EUS,
   "$(TZ=EST5EDT date)", [Build Date (Author's Timezone)])
 AC_DEFINE_UNQUOTED(ALLTRAY_CONFIGURE_FLAGS, "$ac_configure_args", [Conf flags])
-AC_DEFINE_UNQUOTED(ALLTRAY_COPYRIGHT_YEARS, ["2009, 2010"], [Copyright years])
+AC_DEFINE_UNQUOTED(ALLTRAY_COPYRIGHT_YEARS,
+	["2009, 2010, 2011"], [Copyright years])
 
 if test -d .bzr; then
     BZR_BRANCH_NAME="$(bzr version-info|grep ^branch-nick|cut -f2 -d' ')"
