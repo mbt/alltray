@@ -11,6 +11,6 @@ namespace AllTray {
 [CCode (cprefix = "", lower_case_cprefix = "",
 		cheader_filename = "X11/Xlib.h,X11/Xatom.h,X11/Xutil.h,X11/Xregion.h")]
 namespace MX {
-  [CCode (cname = XStringToKeysym)]
+  [CCode (cname = "XStringToKeysym")]
   public uint string_to_keysym(string str);
 }

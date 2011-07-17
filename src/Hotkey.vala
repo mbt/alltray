@@ -31,13 +31,13 @@ namespace AllTray {
     private AllTray.Application app;
 
     private Modifier modifier;
-    private char key;
+    private string key;
     private uint x11_keycode;
 
     public Hotkey(Application app, string hotkey, Window w) {
       this.app = app;
       this.modifier = Modifier.NONE;
-      this.key = null;
+      this.key = "";
       this.x11_keycode = 0;
 
       this.parse_hotkey(hotkey);
@@ -70,14 +70,14 @@ namespace AllTray {
       int parts = keys.length;
 
       if(parts == 0) {
-	throw HotkeyError.INVALID("no hotkey specified");
+	throw new HotkeyError.INVALID("no hotkey specified");
       } else if(parts == 1) {
 	if(this.is_fkey(keys[0])) {
 	  this.modifier = Modifier.NONE;
 	  this.key = keys[0];
 	  return;
 	} else {
-	  throw HotkeyError.INVALID("invalid hotkey specified");
+	  throw new HotkeyError.INVALID("invalid hotkey specified");
 	}
       } else {
 	foreach(string key in keys) {
@@ -86,7 +86,7 @@ namespace AllTray {
 	  } else if(this.is_valid_key(key)) {
 	    this.set_key(key);
 	  } else {
-	    throw HotkeyError.INVALID("invalid hotkey specified");
+	    throw new HotkeyError.INVALID("invalid hotkey specified");
 	  }
 	}
       }
@@ -123,7 +123,7 @@ namespace AllTray {
         break;
 
       default:
-	throw HotkeyError.BAD_MODIFIER("bad modifier passed to add_modifier");
+	throw new HotkeyError.BAD_MODIFIER("bad modifier passed to add_modifier");
       }
     }
 
@@ -132,17 +132,18 @@ namespace AllTray {
       if(this.is_valid_key(k))
 	this.key = k;
       else
-	raise HotkeyError.BAD_KEY("bad key passed to set_key");
+	throw new HotkeyError.BAD_KEY("bad key passed to set_key");
     }
 
     private void install() {
       unowned Gdk.Display gdk_dpy = Gdk.Display.get_default();
-      unowned X.Display x_dpy = Gdk.x11_display_get_xdisplay();
+      unowned X.Display x_dpy =
+        Gdk.x11_display_get_xdisplay(Gdk.Display.get_default());
 
-      int keycode = x_dpy.keysym_to_keycode(MX.string_to_keysym(this.key)));
+      int keycode = x_dpy.keysym_to_keycode(MX.string_to_keysym(this.key));
       uint modifiers = this.get_x11_modifiers();
       X.Window grab_window = Gdk.x11_get_default_root_xwindow();
-      bool owner_events = true
+      bool owner_events = true;
       int pointer_mode = X.GrabMode.Async;
       int keyboard_mode = X.GrabMode.Async;
 
@@ -153,19 +154,19 @@ namespace AllTray {
     private uint get_x11_modifiers() {
       uint ret = 0;
 
-      if(this.modifier && Modifier.SHIFT)
+      if((this.modifier & Modifier.SHIFT) != 0)
 	ret = ret & (1 << 0 /* ShiftMask */);
 
-      if(this.modifier && Modifier.CTRL)
-	ret = ret & (1 << 2 /* ControlMask */);
+      if((this.modifier & Modifier.CTRL) != 0)
+        ret = ret & (1 << 2 /* ControlMask */);
 
-      if(this.modifier && Modifier.ALT)
+      if((this.modifier & Modifier.ALT) != 0)
 	ret = ret & (1 << 3 /* Mod1Mask */);
 
-      if(this.modifier && Modifier.SUPER)
+      if((this.modifier & Modifier.SUPER) != 0)
 	ret = ret & (1 << 6 /* Mod4Mask */);
 
-      if(this.modifier && Modifier.ALTGR)
+      if((this.modifier & Modifier.ALTGR) != 0)
 	ret = ret & (1 << 7 /* Mod5Mask */);
 
       if(ret == 0)
@@ -210,7 +211,7 @@ namespace AllTray {
       case "windows":
       case "command":
       case "meta":
-	return(true):
+	return(true);
       default:
 	return(false);
       }
@@ -218,7 +219,7 @@ namespace AllTray {
 
     private bool is_valid_key(string key) {
       if(this.is_fkey(key)) return(true);
-      strink k = key.chug().down();
+      string k = key.chug().down();
 
       switch(k) {
       case "a":
@@ -270,12 +271,12 @@ namespace AllTray {
       case ",":
 	return(true);
       default:
-	return(false):
+	return(false);
       }
     }
 
     public void register_hotkey(string hotkey) {
-      throw HotkeyError.NotImplemented("Hotkey support is not yet implemented");
+      throw new HotkeyError.NOT_IMPLEMENTED("Hotkey support is not yet implemented");
     }
   }
 }
