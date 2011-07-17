@@ -193,71 +193,11 @@ namespace AllTray {
       if(Program._initially_hide == true) {
 	hide_all_windows();
       }
-    }
 
-    private void display_menu(uint button, uint activate_time) {
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      _("Requesting menu!"));
-      Gtk.Menu appMenu = new Gtk.Menu();
-
-      Gtk.MenuItem mnuToggle =
-        new Gtk.MenuItem.with_label(_("Toggle Visibility"));
-      Gtk.MenuItem mnuUndock =
-        new Gtk.MenuItem.with_label(_("Undock"));
-      Gtk.MenuItem mnuSeparator0 =
-        new Gtk.SeparatorMenuItem();
-      Gtk.MenuItem mnuAbout =
-        new Gtk.MenuItem.with_label(_("About AllTray..."));
-
-      Gtk.Menu windowList = create_window_list_menu();
-      mnuToggle.set_submenu(windowList);
-
-      // Append, wire and show the menu items.
-      appMenu.append(mnuToggle);
-      mnuToggle.show();
-
-      appMenu.append(mnuUndock);
-      mnuUndock.activate += on_menu_undock;
-      mnuUndock.show();
-
-      appMenu.append(mnuSeparator0);
-      mnuSeparator0.show();
-
-      appMenu.append(mnuAbout);
-      mnuAbout.activate += on_menu_about;
-      mnuAbout.show();
-
-      appMenu.popup(null, null, null, button, activate_time);
-    }
-
-    private Gtk.Menu create_window_list_menu() {
-      Gtk.Menu retval = new Gtk.Menu();
-
-      Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label(_("All"));
-      Gtk.MenuItem mnuSep0 = new Gtk.SeparatorMenuItem();
-
-      retval.append(mnuAllWindows);
-      mnuAllWindows.activate += on_menu_toggle_app;
-      mnuAllWindows.show();
-
-      retval.append(mnuSep0);
-      mnuSep0.show();
-
-      foreach(Wnck.Window w in _windows) {
-	Gtk.MenuItem item = new Gtk.MenuItem.with_label(w.get_name());
-	item.set_data("target_window", w);
-	item.activate += (item) => {
-	  Wnck.Window win =
-	  (Wnck.Window)item.get_data<Wnck.Window>("target_window");
-	  toggle_window_visibility(win);
-	};
-
-	retval.append(item);
-	item.show();
-      }
-
-      return(retval);
+      _appIcon.toggle_app_visibility.connect(toggle_visibility);
+      _appIcon.toggle_window_visibility.connect(toggle_window_visibility);
+      _appIcon.show_all.connect(show_all_windows);
+      _appIcon.hide_all.connect(hide_all_windows);
     }
 
     private void maybe_update_window_count(Wnck.Screen scr,
@@ -338,7 +278,6 @@ namespace AllTray {
 	_wnckApp.icon_changed.connect(update_icon);
       }
 
-      _appIcon.activate += on_icon_click;
       _wnckApp.name_changed += update_icon_name;
 
       string msg = "";
@@ -357,11 +296,6 @@ namespace AllTray {
 
     private void update_icon_name(Wnck.Application app) {
       _appIcon.set_tooltip(app.get_name());
-    }
-
-    private void on_icon_click() {
-      //if(icon.blinking == true) icon.blinking = false;
-      toggle_visibility();
     }
 
     /*
