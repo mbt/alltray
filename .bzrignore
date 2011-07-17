@@ -39,3 +39,5 @@ AllTrayCttHelper.c
 alltray-ctt-helper
 compile
 Ctt.c
+src/GtkStatusIcon.c
+src/About.c

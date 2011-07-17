@@ -1,6 +1,6 @@
 /* -*- mode: vala; c-basic-offset: 2; tab-width: 8; -*-
  * Application.vala - Application-based window management for AllTray
- * Copyright (c) 2009 Michael B. Trausch <mike@trausch.us>
+ * Copyright (c) 2009, 2011 Michael B. Trausch <mike@trausch.us>
  * License: GNU GPL v3.0 as published by the Free Software Foundation
  */
 using GLib;
@@ -11,9 +11,11 @@ namespace AllTray {
   }
 
   public class Application : GLib.Object {
+    public signal void icon_changed(Gdk.Pixbuf new_icon);
+
     private unowned List<Wnck.Window> _windows;
     private Wnck.Application? _wnckApp;
-    private AllTray.LocalGtk.StatusIcon _appIcon;
+    private GtkStatusIcon _appIcon;
     private Process _process;
     private bool _appVisible;
     private bool _caughtWindow;
@@ -183,84 +185,19 @@ namespace AllTray {
 
       if(_appIcon == null) create_icon();
       _appIcon.visible = true;
-      _appIcon.popup_menu += display_menu;
 
       // Force an update to catch circumstances where the app
       // disappears and reappears (e.g., The GIMP).
-      if(_usingWindowIcon) {
-	update_icon_win_image(_windows.first().data);
-      } else {
-	update_icon_app_image(_wnckApp);
-      }
+      update_icon();
 
       if(Program._initially_hide == true) {
 	hide_all_windows();
       }
-    }
 
-    private void display_menu(uint button, uint activate_time) {
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      _("Requesting menu!"));
-      Gtk.Menu appMenu = new Gtk.Menu();
-
-      Gtk.MenuItem mnuToggle =
-        new Gtk.MenuItem.with_label(_("Toggle Visibility"));
-      Gtk.MenuItem mnuUndock =
-        new Gtk.MenuItem.with_label(_("Undock"));
-      Gtk.MenuItem mnuSeparator0 =
-        new Gtk.SeparatorMenuItem();
-      Gtk.MenuItem mnuAbout =
-        new Gtk.MenuItem.with_label(_("About AllTray..."));
-
-      Gtk.Menu windowList = create_window_list_menu();
-      mnuToggle.set_submenu(windowList);
-
-      // Append, wire and show the menu items.
-      appMenu.append(mnuToggle);
-      mnuToggle.show();
-
-      appMenu.append(mnuUndock);
-      mnuUndock.activate += on_menu_undock;
-      mnuUndock.show();
-
-      appMenu.append(mnuSeparator0);
-      mnuSeparator0.show();
-
-      appMenu.append(mnuAbout);
-      mnuAbout.activate += on_menu_about;
-      mnuAbout.show();
-
-      appMenu.popup(null, null, null, button, activate_time);
-    }
-
-    private Gtk.Menu create_window_list_menu() {
-      Gtk.Menu retval = new Gtk.Menu();
-
-      Gtk.MenuItem mnuAllWindows = new Gtk.MenuItem.with_label(_("All"));
-      Gtk.MenuItem mnuSep0 = new Gtk.SeparatorMenuItem();
-
-      retval.append(mnuAllWindows);
-      mnuAllWindows.activate += on_menu_toggle_app;
-      mnuAllWindows.show();
-
-      retval.append(mnuSep0);
-      mnuSep0.show();
-
-      foreach(Wnck.Window w in _windows) {
-	Gtk.MenuItem item = new Gtk.MenuItem.with_label(w.get_name());
-	item.set_data("target_window", w);
-	item.activate += (item) => {
-	  Wnck.Window win =
-	  (Wnck.Window)item.get_data<Wnck.Window>("target_window");
-	  toggle_window_visibility(win);
-	};
-
-	retval.append(item);
-	item.show();
-      }
-
-      return(retval);
+      _appIcon.toggle_app_visibility.connect(toggle_visibility);
+      _appIcon.toggle_window_visibility.connect(toggle_window_visibility);
+      _appIcon.show_all.connect(show_all_windows);
+      _appIcon.hide_all.connect(hide_all_windows);
     }
 
     private void maybe_update_window_count(Wnck.Screen scr,
@@ -270,20 +207,22 @@ namespace AllTray {
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
 
-      List<ulong> xids_attached = this._attached_xids.copy();
-      foreach(Wnck.Window w in _windows) {
-	if(xids_attached.index(w.get_xid()) > -1) {
-	  xids_attached.remove(w.get_xid());
-	} else {
-	  // This one needs to be attached _to_.
-	  Program._ctt_obj.attach(w.get_xid());
-	  _attached_xids.append(w.get_xid());
+      if(Program._ctt_enabled == true) {
+	List<ulong> xids_attached = this._attached_xids.copy();
+	foreach(Wnck.Window w in _windows) {
+	  if(xids_attached.index(w.get_xid()) > -1) {
+	    xids_attached.remove(w.get_xid());
+	  } else {
+	    // This one needs to be attached _to_.
+	    Program._ctt_obj.attach(w.get_xid());
+	    _attached_xids.append(w.get_xid());
+	  }
 	}
-      }
 
-      // Remaining XIDs may be detached.
-      foreach(ulong xid in xids_attached) {
-	Program._ctt_obj.detach(xid);
+	// Remaining XIDs may be detached.
+	foreach(ulong xid in xids_attached) {
+	  Program._ctt_obj.detach(xid);
+	}
       }
 
       if(wincount == 1) {
@@ -297,6 +236,18 @@ namespace AllTray {
       }
 
       _appIcon.set_tooltip(new_tooltip);
+    }
+
+    private void update_icon() {
+      Gdk.Pixbuf new_icon;
+
+      if(this._usingWindowIcon == true) {
+	new_icon = this._windows.first().data.get_mini_icon();
+      } else {
+	new_icon = this._wnckApp.get_mini_icon();
+      }
+
+      icon_changed(new_icon);
     }
 
     /*
@@ -319,18 +270,16 @@ namespace AllTray {
       bool fallback = _wnckApp.get_icon_is_fallback();
 
       if(fallback) {
-	_appIcon = new LocalGtk.StatusIcon.
-	from_pixbuf(firstWindow.get_mini_icon());
-	firstWindow.icon_changed += update_icon_win_image;
+	_appIcon = new GtkStatusIcon(this, firstWindow.get_mini_icon(),
+				     _wnckApp.get_name());
+	firstWindow.icon_changed.connect(update_icon);
 	_usingWindowIcon = true;
       } else {
-	_appIcon = new LocalGtk.StatusIcon.
-	from_pixbuf(_wnckApp.get_mini_icon());
-	_wnckApp.icon_changed += update_icon_app_image;
+	_appIcon = new GtkStatusIcon(this, _wnckApp.get_mini_icon(),
+				     _wnckApp.get_name());
+	_wnckApp.icon_changed.connect(update_icon);
       }
 
-      _appIcon.set_tooltip(_wnckApp.get_name());
-      _appIcon.activate += on_icon_click;
       _wnckApp.name_changed += update_icon_name;
 
       string msg = "";
@@ -347,35 +296,8 @@ namespace AllTray {
 			      msg);
     }
 
-    private void update_icon_app_image(Wnck.Application app) {
-      unowned Gdk.Pixbuf new_icon = app.get_icon();
-
-      _appIcon.set_from_pixbuf(new_icon);
-
-      if(new_icon == null) {
-	_appIcon.visible = false;
-	return;
-      }
-    }
-
-    private void update_icon_win_image(Wnck.Window win) {
-      unowned Gdk.Pixbuf new_icon = win.get_mini_icon();
-
-      _appIcon.set_from_pixbuf(new_icon);
-
-      if(new_icon == null) {
-	_appIcon.visible = false;
-	return;
-      }
-    }
-
     private void update_icon_name(Wnck.Application app) {
       _appIcon.set_tooltip(app.get_name());
-    }
-
-    private void on_icon_click(LocalGtk.StatusIcon icon) {
-      if(icon.blinking == true) icon.blinking = false;
-      toggle_visibility();
     }
 
     /*
@@ -526,50 +448,6 @@ namespace AllTray {
        * it that we didn't handle this time.
        */
       return(_window_enforce_minimize_queue.length == 0);
-    }
-
-    private void dialog_destroy(Gtk.AboutDialog which, int resp_id) {
-      which.destroy();
-    }
-
-    /**********************************************************
-     * Context menu handlers.
-     **********************************************************/
-    private void on_menu_toggle_app(Gtk.MenuItem item) {
-      if(_appIcon.blinking == true) _appIcon.blinking = false;
-      toggle_visibility();
-    }
-
-    private void on_menu_about() {
-      // Display an about dialog
-      Gtk.AboutDialog about = new Gtk.AboutDialog();
-      about.program_name = "AllTray";
-
-      if((Build.PACKAGE_VERSION.chr(-1, '+') != null) &&
-	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
-	about.version = _("%s\nBranch: %s, r%s\n%s").
-	  printf(Build.PACKAGE_VERSION,
-		 Build.ALLTRAY_BZR_BRANCH,
-		 Build.ALLTRAY_BZR_REVISION,
-		 Build.ALLTRAY_BZR_REVID);
-      } else {
-	about.version = Build.PACKAGE_VERSION;
-      }
-
-      about.website = "http://alltray.trausch.us/";
-      about.copyright = _("Copyright (c) %s")
-        .printf(Build.ALLTRAY_COPYRIGHT_YEARS);
-      about.comments = _("Dock applications in the system tray.");
-      about.license = Build.ALLTRAY_LICENSE;
-
-      about.response += dialog_destroy;
-
-      about.show_all();
-    }
-
-    private void on_menu_undock() {
-      show_all_windows();
-      Posix.exit(0);
     }
   }
 }
