@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alltray\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/alltray/+filebug\n"
-"POT-Creation-Date: 2011-07-14 15:32-0400\n"
+"POT-Creation-Date: 2011-07-17 22:23-0400\n"
 "PO-Revision-Date: 2010-07-01 12:59+0000\n"
 "Last-Translator: Renard Voß <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
@@ -19,60 +19,64 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-07-02 03:33+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/AllTray.vala:45
+#: src/AllTray.vala:47
 msgid "Attach to a running program"
 msgstr "An laufendes Programm anlagern"
 
-#: src/AllTray.vala:47
+#: src/AllTray.vala:49
 msgid "Enable Close-To-Tray support"
 msgstr ""
 
-#: src/AllTray.vala:49
+#: src/AllTray.vala:51
 msgid "Enable debugging messages"
 msgstr "Debugging-Benachrichtigungen aktivieren"
 
-#: src/AllTray.vala:52
+#: src/AllTray.vala:54
 msgid "Show types of debugging messages"
 msgstr "Debugging-Benachrichtigungsarten anzeigen"
 
-#: src/AllTray.vala:54
+#: src/AllTray.vala:56
 msgid "Initially hide on spawn/attach"
 msgstr "Beim initialen anhängen verbergen"
 
-#: src/AllTray.vala:56
+#: src/AllTray.vala:58
+msgid "Enable hotkey support"
+msgstr ""
+
+#: src/AllTray.vala:60
 msgid "Attach to already-running application"
 msgstr "An schon laufendes Programm anlagern"
 
-#: src/AllTray.vala:59
+#: src/AllTray.vala:63
 msgid "Display AllTray version info and exit"
 msgstr "Zeige AllTray-Versions-Info und beende"
 
-#: src/AllTray.vala:62
+#: src/AllTray.vala:66
 msgid "Display extended version info and exit"
 msgstr "Zeige erweiterte Versions-Info und beende"
 
-#: src/AllTray.vala:84
+#: src/AllTray.vala:88
 msgid "Command line options parsed."
 msgstr "Comandozeilen-Optionen werden analysiert."
 
-#: src/AllTray.vala:102
+#: src/AllTray.vala:106
 msgid "- Dock software to the systray"
 msgstr "Software im Systray andocken"
 
-#: src/AllTray.vala:110
+#: src/AllTray.vala:114
 msgid "error: env flag parsing failed (%s)\n"
 msgstr "Fehler: env flag Analyse fehlgeschlagen (%s)\n"
 
-#: src/AllTray.vala:119
+#: src/AllTray.vala:123
 msgid "error: command line parsing failed (%s)\n"
 msgstr "Fehler: Comandozeilen-Analyse fehlgeschlagen (%s)\n"
 
-#: src/AllTray.vala:165
+#: src/AllTray.vala:169
 msgid "set pgid failed; alltray may behave strangely."
 msgstr ""
 "set pgid fehlgeschlagen, AllTray könnte ein seltsames Verhalten zeigen."
 
-#: src/AllTray.vala:211
+#: src/AllTray.vala:215
 msgid ""
 "AllTray %s, from bzr branch %s rev %s,\n"
 " rev-id %s\n"
@@ -80,11 +84,11 @@ msgstr ""
 "AllTray %s, aus bzr branch %s rev %s,\n"
 " rev-id %s\n"
 
-#: src/AllTray.vala:219
+#: src/AllTray.vala:223
 msgid "Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"
 msgstr "Copyright © %s Michael B. Trausch <mike@trausch.us>\n"
 
-#: src/AllTray.vala:220
+#: src/AllTray.vala:224
 msgid ""
 "Licensed under the GNU GPL v3.0 as published by the Free Software "
 "Foundation.\n"
@@ -94,201 +98,163 @@ msgstr ""
 "Foundation.\n"
 "\n"
 
-#: src/AllTray.vala:226
+#: src/AllTray.vala:230
 msgid "Configured %s on %s %s\n"
 msgstr "Konfiguriert %s auf %s %s\n"
 
-#: src/AllTray.vala:231
+#: src/AllTray.vala:235
 msgid "Compilers: %s and %s\n"
 msgstr "Übersetzer: %s und %s\n"
 
-#: src/AllTray.vala:236
+#: src/AllTray.vala:240
 msgid "Configure was run without flags\n"
 msgstr "Configure wurde ohne flags ausgeführt\n"
 
-#: src/AllTray.vala:238
+#: src/AllTray.vala:242
 msgid "Configure flags: %s\n"
 msgstr "Configure flags: %s\n"
 
-#: src/AllTray.vala:253
+#: src/AllTray.vala:257
 msgid "Adding app (pid %d) to list of recv'd apps"
 msgstr "Füge App (pid %d) zur Liste der empfangenen Apps."
 
-#: src/AllTray.vala:280
+#: src/AllTray.vala:284
 msgid "Failed to get a window; exiting.\n"
 msgstr "Fehler ein Fenster zu bekommen; Verlasse.\n"
 
-#: src/AllTray.vala:318 src/AllTray.vala:327
+#: src/AllTray.vala:322 src/AllTray.vala:331
 msgid "Oops.  Not running?"
 msgstr "Hoppla! Läuft's nicht?"
 
-#: src/AllTray.vala:320
+#: src/AllTray.vala:324
 msgid "Failed to start process: %s"
 msgstr "Fehler beim Prozessstart: %s"
 
-#: src/AllTray.vala:328
+#: src/AllTray.vala:332
 msgid "Failed to start process"
 msgstr "Fehler beim Prozessstart"
 
-#: src/AllTray.vala:348
+#: src/AllTray.vala:352
 msgid "Cleaning up for child..."
 msgstr "Räume für Kindprozess auf..."
 
-#: src/AllTray.vala:354
+#: src/AllTray.vala:358
 msgid "No more children. Dying."
 msgstr "Keine Kindprozesse mehr. Sterbe."
 
-#: src/AllTray.vala:365
+#: src/AllTray.vala:369
 msgid "Evaluating %s"
 msgstr "Evaluiere %s"
 
-#: src/AllTray.vala:374
+#: src/AllTray.vala:378
 msgid "Actually processing arg"
 msgstr "Verarbeite zur Zeit arg"
 
-#: src/AllTray.vala:406
+#: src/AllTray.vala:410
 msgid "Caught unwired signal %d"
 msgstr "Fing Kabelloses signal %d"
 
-#: src/Application.vala:58
+#: src/Application.vala:61
 msgid "Creating a new Application"
 msgstr "Erzeuge eine neue Anwendung"
 
-#: src/Application.vala:81
+#: src/Application.vala:84
 msgid "WHOA - The app went away?! Looking for it to come back..."
 msgstr "WHOA - Das App ist weg‽ Schaue, dass es wieder kommt…"
 
-#: src/Application.vala:110
+#: src/Application.vala:113
 msgid "pid %d (%s) is not ours."
 msgstr "pid %d (%s) gehört nicht uns."
 
-#: src/Application.vala:129
+#: src/Application.vala:132
 msgid "Application %s needs fixed, reports PID 0."
 msgstr "Anwendung %s braucht eine Repartur, meldet PID 0."
 
-#: src/Application.vala:204
-msgid "Requesting menu!"
-msgstr "Fordere Menü an!"
-
-#: src/Application.vala:208
-msgid "Toggle Visibility"
-msgstr "Sichbarkeit EIN/AUS"
-
-#: src/Application.vala:210
-msgid "Undock"
-msgstr "Abdocken"
-
-#: src/Application.vala:214
-msgid "About AllTray..."
-msgstr "Über AllTray…"
-
-#: src/Application.vala:240
-msgid "All"
-msgstr "Alle(s)"
-
-#: src/Application.vala:291
+#: src/Application.vala:236
 msgid "%s - \"%s\""
 msgstr ""
 
-#: src/Application.vala:295
+#: src/Application.vala:240
 msgid "%s - %d window"
 msgid_plural "%s - %d windows"
 msgstr[0] "%s - %d Fenster"
 msgstr[1] "%s - %d Fenster"
 
-#: src/Application.vala:338
+#: src/Application.vala:293
 msgid "Using Window Icon (fallback was %s)"
 msgstr "Benutze Fenster-Icon (Sicherung war %s)"
 
-#: src/Application.vala:341
+#: src/Application.vala:296
 msgid "Using App Icon (fallback was %s)"
 msgstr "Benutze Anwendungs-Icon (Sicherung war %s)"
 
-#: src/Application.vala:396
+#: src/Application.vala:324
 msgid "New Bitmask: %s"
 msgstr "Neue Bitmaske: %s"
 
-#: src/Application.vala:398
+#: src/Application.vala:326
 msgid "New State: %s"
 msgstr "Neuer Status: %s"
 
-#: src/Application.vala:406
+#: src/Application.vala:334
 msgid "Blinking, window state is: %s"
 msgstr "Blinken, Fenster status ist: %s"
 
-#: src/Application.vala:423
+#: src/Application.vala:351
 msgid "MINIMIZED | "
 msgstr "MINIMIERT | "
 
-#: src/Application.vala:425
+#: src/Application.vala:353
 msgid "MAXIMIZED_HORIZONTALLY | "
 msgstr "MAXIMIERT_HORIZONTAL | "
 
-#: src/Application.vala:427
+#: src/Application.vala:355
 msgid "MAXIMIZED_VERTICALLY | "
 msgstr "MAXIMIERT_VERTIKAL | "
 
-#: src/Application.vala:429
+#: src/Application.vala:357
 msgid "SHADED | "
 msgstr "SCHATTIERT | "
 
-#: src/Application.vala:431
+#: src/Application.vala:359
 msgid "SKIP_PAGER | "
 msgstr "ÜBERSPRINGE_PAGER | "
 
-#: src/Application.vala:433
+#: src/Application.vala:361
 msgid "SKIP_TASKLIST | "
 msgstr "ÜBERSPRINGE_TASKLISTE | "
 
-#: src/Application.vala:435
+#: src/Application.vala:363
 msgid "STICKY | "
 msgstr "WICHTIG | "
 
-#: src/Application.vala:437
+#: src/Application.vala:365
 msgid "HIDDEN | "
 msgstr "VERSTECKT | "
 
-#: src/Application.vala:439
+#: src/Application.vala:367
 msgid "FULLSCREEN | "
 msgstr "VOLLBILD | "
 
-#: src/Application.vala:441
+#: src/Application.vala:369
 msgid "DEMANDS_ATTENTION | "
 msgstr "BENÖTIGT_AUFMERKSAMKEIT | "
 
-#: src/Application.vala:443
+#: src/Application.vala:371
 msgid "URGENT | "
 msgstr "DRINGEND | "
 
-#: src/Application.vala:445
+#: src/Application.vala:373
 msgid "ABOVE | "
 msgstr "ÜBER | "
 
-#: src/Application.vala:447
+#: src/Application.vala:375
 msgid "BELOW | "
 msgstr "UNTER | "
 
-#: src/Application.vala:488
+#: src/Application.vala:416
 msgid "Setting window 0x%08lx visibility to %s"
 msgstr "Setze Fenster 0x%08lx Sichtbarkeit auf %s"
-
-#: src/Application.vala:550
-msgid ""
-"%s\n"
-"Branch: %s, r%s\n"
-"%s"
-msgstr ""
-"%s\n"
-"Branch: %s, r%s\n"
-"%s"
-
-#: src/Application.vala:560
-msgid "Copyright (c) %s"
-msgstr "Copyright © %s"
-
-#: src/Application.vala:562
-msgid "Dock applications in the system tray."
-msgstr "Docke Anwendungen in das System-Panel."
 
 #: src/AttachHelper.vala:47 src/AttachHelper.vala:54
 msgid "Pointer grab failed"
@@ -450,6 +416,36 @@ msgstr ""
 "Notiz: Klicke nicht auf den Fensterrahmen. Klicke in das Innere\n"
 "des Fensters; Besonders mit Compiz wird Klicken in die Titelleiste\n"
 "oder die anderen Rahmenseiten NICHT FUNKTIONIEREN."
+
+#~ msgid "Requesting menu!"
+#~ msgstr "Fordere Menü an!"
+
+#~ msgid "Toggle Visibility"
+#~ msgstr "Sichbarkeit EIN/AUS"
+
+#~ msgid "Undock"
+#~ msgstr "Abdocken"
+
+#~ msgid "About AllTray..."
+#~ msgstr "Über AllTray…"
+
+#~ msgid "All"
+#~ msgstr "Alle(s)"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "Branch: %s, r%s\n"
+#~ "%s"
+#~ msgstr ""
+#~ "%s\n"
+#~ "Branch: %s, r%s\n"
+#~ "%s"
+
+#~ msgid "Copyright (c) %s"
+#~ msgstr "Copyright © %s"
+
+#~ msgid "Dock applications in the system tray."
+#~ msgstr "Docke Anwendungen in das System-Panel."
 
 #~ msgid "Cannot set PGID.  Cannot continue."
 #~ msgstr "Kann PGID nicht setzten. Kann nich fortfahren."
