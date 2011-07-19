@@ -397,6 +397,11 @@ namespace AllTray {
     }
 
     private void toggle_window_visibility(Wnck.Window w) {
+      if(this._windows.length() == 1) {
+	this.toggle_visibility();
+	return;
+      }
+
       Wnck.WindowState ws = w.get_state();
 
       if(((ws & Wnck.WindowState.MINIMIZED) != 0) &&
