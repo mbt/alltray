@@ -42,3 +42,4 @@ Ctt.c
 src/GtkStatusIcon.c
 src/About.c
 src/Hotkey.c
+*.o
