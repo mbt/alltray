@@ -43,3 +43,4 @@ src/GtkStatusIcon.c
 src/About.c
 src/Hotkey.c
 *.o
+src/.deps
