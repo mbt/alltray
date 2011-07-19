@@ -159,7 +159,7 @@ namespace AllTray {
 			      "got a CTT event, XID %lu".printf(XID));
       foreach(Wnck.Window w in this._windows) {
 	if(w.get_xid() == XID) {
-	  set_visibility_for_window(w, false);
+	  toggle_window_visibility(w);
 	  return;
 	}
       }
