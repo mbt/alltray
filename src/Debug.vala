@@ -226,7 +226,7 @@ namespace AllTray.Debug {
 
       default:
 	GLib.error(_("BUG: Reached default, should not be possible."));
-	break;
+	// No "break;" here, Vala emits a warning then.
       }
 
       return(retval);
@@ -254,7 +254,7 @@ namespace AllTray.Debug {
 
       default:
 	GLib.error(_("BUG: Reached default, should not be possible."));
-	break;
+	// No "break;" here, Vala emits a warning then.
       }
 
       return(retval);
