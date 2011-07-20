@@ -34,7 +34,7 @@ namespace AllTray {
     private string key;
     private uint x11_keycode;
 
-    public Hotkey(Application app, string hotkey) {
+    public Hotkey(Application app, string hotkey) throws HotkeyError {
       this.app = app;
       this.modifier = Modifier.NONE;
       this.key = "";
@@ -66,7 +66,7 @@ namespace AllTray {
      * X11 and put them in a terminal; so it's just better to never
      * allow the hotkey to be set to that at all).
      */
-    private void parse_hotkey(string hotkey) {
+    private void parse_hotkey(string hotkey) throws HotkeyError {
       string[] keys = hotkey.split("+");
       int parts = keys.length;
 
@@ -94,7 +94,6 @@ namespace AllTray {
     }
 
     private void install() {
-      unowned Gdk.Display gdk_dpy = Gdk.Display.get_default();
       unowned X.Display x_dpy =
         Gdk.x11_display_get_xdisplay(Gdk.Display.get_default());
       unowned Gdk.Window gdk_root = Gdk.get_default_root_window();
@@ -128,7 +127,7 @@ namespace AllTray {
       return(Gdk.FilterReturn.CONTINUE);
     }
 
-    private void add_modifier(string key) {
+    private void add_modifier(string key) throws HotkeyError {
       string k = key.chug().down();
       switch(k) {
       case "shift":
@@ -164,7 +163,7 @@ namespace AllTray {
 
     }
 
-    private void set_key(string key) {
+    private void set_key(string key) throws HotkeyError {
       string k = key.chug().up();
       if(this.is_valid_key(k))
 	this.key = k;
@@ -300,10 +299,6 @@ namespace AllTray {
       default:
 	return(false);
       }
-    }
-
-    public void register_hotkey(string hotkey) {
-      throw new HotkeyError.NOT_IMPLEMENTED("Hotkey support is not yet implemented");
     }
   }
 }
