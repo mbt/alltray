@@ -66,8 +66,8 @@ namespace AllTray {
        * of the setup after we get notification of the
        * application.
        */
-      Program.WnckScreen.application_opened += maybe_setup;
-      Program.WnckScreen.application_closed += bye_wnck_app;
+      Program.WnckScreen.application_opened.connect(maybe_setup);
+      Program.WnckScreen.application_closed.connect(bye_wnck_app);
 
       // If we got early notifications, let's work through them.
       if(Program.WnckEarlyApps != null) {
@@ -83,10 +83,10 @@ namespace AllTray {
 				Debug.Level.Information,
 				_("WHOA - The app went away?! Looking for it to come back..."));
 
-	scr.window_opened -= maybe_update_window_count;
-	scr.window_closed -= maybe_update_window_count;
+	scr.window_opened.disconnect(maybe_update_window_count);
+	scr.window_closed.disconnect(maybe_update_window_count);
 
-	Program.WnckScreen.application_opened += maybe_setup;
+	Program.WnckScreen.application_opened.connect(maybe_setup);
       }
     }
 
@@ -166,7 +166,7 @@ namespace AllTray {
     }
 
     private void do_setup(Wnck.Screen scr, Wnck.Application app, int pid) {
-      scr.application_opened -= maybe_setup;
+      scr.application_opened.disconnect(maybe_setup);
 
       if(Program._hotkey_string != null) {
 	this._hotkey = new Hotkey(this, Program._hotkey_string);
@@ -178,7 +178,7 @@ namespace AllTray {
       _windows = _wnckApp.get_windows();
 
       if(Program._ctt_enabled == true) {
-	Program._ctt_obj.activate += this.on_ctt;
+	Program._ctt_obj.activate.connect(this.on_ctt);
 
 	foreach(Wnck.Window w in _windows) {
 	  Program._ctt_obj.attach(w.get_xid());
@@ -186,8 +186,8 @@ namespace AllTray {
 	}
       }
 
-      scr.window_opened += maybe_update_window_count;
-      scr.window_closed += maybe_update_window_count;
+      scr.window_opened.connect(maybe_update_window_count);
+      scr.window_closed.connect(maybe_update_window_count);
 
       if(_appIcon == null) create_icon();
       _appIcon.visible = true;
@@ -286,7 +286,7 @@ namespace AllTray {
 	_wnckApp.icon_changed.connect(update_icon);
       }
 
-      _wnckApp.name_changed += update_icon_name;
+      _wnckApp.name_changed.connect(update_icon_name);
 
       string msg = "";
       if(_usingWindowIcon) {
@@ -425,7 +425,7 @@ namespace AllTray {
 	// Forcibly empty the queue (prevent a race).
 	_window_enforce_minimize_queue.clear();
 
-	w.state_changed -= maintain_hiddenness;
+	w.state_changed.disconnect(maintain_hiddenness);
 	w.set_skip_tasklist(false);
 	w.set_skip_pager(false);
 	w.unminimize((uint32)tv.tv_sec);
@@ -451,7 +451,7 @@ namespace AllTray {
       Wnck.Window? w;
 
       while((w = _window_enforce_minimize_queue.pop_tail()) != null) {
-	w.state_changed += maintain_hiddenness;
+	w.state_changed.disconnect(maintain_hiddenness);
       }
 
       /*

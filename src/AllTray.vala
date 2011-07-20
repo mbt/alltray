@@ -267,7 +267,7 @@ namespace AllTray {
       _pd = new PromptDialog();
 
       WnckEarlyApps = new List<Wnck.Application>();
-      WnckScreen.application_opened += get_app_early;
+      WnckScreen.application_opened.connect(get_app_early);
 
       _pd.show_all();
 
@@ -278,7 +278,7 @@ namespace AllTray {
       Gtk.main();
 
       Idle.add(delete_pd_window);
-      WnckScreen.application_opened -= get_app_early;
+      WnckScreen.application_opened.disconnect(get_app_early);
 
       if(AttachHelper.success == false) {
 	stderr.printf(_("Failed to get a window; exiting.\n"));
@@ -313,7 +313,7 @@ namespace AllTray {
     private void spawn_new_process() throws AllTrayError {
       string[] a = get_command_line(_cleanArgs);
       Process p = new Process(a);
-      p.process_died += cleanup_for_process;
+      p.process_died.connect(cleanup_for_process);
       try {
 	p.run();
       } catch(ProcessError e) {
