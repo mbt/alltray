@@ -89,7 +89,17 @@ namespace AllTray {
       Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Information,
 			      "reading from CTT");
 
-      status = ch.read_line(out line, out line_len, out terminator_pos);
+      try {
+	status = ch.read_line(out line, out line_len, out terminator_pos);
+      } catch(ConvertError e) {
+	Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Error,
+				"read from helper failed: convert error");
+	return(false);
+      } catch(IOChannelError e) {
+	Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Error,
+				"read from helper failed: I/O error");
+	return(false);
+      }
       if(status != IOStatus.NORMAL) {
 	Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Warning,
 				"read from CTT not NORMAL IOStatus, removing");
