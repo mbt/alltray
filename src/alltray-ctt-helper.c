@@ -13,6 +13,7 @@
 #include <X11/xpm.h>
 #include <X11/extensions/Xext.h>
 #include <X11/extensions/shape.h>
+#include <X11/Xcursor/Xcursor.h>
 
 #include <../images/alltray_ctt.xpm>
 #include <alltray-ctt-interpreter.h>
@@ -54,9 +55,13 @@ create_ctt_window(Display *dpy, Window parent) {
   int ctt_depth = CopyFromParent;
   int ctt_class = CopyFromParent;
   Visual *ctt_visual = (Visual *)CopyFromParent;
-  unsigned long ctt_attribute_mask = CWWinGravity;
+  unsigned long ctt_attribute_mask = CWWinGravity | CWCursor;
+
+  XcursorSetTheme(dpy, "default");
 
   ctt_attributes->win_gravity = NorthEastGravity;
+  ctt_attributes->cursor = XcursorLibraryLoadCursor(dpy, "X_cursor");
+
   ctt_window = XCreateWindow(dpy, parent, ctt_xpos, ctt_ypos,
 			     ctt_xy_size, ctt_xy_size, ctt_border,
 			     ctt_depth, ctt_class, ctt_visual,

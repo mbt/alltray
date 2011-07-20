@@ -28,6 +28,7 @@ AC_PROG_INSTALL
 
 # pkg-config checks need to be inserted here.
 PKG_CHECK_MODULES(X11, x11,, AC_MSG_ERROR([X11 is required]))
+PKG_CHECK_MODULES(XCURSOR, xcursor,, AC_MSG_ERROR([Xcursor is required]))
 PKG_CHECK_MODULES(GLIB, glib-2.0,,AC_MSG_ERROR([glib-2.0 is required]))
 PKG_CHECK_MODULES(GOBJECT, gobject-2.0,,AC_MSG_ERROR([gobject-2.0 is required]))
 PKG_CHECK_MODULES(GTOP, libgtop-2.0,,AC_MSG_ERROR([libgtop-2.0 is required]))
@@ -40,6 +41,8 @@ PKG_CHECK_MODULES(XEXT, xext,, AC_MSG_ERROR([xext is required]))
 
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
+AC_SUBST(XCURSOR_CFLAGS)
+AC_SUBST(XCURSOR_LIBS)
 AC_SUBST(XPM_CFLAGS)
 AC_SUBST(XPM_LIBS)
 AC_SUBST(GLIB_CFLAGS)
