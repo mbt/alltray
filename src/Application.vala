@@ -169,8 +169,13 @@ namespace AllTray {
       scr.application_opened.disconnect(maybe_setup);
 
       if(Program._hotkey_string != null) {
-	this._hotkey = new Hotkey(this, Program._hotkey_string);
-	this._hotkey.toggle_app_visibility.connect(toggle_visibility);
+	try {
+	  this._hotkey = new Hotkey(this, Program._hotkey_string);
+	  this._hotkey.toggle_app_visibility.connect(toggle_visibility);
+	} catch(HotkeyError e) {
+	  stderr.printf("failed to set up hotkey, hotkey won't work\n");
+	  Program._hotkey_string = null;
+	}
       }
 
       _wnckApp = app;
