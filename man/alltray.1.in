@@ -296,6 +296,11 @@ AllTray's project page is available on the Internet at
 https://launchpad.net/alltray
 .ft P
 
+AllTray's source code is available at GitHub:
+.ft C
+https://github.com/mbt/alltray
+.ft P
+
 The ICCCM is available on the Internet at
 .ft C
 http://tronche.com/gui/x/icccm/
