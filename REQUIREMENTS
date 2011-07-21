@@ -12,6 +12,7 @@ Release builds are tarball releases, which contain a ./configure script.
     - libgtop and headers
     - libXext and headers
     - libXpm and headers
+    - libXcursor and headers
 
 For Development
 ---------------
