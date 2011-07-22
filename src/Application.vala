@@ -275,13 +275,13 @@ namespace AllTray {
 	if(xids_attached.index(w.get_xid()) > -1) {
 	  Debug.Notification.emit(Debug.Subsystem.Application,
 				  Debug.Level.Information,
-				  "removing %lu: no action needed".printf(w.get_xid()));
+				  "removing 0x%lx: no action needed".printf(w.get_xid()));
 	  xids_attached.remove(w.get_xid());
 	} else {
 	  // This one needs to be attached _to_.
 	  Debug.Notification.emit(Debug.Subsystem.Application,
 				  Debug.Level.Information,
-				  "Asking CTT: attach %lu".printf(w.get_xid()));
+				  "Asking CTT: attach 0x%lx".printf(w.get_xid()));
 	  Program._ctt_obj.attach(w.get_xid());
 	}
       }
@@ -290,7 +290,7 @@ namespace AllTray {
       foreach(ulong xid in xids_attached) {
 	Debug.Notification.emit(Debug.Subsystem.Application,
 				Debug.Level.Information,
-				"Asking CTT: detach %lu".printf(xid));
+				"Asking CTT: detach 0x%lx".printf(xid));
 	Program._ctt_obj.detach(xid);
       }
 
