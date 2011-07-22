@@ -69,7 +69,7 @@ namespace AllTray {
 		 "opening input IOChannel from CTT helper");
       this._child_stdout_channel =
         new IOChannel.unix_new(this._child_stdout_fd);
-      this._child_stdout_channel.add_watch(IOCondition.IN,
+      this._child_stdout_channel.add_watch(IOCondition.IN | IOCondition.HUP,
 					   this._read_from_helper);
 
       Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Information,
@@ -85,6 +85,12 @@ namespace AllTray {
       size_t line_len;
       size_t terminator_pos;
       IOStatus status;
+
+      if(cond == IOCondition.HUP) {
+	Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Error,
+				"helper pipe has been hung up on");
+	return(false);
+      }
 
       Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Information,
 			      "reading from CTT");
