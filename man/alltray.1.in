@@ -248,25 +248,16 @@ contact the author for information.
 .SH DEVELOPMENT
 \#
 If you are interested in helping with AllTray's development, you can
-help!  Please email me at <mike@trausch.us>, or find a bug report in
-Launchpad that needs assistance and isn't actively being worked on.
-You can branch the AllTray source code using the command
-.ft C
-bzr branch lp:alltray
-.ft P
-on any system that has the GNU Bazaar software installed.
+help!  AllTray's development tree is hosted on GitHub, and AllTray
+uses git (it used to use bzr, but it doesn't anymore).  See the
+\fBLINKS\fR section below for the Web site to view the repository.  If
+you need help with contributing, please send me an email, IM, or ping
+me on IRC.  Email is the best bet, because I am not always at my
+computer.  You can also obtain help from the #git or #github channels
+on FreeNode's IRC network.
 
-Please use Launchpad to request that your branch be merged into
-AllTray, or if for some reason you cannot do that (for example, you do
-not have a Launchpad account) then please email a merge directive to
-<mike@trausch.us>.  If you need help with using the GNU Bazaar version
-control system, you can check out the
-.ft C
-#bzr
-.ft P
-channel on the FreeNode IRC
-network.  See also the \fBLINKS\fR section below for a link to the
-\fIBazaar in Five Minutes\fR tutorial.
+If you need to learn about git, the book \fIPro Git\fR is available
+for free; see the link below in the \fBLINKS\fR section.
 \#
 .SH LINKS
 \#
@@ -286,7 +277,7 @@ on the Internet at
 http://creativecommons.org/licenses/by-nc-nd/3.0/us/
 .ft P
 
-AllTray's web site and wiki is available on the Internet at
+AllTray's web site is available on the Internet at
 .ft C
 http://alltray.trausch.us/
 .ft P
@@ -321,7 +312,8 @@ The Ayatana indicators specification is available on the Internet at
 https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators#Typical_usage_.28C_version.29
 .ft P
 
-\fIBazaar in Five Minutes\fR is available on the Internet at
+The book \fIPro Git\fR is available on the Internet at
 .ft C
-http://doc.bazaar.canonical.com/latest/en/mini-tutorial/
+http://progit.org/book/
 .ft P
+in HTML (online), PDF, Mobipocket, and ePub formats.
