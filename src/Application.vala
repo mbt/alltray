@@ -274,6 +274,15 @@ namespace AllTray {
 				  Debug.Level.Information,
 				  "window 0x%lx is new".printf(xid));
 	  Program._ctt_obj.attach(xid);
+	  this._attached_xids.append(xid);
+
+	  StringBuilder wlist = new StringBuilder();
+	  foreach(ulong wlist_id in this._attached_xids)
+	    wlist.append_printf("0x%lx ", wlist_id);
+
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "Window List: %s".printf(wlist.str));
 	} else {
 	  Debug.Notification.emit(Debug.Subsystem.Application,
 				  Debug.Level.Information,
