@@ -118,14 +118,14 @@ namespace AllTray {
 
     public void attach(ulong window_id) {
       Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Information,
-		 "attach called for XID %lu".printf(window_id));
+		 "attach called for XID 0x%lx".printf(window_id));
       this._child_stdin.printf("ATTACH %lu\n", window_id);
       this._child_stdin.flush();
     }
 
     public void detach(ulong window_id) {
       Debug.Notification.emit(Debug.Subsystem.Ctt, Debug.Level.Information,
-		 "detach() called for XID %lu".printf(window_id));
+		 "detach() called for XID 0x%lx".printf(window_id));
       this._child_stdin.printf("DETACH %lu\n", window_id);
       this._child_stdin.flush();
     }
