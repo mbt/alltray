@@ -265,6 +265,7 @@ namespace AllTray {
 
     private void update_ctt_state() {
       List<ulong> attached = this._attached_xids.copy();
+      ulong xid = 0;
 
       foreach(Wnck.Window w in _windows) {
 	xid = w.get_xid();
