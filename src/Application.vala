@@ -273,9 +273,15 @@ namespace AllTray {
       List<ulong> xids_attached = this._attached_xids.copy();
       foreach(Wnck.Window w in _windows) {
 	if(xids_attached.index(w.get_xid()) > -1) {
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "removing %lu from list".printf(w.get_xid()));
 	  xids_attached.remove(w.get_xid());
 	} else {
 	  // This one needs to be attached _to_.
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "Asking CTT: attach %lu".printf(w.get_xid()));
 	  Program._ctt_obj.attach(w.get_xid());
 	  _attached_xids.append(w.get_xid());
 	}
@@ -283,6 +289,9 @@ namespace AllTray {
 
       // Remaining XIDs may be detached.
       foreach(ulong xid in xids_attached) {
+	Debug.Notification.emit(Debug.Subsystem.Application,
+				Debug.Level.Information,
+				"Asking CTT: detach %lu".printf(xid));
 	Program._ctt_obj.detach(xid);
       }
 
