@@ -263,7 +263,7 @@ namespace AllTray {
       return(retval);
     }
 
-    private void update_ctt_state() {
+    private void _update_ctt_state() {
       List<ulong> attached = this._attached_xids.copy();
       ulong xid = 0;
 
@@ -313,6 +313,7 @@ namespace AllTray {
       }
 
       _appIcon.set_tooltip(new_tooltip);
+      this._update_ctt_state();
     }
 
     /*
