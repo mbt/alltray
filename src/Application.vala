@@ -290,18 +290,6 @@ namespace AllTray {
 	  attached.remove(xid);
 	}
       }
-
-      /*
-       * All window IDs that are left in the list are dead windows;
-       * that is, they have been at some point deleted (e.g., wnck
-       * doesn't see them anymore).
-       */
-      foreach(ulong xid in attached) {
-	Debug.Notification.emit(Debug.Subsystem.Application,
-				Debug.Level.Information,
-				"window 0x%lx is dead".printf(xid));
-	Program._ctt_obj.detach(xid);
-      }
     }
 
     private void maybe_update_window_count(Wnck.Screen scr,
