@@ -124,7 +124,12 @@ windowlist_remove(struct alltray_ctt_windowlist_node *node) {
     return(true);
   }
 
-  if(next->prev == NULL) first = next;
+  if(next == NULL) previous->next = NULL;
+  if(previous == NULL) {
+    next->prev = NULL;
+    first = next;
+  }
+
   return(true);
 }
 
