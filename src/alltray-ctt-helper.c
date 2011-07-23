@@ -133,6 +133,7 @@ handle_alltray_event(Display *dpy) {
     exit(1);
   }
 
+  buf[bytes_read] = '\0';
   alltray_ctt_command *cmd = aci_parse_command(buf, bytes_read);
   if(cmd != NULL) {
     aci_interpret_command(dpy, cmd);
