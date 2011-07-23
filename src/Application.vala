@@ -237,6 +237,7 @@ namespace AllTray {
 				  "window 0x%lx is unchanged".printf(xid));
 	  attached.remove(xid);
 	}
+      }
 
       /*
        * All window IDs that are left in the list are dead windows;
