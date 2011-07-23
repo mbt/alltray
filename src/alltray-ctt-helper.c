@@ -87,6 +87,20 @@ ctt_make_window(Display *dpy, Window parent) {
 }
 
 /**
+ * Trap errors when attempting to destroy windows.
+ */
+static int
+ctt_handle_x11_error(Display *dpy, XErrorEvent *err) {
+  if(err->error_code == BadWindow) {
+    return(0);
+  } else {
+    fprintf(stderr, "Unexpected error type %d from window system\n",
+	    err->error_code);
+    exit(1);
+  }
+}
+
+/**
  * Destroy a CTT window.
  */
 void
@@ -94,8 +108,14 @@ ctt_destroy_window(Display *dpy, Window parent) {
   int ctt_window = alltray_ctt_windowlist_get_ctt_for_parent(parent);
 
   if(ctt_window != 0) {
+    // The windows may already be unmapped or destroyed.
+    XSetErrorHandler(ctt_handle_x11_error);
+
     XUnmapWindow(dpy, ctt_window);
     XDestroyWindow(dpy, ctt_window);
+    XSync(dpy, False);
+
+    XSetErrorHandler(NULL);
   }
 }
 
