@@ -1,3 +1,22 @@
+News for 0.7.5.1dev
+===================
+
+THIS IS A DEVELOPMENT RELEASE!  IT IS NOT INTENDED TO BE GENERALLY
+USED.  IT IS FOR TESTERS AND DEVELOPERS ONLY, AND NOT ALL OF THE
+FUNCTIONALITY IS CURRENTLY PRESENT.
+
+  * A bug in CTT support that caused AllTray to use 100% of a single
+    CPU/CPU core was fixed.
+
+  * A bug in CTT support that caused the CTT backend to regularly die
+    was fixed.
+
+  * A bug in CTT support that caused the CTT front-end to lose track
+    of windows and send requests to the backend to remove windows in
+    error was fixed.
+
+  * Other misc. bugs that impact robustness and stability were fixed.
+
 News for 0.7.5dev
 =================
 
