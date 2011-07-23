@@ -211,30 +211,52 @@ namespace AllTray {
       _appIcon.hide_all.connect(hide_all_windows);
     }
 
+    private void _update_ctt_state() {
+      List<ulong> attached = this._attached_xids.copy();
+      ulong xid = 0;
+
+      foreach(Wnck.Window w in _windows) {
+	xid = w.get_xid();
+	if(attached.index(xid) == -1) {
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "window 0x%lx is new".printf(xid));
+	  Program._ctt_obj.attach(xid);
+	  this._attached_xids.append(xid);
+
+	  StringBuilder wlist = new StringBuilder();
+	  foreach(ulong wlist_id in this._attached_xids)
+	    wlist.append_printf("0x%lx ", wlist_id);
+
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "Window List: %s".printf(wlist.str));
+	} else {
+	  Debug.Notification.emit(Debug.Subsystem.Application,
+				  Debug.Level.Information,
+				  "window 0x%lx is unchanged".printf(xid));
+	  attached.remove(xid);
+	}
+
+      /*
+       * All window IDs that are left in the list are dead windows;
+       * that is, they have been at some point deleted (e.g., wnck
+       * doesn't see them anymore).
+       */
+      foreach(ulong xid in attached) {
+	Debug.Notification.emit(Debug.Subsystem.Application,
+				Debug.Level.Information,
+				"window 0x%lx is dead".printf(xid));
+	Program._ctt_obj.detach(xid);
+      }
+    }
+
     private void maybe_update_window_count(Wnck.Screen scr,
 					   Wnck.Window win) {
       string new_tooltip;
 
       _windows = _wnckApp.get_windows();
       int wincount = _wnckApp.get_n_windows();
-
-      if(Program._ctt_enabled == true) {
-	List<ulong> xids_attached = this._attached_xids.copy();
-	foreach(Wnck.Window w in _windows) {
-	  if(xids_attached.index(w.get_xid()) > -1) {
-	    xids_attached.remove(w.get_xid());
-	  } else {
-	    // This one needs to be attached _to_.
-	    Program._ctt_obj.attach(w.get_xid());
-	    _attached_xids.append(w.get_xid());
-	  }
-	}
-
-	// Remaining XIDs may be detached.
-	foreach(ulong xid in xids_attached) {
-	  Program._ctt_obj.detach(xid);
-	}
-      }
 
       if(wincount == 1) {
 	Wnck.Window first_window = _windows.first().data;
@@ -247,6 +269,7 @@ namespace AllTray {
       }
 
       _appIcon.set_tooltip(new_tooltip);
+      this._update_ctt_state();
     }
 
     private void update_icon() {

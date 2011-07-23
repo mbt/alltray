@@ -119,21 +119,16 @@ windowlist_remove(struct alltray_ctt_windowlist_node *node) {
   if(previous != NULL) previous->next = cur->next;
   if(next != NULL) next->prev = cur->prev;
 
-  /*
-   * XXX: ordering dependency
-   *
-   * This line of code must be before the check for (previous == NULL)
-   * && (next == NULL) to clear the "first" pointer.
-   */
-  if(next->prev == NULL) first = next;
+  if((previous == NULL) && (next == NULL)) {
+    first = NULL;
+    return(true);
+  }
 
-  /*
-   * XXX: ordering dependency
-   *
-   * This line of code must be after the check for (next->prev ==
-   * NULL) to reset the first pointer to the next item in the list.
-   */
-  if((previous == NULL) && (next == NULL)) first = NULL;
+  if(next == NULL) previous->next = NULL;
+  if(previous == NULL) {
+    next->prev = NULL;
+    first = next;
+  }
 
   return(true);
 }
