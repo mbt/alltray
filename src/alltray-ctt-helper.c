@@ -69,6 +69,13 @@ create_ctt_window(Display *dpy, Window parent) {
 
   set_ctt_window_shape_and_background(dpy, ctt_window, ctt_attribute_mask,
 				      ctt_attributes);
+
+  // TODO: use an idle callback to raise every 5s until one minute has
+  // passed.
+  usleep(500000);
+  XRaiseWindow(dpy, ctt_window);
+  XSync(dpy, false);
+
   return(ctt_window);
 }
 
