@@ -55,12 +55,6 @@ therefore not enabled by default.  (However, if you wish to have it
 enabled always, check out the \fBENVIRONMENT VARIABLES\fR section of
 this man page.)  \fIAlso, note that CTT support does not yet work with
 GNOME Terminal, see \fBBUGS\fI for more information.\fR
-.IP "\-D, \-\-debug"
-Enable the debug message printing mechanism of AllTray.  Note that
-this requires also setting the environment variable
-\fBALLTRAY_DEBUG\fR, to get any debug output; see the \fBENVIRONMENT
-VARIABLES\fR section below.  \fIThis option is hidden from the
-\-\-help output, but it can be used.\fR
 .IP "\-H, \-\-hide"
 Hide the target application when AllTray is started or successfully
 attaches to the application.  This used to be default behavior in
@@ -72,12 +66,6 @@ modifiers and a single key.  Modifiers are \fIshift\fR, \fIctrl\fR,
 \fIalt\fR, \fIaltgr\fR, or \fIsuper\fR.  An example might be
 \fIctrl+shift+e\fR, for example if you are docking the Evolution
 program.
-.IP "\-L, \-\-list\-debug\-opts"
-Lists the debug \(lqflags\(rq that AllTray supports.  The items in
-this list are allowed values in an environment variable named
-\fBALLTRAY_DEBUG\fR; see the \fBENVIRONMENT VARIABLES\fR section for
-more information.  \fIThis option is hidden from the \-\-help output,
-but it can be used.\fR
 .IP "\-p \fBPID\fR, \-\-process=\fBPID\fR"
 Specifies the process ID of the application to attach to; implies
 \-\-attach.
@@ -97,21 +85,6 @@ the options above in \fBOPTIONS\fR can be specified in this environment
 variable.  This environment variable is looked at \fIbefore\fR the
 command line, so the command line will override it should there be any
 conflict.
-.IP "ALLTRAY_DEBUG"
-When the \-d or \-\-debug options are specified on the command line,
-AllTray looks at this environment variable to see which types of debug
-messages you are interested in seeing.  For example, setting this
-variable to \(lqCMDLINE X11\(rq and enabling debugging will tell AllTray to
-display messages pertaining to command-line parsing and communication
-with the X Window System.
-
-For a list of valid tokens, run \(lqalltray -L\(rq which will output the
-list of supported debugging messages.  Also, you can specify \fBALL\fR
-to enable every type of debugging message that AllTray supports.
-.IP "DISPLAY"
-AllTray reads this environment variable to determine how to find and
-connect to your instance of the X Window System.  Using the \-\-display
-command line option can override it, or provide it if unset.
 \#
 .SH EXAMPLES
 \#
@@ -121,14 +94,14 @@ Here are some examples of invoking AllTray in various situations:
 alltray evolution
 .ft P
 \#
-.IP "Simple debugging example"
-.ft C
-ALLTRAY_DEBUG="ALL" alltray \-D evolution
-.ft P
-\#
 .IP "Client command line arguments example"
 .ft C
 alltray \-\- xterm \-geometry 132x40
+.ft P
+\#
+.IP "Hotkey and close-to-tray for Mozilla Thunderbird"
+.ft C
+alltray -K shift+f12 -C thunderbird
 .ft P
 \#
 .SH DIAGNOSTICS
