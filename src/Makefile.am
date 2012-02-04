@@ -4,11 +4,11 @@ bin_PROGRAMS = alltray alltray-ctt-helper
 
 alltray_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
 	-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DG_DISABLE_DEPRECATED \
-	-DG_DISABLE_SINGLE_INCLUDES @GTOP_CFLAGS@ -include ../config.h \
-	-DLOCALE_DIR=\"@localedir@\"
+	-DG_DISABLE_SINGLE_INCLUDES @GTOP_CFLAGS@ @GIO_CFLAGS@ \
+	-include ../config.h -DLOCALE_DIR=\"@localedir@\"
 
 alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@ \
-	@GTOP_LIBS@
+	@GTOP_LIBS@ @GIO_LIBS@
 
 alltray_SOURCES = About.vala \
 	AllTray.vala \
