@@ -69,8 +69,6 @@ namespace AllTray {
       if(this._ctt_enabled == true) {
 	this._ctt_obj = new Ctt();
       }
-
-      debug(_("Command line options parsed."));
     }
 
     public string[] command_line_init(ref unowned string[] args) {
