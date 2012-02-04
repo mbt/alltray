@@ -11,7 +11,7 @@ namespace AllTray {
     public AboutDialog() {
       this.program_name = "AllTray";
 
-      if((Build.PACKAGE_VERSION.chr(-1, '+') != null) &&
+      if((Build.PACKAGE_VERSION.index_of_char('+') != -1) &&
 	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
 	this.version =
 	  _("%s\nBranch: %s, r%s\n%s").printf(Build.PACKAGE_VERSION,

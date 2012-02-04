@@ -68,7 +68,7 @@ namespace AllTray {
       // Special case, if we're attaching, we do not actually
       // spawn a new process.
       if(_argv[0] == "alltray-internal-fake-process") {
-	run_fake(_argv[1].to_int());
+	run_fake(int.parse(_argv[1]));
 	return;
       }
 

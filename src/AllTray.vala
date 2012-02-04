@@ -11,7 +11,7 @@ namespace AllTray {
   }
 
   public class Program : GLib.Object {
-    private string[] _args;
+    private unowned string[] _args;
     private string[] _cleanArgs;
     private List<Process> _plist;
     private GLib.OptionContext opt_ctx;
@@ -19,8 +19,6 @@ namespace AllTray {
     private static bool _attach;
     private static int _pid;
 
-    private static bool _cl_debug;
-    private static bool _cl_dopts;
     private static bool _display_ver;
     private static bool _display_extended_ver;
     private static Program _instance;
@@ -63,12 +61,6 @@ namespace AllTray {
       { null }
     };
 
-    public string[] args {
-      get {
-	return(this._args);
-      }
-    }
-
     public Program(ref unowned string[] args) {
       this._args = args;
       Gdk.init(ref _args);
@@ -81,7 +73,7 @@ namespace AllTray {
       debug(_("Command line options parsed."));
     }
 
-    public string[] command_line_init(ref string[] args) {
+    public string[] command_line_init(ref unowned string[] args) {
       Gtk.init(ref args);
 
       // First, see if there are environment arguments.
@@ -102,7 +94,8 @@ namespace AllTray {
 
       if(env_args != null) {
 	try {
-	  opt_ctx.parse(ref env_args);
+	  unowned string[] eargs = env_args;
+	  opt_ctx.parse(ref eargs);
 	} catch(OptionError e) {
 	  stderr.printf(_("error: env flag parsing failed (%s)\n"),
 			e.message);

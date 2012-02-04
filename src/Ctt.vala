@@ -106,7 +106,7 @@ namespace AllTray {
       debug(_("Parts: [%s] [%s]"), parts[0], parts[1]);
 
       if(parts[0] == "CTT") {
-	ulong XID = parts[1].to_ulong();
+	ulong XID = (ulong)uint64.parse(parts[1]);
 	activate(XID);
       }
       return(true);
