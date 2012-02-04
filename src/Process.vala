@@ -82,9 +82,7 @@ namespace AllTray {
 	StringBuilder msg = new StringBuilder();
 	msg.append_printf(_("Child process %d (%s) now running."),
 			  (int)_child, _argv[0]);
-	Debug.Notification.emit(Debug.Subsystem.Process,
-				Debug.Level.Information,
-				msg.str);
+	debug("%s", msg.str);
       } catch(SpawnError e) {
 	_running = false;
 	throw new ProcessError.SPAWN_FAILED(e.message);
@@ -98,9 +96,7 @@ namespace AllTray {
     }
 
     private void run_fake(int pid) throws ProcessError {
-      Debug.Notification.emit(Debug.Subsystem.Process,
-			      Debug.Level.Information,
-			      "run_fake()");
+      debug("run_fake()");
       _running = true;
       _child = (Pid)pid;
 
@@ -111,9 +107,7 @@ namespace AllTray {
       StringBuilder msg = new StringBuilder();
       msg.append_printf("Process %d now attached.",
 			(int)_child);
-      Debug.Notification.emit(Debug.Subsystem.Process,
-			      Debug.Level.Information,
-			      msg.str);
+      debug("%s", msg.str);
 
       Timeout.add(50, fake_child_monitor);
       if(_app == null) {
@@ -131,9 +125,7 @@ namespace AllTray {
       StringBuilder msg = new StringBuilder();
       msg.append_printf(_("Attached process %d has died."),
 			(int)_child);
-      Debug.Notification.emit(Debug.Subsystem.Process,
-			      Debug.Level.Information,
-			      msg.str);
+      debug("%s", msg.str);
 
       process_died(this);
       return(false);
@@ -177,9 +169,7 @@ namespace AllTray {
       if(_app.caught_window) {
 	// Got a window in the process' lifetime, assume that was
 	// correct and go ahead and die.
-	Debug.Notification.emit(Debug.Subsystem.Process,
-				Debug.Level.Information,
-				_("Child %d died okay").printf((int)_child));
+	debug(_("Child %d died okay"), (int)_child);
 	process_died(this);
       } else {
 	/*
@@ -187,10 +177,7 @@ namespace AllTray {
 	 * we started actually was a script or something, kicking off
 	 * the real process.  We'll wait and see.
 	 */
-	Debug.Notification.emit(Debug.Subsystem.Process,
-				Debug.Level.Information,
-				_("Child %d died with nothing!")
-				  .printf((int)_child));
+	debug(_("Child %d died with nothing!"), (int)_child);
 
 	_timerRunning = true;
 

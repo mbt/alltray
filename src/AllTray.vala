@@ -47,11 +47,6 @@ namespace AllTray {
 	N_("Attach to a running program"), null },
       { "enable-ctt", 'C', 0, GLib.OptionArg.NONE,
 	ref _ctt_enabled, N_("Enable Close-To-Tray support"), null },
-      { "debug", 'D', GLib.OptionFlags.HIDDEN, GLib.OptionArg.NONE,
-	ref _cl_debug, N_("Enable debugging messages"), null },
-      { "list-debug-opts", 'L', GLib.OptionFlags.HIDDEN,
-	GLib.OptionArg.NONE, ref _cl_dopts,
-	N_("Show types of debugging messages"), null },
       { "hide", 'H', 0, GLib.OptionArg.NONE, ref _initially_hide,
 	N_("Initially hide on spawn/attach"), null },
       { "hotkey", 'K', 0, GLib.OptionArg.STRING, ref _hotkey_string,
@@ -83,9 +78,7 @@ namespace AllTray {
 	this._ctt_obj = new Ctt();
       }
 
-      Debug.Notification.emit(Debug.Subsystem.CommandLine,
-			      Debug.Level.Information,
-			      _("Command line options parsed."));
+      debug(_("Command line options parsed."));
     }
 
     public string[] command_line_init(ref string[] args) {
@@ -135,13 +128,7 @@ namespace AllTray {
 	Posix.exit(0);
       }
 
-      if(_cl_dopts) {
-	Debug.Notification.display_debug_list();
-	Posix.exit(0);
-      }
-
       display_version();
-      if(_cl_debug) Debug.Notification.init();
 
       // Strip "--" out of the command line arguments
       if(args[1] == "--") {
@@ -246,9 +233,7 @@ namespace AllTray {
 
     private bool delete_pd_window() {
       _pd.destroy();
-      Debug.Notification.emit(Debug.Subsystem.Misc,
-			      Debug.Level.Information,
-			      "delete_pd_window()");
+      debug("delete_pd_window()");
       return(false);
     }
 
@@ -257,9 +242,7 @@ namespace AllTray {
       msg.append_printf(_("Adding app (pid %d) to list of recv'd apps"),
 			app.get_pid());
 
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      msg.str);
+      debug("%s", msg.str);
       WnckEarlyApps.append(app);
     }
 
@@ -317,18 +300,14 @@ namespace AllTray {
       try {
 	p.run();
       } catch(ProcessError e) {
-	Debug.Notification.emit(Debug.Subsystem.Process,
-				Debug.Level.Error,
-				_("Oops.  Not running?"));
+	debug(_("Oops.  Not running?"));
 	StringBuilder msg = new StringBuilder();
 	msg.append_printf(_("Failed to start process: %s"), e.message);
 	throw new AllTrayError.FAILED(msg.str);
       }
 
       if(!p.running) {
-	Debug.Notification.emit(Debug.Subsystem.Process,
-				Debug.Level.Error,
-				_("Oops.  Not running?"));
+	debug(_("Oops.  Not running?"));
 	throw new AllTrayError.FAILED(_("Failed to start process"));
       }
 
@@ -347,15 +326,11 @@ namespace AllTray {
     }
 
     private void cleanup_for_process(Process p) {
-      Debug.Notification.emit(Debug.Subsystem.Process,
-			      Debug.Level.Information,
-			      _("Cleaning up for child..."));
+      debug(_("Cleaning up for child..."));
       _plist.remove(p);
 
       if(_plist.length() == 0) {
-	Debug.Notification.emit(Debug.Subsystem.Main,
-				Debug.Level.Information,
-				_("No more children. Dying."));
+	debug(_("No more children. Dying."));
 	Gtk.main_quit();
       }
     }
@@ -367,15 +342,11 @@ namespace AllTray {
       foreach(string arg in args) {
 	StringBuilder sb = new StringBuilder();
 	sb.append_printf(_("Evaluating %s"), arg);
-	Debug.Notification.emit(Debug.Subsystem.CommandLine,
-				Debug.Level.Information,
-				sb.str);
+	debug("%s", sb.str);
 
 	if(arg.contains("alltray") &&
 	   !arg.contains("internal-fake-process")) continue;
-	Debug.Notification.emit(Debug.Subsystem.CommandLine,
-				Debug.Level.Information,
-				_("Actually processing arg"));
+	debug(_("Actually processing arg"));
 
 	retval[curItem++] = arg;
       }
@@ -408,9 +379,7 @@ namespace AllTray {
       } else {
 	StringBuilder msg = new StringBuilder();
 	msg.append_printf(_("Caught unwired signal %d"), caught_signal);
-	Debug.Notification.emit(Debug.Subsystem.Signal,
-				Debug.Level.Information,
-				msg.str);
+	debug("%s", msg.str);
       }
     }
 

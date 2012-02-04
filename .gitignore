@@ -44,3 +44,7 @@ src/About.c
 src/Hotkey.c
 *.o
 src/.deps
+
+config.guess
+config.sub
+ 

@@ -91,16 +91,12 @@ namespace AllTray {
 
       StringBuilder sb = new StringBuilder();
       sb.append_printf(_("Got window 0x%08lx"), xwin);
-      Debug.Notification.emit(Debug.Subsystem.AttachHelper,
-			      Debug.Level.Information,
-			      sb.str);
+      debug("%s", sb.str);
 
       target_process = _chosen_window.get_pid();
       sb.truncate(0);
       sb.append_printf(_("Window 0x%08lx pid = %d"), xwin, target_process);
-      Debug.Notification.emit(Debug.Subsystem.AttachHelper,
-			      Debug.Level.Information,
-			      sb.str);
+      debug("%s", sb.str);
 
       Gtk.main_quit();
     }

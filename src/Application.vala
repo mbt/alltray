@@ -56,9 +56,7 @@ namespace AllTray {
       _process = p;
       _window_enforce_minimize_queue = new Queue<Wnck.Window>();
 
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      _("Creating a new Application"));
+      debug(_("Creating a new Application"));
 
       /*
        * Register interest in learning of new applications on
@@ -79,9 +77,7 @@ namespace AllTray {
 
     private void bye_wnck_app(Wnck.Screen scr, Wnck.Application app) {
       if(app == _wnckApp) {
-	Debug.Notification.emit(Debug.Subsystem.Application,
-				Debug.Level.Information,
-				_("WHOA - The app went away?! Looking for it to come back..."));
+	debug(_("WHOA - The app went away?! Looking for it to come back..."));
 
 	scr.window_opened.disconnect(maybe_update_window_count);
 	scr.window_closed.disconnect(maybe_update_window_count);
@@ -111,9 +107,7 @@ namespace AllTray {
 	StringBuilder msg = new StringBuilder();
 
 	msg.append_printf(_("pid %d (%s) is not ours."), app_pid, proc_name);
-	Debug.Notification.emit(Debug.Subsystem.Application,
-				Debug.Level.Information,
-				msg.str);
+	debug("%s", msg.str);
       } else {
 	if(app_pid != desired_pid) {
 	  try {
@@ -154,9 +148,8 @@ namespace AllTray {
 
     private void on_ctt(ulong XID) {
       // CTT handler.
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      "got a CTT event, XID %lu".printf(XID));
+      debug(_("got a CTT event, XID %lu"), XID);
+
       foreach(Wnck.Window w in this._windows) {
 	if(w.get_xid() == XID) {
 	  toggle_window_visibility(w);
@@ -218,23 +211,19 @@ namespace AllTray {
       foreach(Wnck.Window w in _windows) {
 	xid = w.get_xid();
 	if(attached.index(xid) == -1) {
-	  Debug.Notification.emit(Debug.Subsystem.Application,
-				  Debug.Level.Information,
-				  "window 0x%lx is new".printf(xid));
+	  debug(_("window 0x%lx is new"), xid);
+
 	  Program._ctt_obj.attach(xid);
 	  this._attached_xids.append(xid);
 
 	  StringBuilder wlist = new StringBuilder();
-	  foreach(ulong wlist_id in this._attached_xids)
+	  foreach(ulong wlist_id in this._attached_xids) {
 	    wlist.append_printf("0x%lx ", wlist_id);
+	  }
 
-	  Debug.Notification.emit(Debug.Subsystem.Application,
-				  Debug.Level.Information,
-				  "Window List: %s".printf(wlist.str));
+	  debug(_("Window List: %s"), wlist.str);
 	} else {
-	  Debug.Notification.emit(Debug.Subsystem.Application,
-				  Debug.Level.Information,
-				  "window 0x%lx is unchanged".printf(xid));
+	  debug(_("window 0x%lx is unchanged"), xid);
 	  attached.remove(xid);
 	}
       }
@@ -314,9 +303,7 @@ namespace AllTray {
 	printf(fallback.to_string());
       }
 
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      msg);
+      debug("%s", msg);
     }
 
     private void update_icon_name(Wnck.Application app) {
@@ -356,9 +343,7 @@ namespace AllTray {
     }
 
     private void debug_msg(string str) {
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      str);
+      debug("%s", str);
     }
 
     private string get_win_state(Wnck.WindowState state) {
@@ -459,9 +444,7 @@ namespace AllTray {
 	Timeout.add(150, set_maintain_hiddenness);
       }
 
-      Debug.Notification.emit(Debug.Subsystem.Application,
-			      Debug.Level.Information,
-			      msg.str);
+      debug("%s", msg.str);
     }
 
     private bool set_maintain_hiddenness() {

@@ -14,7 +14,6 @@ alltray_VALASOURCES = About.vala \
 	AllTray.vala \
 	Application.vala \
 	AttachHelper.vala \
-	Debug.vala \
 	GtkStatusIcon.vala \
 	Hotkey.vala \
 	Process.vala \
