@@ -13,11 +13,6 @@ namespace AllTray.Build {
   public const string ALLTRAY_COPYRIGHT_YEARS;
   public const string ALLTRAY_LICENSE;
 
-  public const string ALLTRAY_BZR_BUILD;
-  public const string ALLTRAY_BZR_BRANCH;
-  public const string ALLTRAY_BZR_REVID;
-  public const string ALLTRAY_BZR_REVISION;
-
   public const string ALLTRAY_C_COMPILER;
   public const string ALLTRAY_COMPILE_FLAGS;
   public const string ALLTRAY_COMPILE_OS;

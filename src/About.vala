@@ -11,16 +11,7 @@ namespace AllTray {
     public AboutDialog() {
       this.program_name = "AllTray";
 
-      if((Build.PACKAGE_VERSION.index_of_char('+') != -1) &&
-	 (Build.ALLTRAY_BZR_BUILD == "TRUE")) {
-	this.version =
-	  _("%s\nBranch: %s, r%s\n%s").printf(Build.PACKAGE_VERSION,
-					      Build.ALLTRAY_BZR_BRANCH,
-					      Build.ALLTRAY_BZR_REVISION,
-					      Build.ALLTRAY_BZR_REVID);
-      } else {
-	this.version = Build.PACKAGE_VERSION;
-      }
+      this.version = Build.PACKAGE_VERSION;
 
       this.website = "http://alltray.trausch.us/";
       this.copyright =

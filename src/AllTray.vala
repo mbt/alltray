@@ -191,14 +191,7 @@ namespace AllTray {
     }
 
     private void display_version() {
-      if(Build.ALLTRAY_BZR_BUILD == "TRUE") {
-	stdout.printf(_("AllTray %s, from bzr branch %s rev %s,\n rev-id %s\n"),
-		      Build.PACKAGE_VERSION, Build.ALLTRAY_BZR_BRANCH,
-		      Build.ALLTRAY_BZR_REVISION, Build.ALLTRAY_BZR_REVID);
-      } else {
-	stdout.printf("AllTray %s\n",
-		      Build.PACKAGE_VERSION);
-      }
+      stdout.printf("AllTray %s\n", Build.PACKAGE_VERSION);
 
       stdout.printf(_("Copyright (c) %s Michael B. Trausch <mike@trausch.us>\n"), Build.ALLTRAY_COPYRIGHT_YEARS);
       stdout.printf(_("Licensed under the GNU GPL v3.0 as published by the Free Software Foundation.\n\n"));
