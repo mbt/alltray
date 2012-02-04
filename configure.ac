@@ -23,7 +23,7 @@ AM_PROG_CC_C_O
 AC_GNU_SOURCE
 AM_GNU_GETTEXT
 AC_PROG_SED
-AC_PATH_PROG(VALAC, valac, valac)
+AM_PROG_VALAC([0.14.0])
 AC_PROG_INSTALL
 
 # pkg-config checks need to be inserted here.
