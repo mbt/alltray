@@ -10,7 +10,7 @@ alltray_CFLAGS = @X11_CFLAGS@ @GLIB_CFLAGS@ @GOBJECT_CFLAGS@ @WNCK_CFLAGS@ \
 alltray_LDADD = @X11_LIBS@ @GLIB_LIBS@ @GOBJECT_LIBS@ @WNCK_LIBS@ \
 	@GTOP_LIBS@
 
-alltray_VALASOURCES = About.vala \
+alltray_SOURCES = About.vala \
 	AllTray.vala \
 	Application.vala \
 	AttachHelper.vala \
@@ -18,9 +18,7 @@ alltray_VALASOURCES = About.vala \
 	Hotkey.vala \
 	Process.vala \
 	PromptDialog.vala \
-	Ctt.vala
-
-alltray_SOURCES = $(alltray_VALASOURCES:.vala=.c) \
+	Ctt.vala \
 	x11_glue.c \
 	gtop_glue.c
 
@@ -34,8 +32,6 @@ alltray_ctt_helper_SOURCES = alltray-ctt-helper.c \
 	alltray-ctt-interpreter.c \
 	alltray-ctt-windowlist.c
 
-BUILT_SOURCES = alltray.stamp
-
 MAINTAINERCLEANFILES = $(alltray_VALASOURCES:.vala=.c) \
 	$(alltray_ctt_helper_VALASOURCES:.vala=.c) \
 	alltray.stamp
@@ -48,11 +44,7 @@ EXTRA_DIST = $(alltray_VALASOURCES) \
 	alltray-ctt-windowlist.h \
 	alltray.stamp
 
-alltray_VALA_FLAGS = --pkg alltray --pkg gdk-2.0 --pkg gdk-x11-2.0 \
-	--pkg x11 --pkg gtk+-2.0 --pkg libwnck-1.0 --pkg x11_glue \
-	--pkg posix --pkg gtop_glue -X "-I header"
+alltray_VALAFLAGS = --vapidir $(srcdir)/../vapi --pkg alltray --pkg gdk-2.0 \
+	--pkg gdk-x11-2.0 --pkg x11 --pkg gtk+-2.0 --pkg libwnck-1.0 \
+	--pkg x11_glue --pkg posix --pkg gtop_glue -X "-I header"
 
-alltray.stamp: $(alltray_VALASOURCES) $(alltray_ctt_helper_VALASOURCES)
-	$(VALAC) -C --vapidir $(srcdir)/../vapi $(alltray_VALA_FLAGS) \
-		$(alltray_VALASOURCES)
-	touch $@
