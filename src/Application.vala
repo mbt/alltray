@@ -409,6 +409,8 @@ namespace AllTray {
       if(((ws & Wnck.WindowState.MINIMIZED) != 0) &&
 	 ((ws & Wnck.WindowState.SKIP_TASKLIST) != 0)) {
 	set_visibility_for_window(w, true);
+	var time = new DateTime.now_utc();
+	w.activate((uint32)time.to_unix());
       } else {
 	set_visibility_for_window(w, false);
       }
