@@ -66,7 +66,7 @@ namespace AllTray {
       this._child_stdout_channel.add_watch(IOCondition.IN | IOCondition.HUP,
 					   this._read_from_helper);
 
-      debug(_("opening write pipe to CTT helper");
+      debug(_("opening write pipe to CTT helper"));
       this._child_stdin = FileStream.fdopen(this._child_stdin_fd, "w");
 
       ChildWatch.add(this._child_pid, this._helper_died);
@@ -92,7 +92,7 @@ namespace AllTray {
 	debug(_("read from helper failed: convert error"));
 	return(false);
       } catch(IOChannelError e) {
-	debug(_("read from helper failed: I/O error");
+	debug(_("read from helper failed: I/O error"));
 	return(false);
       }
       if(status != IOStatus.NORMAL) {
