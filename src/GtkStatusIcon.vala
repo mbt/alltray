@@ -40,15 +40,15 @@ namespace AllTray {
     }
 
     private void on_popup_menu(uint button, uint activate_time) {
-      Menu pm = new Gtk.Menu();
+      Gtk.Menu pm = new Gtk.Menu();
 
-      MenuItem miToggle = new MenuItem.with_label(_("Toggle Visibility"));
-      MenuItem miSep0 = new SeparatorMenuItem();
-      MenuItem miShowAll = new MenuItem.with_label(_("Force Show All"));
-      MenuItem miHideAll = new MenuItem.with_label(_("Force Hide All"));
-      MenuItem miUndock = new MenuItem.with_label(_("Undock"));
-      MenuItem miSep1 = new SeparatorMenuItem();
-      MenuItem miAbout = new MenuItem.with_label(_("About AllTray..."));
+      Gtk.MenuItem miToggle = new Gtk.MenuItem.with_label(_("Toggle Visibility"));
+      Gtk.MenuItem miSep0 = new SeparatorMenuItem();
+      Gtk.MenuItem miShowAll = new Gtk.MenuItem.with_label(_("Force Show All"));
+      Gtk.MenuItem miHideAll = new Gtk.MenuItem.with_label(_("Force Hide All"));
+      Gtk.MenuItem miUndock = new Gtk.MenuItem.with_label(_("Undock"));
+      Gtk.MenuItem miSep1 = new SeparatorMenuItem();
+      Gtk.MenuItem miAbout = new Gtk.MenuItem.with_label(_("About AllTray..."));
 
       miToggle.set_submenu(create_window_list());
 
@@ -67,20 +67,20 @@ namespace AllTray {
       pm.popup(null, null, null, button, activate_time);
     }
 
-    private Menu create_window_list() {
-      Menu ret = new Menu();
-      MenuItem miAllWindows = new MenuItem.with_label(_("All Windows"));
+    private Gtk.Menu create_window_list() {
+      Gtk.Menu ret = new Gtk.Menu();
+      Gtk.MenuItem miAllWindows = new Gtk.MenuItem.with_label(_("All Windows"));
       miAllWindows.activate.connect(() => {
 	  toggle_app_visibility();
 	});
-      MenuItem miSep0 = new SeparatorMenuItem();
+      Gtk.MenuItem miSep0 = new SeparatorMenuItem();
 
       ret.append(miAllWindows); miAllWindows.show();
       ret.append(miSep0); miSep0.show();
 
       unowned List<Wnck.Window> ws = this._app.wnck_app.get_windows();
       foreach(Wnck.Window w in ws) {
-	MenuItem miW = new MenuItem.with_label(w.get_name());
+	Gtk.MenuItem miW = new Gtk.MenuItem.with_label(w.get_name());
 	miW.set_data("target_window", w);
 	miW.activate.connect((miW) => {
 	    Wnck.Window mw =
