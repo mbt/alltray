@@ -48,3 +48,4 @@ src/.deps
 config.guess
 config.sub
  
+.DS_Store
